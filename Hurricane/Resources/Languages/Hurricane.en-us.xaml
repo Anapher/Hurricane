@@ -77,4 +77,12 @@
   <system:String x:Key="about3">open source project and the</system:String>
   <system:String x:Key="about4">following libraries:</system:String>
   <system:String x:Key="about5">Thanks to all the creators of the images used in this application:</system:String>
+
+    <system:String x:Key="notifications">Notifications</system:String>
+    <system:String x:Key="appearance">Appearance</system:String>
+    <system:String x:Key="disabled">Disabled</system:String>
+    <system:String x:Key="top">Top</system:String>
+    <system:String x:Key="rightbottom">Right bottom</system:String>
+    <system:String x:Key="trackinformations">Trackinformations</system:String>
+    <system:String x:Key="disablenotificationsingame">Disable notifications during a fullscreen application</system:String>
 </ResourceDictionary>

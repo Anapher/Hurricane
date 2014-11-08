@@ -4,6 +4,8 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Interop;
 
 namespace Hurricane.Utilities
 {
@@ -48,7 +50,8 @@ namespace Hurricane.Utilities
             WINDOWPLACEMENT placement = new WINDOWPLACEMENT();
             placement.length = Marshal.SizeOf(placement);
             GetWindowPlacement(ForegroundWindow, ref placement);
-            return ((placement.showCmd == 1 && placement.ptMinPosition.X == -1 && placement.ptMinPosition.Y == -1 && placement.rcNormalPosition.X == 0 && placement.rcNormalPosition.Y == 0 && !(GetActiveWindowTitle(ForegroundWindow) == "Program Manager")));
+            var workarea = System.Windows.SystemParameters.WorkArea;
+            return ((placement.showCmd == 1 && placement.ptMinPosition.X == -1 && placement.ptMinPosition.Y == -1 && placement.rcNormalPosition.X == 0 && placement.rcNormalPosition.Y == 0 && placement.rcNormalPosition.Width == workarea.Width && !(GetActiveWindowTitle(ForegroundWindow) == "Program Manager")));
             /*
             System.Diagnostics.Debug.Print("==================================");
             System.Diagnostics.Debug.Print(GetActiveWindowTitle(ForegroundWindow));
@@ -59,5 +62,29 @@ namespace Hurricane.Utilities
             System.Diagnostics.Debug.Print("==================================");
              * */
         }
+
+        [StructLayout(LayoutKind.Sequential)]
+        public struct RECT
+        {
+            public int Left;
+            public int Top;
+            public int Right;
+            public int Bottom;
+        }
+
+        [DllImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool GetWindowRect(IntPtr hWnd, out RECT lpRect);
+
+        public static RECT GetWindowRectangle(Window window)
+        {
+            RECT rect;
+            GetWindowRect((new WindowInteropHelper(window)).Handle, out rect);
+
+            return rect;
+        }
+
+        [DllImport("user32.dll", SetLastError = true)]
+        public static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
     }
 }

@@ -60,7 +60,7 @@ namespace Hurricane.Music
                     if (progresschanged != null) progresschanged(this, new TrackImportProgressChangedEventArgs(i, paths.Length, fi.Name));
                     Track t = new Track();
                     t.Path = fi.FullName;
-                    t.LoadInformations();
+                    if (!t.LoadInformations()) continue;
                     t.TimeAdded = DateTime.Now;
                     if (FromAnotherThread) { System.Windows.Application.Current.Dispatcher.Invoke(() => this.Tracks.Add(t)); } else {this.Tracks.Add(t); }
                 }

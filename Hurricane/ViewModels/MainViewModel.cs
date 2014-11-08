@@ -23,7 +23,6 @@ namespace Hurricane.ViewModels
             }
         }
 
-
         private MainViewModel()
         {
 
@@ -45,7 +44,7 @@ namespace Hurricane.ViewModels
             MusicEngine.LoadFromSettings();
             BaseWindow.LocationChanged += (s, e) => {
                 if (EqualizerIsOpen) {
-                    var rect = Helper.WindowHelper.GetWindowRectangle(BaseWindow);
+                    var rect = Utilities.WindowHelper.GetWindowRectangle(BaseWindow);
                     equalizerwindow.SetLeft(rect.Left + BaseWindow.ActualWidth); equalizerwindow.Top = rect.Top + 25;
                 };
             };
@@ -171,9 +170,9 @@ namespace Hurricane.ViewModels
                 if (removeselectedtracks == null)
                     removeselectedtracks = new RelayCommand((object parameter) => {
                         List<Music.Track> tracks = new List<Music.Track>();
-                        foreach (Music.Track t in MusicEngine.CurrentPlaylist.Tracks)
+                        foreach (Music.Track t in MusicEngine.SelectedPlaylist.Tracks)
                         {
-                            if (t.IsSelected == true)
+                            if (t.IsSelected == true && MusicEngine.SelectedPlaylist.Tracks.Contains(t))
                             {
                                 if (t.IsPlaying)
                                 {
@@ -189,7 +188,7 @@ namespace Hurricane.ViewModels
                         {
                             foreach (Music.Track t in tracks)
                             {
-                                MusicEngine.CurrentPlaylist.Tracks.Remove(t);
+                                MusicEngine.SelectedPlaylist.Tracks.Remove(t);
                             }
                         }
                     });
@@ -325,7 +324,7 @@ namespace Hurricane.ViewModels
                     {
                         if (!EqualizerIsOpen)
                         {
-                            var rect = Helper.WindowHelper.GetWindowRectangle(BaseWindow);
+                            var rect = Utilities.WindowHelper.GetWindowRectangle(BaseWindow);
                             equalizerwindow = new Views.EqualizerWindow(MusicEngine.CSCoreEngine, rect.Left + BaseWindow.ActualWidth, rect.Top + 25);
                             equalizerwindow.Closed += (s, e) => EqualizerIsOpen = false;
                             equalizerwindow.Show();

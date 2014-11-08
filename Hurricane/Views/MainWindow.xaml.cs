@@ -55,7 +55,7 @@ namespace Hurricane
                 viewmodel.StartVisualization += CSCoreEngine_StartVisualization;
                 viewmodel.TrackChanged += CSCoreEngine_TrackChanged;
                 viewmodel.Loaded(this);
-                viewmodel.MusicEngine.CSCoreEngine.PlayStateChanged += (s, ec) => { thumbnailButtonPlayPause.Icon = viewmodel.MusicEngine.CSCoreEngine.CurrentState == CSCore.SoundOut.PlaybackState.Playing ? Helper.ImageHelper.GetIconFromResource("/Resources/MediaIcons/ThumbButtons/pause.ico") : Helper.ImageHelper.GetIconFromResource("/Resources/MediaIcons/ThumbButtons/play.ico"); };
+                viewmodel.MusicEngine.CSCoreEngine.PlayStateChanged += (s, ec) => { thumbnailButtonPlayPause.Icon = viewmodel.MusicEngine.CSCoreEngine.CurrentState == CSCore.SoundOut.PlaybackState.Playing ? Utilities.ImageHelper.GetIconFromResource("/Resources/MediaIcons/ThumbButtons/pause.ico") : Utilities.ImageHelper.GetIconFromResource("/Resources/MediaIcons/ThumbButtons/play.ico"); };
             }
             catch (Exception ex)
             {
@@ -71,7 +71,7 @@ namespace Hurricane
             TaskbarManager.Instance.TabbedThumbnail.AddThumbnailPreview(customPreview);
             customPreview.Title = "Hurricane";
 
-            customPreview.SetWindowIcon(Helper.ImageHelper.GetIconFromResource("Resources/App/icon.ico"));
+            customPreview.SetWindowIcon(Utilities.ImageHelper.GetIconFromResource("Resources/App/icon.ico"));
             customPreview.DisplayFrameAroundBitmap = true;
             customPreview.TabbedThumbnailBitmapRequested += (s, ec) =>
             {
@@ -82,8 +82,8 @@ namespace Hurricane
                     int maxwidth = 220;
                     int maxheight = 141;
 
-                    System.Drawing.Size newsize = Helper.ImageHelper.GetMinimumSize(img.Size, maxwidth, maxheight);
-                    Bitmap bit = Helper.ImageHelper.ResizeImage(new Bitmap(img), newsize);
+                    System.Drawing.Size newsize = Utilities.ImageHelper.GetMinimumSize(img.Size, maxwidth, maxheight);
+                    Bitmap bit = Utilities.ImageHelper.ResizeImage(new Bitmap(img), newsize);
                     Bitmap bittodisplay = bit.Clone(new RectangleF(0, 0, maxwidth, maxheight), img.PixelFormat);
                     bit.Dispose();
 
@@ -93,13 +93,13 @@ namespace Hurricane
                 { customPreview.SetImage(new Bitmap(Application.GetResourceStream(new Uri("pack://application:,,,/Hurricane;component/Resources/MediaIcons/Thumbnail/StandardThumbnail.png")).Stream)); }
             };
 
-            ThumbnailToolBarButton thumbnailButtonBack = new ThumbnailToolBarButton(Helper.ImageHelper.GetIconFromResource("/Resources/MediaIcons/ThumbButtons/backward.ico"), Application.Current.FindResource("previoustrack").ToString());
+            ThumbnailToolBarButton thumbnailButtonBack = new ThumbnailToolBarButton(Utilities.ImageHelper.GetIconFromResource("/Resources/MediaIcons/ThumbButtons/backward.ico"), Application.Current.FindResource("previoustrack").ToString());
             thumbnailButtonBack.Click += (s, e) => { ViewModels.MainViewModel.Instance.MusicEngine.GoBackward(); };
 
-            thumbnailButtonPlayPause = new ThumbnailToolBarButton(Helper.ImageHelper.GetIconFromResource("/Resources/MediaIcons/ThumbButtons/play.ico"), "Play / Pause");
+            thumbnailButtonPlayPause = new ThumbnailToolBarButton(Utilities.ImageHelper.GetIconFromResource("/Resources/MediaIcons/ThumbButtons/play.ico"), "Play / Pause");
             thumbnailButtonPlayPause.Click += (s, e) => { ViewModels.MainViewModel.Instance.MusicEngine.CSCoreEngine.TogglePlayPause(); };
 
-            ThumbnailToolBarButton thumbnailButtonNext = new ThumbnailToolBarButton(Helper.ImageHelper.GetIconFromResource("/Resources/MediaIcons/ThumbButtons/forward.ico"), Application.Current.FindResource("nexttrack").ToString());
+            ThumbnailToolBarButton thumbnailButtonNext = new ThumbnailToolBarButton(Utilities.ImageHelper.GetIconFromResource("/Resources/MediaIcons/ThumbButtons/forward.ico"), Application.Current.FindResource("nexttrack").ToString());
             thumbnailButtonNext.Click += (s, e) => { ViewModels.MainViewModel.Instance.MusicEngine.GoForward(); };
 
             TaskbarManager.Instance.ThumbnailToolBars.AddButtons(handle, thumbnailButtonBack, thumbnailButtonPlayPause, thumbnailButtonNext);

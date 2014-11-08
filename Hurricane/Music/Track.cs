@@ -8,6 +8,7 @@ using System.IO;
 using CSCore;
 using CSCore.Codecs;
 using CSCore.Codecs.MP3;
+using CSCore.Codecs.WMA;
 
 namespace Hurricane.Music
 {
@@ -81,62 +82,67 @@ namespace Hurricane.Music
             }
         }
 
-        public void LoadInformations()
+        public bool LoadInformations()
         {
             FileInfo file = TrackInformations;
-                try
+            try
+            {
+                var info = ID3v2.FromFile(Path).QuickInfo;
+                if (!string.IsNullOrWhiteSpace(info.Artist))
                 {
-                    var info = ID3v2.FromFile(Path).QuickInfo;
-                    if (!string.IsNullOrWhiteSpace(info.Artist))
-                    {
-                        this.Artist = RemoveInvalidXMLChars(info.Artist);
-                    }
-                    else
-                    {
-                        this.Artist = RemoveInvalidXMLChars(info.LeadPerformers);
-                    }
-                    if (!string.IsNullOrWhiteSpace(info.Title))
-                    {
-                        this.Title = RemoveInvalidXMLChars(info.Title);
-                    }
-                    else
-                    {
-                        this.Title = System.IO.Path.GetFileNameWithoutExtension(file.FullName);
-                    }
-                    this.TagInfo = info;
+                    this.Artist = RemoveInvalidXMLChars(info.Artist);
                 }
-                catch (NullReferenceException)
+                else
+                {
+                    this.Artist = RemoveInvalidXMLChars(info.LeadPerformers);
+                }
+                if (!string.IsNullOrWhiteSpace(info.Title))
+                {
+                    this.Title = RemoveInvalidXMLChars(info.Title);
+                }
+                else
                 {
                     this.Title = System.IO.Path.GetFileNameWithoutExtension(file.FullName);
-                    this.TagInfo = null;
                 }
-                using (FileStream sr = new FileStream(Path, FileMode.Open, FileAccess.Read))
+                this.TagInfo = info;
+            }
+            catch (NullReferenceException)
+            {
+                this.Title = System.IO.Path.GetFileNameWithoutExtension(file.FullName);
+                this.TagInfo = null;
+            }
+            using (FileStream sr = new FileStream(Path, FileMode.Open, FileAccess.Read))
+            {
+                Mp3Frame frame = Mp3Frame.FromStream(sr);
+                if (frame != null) { this.kbps = frame.BitRate / 1000; }
+                else
                 {
-                    Mp3Frame frame = Mp3Frame.FromStream(sr);
-                    this.kbps = frame.BitRate / 1000;
+                    System.Diagnostics.Debug.Print("Fehler: {0}", file.FullName);
                 }
-                this.Extension = file.Extension.ToUpper().Replace(".", string.Empty);
-                try
+            }
+            this.Extension = file.Extension.ToUpper().Replace(".", string.Empty);
+            try
+            {
+                using (IWaveSource SoundSource = CodecFactory.Instance.GetCodec(Path))
                 {
-                    using (IWaveSource SoundSource = CodecFactory.Instance.GetCodec(Path))
+                    this.kHz = SoundSource.WaveFormat.SampleRate / 1000;
+                    TimeSpan duration = SoundSource.GetLength();
+
+                    if (duration.Hours == 0)
                     {
-                        this.kHz = SoundSource.WaveFormat.SampleRate / 1000;
-                        TimeSpan duration =  SoundSource.GetLength();
-                        
-                        if(duration.Hours == 0){
-                            this.Duration = duration.ToString(@"mm\:ss");
-                        }
-                        else
-                        {
-                            this.Duration = duration.ToString(@"hh\:mm\:ss");
-                        }
-                        
+                        this.Duration = duration.ToString(@"mm\:ss");
+                    }
+                    else
+                    {
+                        this.Duration = duration.ToString(@"hh\:mm\:ss");
                     }
                 }
-                catch (Exception)
-                {
-
-                }
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+            return true;
         }
 
         public void Unload()

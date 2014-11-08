@@ -39,6 +39,7 @@ namespace Hurricane.Settings
         //General
         public string Language { get; set; }
         public Notification.NotificationType Notification { get; set; }
+        public bool DisableNotificationInGame { get; set; }
 
         private List<LanguageInfo> languages;
         [XmlIgnore]
@@ -70,6 +71,7 @@ namespace Hurricane.Settings
             EqualizerSettings = new Music.EqualizerSettings();
             EqualizerSettings.CreateNew();
             DisableMagicArrowInGame = true;
+            DisableNotificationInGame = true;
             ShowMagicArrowBelowCursor = true;
             WaveSourceBits = 16;
             SampleRate = -1;
@@ -116,13 +118,14 @@ namespace Hurricane.Settings
         public bool Equals(ConfigSettings other)
         {
             if (other == null) return false;
-            return (CompareTwoValues(this.SoundOutDeviceID, other.SoundOutDeviceID) && 
+            return (CompareTwoValues(this.SoundOutDeviceID, other.SoundOutDeviceID) &&
                 CompareTwoValues(this.DisableMagicArrowInGame, other.DisableMagicArrowInGame) &&
                 CompareTwoValues(this.WaveSourceBits, other.WaveSourceBits) &&
                 CompareTwoValues(this.ShowMagicArrowBelowCursor, other.ShowMagicArrowBelowCursor) &&
                 CompareTwoValues(this.SampleRate, other.SampleRate) &&
                 CompareTwoValues(this.Language, other.Language) &&
-                CompareTwoValues(this.Notification, other.Notification));
+                CompareTwoValues(this.Notification, other.Notification) &&
+                CompareTwoValues(this.DisableNotificationInGame, other.DisableNotificationInGame));
         }
 
         protected bool CompareTwoValues(object v1, object v2)

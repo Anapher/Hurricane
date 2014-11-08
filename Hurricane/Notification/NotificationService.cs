@@ -24,6 +24,7 @@ namespace Hurricane.Notification
             Settings.ConfigSettings config = Settings.HurricaneSettings.Instance.Config;
             if (config.Notification == NotificationType.None) return;
             if (lastwindow != null && lastwindow.Visibility == System.Windows.Visibility.Visible) lastwindow.Close();
+            if (config.DisableNotificationInGame && Utilities.WindowHelper.FullscreenWindowIsInForeground()) return;
             TimeSpan timetostayopen = TimeSpan.FromMilliseconds(5000);
             System.Windows.Window messagewindow = null;
             switch (config.Notification)

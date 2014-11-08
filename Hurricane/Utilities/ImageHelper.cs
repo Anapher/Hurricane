@@ -7,7 +7,7 @@ using System.Drawing;
 using System.IO;
 using System.Drawing.Imaging;
 
-namespace Hurricane.Helper
+namespace Hurricane.Utilities
 {
    static class ImageHelper
     {

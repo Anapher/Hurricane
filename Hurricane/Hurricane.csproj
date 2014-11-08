@@ -100,7 +100,6 @@
     <Compile Include="Extensions\Converter\RoundSizeConverter.cs" />
     <Compile Include="Extensions\Converter\NeverIfDateIsNull.cs" />
     <Compile Include="Extensions\WindowBehaviours.cs" />
-    <Compile Include="Helper\WindowHelper.cs" />
     <Compile Include="Music\Equalizer\EqualizerBand.cs" />
     <Compile Include="Music\EventArgs\EqualizerChangedEventArgs.cs" />
     <Compile Include="Music\Equalizer\EqualizerSettings.cs" />
@@ -195,7 +194,7 @@
     <Compile Include="Extensions\Converter\ToggleImageConverter.cs" />
     <Compile Include="Extensions\Converter\TrueFalseValueConverter.cs" />
     <Compile Include="Extensions\Converter\VolumeToImage.cs" />
-    <Compile Include="Helper\ImageHelper.cs" />
+    <Compile Include="Utilities\ImageHelper.cs" />
     <Compile Include="MagicArrow\MagicArrow.cs" />
     <Compile Include="MagicArrow\MagicArrowWindow.xaml.cs">
       <DependentUpon>MagicArrowWindow.xaml</DependentUpon>

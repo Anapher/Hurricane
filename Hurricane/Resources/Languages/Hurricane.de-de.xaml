@@ -85,4 +85,5 @@
     <system:String x:Key="top">Oben</system:String>
     <system:String x:Key="rightbottom">Rechts unten</system:String>
     <system:String x:Key="trackinformations">Trackinformationen</system:String>
+    <system:String x:Key="disablenotificationsingame">Benachrichtigungen während einer Vollbild-Anwendung deaktivieren</system:String>
 </ResourceDictionary>
