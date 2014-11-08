@@ -1,7 +1,6 @@
 Hurricane
 ==============
 
-##Introduction
 Hurricane is a powerful music player written in C# based on the [CSCore sound library](https://cscore.codeplex.com/).
 
 ![Hurricane](http://s14.directupload.net/images/141109/dbvv274f.png)
