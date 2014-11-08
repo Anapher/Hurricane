@@ -1,0 +1,88 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:system="clr-namespace:System;assembly=mscorlib">
+    <system:String x:Key="DateFormat">dd.MM.yyyy hh:mm</system:String>
+    <system:String x:Key="search">Suche...</system:String>
+    <system:String x:Key="previoustrack">Vorheriger Track</system:String>
+    <system:String x:Key="nexttrack">Nächster Track</system:String>
+    <system:String x:Key="newplaylist">Neue Wiedergabeliste</system:String>
+    <system:String x:Key="addfiles">Dateien hinzufügen</system:String>
+    <system:String x:Key="adddirectories">Ordner hinzufügen</system:String>
+    <system:String x:Key="nameofplaylist">Name der Wiedergabeliste:</system:String>
+    <system:String x:Key="create">Erstellen</system:String>
+    <system:String x:Key="cancel">Abbrechen</system:String>
+    <system:String x:Key="filesgetimported">Importiere ({0} von {1})</system:String>
+    <system:String x:Key="fileimporttext">{0} wird importiert</system:String>
+    <system:String x:Key="reset">Zurücksetzten</system:String>
+    <system:String x:Key="addtracks">Tracks hinzufügen</system:String>
+    <system:String x:Key="play">Abspielen</system:String>
+    <system:String x:Key="fileinfos">Dateiinformationen</system:String>
+    <system:String x:Key="filelocation">Dateiort</system:String>
+    <system:String x:Key="remove">Entfernen</system:String>
+    <system:String x:Key="del">Entf</system:String>
+    <system:String x:Key="selectfiles">Dateien auswählen</system:String>
+    <system:String x:Key="selectfolder">Ordner auswählen</system:String>
+    <system:String x:Key="removeplaylist">Wiedergabeliste entfernen</system:String>
+    
+    <system:String x:Key="bass">Bass</system:String>
+    <system:String x:Key="bassexteme">Bass extrem</system:String>
+    <system:String x:Key="bassandheights">Bass und Höhen</system:String>
+    <system:String x:Key="heights">Höhen</system:String>
+    <system:String x:Key="classic">Klassisch</system:String>
+    <system:String x:Key="dance">Dance</system:String>
+    <system:String x:Key="rock">Rock</system:String>
+    <system:String x:Key="techno">Techno</system:String>
+    <system:String x:Key="pop">Pop</system:String>
+    <system:String x:Key="softbass">Weicher Bass</system:String>
+    <system:String x:Key="softheights">Weiche Höhen</system:String>
+    
+    <system:String x:Key="removetracks">Tracks entfernen</system:String>
+    <system:String x:Key="removetracksmessage">Sind Sie sicher, dass sie {0} Track(s) aus der Wiedergabeliste entfernen möchten?</system:String>
+    <system:String x:Key="error">Fehler</system:String>
+    <system:String x:Key="trackisplaying">Ein Fehler ist aufgetreten. Der Track "{0}" kann nicht entfernt werden, weil er momentan abgespielt wird.</system:String>
+    <system:String x:Key="reallydeleteplaylist">Sind Sie sicher, dass sie die Wiedergabeliste '{0}' entfernen wollen?</system:String>
+    <system:String x:Key="errorcantdeleteplaylist">Die Wiedergabeliste kann nicht entfernt werde, weil sie die einzige ist</system:String>
+    <system:String x:Key="renameplaylist">Wiedergabeliste umbenennen</system:String>
+    <system:String x:Key="rename">Umbenennen</system:String>
+    
+    <system:String x:Key="settings">Einstellungen</system:String>
+    <system:String x:Key="about">Über</system:String>
+    <system:String x:Key="close">Schließen</system:String>
+    <system:String x:Key="apply">Anwenden</system:String>
+    <system:String x:Key="playback">Wiedergabe</system:String>
+    <system:String x:Key="device">Gerät</system:String>
+    <system:String x:Key="disablemagicarrowingame">Magic Arrow während einer Vollbild-Anwendung deaktivieren</system:String>
+    <system:String x:Key="samplesourcebits">Sample Source Bitrate</system:String>
+    <system:String x:Key="samplerate">Samplerate</system:String>
+    <system:String x:Key="showmagicarrowbelowcursor">Magic Arrow direkt unter dem Cursor anzeigen</system:String>
+    <system:String x:Key="defaultsamplerate">(Samplerate von Track übernehmen)</system:String>
+    <system:String x:Key="language">Sprache</system:String>
+    
+    <system:String x:Key="title">Titel</system:String>
+    <system:String x:Key="artist">Künstler</system:String>
+    <system:String x:Key="album">Album</system:String>
+    <system:String x:Key="genre">Genre</system:String>
+    <system:String x:Key="year">Jahr</system:String>
+    <system:String x:Key="format">Format</system:String>
+    <system:String x:Key="duration">Dauer</system:String>
+    <system:String x:Key="quality">Qualität</system:String>
+    <system:String x:Key="filesize">Dateigröße</system:String>
+    <system:String x:Key="filename">Dateiname</system:String>
+    <system:String x:Key="folder">Ordner</system:String>
+    <system:String x:Key="added">Hinzugefügt</system:String>
+    <system:String x:Key="played">Abgespielt</system:String>
+    <system:String x:Key="never">Nie</system:String>
+
+    <system:String x:Key="about1">Copyright © 2014 Alkaline. Alle Rechte vorbehalten.</system:String>
+    <system:String x:Key="about2">Hurricane wird durch das Open-Source-Projekt</system:String>
+    <system:String x:Key="about3">und den folgenden</system:String>
+    <system:String x:Key="about4">Bibilotheken ermöglicht:</system:String>
+    <system:String x:Key="about5">Danke an die Ersteller der Bilder, die in diesem Programm verwendet werden:</system:String>
+    
+    <system:String x:Key="notifications">Benachrichtigungen</system:String>
+    <system:String x:Key="appearance">Aussehen</system:String>
+    <system:String x:Key="disabled">Ausgeschaltet</system:String>
+    <system:String x:Key="top">Oben</system:String>
+    <system:String x:Key="rightbottom">Rechts unten</system:String>
+    <system:String x:Key="trackinformations">Trackinformationen</system:String>
+</ResourceDictionary>

@@ -1,0 +1,73 @@
+﻿<Window x:Class="Hurricane.Views.EqualizerWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
+        xmlns:viewmodels="clr-namespace:Hurricane.ViewModels"
+        Title="Equalizer" Height="200" SizeToContent="Width" Width="300" DataContext="{x:Static viewmodels:MainViewModel.Instance}" Top="20" ShowInTaskbar="False" Style="{DynamicResource MetroWindowStyle}">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Resources/Styles/MetroWindowStyle.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+            <Style x:Key="MetroWindowStyle" TargetType="{x:Type Window}">
+                <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.WindowTextBrushKey}}"/>
+                <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"/>
+                <Setter Property="WindowStyle" Value="None" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type Window}">
+                            <Grid>
+                                <Border x:Name="MainBorder" BorderThickness="0" Background="White" >
+                                    <DockPanel LastChildFill="True">
+
+                                        <AdornerDecorator DockPanel.Dock="Bottom">
+                                            <ContentPresenter ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" ContentStringFormat="{TemplateBinding ContentStringFormat}"/>
+                                        </AdornerDecorator>
+                                    </DockPanel>
+                                </Border>
+                            </Grid>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+        </ResourceDictionary>
+    </Window.Resources>
+    
+    <Border>
+        <Grid Margin="5" Background="White">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Menu>
+                <MenuItem Header="Vorlagen">
+                    <MenuItem Header="{DynamicResource bass}" Command="{Binding MusicEngine.CSCoreEngine.EqualizerSettings.LoadPresetBass}"/>
+                    <MenuItem Header="{DynamicResource bassexteme}" Command="{Binding MusicEngine.CSCoreEngine.EqualizerSettings.LoadPresetBassExteme}"/>
+                    <MenuItem Header="{DynamicResource bassandheights}" Command="{Binding MusicEngine.CSCoreEngine.EqualizerSettings.LoadPresetBassAndHeights}"/>
+                    <MenuItem Header="{DynamicResource heights}" Command="{Binding MusicEngine.CSCoreEngine.EqualizerSettings.LoadPresetHeights}"/>
+                    <MenuItem Header="{DynamicResource classic}" Command="{Binding MusicEngine.CSCoreEngine.EqualizerSettings.LoadPresetClassic}"/>
+                    <MenuItem Header="{DynamicResource dance}" Command="{Binding MusicEngine.CSCoreEngine.EqualizerSettings.LoadPresetDance}"/>
+                    <MenuItem Header="{DynamicResource rock}" Command="{Binding MusicEngine.CSCoreEngine.EqualizerSettings.LoadPresetRock}"/>
+                    <MenuItem Header="{DynamicResource techno}" Command="{Binding MusicEngine.CSCoreEngine.EqualizerSettings.LoadPresetTechno}"/>
+                    <MenuItem Header="{DynamicResource pop}" Command="{Binding MusicEngine.CSCoreEngine.EqualizerSettings.LoadPresetPop}"/>
+                    <MenuItem Header="{DynamicResource softbass}" Command="{Binding MusicEngine.CSCoreEngine.EqualizerSettings.LoadPresetSoftBass}"/>
+                    <MenuItem Header="{DynamicResource softheights}" Command="{Binding MusicEngine.CSCoreEngine.EqualizerSettings.LoadPresetSoftHeights}"/>
+                </MenuItem>
+                <MenuItem Header="{DynamicResource reset}" Command="{Binding MusicEngine.CSCoreEngine.EqualizerSettings.ResetEqualizer}"/>
+            </Menu>
+            <Button Style="{StaticResource WindowButtonStyle}" Click="PART_CLOSE_Click" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="5" Width="20" Height="20"/>
+            <ItemsControl Margin="5,10,5,10" Grid.Row="1" ItemsSource="{Binding MusicEngine.CSCoreEngine.EqualizerSettings.Bands}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Orientation="Horizontal"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Slider Orientation="Vertical" Maximum="100" Minimum="-100" Margin="5,0,5,0" Value="{Binding Value}"/>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </Grid>
+    </Border>
+</Window>

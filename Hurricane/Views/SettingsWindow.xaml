@@ -1,0 +1,148 @@
+﻿<controls:MetroWindow x:Class="Hurricane.Views.SettingsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+        xmlns:vm="clr-namespace:Hurricane.ViewModels"
+        xmlns:settingsconverter="clr-namespace:Hurricane.Settings.Converter"
+        Title="{DynamicResource settings}" Height="400" Width="600" ResizeMode="NoResize" Topmost="True" WindowStartupLocation="CenterScreen" ShowInTaskbar="False" DataContext="{x:Static vm:SettingsViewModel.Instance}" GlowBrush="LightBlue">
+    <Grid>
+        <Grid.Resources>
+            <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.AnimatedSingleRowTabControl.xaml" />
+        </Grid.Resources>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="200"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="50"/>
+        </Grid.RowDefinitions>
+        <ListBox x:Name="lst" SelectedIndex="{Binding SelectedTab}">
+            <ListBoxItem Content="{DynamicResource playback}"/>
+            <ListBoxItem Content="Aussehen"/>
+            <ListBoxItem Content="{DynamicResource language}"/>
+        </ListBox>
+        <TabControl Grid.Column="1" SelectedIndex="{Binding SelectedTab}">
+            <TabControl.Resources>
+                <Style TargetType="TabItem">
+                    <Setter Property="Visibility" Value="Collapsed"/>
+                </Style>
+            </TabControl.Resources>
+            <TabItem Header="Playback">
+                <TabItem.Resources>
+                    <settingsconverter:BitrateToIndexConverter x:Key="BitrateToIndexConverter"/>
+                    <settingsconverter:SampleRateToIndexConverter x:Key="SampleRateToIndexConverter"/>
+                </TabItem.Resources>
+                <Grid>
+                    <StackPanel Orientation="Vertical" Margin="10">
+                        <DockPanel>
+                            <TextBlock Text="{DynamicResource device}" VerticalAlignment="Center"/>
+                            <TextBlock Text=":" VerticalAlignment="Center"/>
+                            <ComboBox Margin="10,0,0,0" ItemsSource="{Binding AudioDevices}" SelectedItem="{Binding SelectedAudioDevice}">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid x:Name="grid">
+                                            <TextBlock Text="{Binding}" x:Name="txt"/>
+                                        </Grid>
+                                        <DataTemplate.Triggers>
+                                            <DataTrigger Binding="{Binding IsDefault}" Value="True">
+                                                <Setter TargetName="txt" Property="Foreground" Value="#FFC15757"/>
+                                            </DataTrigger>
+                                        </DataTemplate.Triggers>
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
+                        </DockPanel>
+                        <DockPanel Margin="0,10,0,0" LastChildFill="False">
+                            <TextBlock Text="{DynamicResource samplesourcebits}" VerticalAlignment="Center"/>
+                            <TextBlock Text=":" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                            <ComboBox Width="100" SelectedIndex="{Binding Config.WaveSourceBits,Converter={StaticResource BitrateToIndexConverter}}" SelectionChanged="SomethingChanged">
+                                <ComboBoxItem Content="8 Bits"/>
+                                <ComboBoxItem Content="16 Bits"/>
+                                <ComboBoxItem Content="24 Bits"/>
+                                <ComboBoxItem Content="32 Bits"/>
+                            </ComboBox>
+                        </DockPanel>
+                        <DockPanel Margin="0,10,0,0" LastChildFill="False">
+                            <TextBlock Text="{DynamicResource samplerate}" VerticalAlignment="Center"/>
+                            <TextBlock Text=":" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                            <ComboBox Width="250" SelectedIndex="{Binding Config.SampleRate,Converter={StaticResource SampleRateToIndexConverter}}" SelectionChanged="SomethingChanged">
+                                <ComboBoxItem Content="{DynamicResource defaultsamplerate}"/>
+                                <ComboBoxItem Content="44100 Hz"/>
+                                <ComboBoxItem Content="48000 Hz"/>
+                                <ComboBoxItem Content="88200 Hz"/>
+                                <ComboBoxItem Content="96000 Hz"/>
+                                <ComboBoxItem Content="176400 Hz"/>
+                                <ComboBoxItem Content="192000 Hz"/>
+                            </ComboBox>
+                        </DockPanel>
+                    </StackPanel>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Visual">
+                <StackPanel Orientation="Vertical" Margin="10">
+                    <TextBlock Text="Magic Arrow"/>
+                    <Separator />
+                    <CheckBox Content="{DynamicResource disablemagicarrowingame}" IsChecked="{Binding Config.DisableMagicArrowInGame}" Checked="SomethingChanged" Unchecked="SomethingChanged" Margin="0,5,0,0"/>
+                    <CheckBox Content="{DynamicResource showmagicarrowbelowcursor}" IsChecked="{Binding Config.ShowMagicArrowBelowCursor}" Margin="0,10,0,0" Checked="SomethingChanged" Unchecked="SomethingChanged"/>
+                    <TextBlock Text="{DynamicResource notifications}" Margin="0,20,0,0"/>
+                    <Separator />
+                    <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
+                        <StackPanel.Resources>
+                            <settingsconverter:NotificationTypeConverter x:Key="NotificationTypeConverter"/>
+                        </StackPanel.Resources>
+                        <TextBlock Text="{DynamicResource trackinformations}" VerticalAlignment="Center"/>
+                        <TextBlock Text=":" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                        <ComboBox Width="150" SelectedIndex="{Binding Config.Notification,Converter={StaticResource NotificationTypeConverter}}" SelectionChanged="SomethingChanged">
+                            <ComboBoxItem Content="{DynamicResource disabled}"/>
+                            <ComboBoxItem Content="{DynamicResource top}"/>
+                            <ComboBoxItem Content="{DynamicResource rightbottom}"/>
+                        </ComboBox>
+                    </StackPanel>
+                </StackPanel>
+            </TabItem>
+            <TabItem Header="Language">
+                <ListBox ItemsSource="{Binding Config.Languages}" SelectedItem="{Binding CurrentLanguage}">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Margin="4">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="40"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Image Source="{Binding Icon}" Width="32" Height="32" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                <StackPanel Orientation="Vertical" Grid.Column="1" Margin="10,5,0,5">
+                                    <TextBlock Text="{Binding Name}" FontWeight="Bold" FontSize="14"/>
+                                    <TextBlock Text="{Binding Translator}"/>
+                                </StackPanel>
+                            </Grid>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </TabItem>
+        </TabControl>
+        <Grid Grid.Row="1" Grid.ColumnSpan="2" Grid.IsSharedSizeScope="True" Background="#FFF9F9F9">
+            <Separator VerticalAlignment="Top"/>
+            <Grid Margin="10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition SharedSizeGroup="Buttons"/>
+                    <ColumnDefinition Width="10"/>
+                    <ColumnDefinition SharedSizeGroup="Buttons"/>
+                </Grid.ColumnDefinitions>
+                <Button Content="{DynamicResource about}" Width="100" Click="Button_Click"/>
+                <Button Content="Language" Grid.Column="2" Command="{Binding ShowLanguages}"/> <!-- This should always be in english! -->
+            </Grid>
+
+            <Grid HorizontalAlignment="Right" Margin="10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition SharedSizeGroup="Buttons"/>
+                    <ColumnDefinition Width="10"/>
+                    <ColumnDefinition SharedSizeGroup="Buttons"/>
+                </Grid.ColumnDefinitions>
+                <Button Content="{DynamicResource apply}" Command="{Binding ApplyChanges}" IsEnabled="{Binding CanApply}"/>
+                <Button Content="{DynamicResource close}" Grid.Column="2" Command="{Binding Close}"/>
+            </Grid>
+        </Grid>
+    </Grid>
+</controls:MetroWindow>
