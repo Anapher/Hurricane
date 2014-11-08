@@ -39,7 +39,6 @@ namespace Hurricane
             MagicArrow.Register(this);
             MagicArrow.MoveOut += (s, e) => { ViewModels.MainViewModel.Instance.MoveOut(); };
             
-            this.SourceInitialized += MainWindow_SourceInitialized;
             this.Closing += MainWindow_Closing;
             this.Loaded += MainWindow_Loaded;
             dragMgr = new Resources.Styles.DragDropListView.ServiceProviders.UI.ListViewDragDropManager<Music.Track>(this.listview);
@@ -123,22 +122,6 @@ namespace Hurricane
         void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             ViewModels.MainViewModel.Instance.Closing();
-        }
-
-        APIService.Service service ;
-        void MainWindow_SourceInitialized(object sender, EventArgs e)
-        {
-            service = new APIService.Service();
-            service.Start();
-        }
-
-        protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
-        {
-            base.OnClosing(e);
-            if (service != null)
-            {
-                service.Dispose();
-            }
         }
 
         private void PART_TITLEBAR_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)

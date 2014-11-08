@@ -185,7 +185,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Compile Include="APIService\Service.cs" />
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -364,9 +363,6 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\GUI\rename.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\App\Banner.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\App\About.png" />

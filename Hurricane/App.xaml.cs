@@ -38,21 +38,9 @@ namespace Hurricane
             myMutex = new Mutex(true, "Hurricane", out aIsNewInstance);
             if (!aIsNewInstance)
             {
-                TcpClient client = new TcpClient();
-
-                IPEndPoint serverEndPoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 3000);
-                client.Connect(serverEndPoint);
-                NetworkStream clientStream = client.GetStream();
-                BinaryWriter writer = new BinaryWriter(clientStream);
-                BinaryReader reader = new BinaryReader(clientStream);
-                byte[] buffer = System.Text.Encoding.ASCII.GetBytes("gh");
-                writer.Write(buffer.Length);
-                writer.Write(buffer);
-                int length = reader.ReadInt32();
-                IntPtr hwnd = new IntPtr(int.Parse(System.Text.ASCIIEncoding.ASCII.GetString(reader.ReadBytes(length))));
+                IntPtr hwnd = FindWindow(null, "Hurricane");
                 SendMessage(hwnd, BringTheWindowToFrontMessage, IntPtr.Zero, IntPtr.Zero);
-                clientStream.Close();
-                client.Close();
+                myMutex.Dispose();
                 App.Current.Shutdown();
             }
 

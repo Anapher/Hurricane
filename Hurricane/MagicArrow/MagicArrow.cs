@@ -164,6 +164,12 @@ namespace Hurricane.MagicArrow
             {
                 case BringTheWindowToFrontMessage:
                     if (MovedOut) { MoveWindowBackInScreen(); }
+                                        System.Windows.Window mainwindow = Application.Current.MainWindow;
+                    mainwindow.Activate();
+                    mainwindow.Topmost = true;
+                    System.Threading.Thread.Sleep(1);
+                    mainwindow.Topmost = false;
+                    mainwindow.Focus();
                     break;
             }
             return IntPtr.Zero;
