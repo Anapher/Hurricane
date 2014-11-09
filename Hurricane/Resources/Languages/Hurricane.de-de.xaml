@@ -86,4 +86,9 @@
     <system:String x:Key="rightbottom">Rechts unten</system:String>
     <system:String x:Key="trackinformations">Trackinformationen</system:String>
     <system:String x:Key="disablenotificationsingame">Benachrichtigungen während einer Vollbild-Anwendung deaktivieren</system:String>
+
+    <system:String x:Key="reloadtrackinfo">Trackinformationen neu laden</system:String>
+    <system:String x:Key="removemissingtracks">Fehlende Tracks entfernen</system:String>
+    <system:String x:Key="loadtrackinformation">Lade ({0} von {1})</system:String>
+    <system:String x:Key="suredeleteallmissingtracks">Sind Sie sicher, dass sie alle fehlenden Tracks aus der Wiedergabeliste entfernen wollen?</system:String>
 </ResourceDictionary>

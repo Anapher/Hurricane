@@ -189,6 +189,17 @@
                                 <Image Source="/Resources/GUI/delete.png" Width="16" Height="16"/>
                             </MenuItem.Icon>
                         </MenuItem>
+                        <Separator />
+                        <MenuItem Header="{DynamicResource reloadtrackinfo}" Command="{Binding ReloadTrackInformations}">
+                            <MenuItem.Icon>
+                                <Image Source="/Resources/GUI/refresh.png" Width="16" Height="16"/>
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem Header="{DynamicResource removemissingtracks}" Command="{Binding RemoveMissingTracks}" IsEnabled="{Binding MusicEngine.SelectedPlaylist.ContainsMissingTracks}">
+                            <MenuItem.Icon>
+                                <Image Source="/Resources/GUI/remove.png" Width="16" Height="16"/>
+                            </MenuItem.Icon>
+                        </MenuItem>
                     </MenuItem>
                 </Menu>
             </Grid>
@@ -201,7 +212,7 @@
                 </ListView.InputBindings>
                 <ListView.Resources>
                     <ContextMenu x:Key="ItemContextMenu" DataContext="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}, Path=DataContext}">
-                        <MenuItem Header="{DynamicResource play}" Command="{Binding MusicEngine.PlaySelectedTrack}">
+                        <MenuItem Header="{DynamicResource play}" Command="{Binding MusicEngine.PlaySelectedTrack}" IsEnabled="{Binding MusicEngine.SelectedTrack.TrackExists}">
                             <MenuItem.Icon>
                                 <Image Source="/Resources/MediaIcons/Essentials/Play.png" Width="16" Height="16"/>
                             </MenuItem.Icon>
@@ -220,12 +231,12 @@
                             </MenuItem>
                         </MenuItem>
                         <Separator />
-                        <MenuItem Header="{DynamicResource fileinfos}" Command="{Binding OpenTrackInformations}">
+                        <MenuItem Header="{DynamicResource fileinfos}" Command="{Binding OpenTrackInformations}" IsEnabled="{Binding MusicEngine.SelectedTrack.TrackExists}">
                             <MenuItem.Icon>
                                 <Image Source="/Resources/GUI/info.png" Width="16" Height="16"/>
                             </MenuItem.Icon>
                         </MenuItem>
-                        <MenuItem Header="{DynamicResource filelocation}" Command="{Binding MusicEngine.OpenFileLocation}" InputGestureText="Alt + O">
+                        <MenuItem Header="{DynamicResource filelocation}" Command="{Binding MusicEngine.OpenFileLocation}" InputGestureText="Alt + O" IsEnabled="{Binding MusicEngine.SelectedTrack.TrackExists}">
                             <MenuItem.Icon>
                                 <Image Source="/Resources/GUI/folder.png" Width="16" Height="16"/>
                             </MenuItem.Icon>
@@ -277,6 +288,9 @@
                                     </BeginStoryboard>
                                 </EventTrigger.Actions>
                             </EventTrigger>
+                            <DataTrigger Binding="{Binding TrackExists}" Value="False">
+                                <Setter Property="Background" Value="#FFF2F2F2"/>
+                            </DataTrigger>
                         </Style.Triggers>
                     </Style>
                 </ListView.ItemContainerStyle>

@@ -132,6 +132,7 @@ namespace Hurricane.Music
         public void OpenFile(Track track)
         {
             if (CurrentTrack != null) { CurrentTrack.IsPlaying = false; CurrentTrack.Unload(); }
+           if(SoundSource != null) SoundSource.Dispose();
             track.IsPlaying = true;
             SoundSource = CodecFactory.Instance.GetCodec(track.Path);
             if (Settings.SampleRate == -1 && SoundSource.WaveFormat.SampleRate < 44100)

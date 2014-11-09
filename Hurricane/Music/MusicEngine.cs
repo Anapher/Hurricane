@@ -124,9 +124,13 @@ namespace Hurricane.Music
 
             if (config.LastTrackIndex > -1)
             {
-                CSCoreEngine.OpenFile(CurrentPlaylist.Tracks[config.LastTrackIndex]);
-                CSCoreEngine.Position = config.TrackPosition;
-                CSCoreEngine.OnPropertyChanged("Position");
+                Track t = CurrentPlaylist.Tracks[config.LastTrackIndex];
+                if (t.TrackExists)
+                {
+                    CSCoreEngine.OpenFile(t);
+                    CSCoreEngine.Position = config.TrackPosition;
+                    CSCoreEngine.OnPropertyChanged("Position");
+                }
             }
             if (config.SelectedPlaylist > -1)
             {
@@ -185,7 +189,8 @@ namespace Hurricane.Music
                 if (playselectedtrack == null)
                     playselectedtrack = new RelayCommand((object parameter) =>
                     {
-                        if (SelectedTrack != CSCoreEngine.CurrentTrack)
+                        SelectedTrack.RefreshTrackExists();
+                        if (SelectedTrack != CSCoreEngine.CurrentTrack && SelectedTrack.TrackExists)
                         {
                             CSCoreEngine.StopPlayback();
                             CSCoreEngine.OpenFile(SelectedTrack);
@@ -214,28 +219,48 @@ namespace Hurricane.Music
             if (CurrentPlaylist == null || CurrentPlaylist.Tracks.Count == 0) return;
             CSCoreEngine.StopPlayback();
             int currenttrackindex = CurrentPlaylist.Tracks.IndexOf(CSCoreEngine.CurrentTrack);
-            int nexttrackindex = 0;
-            if (CurrentPlaylist.Tracks.Count > 1)
+            int nexttrackindex = currenttrackindex;
+            if (CheckIfTracksExists(CurrentPlaylist))
             {
                 if (RandomTrack)
                 {
                     while (true)
                     {
                         int i = random.Next(0, CurrentPlaylist.Tracks.Count);
-                        if (i != currenttrackindex) { nexttrackindex = i; break; }
+                        if (i != currenttrackindex && CurrentPlaylist.Tracks[i].TrackExists) { nexttrackindex = i; break; }
                     }
                 }
                 else
                 {
-                    nexttrackindex = currenttrackindex + 1;
-                    if (CurrentPlaylist.Tracks.Count - 1 < nexttrackindex)
+                    while (true)
                     {
-                        nexttrackindex = 0;
+                        nexttrackindex++;
+                        if (CurrentPlaylist.Tracks.Count - 1 < nexttrackindex)
+                            nexttrackindex = 0;
+                        if (CurrentPlaylist.Tracks[nexttrackindex].TrackExists)
+                            break;
                     }
                 }
             }
             CSCoreEngine.OpenFile(CurrentPlaylist.Tracks[nexttrackindex]);
             CSCoreEngine.TogglePlayPause();
+        }
+
+        /// <summary>
+        /// Checks if two or more tracks in the playlist exists
+        /// </summary>
+        /// <param name="list"></param>
+        /// <returns></returns>
+        private bool CheckIfTracksExists(Playlist list)
+        {
+            int counter = 0;
+            bool result = false;
+            foreach (Track t in list.Tracks)
+            {
+                t.RefreshTrackExists();
+                if (t.TrackExists) { counter++; if (counter == 2) result = true; } //Don't cancel because all tracks need to refresh
+            }
+            return result;
         }
 
         private RelayCommand gobackwardcommand;
@@ -254,10 +279,19 @@ namespace Hurricane.Music
             if (CurrentPlaylist == null || CurrentPlaylist.Tracks.Count == 0) return;
             CSCoreEngine.StopPlayback();
             int currenttrackindex = CurrentPlaylist.Tracks.IndexOf(CSCoreEngine.CurrentTrack);
-            int nexttrackindex = currenttrackindex - 1;
-            if (0 > nexttrackindex)
+            int nexttrackindex = currenttrackindex;
+            if (CheckIfTracksExists(CurrentPlaylist))
             {
-                nexttrackindex = CurrentPlaylist.Tracks.Count -1;
+                while (true)
+                {
+                    nexttrackindex--;
+                    if (0 > nexttrackindex)
+                    {
+                        nexttrackindex = CurrentPlaylist.Tracks.Count - 1;
+                    }
+                    if (CurrentPlaylist.Tracks[nexttrackindex].TrackExists)
+                        break;
+                }
             }
             CSCoreEngine.OpenFile(CurrentPlaylist.Tracks[nexttrackindex]);
             CSCoreEngine.TogglePlayPause();

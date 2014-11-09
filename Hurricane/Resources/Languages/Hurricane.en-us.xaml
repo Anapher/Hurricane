@@ -11,7 +11,7 @@
   <system:String x:Key="nameofplaylist">Name of playlist:</system:String>
   <system:String x:Key="create">Create</system:String>
   <system:String x:Key="cancel">Cancel</system:String>
-  <system:String x:Key="filesgetimported">Import ({0} von {1})</system:String>
+  <system:String x:Key="filesgetimported">Import ({0} of {1})</system:String>
   <system:String x:Key="fileimporttext">{0} is imported</system:String>
   <system:String x:Key="reset">Reset</system:String>
   <system:String x:Key="addtracks">Add tracks</system:String>
@@ -85,4 +85,8 @@
     <system:String x:Key="rightbottom">Right bottom</system:String>
     <system:String x:Key="trackinformations">Trackinformations</system:String>
     <system:String x:Key="disablenotificationsingame">Disable notifications during a fullscreen application</system:String>
+    
+    <system:String x:Key="reloadtrackinfo">Reload track informations</system:String>
+    <system:String x:Key="removemissingtracks">Remove missing tracks</system:String>
+    <system:String x:Key="loadtrackinformation">Loading ({0} of {1})</system:String>
 </ResourceDictionary>

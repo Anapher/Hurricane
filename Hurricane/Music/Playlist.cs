@@ -74,5 +74,39 @@ namespace Hurricane.Music
         {
             this.AddFiles(null,FromAnotherThread, paths);
         }
+
+        public void ReloadTrackInformations(EventHandler<TrackImportProgressChangedEventArgs> progresschanged, bool FromAnotherThread)
+        {
+            foreach (Track t in this.Tracks)
+            {
+                if (progresschanged != null) progresschanged(this, new TrackImportProgressChangedEventArgs(this.Tracks.IndexOf(t), Tracks.Count, t.ToString()));
+                if (t.TrackExists)
+                {
+                    t.LoadInformations();
+                }
+            }
+        }
+
+        public bool ContainsMissingTracks
+        {
+            get
+            {
+                foreach (Track t in this.Tracks)
+                {
+                    if (!t.TrackExists) return true;
+                }
+                return false;
+            }
+        }
+
+        public void RemoveMissingTracks()
+        {
+            for (int i = Tracks.Count -1; i > -1; i--)
+            {
+                Track t = Tracks[i];
+                if (!t.TrackExists) this.Tracks.Remove(t);
+            }
+            OnPropertyChanged("ContainsMissingTracks");
+        }
     }
 }

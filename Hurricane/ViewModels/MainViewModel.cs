@@ -339,6 +339,47 @@ namespace Hurricane.ViewModels
             }
         }
 
+        private RelayCommand reloadtrackinformations;
+        public RelayCommand ReloadTrackInformations
+        {
+            get
+            {
+                if (reloadtrackinformations == null)
+                    reloadtrackinformations = new RelayCommand((object parameter) => {
+
+                        Views.ProgressWindow progresswindow = new Views.ProgressWindow(Application.Current.FindResource("loadtrackinformation").ToString()) { Owner = BaseWindow };
+                        System.Threading.Thread t = new System.Threading.Thread(() =>
+                        {
+                            MusicEngine.SelectedPlaylist.ReloadTrackInformations((s, e) => { Application.Current.Dispatcher.Invoke(() => progresswindow.SetProgress(e.Percentage)); progresswindow.SetText(e.CurrentFile); progresswindow.SetTitle(string.Format(Application.Current.FindResource("loadtrackinformation").ToString(), e.FilesImported, e.TotalFiles)); }, true); MusicEngine.SaveToSettings(); MySettings.Save(); Application.Current.Dispatcher.Invoke(() => progresswindow.Close());
+                        });
+                        t.IsBackground = true;
+                        t.Start();
+                        progresswindow.ShowDialog();
+                    });
+                return reloadtrackinformations;
+            }
+        }
+
+        private RelayCommand removemissingtracks;
+        public RelayCommand RemoveMissingTracks
+        {
+            get
+            {
+                if (removemissingtracks == null)
+                    removemissingtracks = new RelayCommand((object parameter) => {
+                        Views.MessageWindow message = new Views.MessageWindow("suredeleteallmissingtracks", "removemissingtracks", true, true);
+                        message.Owner = BaseWindow;
+                        if (message.ShowDialog() == true)
+                        {
+                            MusicEngine.SelectedPlaylist.RemoveMissingTracks();
+                        }
+                        MusicEngine.SaveToSettings();
+                        MySettings.Save();
+                    });
+                return removemissingtracks;
+            }
+        }
+
         public void MoveOut()
         {
             if (EqualizerIsOpen) { equalizerwindow.Close(); EqualizerIsOpen = false; }

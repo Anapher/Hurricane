@@ -8,7 +8,6 @@ using System.IO;
 using CSCore;
 using CSCore.Codecs;
 using CSCore.Codecs.MP3;
-using CSCore.Codecs.WMA;
 
 namespace Hurricane.Music
 {
@@ -73,17 +72,20 @@ namespace Hurricane.Music
         [System.Xml.Serialization.XmlIgnore]
         public ID3v2QuickInfo TagInfo { get; set; }
 
+        private FileInfo trackinformations;
         [System.Xml.Serialization.XmlIgnore]
         public FileInfo TrackInformations
         {
             get
             {
-                return new FileInfo(Path);
+                if (trackinformations == null) trackinformations = new FileInfo(Path);
+                return trackinformations;
             }
         }
 
         public bool LoadInformations()
         {
+            trackinformations = null; //to refresh the fileinfo
             FileInfo file = TrackInformations;
             try
             {
@@ -145,6 +147,9 @@ namespace Hurricane.Music
             return true;
         }
 
+        /// <summary>
+        /// Delete all which was needed for playing
+        /// </summary>
         public void Unload()
         {
             if (this.Image != null)
@@ -154,6 +159,9 @@ namespace Hurricane.Music
             }
         }
 
+        /// <summary>
+        /// Make ready for playing
+        /// </summary>
         public void Load()
         {
             try
@@ -175,9 +183,18 @@ namespace Hurricane.Music
             return Title;
         }
 
-        public bool CheckFile()
+        public bool TrackExists
         {
-            return TrackInformations.Exists;
+            get
+            {
+                return TrackInformations.Exists;
+            }
+        }
+
+        public void RefreshTrackExists()
+        {
+            trackinformations = null;
+            OnPropertyChanged("TrackExists");
         }
 
         public static bool IsSupported(FileInfo fi)

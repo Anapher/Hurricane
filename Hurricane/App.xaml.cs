@@ -40,13 +40,18 @@ namespace Hurricane
             {
                 IntPtr hwnd = FindWindow(null, "Hurricane");
                 SendMessage(hwnd, BringTheWindowToFrontMessage, IntPtr.Zero, IntPtr.Zero);
-                myMutex.Dispose();
                 App.Current.Shutdown();
             }
 
             ResourceDictionary dict = new ResourceDictionary();
             dict.Source = new Uri("/Resources/Languages/Hurricane.de-de.xaml", UriKind.Relative);
             this.Resources.MergedDictionaries.Add(dict);
+        }
+
+        protected override void OnExit(ExitEventArgs e)
+        {
+            base.OnExit(e);
+            myMutex.Dispose();
         }
     }
 }
