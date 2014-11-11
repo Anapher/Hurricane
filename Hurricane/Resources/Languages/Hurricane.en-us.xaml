@@ -56,8 +56,9 @@
   <system:String x:Key="samplerate">Samplerate</system:String>
   <system:String x:Key="showmagicarrowbelowcursor">Show Magic Arrow directly under the cursor</system:String>
   <system:String x:Key="defaultsamplerate">(Take samplerate from track)</system:String>
+    <system:String x:Key="language">Language</system:String>
 
-  <system:String x:Key="title">Title</system:String>
+    <system:String x:Key="title">Title</system:String>
   <system:String x:Key="artist">Artist</system:String>
   <system:String x:Key="album">Album</system:String>
   <system:String x:Key="genre">Genre</system:String>

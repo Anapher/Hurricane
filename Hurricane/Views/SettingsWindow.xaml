@@ -20,7 +20,7 @@
         </Grid.RowDefinitions>
         <ListBox x:Name="lst" SelectedIndex="{Binding SelectedTab}">
             <ListBoxItem Content="{DynamicResource playback}"/>
-            <ListBoxItem Content="Aussehen"/>
+            <ListBoxItem Content="{DynamicResource appearance}"/>
             <ListBoxItem Content="{DynamicResource language}"/>
         </ListBox>
         <TabControl Grid.Column="1" SelectedIndex="{Binding SelectedTab}">

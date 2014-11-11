@@ -13,7 +13,7 @@ using CSCore.Streams;
 
 namespace Hurricane.Music
 {
-   public class CSCore : PropertyChangedBase, IDisposable, WPFSoundVisualizationLib.ISpectrumPlayer
+   public class CSCoreEngine : PropertyChangedBase, IDisposable, WPFSoundVisualizationLib.ISpectrumPlayer
     {
         #region Commands
         private RelayCommand toggleplaypausecommand;
@@ -129,6 +129,7 @@ namespace Hurricane.Music
         }
 
         #endregion
+
         public void OpenFile(Track track)
         {
             if (CurrentTrack != null) { CurrentTrack.IsPlaying = false; CurrentTrack.Unload(); }
@@ -152,7 +153,6 @@ namespace Hurricane.Music
             
             analyser = new Visualization.SampleAnalyser(FFTSize);
             analyser.Initialize(notificationSource.WaveFormat);
-
             soundOut.Initialize(notificationSource.ToWaveSource(Settings.WaveSourceBits));
             track.Load();
             CurrentTrack = track;
@@ -214,7 +214,7 @@ namespace Hurricane.Music
         }
 
         MMNotificationClient client = new MMNotificationClient();
-        public CSCore()
+        public CSCoreEngine()
         {
             RefreshSoundOut();
             client.DefaultDeviceChanged += client_DefaultDeviceChanged;

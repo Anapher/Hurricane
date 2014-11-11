@@ -20,10 +20,10 @@ namespace Hurricane.Views
     /// </summary>
     public partial class EqualizerWindow : Window
     {
-        Music.CSCore cscore;
+        Music.CSCoreEngine cscore;
         double WindowLeft;
 
-        public EqualizerWindow(Music.CSCore cscore, double left, double top)
+        public EqualizerWindow(Music.CSCoreEngine cscore, double left, double top)
         {
             InitializeComponent();
             this.cscore = cscore;

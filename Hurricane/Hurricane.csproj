@@ -204,9 +204,9 @@
     <Compile Include="Utilities\HookManager\HookManager.Structures.cs" />
     <Compile Include="Utilities\HookManager\HookManager.Windows.cs" />
     <Compile Include="Utilities\HookManager\MouseEventExtArgs.cs" />
-    <Compile Include="Music\CSCore.cs" />
+    <Compile Include="Music\CSCoreEngine.cs" />
     <Compile Include="Music\EventArgs\TrackChangedEventArgs.cs" />
-    <Compile Include="Music\MusicEngine.cs" />
+    <Compile Include="Music\MusicManager.cs" />
     <Compile Include="Music\Playlist.cs" />
     <Compile Include="Music\Track.cs" />
     <Compile Include="Music\Visualization\SampleAnalyser.cs" />

@@ -34,7 +34,7 @@ namespace Hurricane.ViewModels
         {
             this.BaseWindow = window;
             Config = Utilities.ObjectCopier.Clone<Settings.ConfigSettings>(Settings.HurricaneSettings.Instance.Config);
-            AudioDevices = Music.CSCore.GetAudioDevices();
+            AudioDevices = Music.CSCoreEngine.GetAudioDevices();
             SelectedAudioDevice = AudioDevices.Where((x) => x.ID == Config.SoundOutDeviceID).FirstOrDefault();
             if (SelectedAudioDevice == null) SelectedAudioDevice = AudioDevices.Where((x) => x.IsDefault).First();
             CurrentLanguage = Config.Languages.First((x) => x.Code == Config.Language);
@@ -42,7 +42,7 @@ namespace Hurricane.ViewModels
             OnPropertyChanged("CanApply");
         }
 
-        public Music.MusicEngine MusicEngine { get; set; }
+        public Music.MusicManager MusicManager { get; set; }
 
         public void StateChanged()
         {
@@ -60,10 +60,11 @@ namespace Hurricane.ViewModels
                     {
                         Settings.ConfigSettings original = Settings.HurricaneSettings.Instance.Config;
                         Settings.HurricaneSettings.Instance.Config = Config;
-                        if (Config.SoundOutDeviceID != original.SoundOutDeviceID) { MusicEngine.CSCoreEngine.UpdateSoundOut(); }
+                        if (Config.SoundOutDeviceID != original.SoundOutDeviceID) { MusicManager.CSCoreEngine.UpdateSoundOut(); }
                         if (original.Language != Config.Language) { Config.LoadLanguage(); }
                         Config = Utilities.ObjectCopier.Clone<Settings.ConfigSettings>(Settings.HurricaneSettings.Instance.Config);
                         OnPropertyChanged("CanApply");
+                        CurrentLanguage = Config.Languages.First((x) => x.Code == Config.Language);
                     });
                 return applychanges;
             }
@@ -108,8 +109,8 @@ namespace Hurricane.ViewModels
             }
         }
         
-        private List<Music.CSCore.AudioDevice> audiodevices;
-        public List<Music.CSCore.AudioDevice> AudioDevices
+        private List<Music.CSCoreEngine.AudioDevice> audiodevices;
+        public List<Music.CSCoreEngine.AudioDevice> AudioDevices
         {
             get { return audiodevices; }
             set
@@ -120,8 +121,8 @@ namespace Hurricane.ViewModels
         }
 
         
-        private Music.CSCore.AudioDevice selectedaudiodevice;
-        public Music.CSCore.AudioDevice SelectedAudioDevice
+        private Music.CSCoreEngine.AudioDevice selectedaudiodevice;
+        public Music.CSCoreEngine.AudioDevice SelectedAudioDevice
         {
             get { return selectedaudiodevice; }
             set

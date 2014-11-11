@@ -55,7 +55,7 @@ namespace Hurricane
                 viewmodel.StartVisualization += CSCoreEngine_StartVisualization;
                 viewmodel.TrackChanged += CSCoreEngine_TrackChanged;
                 viewmodel.Loaded(this);
-                viewmodel.MusicEngine.CSCoreEngine.PlayStateChanged += (s, ec) => { thumbnailButtonPlayPause.Icon = viewmodel.MusicEngine.CSCoreEngine.CurrentState == CSCore.SoundOut.PlaybackState.Playing ? Utilities.ImageHelper.GetIconFromResource("/Resources/MediaIcons/ThumbButtons/pause.ico") : Utilities.ImageHelper.GetIconFromResource("/Resources/MediaIcons/ThumbButtons/play.ico"); };
+                viewmodel.MusicManager.CSCoreEngine.PlayStateChanged += (s, ec) => { thumbnailButtonPlayPause.Icon = viewmodel.MusicManager.CSCoreEngine.CurrentState == CSCore.SoundOut.PlaybackState.Playing ? Utilities.ImageHelper.GetIconFromResource("/Resources/MediaIcons/ThumbButtons/pause.ico") : Utilities.ImageHelper.GetIconFromResource("/Resources/MediaIcons/ThumbButtons/play.ico"); };
             }
             catch (Exception ex)
             {
@@ -75,7 +75,7 @@ namespace Hurricane
             customPreview.DisplayFrameAroundBitmap = true;
             customPreview.TabbedThumbnailBitmapRequested += (s, ec) =>
             {
-                Music.CSCore cscore = ViewModels.MainViewModel.Instance.MusicEngine.CSCoreEngine;
+                Music.CSCoreEngine cscore = ViewModels.MainViewModel.Instance.MusicManager.CSCoreEngine;
                 if (cscore.CurrentTrack != null && cscore.CurrentTrack.Image != null)
                 {
                     var img = cscore.CurrentTrack.Image;
@@ -94,13 +94,13 @@ namespace Hurricane
             };
 
             ThumbnailToolBarButton thumbnailButtonBack = new ThumbnailToolBarButton(Utilities.ImageHelper.GetIconFromResource("/Resources/MediaIcons/ThumbButtons/backward.ico"), Application.Current.FindResource("previoustrack").ToString());
-            thumbnailButtonBack.Click += (s, e) => { ViewModels.MainViewModel.Instance.MusicEngine.GoBackward(); };
+            thumbnailButtonBack.Click += (s, e) => { ViewModels.MainViewModel.Instance.MusicManager.GoBackward(); };
 
             thumbnailButtonPlayPause = new ThumbnailToolBarButton(Utilities.ImageHelper.GetIconFromResource("/Resources/MediaIcons/ThumbButtons/play.ico"), "Play / Pause");
-            thumbnailButtonPlayPause.Click += (s, e) => { ViewModels.MainViewModel.Instance.MusicEngine.CSCoreEngine.TogglePlayPause(); };
+            thumbnailButtonPlayPause.Click += (s, e) => { ViewModels.MainViewModel.Instance.MusicManager.CSCoreEngine.TogglePlayPause(); };
 
             ThumbnailToolBarButton thumbnailButtonNext = new ThumbnailToolBarButton(Utilities.ImageHelper.GetIconFromResource("/Resources/MediaIcons/ThumbButtons/forward.ico"), Application.Current.FindResource("nexttrack").ToString());
-            thumbnailButtonNext.Click += (s, e) => { ViewModels.MainViewModel.Instance.MusicEngine.GoForward(); };
+            thumbnailButtonNext.Click += (s, e) => { ViewModels.MainViewModel.Instance.MusicManager.GoForward(); };
 
             TaskbarManager.Instance.ThumbnailToolBars.AddButtons(handle, thumbnailButtonBack, thumbnailButtonPlayPause, thumbnailButtonNext);
         }
@@ -116,7 +116,7 @@ namespace Hurricane
 
         void CSCoreEngine_StartVisualization(object sender, EventArgs e)
         {
-            SpectrumAnalyzer.RegisterSoundPlayer(ViewModels.MainViewModel.Instance.MusicEngine.CSCoreEngine);
+            SpectrumAnalyzer.RegisterSoundPlayer(ViewModels.MainViewModel.Instance.MusicManager.CSCoreEngine);
         }
 
         void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)

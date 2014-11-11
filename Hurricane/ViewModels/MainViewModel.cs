@@ -38,10 +38,10 @@ namespace Hurricane.ViewModels
             MySettings = Settings.HurricaneSettings.Instance;
             MySettings.Load();
 
-            MusicEngine = new Music.MusicEngine();
-            MusicEngine.CSCoreEngine.StartVisualization += CSCoreEngine_StartVisualization;
-            MusicEngine.CSCoreEngine.TrackChanged += CSCoreEngine_TrackChanged;
-            MusicEngine.LoadFromSettings();
+            MusicManager = new Music.MusicManager();
+            MusicManager.CSCoreEngine.StartVisualization += CSCoreEngine_StartVisualization;
+            MusicManager.CSCoreEngine.TrackChanged += CSCoreEngine_TrackChanged;
+            MusicManager.LoadFromSettings();
             BaseWindow.LocationChanged += (s, e) => {
                 if (EqualizerIsOpen) {
                     var rect = Utilities.WindowHelper.GetWindowRectangle(BaseWindow);
@@ -72,13 +72,13 @@ namespace Hurricane.ViewModels
             switch (args.Key)
             {
                 case System.Windows.Input.Key.MediaPlayPause:
-                    Application.Current.Dispatcher.Invoke(() => MusicEngine.CSCoreEngine.TogglePlayPause());
+                    Application.Current.Dispatcher.Invoke(() => MusicManager.CSCoreEngine.TogglePlayPause());
                     break;
                 case System.Windows.Input.Key.MediaPreviousTrack:
-                    Application.Current.Dispatcher.Invoke(() => MusicEngine.GoBackward());
+                    Application.Current.Dispatcher.Invoke(() => MusicManager.GoBackward());
                     break;
                 case System.Windows.Input.Key.MediaNextTrack:
-                    Application.Current.Dispatcher.Invoke(() => MusicEngine.GoForward());
+                    Application.Current.Dispatcher.Invoke(() => MusicManager.GoForward());
                     break;
             }
         }
@@ -151,10 +151,10 @@ namespace Hurricane.ViewModels
                         if (window.ShowDialog() == true)
                         {
                             Music.Playlist newplaylist = new Music.Playlist() { Name = window.PlaylistName };
-                            MusicEngine.Playlists.Add(newplaylist);
-                            MusicEngine.RegisterPlaylist(newplaylist);
-                            MusicEngine.SelectedPlaylist = newplaylist;
-                            MusicEngine.SaveToSettings();
+                            MusicManager.Playlists.Add(newplaylist);
+                            MusicManager.RegisterPlaylist(newplaylist);
+                            MusicManager.SelectedPlaylist = newplaylist;
+                            MusicManager.SaveToSettings();
                             MySettings.Save();
                         }
                     });
@@ -170,9 +170,9 @@ namespace Hurricane.ViewModels
                 if (removeselectedtracks == null)
                     removeselectedtracks = new RelayCommand((object parameter) => {
                         List<Music.Track> tracks = new List<Music.Track>();
-                        foreach (Music.Track t in MusicEngine.SelectedPlaylist.Tracks)
+                        foreach (Music.Track t in MusicManager.SelectedPlaylist.Tracks)
                         {
-                            if (t.IsSelected == true && MusicEngine.SelectedPlaylist.Tracks.Contains(t))
+                            if (t.IsSelected == true && MusicManager.SelectedPlaylist.Tracks.Contains(t))
                             {
                                 if (t.IsPlaying)
                                 {
@@ -188,7 +188,7 @@ namespace Hurricane.ViewModels
                         {
                             foreach (Music.Track t in tracks)
                             {
-                                MusicEngine.SelectedPlaylist.Tracks.Remove(t);
+                                MusicManager.SelectedPlaylist.Tracks.Remove(t);
                             }
                         }
                     });
@@ -202,7 +202,7 @@ namespace Hurricane.ViewModels
             get
             {
                 if (opensettings == null)
-                    opensettings = new RelayCommand((object parameter) => { Views.SettingsWindow window = new Views.SettingsWindow() { Owner = BaseWindow }; SettingsViewModel.Instance.MusicEngine = this.MusicEngine; window.ShowDialog(); });
+                    opensettings = new RelayCommand((object parameter) => { Views.SettingsWindow window = new Views.SettingsWindow() { Owner = BaseWindow }; SettingsViewModel.Instance.MusicManager = this.MusicManager; window.ShowDialog(); });
                 return opensettings;
             }
         }
@@ -214,24 +214,24 @@ namespace Hurricane.ViewModels
             {
                 if (removeplaylist == null)
                     removeplaylist = new RelayCommand((object parameter) => {
-                        if (MusicEngine.Playlists.Count == 1)
+                        if (MusicManager.Playlists.Count == 1)
                         {
                             Views.MessageWindow message = new Views.MessageWindow("errorcantdeleteplaylist", "error", false, true);
                             message.Owner = BaseWindow;
                             message.ShowDialog();
                             return;
                         }
-                        Views.MessageWindow window = new Views.MessageWindow(string.Format(Application.Current.FindResource("reallydeleteplaylist").ToString(), MusicEngine.SelectedPlaylist.Name), Application.Current.FindResource("removeplaylist").ToString(), true);
+                        Views.MessageWindow window = new Views.MessageWindow(string.Format(Application.Current.FindResource("reallydeleteplaylist").ToString(), MusicManager.SelectedPlaylist.Name), Application.Current.FindResource("removeplaylist").ToString(), true);
                         window.Owner = BaseWindow;
                         if (window.ShowDialog() == true)
                         {
-                            Music.Playlist PlaylistToDelete = MusicEngine.SelectedPlaylist;
-                            Music.Playlist NewPlaylist = MusicEngine.Playlists[0];
-                            if (MusicEngine.CurrentPlaylist == PlaylistToDelete)
-                                MusicEngine.CSCoreEngine.StopPlayback();
-                            MusicEngine.CurrentPlaylist = NewPlaylist;
-                            MusicEngine.Playlists.Remove(PlaylistToDelete);
-                            MusicEngine.SelectedPlaylist = NewPlaylist;
+                            Music.Playlist PlaylistToDelete = MusicManager.SelectedPlaylist;
+                            Music.Playlist NewPlaylist = MusicManager.Playlists[0];
+                            if (MusicManager.CurrentPlaylist == PlaylistToDelete)
+                                MusicManager.CSCoreEngine.StopPlayback();
+                            MusicManager.CurrentPlaylist = NewPlaylist;
+                            MusicManager.Playlists.Remove(PlaylistToDelete);
+                            MusicManager.SelectedPlaylist = NewPlaylist;
                         }
                     });
                 return removeplaylist;
@@ -245,9 +245,9 @@ namespace Hurricane.ViewModels
             {
                 if (renameplaylist == null)
                     renameplaylist = new RelayCommand((object parameter) => {
-                        Views.CreateNewPlaylistWindow window = new Views.CreateNewPlaylistWindow(MusicEngine.SelectedPlaylist.Name);
+                        Views.CreateNewPlaylistWindow window = new Views.CreateNewPlaylistWindow(MusicManager.SelectedPlaylist.Name);
                         window.Owner = BaseWindow;
-                        if (window.ShowDialog() == true) { MusicEngine.SelectedPlaylist.Name = window.PlaylistName; }
+                        if (window.ShowDialog() == true) { MusicManager.SelectedPlaylist.Name = window.PlaylistName; }
                     });
                 return renameplaylist;
             }
@@ -260,7 +260,7 @@ namespace Hurricane.ViewModels
             {
                 if (opentrackinformations == null)
                     opentrackinformations = new RelayCommand((object parameter) => {
-                        Views.TrackInformationWindow window = new Views.TrackInformationWindow(MusicEngine.SelectedTrack);
+                        Views.TrackInformationWindow window = new Views.TrackInformationWindow(MusicManager.SelectedTrack);
                         window.Owner = BaseWindow;
                         window.ShowDialog();
                     });
@@ -276,7 +276,7 @@ namespace Hurricane.ViewModels
             Views.ProgressWindow progresswindow = new Views.ProgressWindow(Application.Current.FindResource("filesgetimported").ToString()) { Owner = BaseWindow };
             System.Threading.Thread t = new System.Threading.Thread(() =>
             {
-                MusicEngine.SelectedPlaylist.AddFiles((s, e) => { Application.Current.Dispatcher.Invoke(() => progresswindow.SetProgress(e.Percentage)); progresswindow.SetText(e.CurrentFile); progresswindow.SetTitle(string.Format(Application.Current.FindResource("filesgetimported").ToString(), e.FilesImported, e.TotalFiles)); }, true, paths); MusicEngine.SaveToSettings(); MySettings.Save(); Application.Current.Dispatcher.Invoke(() => progresswindow.Close());
+                MusicManager.SelectedPlaylist.AddFiles((s, e) => { Application.Current.Dispatcher.Invoke(() => progresswindow.SetProgress(e.Percentage)); progresswindow.SetText(e.CurrentFile); progresswindow.SetTitle(string.Format(Application.Current.FindResource("filesgetimported").ToString(), e.FilesImported, e.TotalFiles)); }, true, paths); MusicManager.SaveToSettings(); MySettings.Save(); Application.Current.Dispatcher.Invoke(() => progresswindow.Close());
             });
             t.IsBackground = true;
             t.Start();
@@ -299,11 +299,11 @@ namespace Hurricane.ViewModels
         public void Closing()
         {
             if (EqualizerIsOpen) equalizerwindow.Close();
-            if (MusicEngine != null)
+            if (MusicManager != null)
             {
-                MusicEngine.SaveToSettings();
+                MusicManager.SaveToSettings();
                 MySettings.Save();
-                MusicEngine.Dispose();
+                MusicManager.Dispose();
             }
             if (KListener != null)
                 KListener.Dispose();
@@ -325,7 +325,7 @@ namespace Hurricane.ViewModels
                         if (!EqualizerIsOpen)
                         {
                             var rect = Utilities.WindowHelper.GetWindowRectangle(BaseWindow);
-                            equalizerwindow = new Views.EqualizerWindow(MusicEngine.CSCoreEngine, rect.Left + BaseWindow.ActualWidth, rect.Top + 25);
+                            equalizerwindow = new Views.EqualizerWindow(MusicManager.CSCoreEngine, rect.Left + BaseWindow.ActualWidth, rect.Top + 25);
                             equalizerwindow.Closed += (s, e) => EqualizerIsOpen = false;
                             equalizerwindow.Show();
                             EqualizerIsOpen = true;
@@ -350,7 +350,7 @@ namespace Hurricane.ViewModels
                         Views.ProgressWindow progresswindow = new Views.ProgressWindow(Application.Current.FindResource("loadtrackinformation").ToString()) { Owner = BaseWindow };
                         System.Threading.Thread t = new System.Threading.Thread(() =>
                         {
-                            MusicEngine.SelectedPlaylist.ReloadTrackInformations((s, e) => { Application.Current.Dispatcher.Invoke(() => progresswindow.SetProgress(e.Percentage)); progresswindow.SetText(e.CurrentFile); progresswindow.SetTitle(string.Format(Application.Current.FindResource("loadtrackinformation").ToString(), e.FilesImported, e.TotalFiles)); }, true); MusicEngine.SaveToSettings(); MySettings.Save(); Application.Current.Dispatcher.Invoke(() => progresswindow.Close());
+                            MusicManager.SelectedPlaylist.ReloadTrackInformations((s, e) => { Application.Current.Dispatcher.Invoke(() => progresswindow.SetProgress(e.Percentage)); progresswindow.SetText(e.CurrentFile); progresswindow.SetTitle(string.Format(Application.Current.FindResource("loadtrackinformation").ToString(), e.FilesImported, e.TotalFiles)); }, true); MusicManager.SaveToSettings(); MySettings.Save(); Application.Current.Dispatcher.Invoke(() => progresswindow.Close());
                         });
                         t.IsBackground = true;
                         t.Start();
@@ -371,9 +371,9 @@ namespace Hurricane.ViewModels
                         message.Owner = BaseWindow;
                         if (message.ShowDialog() == true)
                         {
-                            MusicEngine.SelectedPlaylist.RemoveMissingTracks();
+                            MusicManager.SelectedPlaylist.RemoveMissingTracks();
                         }
-                        MusicEngine.SaveToSettings();
+                        MusicManager.SaveToSettings();
                         MySettings.Save();
                     });
                 return removemissingtracks;
@@ -387,13 +387,13 @@ namespace Hurricane.ViewModels
         #endregion
 
         #region Properties
-        private Music.MusicEngine musicengine;
-        public Music.MusicEngine MusicEngine
+        private Music.MusicManager musicmanager;
+        public Music.MusicManager MusicManager
         {
-            get { return musicengine; }
+            get { return musicmanager; }
             set
             {
-                SetProperty(value, ref musicengine);
+                SetProperty(value, ref musicmanager);
             }
         }
         #endregion

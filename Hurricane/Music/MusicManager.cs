@@ -8,7 +8,7 @@ using System.Collections.ObjectModel;
 
 namespace Hurricane.Music
 {
-    class MusicEngine : PropertyChangedBase, IDisposable
+    class MusicManager : PropertyChangedBase, IDisposable
     {
         #region GUIProperties
         private Track selectedtrack;
@@ -84,12 +84,12 @@ namespace Hurricane.Music
             }
         }
 
-        public CSCore CSCoreEngine { get; protected set; }
+        public CSCoreEngine CSCoreEngine { get; protected set; }
         public Notification.NotificationService Notification { get; set; }
 
-        public MusicEngine()
+        public MusicManager()
         {
-            CSCoreEngine = new CSCore();
+            CSCoreEngine = new CSCoreEngine();
             Playlists = new ObservableCollection<Playlist>();
             CSCoreEngine.TrackFinished += CSCoreEngine_TrackFinished;
             random = new Random();

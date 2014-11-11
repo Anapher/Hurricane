@@ -8,7 +8,7 @@ namespace Hurricane.Notification
 {
     class NotificationService
     {
-        public NotificationService(Music.CSCore cscore)
+        public NotificationService(Music.CSCoreEngine cscore)
         {
             cscore.TrackChanged += cscore_TrackChanged;
         }
