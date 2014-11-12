@@ -25,4 +25,4 @@ A standard music player. Hurricane is a music player for listen music while you 
  
 
 ##License
-The Minecraft Server Launcher is licensed under the [GNU GENERAL PUBLIC LICENSE](LICENSE.txt)
+Hurricane is licensed under the [GNU GENERAL PUBLIC LICENSE](LICENSE.txt)
