@@ -115,16 +115,13 @@ namespace Hurricane.ViewModels
                 if (addfoldertoplaylist == null)
                     addfoldertoplaylist = new RelayCommand((object parameter) =>
                     {
-                        Ookii.Dialogs.Wpf.VistaFolderBrowserDialog fbd = new Ookii.Dialogs.Wpf.VistaFolderBrowserDialog();
-                        fbd.RootFolder = Environment.SpecialFolder.MyMusic;
-                        fbd.ShowNewFolderButton = false;
-                        fbd.Description = System.Windows.Application.Current.FindResource("selectfolder").ToString();
-                        fbd.UseDescriptionForTitle = true;
-                        if (fbd.ShowDialog(BaseWindow) == true)
+                        Views.FolderImportWindow window = new Views.FolderImportWindow();
+                        window.Owner = BaseWindow;
+                        if (window.ShowDialog() == true)
                         {
-                            DirectoryInfo di = new DirectoryInfo(fbd.SelectedPath);
+                            DirectoryInfo di = new DirectoryInfo(window.SelectedPath);
                             List<string> filestoadd = new List<string>();
-                            foreach (FileInfo fi in di.GetFiles())
+                            foreach (FileInfo fi in di.GetFiles("*.*", window.IncludeSubfolder ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly))
                             {
                                 if (Music.Track.IsSupported(fi))
                                 {
@@ -273,7 +270,7 @@ namespace Hurricane.ViewModels
 
         void ImportFiles(string[] paths)
         {
-            Views.ProgressWindow progresswindow = new Views.ProgressWindow(Application.Current.FindResource("filesgetimported").ToString()) { Owner = BaseWindow };
+            Views.ProgressWindow progresswindow = new Views.ProgressWindow(Application.Current.FindResource("filesgetimported").ToString(), false) { Owner = BaseWindow };
             System.Threading.Thread t = new System.Threading.Thread(() =>
             {
                 MusicManager.SelectedPlaylist.AddFiles((s, e) => { Application.Current.Dispatcher.Invoke(() => progresswindow.SetProgress(e.Percentage)); progresswindow.SetText(e.CurrentFile); progresswindow.SetTitle(string.Format(Application.Current.FindResource("filesgetimported").ToString(), e.FilesImported, e.TotalFiles)); }, true, paths); MusicManager.SaveToSettings(); MySettings.Save(); Application.Current.Dispatcher.Invoke(() => progresswindow.Close());
@@ -347,7 +344,7 @@ namespace Hurricane.ViewModels
                 if (reloadtrackinformations == null)
                     reloadtrackinformations = new RelayCommand((object parameter) => {
 
-                        Views.ProgressWindow progresswindow = new Views.ProgressWindow(Application.Current.FindResource("loadtrackinformation").ToString()) { Owner = BaseWindow };
+                        Views.ProgressWindow progresswindow = new Views.ProgressWindow(Application.Current.FindResource("loadtrackinformation").ToString(), false) { Owner = BaseWindow };
                         System.Threading.Thread t = new System.Threading.Thread(() =>
                         {
                             MusicManager.SelectedPlaylist.ReloadTrackInformations((s, e) => { Application.Current.Dispatcher.Invoke(() => progresswindow.SetProgress(e.Percentage)); progresswindow.SetText(e.CurrentFile); progresswindow.SetTitle(string.Format(Application.Current.FindResource("loadtrackinformation").ToString(), e.FilesImported, e.TotalFiles)); }, true); MusicManager.SaveToSettings(); MySettings.Save(); Application.Current.Dispatcher.Invoke(() => progresswindow.Close());
@@ -367,8 +364,7 @@ namespace Hurricane.ViewModels
             {
                 if (removemissingtracks == null)
                     removemissingtracks = new RelayCommand((object parameter) => {
-                        Views.MessageWindow message = new Views.MessageWindow("suredeleteallmissingtracks", "removemissingtracks", true, true);
-                        message.Owner = BaseWindow;
+                        Views.MessageWindow message = new Views.MessageWindow("suredeleteallmissingtracks", "removemissingtracks", true, true) { Owner = BaseWindow};
                         if (message.ShowDialog() == true)
                         {
                             MusicManager.SelectedPlaylist.RemoveMissingTracks();
@@ -377,6 +373,38 @@ namespace Hurricane.ViewModels
                         MySettings.Save();
                     });
                 return removemissingtracks;
+            }
+        }
+
+        private RelayCommand removeduplicatetracks;
+        public RelayCommand RemoveDuplicateTracks
+        {
+            get
+            {
+                if (removeduplicatetracks == null)
+                    removeduplicatetracks = new RelayCommand((object parameter) => {
+                        Views.MessageWindow message = new Views.MessageWindow("removeduplicatetracksmessage", "removeduplicates", true, true);
+                        message.Owner = this.BaseWindow;
+                        if (message.ShowDialog() == true)
+                        {
+                            Views.ProgressWindow progresswindow = new Views.ProgressWindow(Application.Current.FindResource("removeduplicates").ToString(), true) { Owner = BaseWindow};
+                            progresswindow.SetText(Application.Current.FindResource("searchingforduplicates").ToString());
+                            
+                            System.Threading.Thread t = new System.Threading.Thread(() => {
+                                var counter = MusicManager.SelectedPlaylist.RemoveDuplicates();
+                                Application.Current.Dispatcher.Invoke(() =>
+                                {
+                                    progresswindow.Close();
+                                    Views.MessageWindow successmessage = new Views.MessageWindow(counter == 0 ? Application.Current.FindResource("noduplicatesmessage").ToString() : string.Format(Application.Current.FindResource("tracksremoved").ToString(), counter), Application.Current.FindResource("removeduplicates").ToString(), false) { Owner = BaseWindow };
+                                    successmessage.ShowDialog();
+                                });
+                            });
+                            t.IsBackground = true;
+                            t.Start();
+                            progresswindow.Show();
+                        }
+                    });
+                return removeduplicatetracks;
             }
         }
 

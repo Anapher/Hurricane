@@ -40,7 +40,7 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <Menu>
-                <MenuItem Header="Vorlagen">
+                <MenuItem Header="{DynamicResource presets}">
                     <MenuItem Header="{DynamicResource bass}" Command="{Binding MusicManager.CSCoreEngine.EqualizerSettings.LoadPresetBass}"/>
                     <MenuItem Header="{DynamicResource bassexteme}" Command="{Binding MusicManager.CSCoreEngine.EqualizerSettings.LoadPresetBassExteme}"/>
                     <MenuItem Header="{DynamicResource bassandheights}" Command="{Binding MusicManager.CSCoreEngine.EqualizerSettings.LoadPresetBassAndHeights}"/>

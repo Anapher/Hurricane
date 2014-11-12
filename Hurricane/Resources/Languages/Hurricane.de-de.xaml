@@ -23,7 +23,10 @@
     <system:String x:Key="selectfiles">Dateien auswählen</system:String>
     <system:String x:Key="selectfolder">Ordner auswählen</system:String>
     <system:String x:Key="removeplaylist">Wiedergabeliste entfernen</system:String>
-    
+    <system:String x:Key="removetrack">Tracks entfernen</system:String>
+    <system:String x:Key="removeduplicates">Doppelte Tracks entfernen</system:String>
+
+    <system:String x:Key="presets">Vorlagen</system:String>
     <system:String x:Key="bass">Bass</system:String>
     <system:String x:Key="bassexteme">Bass extrem</system:String>
     <system:String x:Key="bassandheights">Bass und Höhen</system:String>
@@ -44,7 +47,11 @@
     <system:String x:Key="errorcantdeleteplaylist">Die Wiedergabeliste kann nicht entfernt werde, weil sie die einzige ist</system:String>
     <system:String x:Key="renameplaylist">Wiedergabeliste umbenennen</system:String>
     <system:String x:Key="rename">Umbenennen</system:String>
-    
+    <system:String x:Key="removeduplicatetracksmessage">Sind Sie sicher, dass sie alle doppelten Tracks entfernen möchten?</system:String>
+    <system:String x:Key="tracksremoved">Es wurden erfolgreich {0} Tracks entfernt.</system:String>
+    <system:String x:Key="noduplicatesmessage">Es wurden keine doppelten Tracks gefunden.</system:String>
+    <system:String x:Key="searchingforduplicates">Suche doppelte Tracks...</system:String>
+
     <system:String x:Key="settings">Einstellungen</system:String>
     <system:String x:Key="about">Über</system:String>
     <system:String x:Key="close">Schließen</system:String>
@@ -91,4 +98,7 @@
     <system:String x:Key="removemissingtracks">Fehlende Tracks entfernen</system:String>
     <system:String x:Key="loadtrackinformation">Lade ({0} von {1})</system:String>
     <system:String x:Key="suredeleteallmissingtracks">Sind Sie sicher, dass sie alle fehlenden Tracks aus der Wiedergabeliste entfernen wollen?</system:String>
+
+    <system:String x:Key="includesubfolder">Unterordner einschließen</system:String>
+    <system:String x:Key="add">Hinzufügen</system:String>
 </ResourceDictionary>

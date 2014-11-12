@@ -104,6 +104,7 @@
     <Compile Include="Music\EventArgs\EqualizerChangedEventArgs.cs" />
     <Compile Include="Music\Equalizer\EqualizerSettings.cs" />
     <Compile Include="Music\EventArgs\TrackImportProgressChanged.cs" />
+    <Compile Include="Music\TrackComparer.cs" />
     <Compile Include="Notification\NotificationService.cs" />
     <Compile Include="Notification\Views\NotificationRightBottomWindow.xaml.cs">
       <DependentUpon>NotificationRightBottomWindow.xaml</DependentUpon>
@@ -118,6 +119,7 @@
     <Compile Include="Settings\LanguageInfo.cs" />
     <Compile Include="Settings\PlaylistSettings.cs" />
     <Compile Include="Settings\SettingsBase.cs" />
+    <Compile Include="Utilities\GeneralHelper.cs" />
     <Compile Include="Utilities\Keyboard.cs" />
     <Compile Include="Utilities\ObjectCopier.cs" />
     <Compile Include="Utilities\WindowHelper.cs" />
@@ -127,6 +129,9 @@
     </Compile>
     <Compile Include="Views\EqualizerWindow.xaml.cs">
       <DependentUpon>EqualizerWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\FolderImportWindow.xaml.cs">
+      <DependentUpon>FolderImportWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\MessageWindow.xaml.cs">
       <DependentUpon>MessageWindow.xaml</DependentUpon>
@@ -177,6 +182,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\EqualizerWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\FolderImportWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -377,6 +386,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\GUI\remove.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\GUI\add.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

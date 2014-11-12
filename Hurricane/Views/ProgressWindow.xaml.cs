@@ -19,10 +19,11 @@ namespace Hurricane.Views
     /// </summary>
     public partial class ProgressWindow : MahApps.Metro.Controls.MetroWindow
     {
-        public ProgressWindow(string title)
+        public ProgressWindow(string title, bool Indeterminate)
         {
             InitializeComponent();
             this.Title = title;
+            this.prg.IsIndeterminate = Indeterminate;
         }
 
         public void SetText(string text)

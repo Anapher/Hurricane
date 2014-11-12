@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
         xmlns:converter="clr-namespace:Hurricane.Extensions.Converter"
-        Title="{StaticResource fileinfos}" SizeToContent="Height" Width="600" GlowBrush="LightBlue" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" x:Name="window">
+        Title="{StaticResource fileinfos}" SizeToContent="Height" Width="600" GlowBrush="{DynamicResource AccentColorBrush}" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" x:Name="window">
     <Window.Resources>
         <converter:RoundSizeConverter x:Key="RoundSizeConverter"/>
         <converter:NeverIfDateIsNull x:Key="NeverIfDateIsNull"/>

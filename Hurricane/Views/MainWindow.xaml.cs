@@ -38,7 +38,8 @@ namespace Hurricane
             MagicArrow = new MagicArrow.MagicArrow();
             MagicArrow.Register(this);
             MagicArrow.MoveOut += (s, e) => { ViewModels.MainViewModel.Instance.MoveOut(); };
-            
+            MagicArrow.FilesDropped += (s, e) => { ViewModels.MainViewModel.Instance.DragDropFiles((string[])e.Data.GetData(DataFormats.FileDrop)); };
+
             this.Closing += MainWindow_Closing;
             this.Loaded += MainWindow_Loaded;
             dragMgr = new Resources.Styles.DragDropListView.ServiceProviders.UI.ListViewDragDropManager<Music.Track>(this.listview);
@@ -122,6 +123,7 @@ namespace Hurricane
         void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             ViewModels.MainViewModel.Instance.Closing();
+            MagicArrow.Dispose();
         }
 
         private void PART_TITLEBAR_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -146,7 +148,7 @@ namespace Hurricane
 
         private void ListView_DragEnter(object sender, DragEventArgs e)
         {
-            e.Effects = DragDropEffects.Move;
+            e.Effects = DragDropEffects.Move; //Always move because if we would check if it's a file or not, the drag & drop function for the items wouldn't work
         }
     }
 }

@@ -24,7 +24,6 @@ namespace Hurricane.ViewModels
             }
         }
 
-
         private SettingsViewModel()
         {
         }

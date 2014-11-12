@@ -5,7 +5,7 @@
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         xmlns:vm="clr-namespace:Hurricane.ViewModels"
         xmlns:settingsconverter="clr-namespace:Hurricane.Settings.Converter"
-        Title="{DynamicResource settings}" Height="400" Width="600" ResizeMode="NoResize" Topmost="True" WindowStartupLocation="CenterScreen" ShowInTaskbar="False" DataContext="{x:Static vm:SettingsViewModel.Instance}" GlowBrush="LightBlue">
+        Title="{DynamicResource settings}" Height="400" Width="600" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" ShowInTaskbar="False" DataContext="{x:Static vm:SettingsViewModel.Instance}" GlowBrush="{DynamicResource AccentColorBrush}">
     <Grid>
         <Grid.Resources>
             <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.AnimatedSingleRowTabControl.xaml" />

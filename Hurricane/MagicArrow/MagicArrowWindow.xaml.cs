@@ -21,6 +21,8 @@ namespace Hurricane.MagicArrow
     public partial class MagicArrowWindow : Window
     {
         public event EventHandler MoveVisible;
+        public event DragEventHandler FilesDropped;
+
         private bool CanClose = true;
 
         public MagicArrowWindow(int top)
@@ -52,6 +54,20 @@ namespace Hurricane.MagicArrow
                 this.BeginAnimation(Window.LeftProperty, animation);
                 e.Cancel = true;
                 CanClose = false;
+            }
+        }
+
+        private void Window_DragEnter(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+                e.Effects = DragDropEffects.Move;
+        }
+
+        private void Window_Drop(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                if (FilesDropped != null) FilesDropped(this, e);
             }
         }
     }

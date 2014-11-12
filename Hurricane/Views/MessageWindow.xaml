@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
         xmlns:ex="clr-namespace:Hurricane.Extensions"
-        Title="Message" Width="300" SizeToContent="Height" GlowBrush="LightBlue" WindowStartupLocation="CenterOwner" ResizeMode="NoResize">
+        Title="Message" Width="300" SizeToContent="Height" GlowBrush="{DynamicResource AccentColorBrush}" WindowStartupLocation="CenterOwner" ResizeMode="NoResize">
     <StackPanel Orientation="Vertical" Margin="10">
         <TextBlock Text="Hallo Welt es ist nice" x:Name="txt" TextWrapping="Wrap"/>
         <StackPanel Orientation="Horizontal" Margin="0,10,0,0" HorizontalAlignment="Center">

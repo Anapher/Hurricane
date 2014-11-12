@@ -4,7 +4,7 @@
         xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
         xmlns:converter="clr-namespace:Hurricane.Extensions.Converter"
         xmlns:ex="clr-namespace:Hurricane.Extensions"
-        Title="{DynamicResource newplaylist}" SizeToContent="Height" Width="300" GlowBrush="LightBlue" ResizeMode="NoResize" x:Name="window" WindowStartupLocation="CenterOwner" FocusManager.FocusedElement="{Binding ElementName=txt}" ShowIconOnTitleBar="False">
+        Title="{DynamicResource newplaylist}" SizeToContent="Height" Width="300" GlowBrush="{DynamicResource AccentColorBrush}" ResizeMode="NoResize" x:Name="window" WindowStartupLocation="CenterOwner" FocusManager.FocusedElement="{Binding ElementName=txt}" ShowIconOnTitleBar="False">
     <Window.Resources>
         <converter:FalseOnEmptyString x:Key="FalseOnEmptyString"/>
     </Window.Resources>

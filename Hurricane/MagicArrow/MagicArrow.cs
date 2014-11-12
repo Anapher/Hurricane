@@ -13,13 +13,14 @@ namespace Hurricane.MagicArrow
     /// <summary>
     /// A class for the arrow that is displayed when the cursor hits the right Windows border.
     /// </summary>
-   public class MagicArrow
+   public class MagicArrow : IDisposable
     {
         public Window BaseWindow { get; set; }
         public bool MovedOut { get; set; }
         public MagicArrowWindow MagicWindow { get; set; }
 
         public event EventHandler MoveOut;
+        public event DragEventHandler FilesDropped;
 
         void Application_Deactivated(object sender, EventArgs e)
         {
@@ -133,6 +134,7 @@ namespace Hurricane.MagicArrow
                 MoveWindowBackInScreen();
             };
             MagicWindow.Show();
+            MagicWindow.FilesDropped += (s, e) => { if (this.FilesDropped != null) this.FilesDropped(this, e); };
         }
 
         protected void HideMagicArrow()
@@ -181,6 +183,11 @@ namespace Hurricane.MagicArrow
             Application.Current.Deactivated -= Application_Deactivated;
             this.BaseWindow = null;
             //window.Activated -= window_Activated;
+        }
+
+        public void Dispose()
+        {
+            this.StopMagic();
         }
     }
 }

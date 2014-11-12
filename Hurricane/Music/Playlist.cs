@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Collections.ObjectModel;
 using System.Windows.Data;
 using System.IO;
+using Hurricane.Utilities;
 
 namespace Hurricane.Music
 {
@@ -107,6 +108,22 @@ namespace Hurricane.Music
                 if (!t.TrackExists) this.Tracks.Remove(t);
             }
             OnPropertyChanged("ContainsMissingTracks");
+        }
+
+        /// <summary>
+        /// Removes all duplicated tracks
+        /// </summary>
+        /// <returns>Returns the number of the removed tracks</returns>
+        public int RemoveDuplicates(bool FromAnotherThread = false)
+        {
+            int counter = this.Tracks.Count;
+            IEnumerable<Track> noduplicates = this.Tracks.Distinct(new TrackComparer());
+            if (noduplicates.Any() && noduplicates.Count() != this.Tracks.Count)
+            {
+                this.Tracks = new ObservableCollection<Track>(noduplicates);
+                if (FromAnotherThread) { System.Windows.Application.Current.Dispatcher.Invoke(() => ViewSource = (CollectionView)CollectionViewSource.GetDefaultView(Tracks)); } else { ViewSource = (CollectionView)CollectionViewSource.GetDefaultView(Tracks); };
+            }
+            return counter - noduplicates.Count();
         }
     }
 }
