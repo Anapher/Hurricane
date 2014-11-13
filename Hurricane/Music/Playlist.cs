@@ -120,8 +120,7 @@ namespace Hurricane.Music
             IEnumerable<Track> noduplicates = this.Tracks.Distinct(new TrackComparer());
             if (noduplicates.Any() && noduplicates.Count() != this.Tracks.Count)
             {
-                this.Tracks = new ObservableCollection<Track>(noduplicates);
-                if (FromAnotherThread) { System.Windows.Application.Current.Dispatcher.Invoke(() => ViewSource = (CollectionView)CollectionViewSource.GetDefaultView(Tracks)); } else { ViewSource = (CollectionView)CollectionViewSource.GetDefaultView(Tracks); };
+                if (FromAnotherThread) { System.Windows.Application.Current.Dispatcher.Invoke(() => { this.Tracks = new ObservableCollection<Track>(noduplicates); ViewSource = (CollectionView)CollectionViewSource.GetDefaultView(Tracks); }); } else { this.Tracks = new ObservableCollection<Track>(noduplicates); ViewSource = (CollectionView)CollectionViewSource.GetDefaultView(Tracks); };
             }
             return counter - noduplicates.Count();
         }

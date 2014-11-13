@@ -391,7 +391,7 @@ namespace Hurricane.ViewModels
                             progresswindow.SetText(Application.Current.FindResource("searchingforduplicates").ToString());
                             
                             System.Threading.Thread t = new System.Threading.Thread(() => {
-                                var counter = MusicManager.SelectedPlaylist.RemoveDuplicates();
+                                var counter = MusicManager.SelectedPlaylist.RemoveDuplicates(true);
                                 Application.Current.Dispatcher.Invoke(() =>
                                 {
                                     progresswindow.Close();
