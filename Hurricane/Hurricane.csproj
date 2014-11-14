@@ -89,7 +89,7 @@
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="WPFSoundVisualizationLib">
-      <HintPath>..\..\Libraries\WPFSoundVisualizationLib.dll</HintPath>
+      <HintPath>..\Libraries\WPFSoundVisualizationLib.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
