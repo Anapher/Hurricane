@@ -69,8 +69,10 @@ namespace Hurricane.Music
             get { return currenttrack; }
             protected set
             {
-                SetProperty(value, ref currenttrack);
-                if (TrackChanged != null) TrackChanged(this, new TrackChangedEventArgs(value));
+                if (SetProperty(value, ref currenttrack))
+                {
+                    if (TrackChanged != null && currenttrack != null) TrackChanged(this, new TrackChangedEventArgs(value));
+                }
             }
         }
 
@@ -273,11 +275,11 @@ namespace Hurricane.Music
             long position = this.Position;
             bool isplaying = this.IsPlaying;
             StopPlayback();
-            soundOut.Dispose();
+            if (soundOut != null) soundOut.Dispose();
             RefreshSoundOut();
             Track currenttrack = CurrentTrack;
             CurrentTrack = null;
-            OpenFile(currenttrack);
+            if (currenttrack != null) OpenFile(currenttrack);
             this.Position = position;
             if (isplaying) TogglePlayPause();
         }
