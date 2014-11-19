@@ -12,19 +12,19 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace Hurricane.Views
+namespace Hurricane.MagicArrow.DockManager
 {
     /// <summary>
-    /// Interaction logic for TrackInformationWindow.xaml
+    /// Interaction logic for DockRangeWindow.xaml
     /// </summary>
-    public partial class TrackInformationWindow : MahApps.Metro.Controls.MetroWindow
+    public partial class DockRangeWindow : Window
     {
-        public TrackInformationWindow(Music.Track track)
+        public DockRangeWindow(double left,double height)
         {
-            this.CurrentTrack = track;
             InitializeComponent();
+            this.Top = 0;
+            this.Height = height;
+            this.Left = left;
         }
-
-        public Music.Track CurrentTrack { get; set; }
     }
 }

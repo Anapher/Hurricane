@@ -16,7 +16,7 @@ using System.Windows.Shapes;
 namespace Hurricane.MagicArrow
 {
     /// <summary>
-    /// Interaktionslogik für MagicArrowWindow.xaml
+    /// Interaction logic for MagicArrowWindow.xaml
     /// </summary>
     public partial class MagicArrowWindow : Window
     {
@@ -24,12 +24,26 @@ namespace Hurricane.MagicArrow
         public event DragEventHandler FilesDropped;
 
         private bool CanClose = true;
-
-        public MagicArrowWindow(int top)
+        private Side currentside;
+        public MagicArrowWindow(int top, double fromleft, double toleft, Side side)
         {
+            this.FromLeft = fromleft;
+            this.ToLeft = toleft;
             InitializeComponent();
             this.Top = top - this.Height / 2;
+            this.Left = toleft;
+            if (side == Side.Right)
+            {
+                img.RenderTransformOrigin = new Point(0.5, 0.5);
+                ScaleTransform flipTrans = new ScaleTransform();
+                flipTrans.ScaleX = -1;
+                img.RenderTransform = flipTrans;
+            }
+            currentside = side;
         }
+
+        public double FromLeft { get; set; }
+        public double ToLeft { get; set; }
 
         private void Window_MouseDown(object sender, MouseButtonEventArgs e)
         {
@@ -50,7 +64,7 @@ namespace Hurricane.MagicArrow
             base.OnClosing(e);
             if (CanClose)
             {
-                DoubleAnimation animation = new DoubleAnimation(-12, TimeSpan.FromMilliseconds(400));
+                DoubleAnimation animation = new DoubleAnimation(FromLeft, TimeSpan.FromMilliseconds(400));
                 this.BeginAnimation(Window.LeftProperty, animation);
                 e.Cancel = true;
                 CanClose = false;

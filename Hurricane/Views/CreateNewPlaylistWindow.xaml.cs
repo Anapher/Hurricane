@@ -15,7 +15,7 @@ using System.Windows.Shapes;
 namespace Hurricane.Views
 {
     /// <summary>
-    /// Interaktionslogik für CreateNewPlaylistWindow.xaml
+    /// Interaction logic for CreateNewPlaylistWindow.xaml
     /// </summary>
     public partial class CreateNewPlaylistWindow : MahApps.Metro.Controls.MetroWindow, System.ComponentModel.INotifyPropertyChanged
     {

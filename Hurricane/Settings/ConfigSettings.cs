@@ -35,6 +35,7 @@ namespace Hurricane.Settings
         //Magic Arrow
         public bool DisableMagicArrowInGame { get; set; }
         public bool ShowMagicArrowBelowCursor { get; set; }
+        public MagicArrow.DockManager.DockingApplicationState ApplicationState { get; set; }
 
         //General
         public string Language { get; set; }
@@ -77,6 +78,7 @@ namespace Hurricane.Settings
             SampleRate = -1;
             if (System.Threading.Thread.CurrentThread.CurrentCulture.TwoLetterISOLanguageName == "de") { this.Language = "de"; } else { this.Language = "en"; }
             Notification = Hurricane.Notification.NotificationType.Top;
+            ApplicationState = null;
         }
 
         private ResourceDictionary lastLanguage;

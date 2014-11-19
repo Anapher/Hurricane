@@ -17,7 +17,7 @@ using System.IO;
 namespace Hurricane
 {
     /// <summary>
-    /// Interaktionslogik für "App.xaml"
+    /// Interaction logic for "App.xaml"
     /// </summary>
     public partial class App : Application
     {

@@ -15,7 +15,7 @@ using System.Windows.Shapes;
 namespace Hurricane.Views
 {
     /// <summary>
-    /// Interaktionslogik für AboutWindow.xaml
+    /// Interaction logic for AboutWindow.xaml
     /// </summary>
     public partial class AboutWindow : MahApps.Metro.Controls.MetroWindow
     {

@@ -15,7 +15,7 @@ using System.Windows.Shapes;
 namespace Hurricane.Views
 {
     /// <summary>
-    /// Interaktionslogik für FolderImportWindow.xaml
+    /// Interaction logic for FolderImportWindow.xaml
     /// </summary>
     public partial class FolderImportWindow : MahApps.Metro.Controls.MetroWindow, System.ComponentModel.INotifyPropertyChanged
     {

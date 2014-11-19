@@ -15,7 +15,7 @@ using System.Windows.Shapes;
 namespace Hurricane.Views
 {
     /// <summary>
-    /// Interaktionslogik für ProgressWindow.xaml
+    /// Interaction logic for ProgressWindow.xaml
     /// </summary>
     public partial class ProgressWindow : MahApps.Metro.Controls.MetroWindow
     {

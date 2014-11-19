@@ -16,13 +16,14 @@ using Microsoft.WindowsAPICodePack.Taskbar;
 using System.Windows.Interop;
 using System.Drawing;
 using System.IO;
+using System.Runtime.InteropServices;
 
 namespace Hurricane
 {
     /// <summary>
-    /// Interaktionslogik für MainWindow.xaml
+    /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window  
+    public partial class MainWindow : MahApps.Metro.Controls.MetroWindow
     {
 
         private MagicArrow.MagicArrow MagicArrow;
@@ -31,10 +32,7 @@ namespace Hurricane
         public MainWindow()
         {
             InitializeComponent();
-            this.Left = 0;
-            this.Top = 0;
-            this.Height = System.Windows.SystemParameters.WorkArea.Height;
-
+            System.Windows.Media.MediaTimeline.DesiredFrameRateProperty.OverrideMetadata(typeof(System.Windows.Media.Animation.Timeline), new FrameworkPropertyMetadata(60));
             MagicArrow = new MagicArrow.MagicArrow();
             MagicArrow.Register(this);
             MagicArrow.MoveOut += (s, e) => { ViewModels.MainViewModel.Instance.MoveOut(); };
@@ -44,13 +42,19 @@ namespace Hurricane
             this.Loaded += MainWindow_Loaded;
             dragMgr = new Resources.Styles.DragDropListView.ServiceProviders.UI.ListViewDragDropManager<Music.Track>(this.listview);
             dragMgr.ShowDragAdorner = true;
+
+            int i = 0;
+            foreach(var s in System.Windows.Forms.Screen.AllScreens)
+                if(s.Bounds.Height > i) i = s.Bounds.Height;
+            this.MaxHeight = i;
         }
 
-        TabbedThumbnail customPreview;
         void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
             try
             {
+                Settings.HurricaneSettings.Instance.Load();
+                MagicArrow.DockManager.InitializeWindow();
                 ViewModels.MainViewModel viewmodel = ViewModels.MainViewModel.Instance;
                 LoadCustomPreview();
                 viewmodel.StartVisualization += CSCoreEngine_StartVisualization;
@@ -64,6 +68,8 @@ namespace Hurricane
             }
         }
 
+        #region Thumbnail
+        TabbedThumbnail customPreview;
         ThumbnailToolBarButton thumbnailButtonPlayPause;
         protected void LoadCustomPreview()
         {
@@ -114,7 +120,9 @@ namespace Hurricane
                 customPreview.InvalidatePreview();
             }
         }
+        #endregion
 
+        #region Controllogic
         void CSCoreEngine_StartVisualization(object sender, EventArgs e)
         {
             SpectrumAnalyzer.RegisterSoundPlayer(ViewModels.MainViewModel.Instance.MusicManager.CSCoreEngine);
@@ -122,18 +130,9 @@ namespace Hurricane
 
         void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
+            MagicArrow.DockManager.Save();
             ViewModels.MainViewModel.Instance.Closing();
             MagicArrow.Dispose();
-        }
-
-        private void PART_TITLEBAR_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            DragMove();
-        }
-
-        private void PART_CLOSE_Click(object sender, RoutedEventArgs e)
-        {
-            this.Close();
         }
 
         private void ListView_Drop(object sender, DragEventArgs e)
@@ -150,5 +149,24 @@ namespace Hurricane
         {
             e.Effects = DragDropEffects.Move; //Always move because if we would check if it's a file or not, the drag & drop function for the items wouldn't work
         }
+        #endregion
+
+        #region Windowlogic
+        private void PART_TITLEBAR_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            MagicArrow.DockManager.DragStart();
+            DragMove();
+        }
+
+        private void PART_CLOSE_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
+        }
+
+        private void PART_TITLEBAR_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            MagicArrow.DockManager.DragStop();
+        }
+        #endregion
     }
 }

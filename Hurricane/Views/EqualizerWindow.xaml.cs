@@ -16,7 +16,7 @@ using System.Windows.Media.Animation;
 namespace Hurricane.Views
 {
     /// <summary>
-    /// Interaktionslogik für EqualizerWindow.xaml
+    /// Interaction logic for EqualizerWindow.xaml
     /// </summary>
     public partial class EqualizerWindow : Window
     {

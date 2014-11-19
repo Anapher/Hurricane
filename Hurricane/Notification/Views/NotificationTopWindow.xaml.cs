@@ -16,7 +16,7 @@ using System.Windows.Media.Animation;
 namespace Hurricane.Notification.Views
 {
     /// <summary>
-    /// Interaktionslogik für NotificationTopWindow.xaml
+    /// Interaction logic for NotificationTopWindow.xaml
     /// </summary>
     public partial class NotificationTopWindow : Window
     {

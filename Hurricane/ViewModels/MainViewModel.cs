@@ -36,7 +36,6 @@ namespace Hurricane.ViewModels
         {
             this.BaseWindow = window;
             MySettings = Settings.HurricaneSettings.Instance;
-            MySettings.Load();
 
             MusicManager = new Music.MusicManager();
             MusicManager.CSCoreEngine.StartVisualization += CSCoreEngine_StartVisualization;

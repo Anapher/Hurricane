@@ -1,15 +1,16 @@
 ﻿<Window x:Class="Hurricane.MagicArrow.MagicArrowWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Height="45" Width="10" ResizeMode="NoResize" AllowsTransparency="True" Background="Transparent" WindowStartupLocation="Manual" ShowInTaskbar="False" Left="0" WindowStyle="None" MouseDown="Window_MouseDown" Topmost="True" DragEnter="Window_DragEnter" Drop="Window_Drop" AllowDrop="True">
+        Height="45" Width="10" ResizeMode="NoResize" AllowsTransparency="True" Background="Transparent" WindowStartupLocation="Manual" ShowInTaskbar="False" Left="0" WindowStyle="None" MouseDown="Window_MouseDown" Topmost="True" DragEnter="Window_DragEnter" Drop="Window_Drop" AllowDrop="True" x:Name="window">
     <Window.Triggers >
         <EventTrigger RoutedEvent="Loaded">
             <BeginStoryboard >
                 <Storyboard >
-                    <DoubleAnimation From="-10" To="0" Storyboard.TargetProperty="Left" Duration="00:00:00.05"></DoubleAnimation>
+                    <DoubleAnimation From="{Binding ElementName=window,Path=FromLeft}" To="{Binding ElementName=window,Path=ToLeft}" Storyboard.TargetProperty="Left" Duration="00:00:00.05"></DoubleAnimation>
                 </Storyboard>
             </BeginStoryboard>
         </EventTrigger>
     </Window.Triggers>
-    <Image Source="/Resources/MagicArrow/MagicArrow.png" Height="45" Width="10"/>
+
+    <Image Source="/Resources/MagicArrow/MagicArrow.png" Height="45" Width="10" x:Name="img"/>
 </Window>

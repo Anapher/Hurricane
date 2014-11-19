@@ -16,7 +16,7 @@ using System.Windows.Shapes;
 namespace Hurricane.Notification.Views
 {
     /// <summary>
-    /// Interaktionslogik für NotificationRightBottomWindow.xaml
+    /// Interaction logic for NotificationRightBottomWindow.xaml
     /// </summary>
     public partial class NotificationRightBottomWindow : Window
     {

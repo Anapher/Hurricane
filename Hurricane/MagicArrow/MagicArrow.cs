@@ -7,13 +7,14 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Interop;
 using System.Windows.Media.Animation;
+using Hurricane.MagicArrow.DockManager;
 
 namespace Hurricane.MagicArrow
 {
     /// <summary>
     /// A class for the arrow that is displayed when the cursor hits the right Windows border.
     /// </summary>
-   public class MagicArrow : IDisposable
+    public class MagicArrow : IDisposable
     {
         public Window BaseWindow { get; set; }
         public bool MovedOut { get; set; }
@@ -22,103 +23,111 @@ namespace Hurricane.MagicArrow
         public event EventHandler MoveOut;
         public event DragEventHandler FilesDropped;
 
+        #region Eventhandler
         void Application_Deactivated(object sender, EventArgs e)
         {
             System.Diagnostics.Debug.Print("Deactivated");
-            if(BaseWindow.ActualHeight == System.Windows.SystemParameters.WorkArea.Height && BaseWindow.Left == 0 && BaseWindow.Top == 0){
-                //The window is at the right site
-                MoveWindowOutOfScreen();
+            if (BaseWindow.ActualHeight == Utilities.WpfScreen.GetScreenFrom(new Point(BaseWindow.Left, 0)).WorkingArea.Height && (BaseWindow.Left == 0 || BaseWindow.Left == maxwidth -300) && BaseWindow.Top == 0)
+            {
+                //The window is at a good site
+                MoveWindowOutOfScreen(BaseWindow.Left == 0 ? Side.Left : Side.Right);
                 System.Diagnostics.Debug.Print("Move Out");
             }
         }
-
-        void window_Activated(object sender, EventArgs e)
-        {
-            if (MovedOut) { MoveWindowBackInScreen(); }
-        }
+        #endregion
 
         #region Animations
-        Storyboard MoveWindowOutOfScreenStoryboard;
-        protected void MoveWindowOutOfScreen()
+        protected Side movedoutside;
+        protected void MoveWindowOutOfScreen(Side side)
         {
             if (MoveOut != null) MoveOut(this, EventArgs.Empty);
-            if (MoveWindowOutOfScreenStoryboard == null)
-            {
-                MoveWindowOutOfScreenStoryboard = new Storyboard();
-                DoubleAnimation outanimation = new DoubleAnimation();
-                outanimation.From = 0;
-                outanimation.To = -(BaseWindow.ActualWidth + 50); //For the shadow
-                outanimation.Duration = TimeSpan.FromMilliseconds(150);
+            double newleft;
+            if (side == Side.Left) { newleft = -(BaseWindow.ActualWidth + 50); } else { newleft = maxwidth + BaseWindow.ActualWidth + 50; }
 
-                MoveWindowOutOfScreenStoryboard.Children.Add(outanimation);
-                Storyboard.SetTargetName(outanimation, BaseWindow.Name);
-                Storyboard.SetTargetProperty(outanimation, new PropertyPath(Window.LeftProperty));
-            }
+            Storyboard MoveWindowOutOfScreenStoryboard = new Storyboard();
+            DoubleAnimation outanimation = new DoubleAnimation();
+            outanimation.From = BaseWindow.Left;
+            outanimation.To = newleft;
+            outanimation.Duration = TimeSpan.FromMilliseconds(150);
+            outanimation.FillBehavior = FillBehavior.HoldEnd;
+            MoveWindowOutOfScreenStoryboard.Children.Add(outanimation);
+            Storyboard.SetTargetName(outanimation, BaseWindow.Name);
+            Storyboard.SetTargetProperty(outanimation, new PropertyPath(Window.LeftProperty));
+
             MovedOut = true;
             MoveWindowOutOfScreenStoryboard.Begin(BaseWindow);
-            BaseWindow.Topmost = true;
+            //BaseWindow.Left = newleft;
             BaseWindow.ShowInTaskbar = false;
             StartMagic();
+            movedoutside = side;
         }
 
-        Storyboard MoveWindowBackInScreenStoryboard;
+        
         protected void MoveWindowBackInScreen()
         {
-            if (MoveWindowBackInScreenStoryboard == null)
-            {
-                MoveWindowBackInScreenStoryboard = new Storyboard();
-                DoubleAnimation inanimation = new DoubleAnimation();
-                inanimation.From = BaseWindow.Left;
-                inanimation.To = 0;
-                inanimation.Duration = TimeSpan.FromMilliseconds(150);
+            double newleft;
+            if (movedoutside == Side.Left) { newleft = 0; } else { newleft = maxwidth - BaseWindow.Width; }
+            Storyboard MoveWindowBackInScreenStoryboard = new Storyboard();
+            DoubleAnimation inanimation = new DoubleAnimation();
+            inanimation.From = BaseWindow.Left;
+            inanimation.To = newleft;
+            inanimation.FillBehavior = FillBehavior.Stop;
+            inanimation.Duration = TimeSpan.FromMilliseconds(150);
+            inanimation.Completed += (s, e) => { BaseWindow.Topmost = false; BaseWindow.Left = newleft; };
+            MoveWindowBackInScreenStoryboard.Children.Add(inanimation);
+            Storyboard.SetTargetName(inanimation, BaseWindow.Name);
+            Storyboard.SetTargetProperty(MoveWindowBackInScreenStoryboard, new PropertyPath(Window.LeftProperty));
 
-                MoveWindowBackInScreenStoryboard.Children.Add(inanimation);
-                Storyboard.SetTargetName(inanimation, BaseWindow.Name);
-                Storyboard.SetTargetProperty(MoveWindowBackInScreenStoryboard, new PropertyPath(Window.LeftProperty));
-            }
+            System.Diagnostics.Debug.Print("Move in: {0}", newleft);
+            //BaseWindow.Left = newleft;
             MovedOut = false;
-            MoveWindowBackInScreenStoryboard.Begin(BaseWindow);
+            BaseWindow.Topmost = true;
             BaseWindow.Activate();
             BaseWindow.ShowInTaskbar = true;
+            MoveWindowBackInScreenStoryboard.Begin(BaseWindow);
             StopMagic();
-            BaseWindow.Topmost = false;
         }
         #endregion
 
-        #region MagicPower
-        protected void StartMagic()
-        {
-         Utilities.HookManager.MouseHook.HookManager.MouseMove += HookManager_MouseMove;
-        }
-
-        protected bool IsInZone;
-        void HookManager_MouseMove(object sender, System.Windows.Forms.MouseEventArgs e)
-        {
-            if (e.X < 5 && e.Y < System.Windows.SystemParameters.WorkArea.Height - 10) //That you can click on the startbutton
-            {
-                if (!IsInZone)
-                {
-                    if (Settings.HurricaneSettings.Instance.Config.DisableMagicArrowInGame && Utilities.WindowHelper.FullscreenWindowIsInForeground()) return;//Checks if there is a game in the foreground. its not so nice if you play a game and then comes a damn arrow inside your view :)
-                    IsInZone = true;
-                    ShowMagicArrow(e.Y);
-                }
-            }
-            else
-            {
-                if (IsInZone)
-                {
-                    IsInZone = false;
-                    HideMagicArrow();
-                }
-            }
-        }
-
+        #region Magic Arrow Showing
         protected void StopMagic()
         {
             Utilities.HookManager.MouseHook.HookManager.MouseMove -= HookManager_MouseMove;
         }
 
-        protected void ShowMagicArrow(int top)
+        protected void StartMagic()
+        {
+            Utilities.HookManager.MouseHook.HookManager.MouseMove += HookManager_MouseMove;
+        }
+
+        protected double maxwidth;
+        protected bool IsInZone;
+        protected bool ShowDogging = false;
+        void HookManager_MouseMove(object sender, System.Windows.Forms.MouseEventArgs e)
+        {
+            if (MovedOut)
+            {
+                if (((e.X < 5 && movedoutside == Side.Left) || (e.X > maxwidth -5 && movedoutside == Side.Right))  && e.Y < System.Windows.SystemParameters.WorkArea.Height - 10) //That you can click on the startbutton
+                {
+                    if (!IsInZone)
+                    {
+                        if (Settings.HurricaneSettings.Instance.Config.DisableMagicArrowInGame && Utilities.WindowHelper.FullscreenWindowIsInForeground()) return;//Checks if there is a game in the foreground. its not so nice if you play a game and then comes a damn arrow inside your view :)
+                        IsInZone = true;
+                        ShowMagicArrow(e.Y, e.X < 5 ? Side.Left : Side.Right);
+                    }
+                }
+                else
+                {
+                    if (IsInZone)
+                    {
+                        IsInZone = false;
+                        HideMagicArrow();
+                    }
+                }
+            }
+        }
+
+        protected void ShowMagicArrow(int top, Side side)
         {
             if (!Settings.HurricaneSettings.Instance.Config.ShowMagicArrowBelowCursor)
             {
@@ -128,7 +137,8 @@ namespace Hurricane.MagicArrow
                 }
                 else { top += 40; }
             }
-            MagicWindow = new MagicArrowWindow(top);
+            System.Diagnostics.Debug.Print("move in");
+            MagicWindow = new MagicArrowWindow(top, side == Side.Left ? -10 : maxwidth, side == Side.Left ? 0 : maxwidth - 10, side);
             MagicWindow.MoveVisible += (s, e) =>
             {
                 MoveWindowBackInScreen();
@@ -147,29 +157,53 @@ namespace Hurricane.MagicArrow
         }
         #endregion
 
+        #region Construction and Deconstruction
         public void Register(Window window)
         {
             if (this.BaseWindow != null) throw new InvalidOperationException("Only one window can be registered");
             this.BaseWindow = window;
             Application.Current.Deactivated += Application_Deactivated;
-            //window.Activated += window_Activated; dont works
-            window.SourceInitialized += (s,e) => {
+
+            window.SourceInitialized += (s, e) =>
+            {
                 HwndSource source = PresentationSource.FromVisual(BaseWindow) as HwndSource;
                 source.AddHook(WndProc);
             };
+            DockManager = new DockManager.DockManager(BaseWindow);
         }
 
-      const  int BringTheWindowToFrontMessage = 3532;
-      private IntPtr WndProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
+        public MagicArrow()
+        {
+            maxwidth = 0;
+            foreach (var screen in Utilities.WpfScreen.AllScreens())
+                maxwidth += screen.WorkingArea.Width;
+        }
+
+        public void Unregister()
+        {
+            Application.Current.Deactivated -= Application_Deactivated;
+            this.BaseWindow = null;
+        }
+
+        public void Dispose()
+        {
+            this.StopMagic();
+            DockManager.Dispose();
+        }
+        #endregion
+
+        #region External Calls
+        const int BringTheWindowToFrontMessage = 3532;
+        private IntPtr WndProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
         {
             switch (msg)
             {
                 case BringTheWindowToFrontMessage:
                     if (MovedOut) { MoveWindowBackInScreen(); }
-                    
+
                     System.Windows.Window mainwindow = Application.Current.MainWindow;
                     mainwindow.Topmost = true; //else the application wouldnt get focused
-                    mainwindow.Activate(); 
+                    mainwindow.Activate();
 
                     mainwindow.Focus();
                     mainwindow.Topmost = false;
@@ -177,17 +211,14 @@ namespace Hurricane.MagicArrow
             }
             return IntPtr.Zero;
         }
+        #endregion
 
-        public void Unregister()
-        {
-            Application.Current.Deactivated -= Application_Deactivated;
-            this.BaseWindow = null;
-            //window.Activated -= window_Activated;
-        }
+        #region DockSystem
+        public DockManager.DockManager DockManager { get; set; }
 
-        public void Dispose()
-        {
-            this.StopMagic();
-        }
+        #endregion
+
     }
+
+    public enum Side { Left, Right}
 }
