@@ -58,27 +58,21 @@
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-            <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="5,5,0,0" Visibility="Hidden">
-                <Button Width="25" Height="25" Focusable="False" Command="{Binding OpenSettings}" HorizontalAlignment="Left">
-                    <Image Source="/Resources/GUI/settings.png"/>
-                </Button>
-                <TextBlock Text="{Binding MusicManager.CSCoreEngine.CurrentTrack}" Foreground="#FF3C3C3C" Margin="10,0,0,0" VerticalAlignment="Center"/>
-            </StackPanel>
+            <Grid.Resources>
+                <converter:CollapsedOnNullValue x:Key="CollapsedOnNullValue"/>
+            </Grid.Resources>
+            <DockPanel Grid.Row="0" Margin="5,5,0,0" Visibility="{Binding MusicManager.CSCoreEngine.CurrentTrack,Converter={StaticResource CollapsedOnNullValue}}">
+                <Image Source="/Resources/GUI/play_title.png" Width="16" Height="16"/>
+                <TextBlock Text="{Binding MusicManager.CSCoreEngine.CurrentTrack}" Margin="5,0,5,0" VerticalAlignment="Center" TextTrimming="CharacterEllipsis">
+                    <TextBlock.InputBindings>
+                        <MouseBinding Command="{Binding MusicManager.JumpToPlayingTrack}" MouseAction="LeftClick"/>
+                    </TextBlock.InputBindings>
+                </TextBlock>
+            </DockPanel>
             <StackPanel Grid.Row="1" Margin="5">
                 <Grid Margin="0,0,0,10">
                     <wpfsvl:SpectrumAnalyzer x:Name="SpectrumAnalyzer" BarCount="32"/>
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Center" Grid.Column="1">
-                        <StackPanel.Resources>
-                            <ResourceDictionary>
-                                <ResourceDictionary.MergedDictionaries>
-                                    <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />
-                                    <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />
-                                    <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Colors.xaml" />
-                                    <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/Blue.xaml" />
-                                    <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/BaseLight.xaml" />
-                                </ResourceDictionary.MergedDictionaries>
-                            </ResourceDictionary>
-                        </StackPanel.Resources>
                         <Button Style="{DynamicResource MetroCircleButtonStyle}" Height="45" Width="45" Background="White" Command="{Binding MusicManager.GoBackwardCommand}">
                             <Grid>
                                 <Image Source="/Resources/MediaIcons/Essentials/back.png" Width="24" Height="24" RenderOptions.BitmapScalingMode="HighQuality" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="-1,0,1,0"/>
@@ -140,7 +134,7 @@
                         </ToggleButton>
                     </StackPanel>
                 </Grid>
-                <Slider VerticalAlignment="Bottom" IsMoveToPointEnabled="True" Margin="0,2,0,0" Style="{StaticResource TimelineSlider}" Maximum="{Binding MusicManager.CSCoreEngine.TrackLength}" Value="{Binding MusicManager.CSCoreEngine.Position}"/>
+                <Slider VerticalAlignment="Bottom" IsMoveToPointEnabled="True" Margin="0,2,0,-2" Style="{StaticResource TimelineSlider}" Maximum="{Binding MusicManager.CSCoreEngine.TrackLength}" Value="{Binding MusicManager.CSCoreEngine.Position}"/>
             </StackPanel>
             <Grid Grid.Row="2">
                 <Grid.RowDefinitions>
@@ -153,58 +147,59 @@
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="auto"/>
                     </Grid.ColumnDefinitions>
-                    <ComboBox ItemsSource="{Binding MusicManager.Playlists}" DisplayMemberPath="Name" SelectedItem="{Binding MusicManager.SelectedPlaylist}" VerticalAlignment="Center" Margin="0,0,5,0"/>
-                    <Menu Grid.Column="1" VerticalAlignment="Center">
-                        <MenuItem>
-                            <MenuItem.HeaderTemplate>
-                                <DataTemplate>
-                                    <Image Source="/Resources/GUI/Plus.png" Width="16" Height="16" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                </DataTemplate>
-                            </MenuItem.HeaderTemplate>
-                            <MenuItem Header="{DynamicResource newplaylist}" Command="{Binding AddNewPlaylist}">
-                                <MenuItem.Icon>
-                                    <Image Source="/Resources/GUI/add.png" Width="16" Height="16"/>
-                                </MenuItem.Icon>
-                            </MenuItem>
-                            <Separator />
-                            <MenuItem Header="{DynamicResource addfiles}" Command="{Binding AddFilesToPlaylist}">
-                                <MenuItem.Icon>
-                                    <Image Source="/Resources/GUI/addfile.png" Width="16" Height="16"/>
-                                </MenuItem.Icon>
-                            </MenuItem>
-                            <MenuItem Header="{DynamicResource adddirectories}" Command="{Binding AddFolderToPlaylist}">
-                                <MenuItem.Icon>
-                                    <Image Source="/Resources/GUI/addfolder.png" Width="16" Height="16"/>
-                                </MenuItem.Icon>
-                            </MenuItem>
-                            <Separator />
-                            <MenuItem Header="{DynamicResource renameplaylist}" Command="{Binding RenamePlaylist}">
-                                <MenuItem.Icon>
-                                    <Image Source="/Resources/GUI/rename.png" Width="16" Height="16"/>
-                                </MenuItem.Icon>
-                            </MenuItem>
-                            <MenuItem Header="{DynamicResource removeplaylist}" Command="{Binding RemovePlaylist}">
-                                <MenuItem.Icon>
-                                    <Image Source="/Resources/GUI/delete.png" Width="16" Height="16"/>
-                                </MenuItem.Icon>
-                            </MenuItem>
-                            <Separator />
-                            <MenuItem Header="{DynamicResource reloadtrackinfo}" Command="{Binding ReloadTrackInformations}">
-                                <MenuItem.Icon>
-                                    <Image Source="/Resources/GUI/refresh.png" Width="16" Height="16"/>
-                                </MenuItem.Icon>
-                            </MenuItem>
-                            <MenuItem Header="{DynamicResource removetracks}">
-                                <MenuItem.Icon>
-                                    <Image Source="/Resources/GUI/remove.png" Width="16" Height="16"/>
-                                </MenuItem.Icon>
-                                <MenuItem Header="{DynamicResource removemissingtracks}" Command="{Binding RemoveMissingTracks}" IsEnabled="{Binding MusicManager.SelectedPlaylist.ContainsMissingTracks}"/>
-                                <MenuItem Header="{DynamicResource removeduplicates}" Command="{Binding RemoveDuplicateTracks}"/>
-                            </MenuItem>
-                        </MenuItem>
-                    </Menu>
+                    <ComboBox ItemsSource="{Binding MusicManager.Playlists}" DisplayMemberPath="Name" SelectedItem="{Binding MusicManager.SelectedPlaylist}" VerticalAlignment="Center" Margin="0,0,3,0" Height="27"/>
+                    <Button Grid.Column="1" Width="27" Height="27" x:Name="buttonplus" Click="buttonplus_Click" Focusable="False">
+                        <Button.ContextMenu>
+                            <ContextMenu x:Name="contextmenuplus">
+                                <MenuItem Header="{DynamicResource newplaylist}" Command="{Binding AddNewPlaylist}">
+                                    <MenuItem.Icon>
+                                        <Image Source="/Resources/GUI/add.png" Width="16" Height="16"/>
+                                    </MenuItem.Icon>
+                                </MenuItem>
+                                <Separator />
+                                <MenuItem Header="{DynamicResource addfiles}" Command="{Binding AddFilesToPlaylist}">
+                                    <MenuItem.Icon>
+                                        <Image Source="/Resources/GUI/addfile.png" Width="16" Height="16"/>
+                                    </MenuItem.Icon>
+                                </MenuItem>
+                                <MenuItem Header="{DynamicResource adddirectories}" Command="{Binding AddFolderToPlaylist}">
+                                    <MenuItem.Icon>
+                                        <Image Source="/Resources/GUI/addfolder.png" Width="16" Height="16"/>
+                                    </MenuItem.Icon>
+                                </MenuItem>
+                                <Separator />
+                                <MenuItem Header="{DynamicResource renameplaylist}" Command="{Binding RenamePlaylist}">
+                                    <MenuItem.Icon>
+                                        <Image Source="/Resources/GUI/rename.png" Width="16" Height="16"/>
+                                    </MenuItem.Icon>
+                                </MenuItem>
+                                <MenuItem Header="{DynamicResource removeplaylist}" Command="{Binding RemovePlaylist}">
+                                    <MenuItem.Icon>
+                                        <Image Source="/Resources/GUI/delete.png" Width="16" Height="16"/>
+                                    </MenuItem.Icon>
+                                </MenuItem>
+                                <Separator />
+                                <MenuItem Header="{DynamicResource reloadtrackinfo}" Command="{Binding ReloadTrackInformations}">
+                                    <MenuItem.Icon>
+                                        <Image Source="/Resources/GUI/refresh.png" Width="16" Height="16"/>
+                                    </MenuItem.Icon>
+                                </MenuItem>
+                                <MenuItem Header="{DynamicResource removetracks}">
+                                    <MenuItem.Icon>
+                                        <Image Source="/Resources/GUI/remove.png" Width="16" Height="16"/>
+                                    </MenuItem.Icon>
+                                    <MenuItem Header="{DynamicResource removemissingtracks}" Command="{Binding RemoveMissingTracks}" IsEnabled="{Binding MusicManager.SelectedPlaylist.ContainsMissingTracks}"/>
+                                    <MenuItem Header="{DynamicResource removeduplicates}" Command="{Binding RemoveDuplicateTracks}"/>
+                                </MenuItem>
+                            </ContextMenu>
+                        </Button.ContextMenu>
+                        <Button.Content>
+                            <Image Source="/Resources/GUI/Plus.png" Width="16" Height="16" Stretch="Fill"/>
+                        </Button.Content>
+
+                    </Button>
                 </Grid>
-                <ListView SelectionMode="Extended" Grid.Row="1" ItemsSource="{Binding MusicManager.SelectedPlaylist.ViewSource,IsAsync=True}" Drop="ListView_Drop" DragEnter="ListView_DragEnter" x:Name="listview" SelectedItem="{Binding MusicManager.SelectedTrack}" ScrollViewer.VerticalScrollBarVisibility="Visible" Margin="0,5,0,0" HorizontalContentAlignment="Stretch" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                <ListView SelectionMode="Extended" Grid.Row="1" ItemsSource="{Binding MusicManager.SelectedPlaylist.ViewSource,IsAsync=True}" Drop="ListView_Drop" DragEnter="ListView_DragEnter" x:Name="listview" SelectedItem="{Binding MusicManager.SelectedTrack}" ScrollViewer.VerticalScrollBarVisibility="Visible" Margin="0,5,0,0" HorizontalContentAlignment="Stretch" ScrollViewer.HorizontalScrollBarVisibility="Disabled" SelectionChanged="listview_SelectionChanged" IsSynchronizedWithCurrentItem="True">
                     <ListView.InputBindings>
                         <KeyBinding Key="Delete" Command="{Binding RemoveSelectedTracks}"/>
                         <KeyBinding Key="Enter" Command="{Binding MusicManager.PlaySelectedTrack}"/>

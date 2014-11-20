@@ -22,6 +22,7 @@ namespace Hurricane.MagicArrow.DockManager
 
         public void DragStart()
         {
+            enabled = true;
             Utilities.HookManager.MouseHook.HookManager.MouseMove += HookManager_MouseMove;
         }
 
@@ -32,8 +33,10 @@ namespace Hurricane.MagicArrow.DockManager
         protected double left;
         protected DockingSide side; //new side
         protected DockingSide currentside; //the applied side
+        protected bool enabled;
         void HookManager_MouseMove(object sender, System.Windows.Forms.MouseEventArgs e)
         {
+            if (!enabled) return;
             if (e.X < 5 || e.X >= maxwidth - 5)
             {
                 if (!isatborder)
@@ -57,6 +60,7 @@ namespace Hurricane.MagicArrow.DockManager
 
         public void DragStop()
         {
+            enabled = false;
             Utilities.HookManager.MouseHook.HookManager.MouseMove -= HookManager_MouseMove;
             
             if (side != DockingSide.None)

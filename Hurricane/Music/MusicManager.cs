@@ -307,6 +307,22 @@ namespace Hurricane.Music
                 return openfilelocation;
             }
         }
+
+        private RelayCommand jumptoplayingtrack;
+        public RelayCommand JumpToPlayingTrack
+        {
+            get
+            {
+                if (jumptoplayingtrack == null)
+                    jumptoplayingtrack = new RelayCommand((object parameter) =>
+                    {
+                        this.SelectedPlaylist = this.CurrentPlaylist;
+                        this.SelectedTrack = this.CSCoreEngine.CurrentTrack;
+                        SelectedTrack.IsSelected = true;
+                    });
+                return jumptoplayingtrack;
+            }
+        }
         #endregion
     }
 }

@@ -19,7 +19,7 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="RepeatButton">
-                    <Border SnapsToDevicePixels="True" Background="#3498DB" BorderThickness="1" BorderBrush="#51B6FA" Height="10"/>
+                    <Border SnapsToDevicePixels="True" Background="{DynamicResource AccentColorBrush}" BorderThickness="1" BorderBrush="#51B6FA" Height="10"/>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
@@ -44,7 +44,7 @@
                 <RowDefinition Height="Auto" MinHeight="{TemplateBinding MinHeight}" />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
-            <Track Grid.Row="1" x:Name="PART_Track"   >
+            <Track Grid.Row="1" x:Name="PART_Track">
                 <Track.DecreaseRepeatButton>
                     <RepeatButton Style="{StaticResource SliderRepeatButton1}"  Command="Slider.DecreaseLarge" />
                 </Track.DecreaseRepeatButton>

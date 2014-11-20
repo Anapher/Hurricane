@@ -17,6 +17,7 @@ using System.Windows.Interop;
 using System.Drawing;
 using System.IO;
 using System.Runtime.InteropServices;
+using Hurricane.Extensions;
 
 namespace Hurricane
 {
@@ -130,9 +131,11 @@ namespace Hurricane
 
         void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            MagicArrow.DockManager.Save();
+            if (Settings.HurricaneSettings.Instance.Loaded)
+                MagicArrow.DockManager.Save();
             ViewModels.MainViewModel.Instance.Closing();
             MagicArrow.Dispose();
+            App.Current.Shutdown();
         }
 
         private void ListView_Drop(object sender, DragEventArgs e)
@@ -168,5 +171,18 @@ namespace Hurricane
             MagicArrow.DockManager.DragStop();
         }
         #endregion
+
+        private void buttonplus_Click(object sender, RoutedEventArgs e)
+        {
+            ContextMenu menu = ((Button)sender).ContextMenu;
+            menu.PlacementTarget = (UIElement)sender;
+            menu.Placement = System.Windows.Controls.Primitives.PlacementMode.Bottom;
+            menu.IsOpen = true;
+        }
+
+        private void listview_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            listview.ScrollIntoView(listview.SelectedItem);
+        }
     }
 }

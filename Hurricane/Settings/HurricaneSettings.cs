@@ -31,10 +31,13 @@ namespace Hurricane.Settings
         public PlaylistSettings Playlists { get; set; }
         public ConfigSettings Config { get; set; }
 
+        public bool Loaded { get; set; }
+
         public void Load()
         {
             Playlists = PlaylistSettings.Load(ProgramPath);
             Config = ConfigSettings.Load(ProgramPath);
+            this.Loaded = true;
         }
 
         public void Save()

@@ -49,7 +49,8 @@ namespace Hurricane.MagicArrow
             outanimation.From = BaseWindow.Left;
             outanimation.To = newleft;
             outanimation.Duration = TimeSpan.FromMilliseconds(150);
-            outanimation.FillBehavior = FillBehavior.HoldEnd;
+            outanimation.FillBehavior = FillBehavior.Stop;
+            outanimation.Completed += (s, e) => { BaseWindow.Left = newleft; };
             MoveWindowOutOfScreenStoryboard.Children.Add(outanimation);
             Storyboard.SetTargetName(outanimation, BaseWindow.Name);
             Storyboard.SetTargetProperty(outanimation, new PropertyPath(Window.LeftProperty));
@@ -189,6 +190,7 @@ namespace Hurricane.MagicArrow
         {
             this.StopMagic();
             DockManager.Dispose();
+            Unregister();
         }
         #endregion
 

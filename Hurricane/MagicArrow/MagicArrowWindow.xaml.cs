@@ -49,14 +49,8 @@ namespace Hurricane.MagicArrow
         {
             if (MoveVisible != null)
                 MoveVisible(this, EventArgs.Empty);
+            CanClose = false; //When the user clicks on the arrow, it should go back instant
             this.Close();
-        }
-
-        protected override void OnLocationChanged(EventArgs e)
-        {
-            base.OnLocationChanged(e);
-            if (this.Left < -10)
-                this.Close();
         }
 
         protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
@@ -65,6 +59,7 @@ namespace Hurricane.MagicArrow
             if (CanClose)
             {
                 DoubleAnimation animation = new DoubleAnimation(FromLeft, TimeSpan.FromMilliseconds(400));
+                animation.Completed += (s, es) => { this.Close(); };
                 this.BeginAnimation(Window.LeftProperty, animation);
                 e.Cancel = true;
                 CanClose = false;
