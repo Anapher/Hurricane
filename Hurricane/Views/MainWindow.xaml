@@ -36,15 +36,34 @@
                         <ColumnDefinition Width="auto"/>
                     </Grid.ColumnDefinitions>
                     <StackPanel Orientation="Horizontal">
-                        <Button Width="25" Height="25" Focusable="False" Margin="5,2,0,0" Command="{Binding OpenSettings}">
-                            <Image Source="/Resources/GUI/settings.png"/>
+                        <Button Width="28" Height="28" Focusable="False" Margin="5,2,0,0" Command="{Binding OpenSettings}">
+                            <Button.Style>
+                                <Style TargetType="Button" BasedOn="{StaticResource {x:Static ToolBar.ButtonStyleKey}}">
+                                    <Setter Property="BorderThickness" Value="0"/>
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="Button">
+                                                <Image x:Name="img" Width="20" Height="20" Source="/Resources/GUI/settings.png"/>
+                                                <ControlTemplate.Triggers>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter TargetName="img" Property="Source" Value="/Resources/GUI/settings_mouseover.png"/>
+                                                    </Trigger>
+                                                    <Trigger Property="IsPressed" Value="True">
+                                                        <Setter TargetName="img" Property="Source" Value="/Resources/GUI/settings_pressed.png"/>
+                                                    </Trigger>
+                                                </ControlTemplate.Triggers>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </Button.Style>
                         </Button>
                     </StackPanel>
                     <TextBlock Margin="10,10,0,10" VerticalAlignment="Center" 
                                                        Foreground="#FFAAAAAA" TextWrapping="NoWrap" 
                                                        Text="Hurricane" FontSize="16" HorizontalAlignment="Center"/>
                     <Button x:Name="PART_CLOSE" Grid.Column="1"
-                                                    VerticalAlignment="Center" Margin="5"
+                                                    VerticalAlignment="Center" Margin="5,0,10,0"
                                                     Height="20" Width="20" 
                                                     Style="{DynamicResource WindowButtonStyle}"
                                                     Click="PART_CLOSE_Click">
@@ -153,7 +172,7 @@
                             <ContextMenu x:Name="contextmenuplus">
                                 <MenuItem Header="{DynamicResource newplaylist}" Command="{Binding AddNewPlaylist}">
                                     <MenuItem.Icon>
-                                        <Image Source="/Resources/GUI/add.png" Width="16" Height="16"/>
+                                        <Image Source="/Resources/GUI/add.png" Width="16" Height="16" Stretch="UniformToFill"/>
                                     </MenuItem.Icon>
                                 </MenuItem>
                                 <Separator />
@@ -199,7 +218,8 @@
 
                     </Button>
                 </Grid>
-                <ListView SelectionMode="Extended" Grid.Row="1" ItemsSource="{Binding MusicManager.SelectedPlaylist.ViewSource,IsAsync=True}" Drop="ListView_Drop" DragEnter="ListView_DragEnter" x:Name="listview" SelectedItem="{Binding MusicManager.SelectedTrack}" ScrollViewer.VerticalScrollBarVisibility="Visible" Margin="0,5,0,0" HorizontalContentAlignment="Stretch" ScrollViewer.HorizontalScrollBarVisibility="Disabled" SelectionChanged="listview_SelectionChanged" IsSynchronizedWithCurrentItem="True">
+                <ListView SelectionMode="Extended" Grid.Row="1" ItemsSource="{Binding MusicManager.SelectedPlaylist.ViewSource,IsAsync=True}" Drop="ListView_Drop" DragEnter="ListView_DragEnter" x:Name="listview" SelectedItem="{Binding MusicManager.SelectedTrack}" ScrollViewer.VerticalScrollBarVisibility="Visible" Margin="0,5,0,0" HorizontalContentAlignment="Stretch" ScrollViewer.HorizontalScrollBarVisibility="Disabled" SelectionChanged="listview_SelectionChanged" IsSynchronizedWithCurrentItem="True"
+                          VirtualizingPanel.IsVirtualizing="True">
                     <ListView.InputBindings>
                         <KeyBinding Key="Delete" Command="{Binding RemoveSelectedTracks}"/>
                         <KeyBinding Key="Enter" Command="{Binding MusicManager.PlaySelectedTrack}"/>

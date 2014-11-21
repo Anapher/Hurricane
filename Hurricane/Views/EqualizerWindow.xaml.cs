@@ -18,7 +18,7 @@ namespace Hurricane.Views
     /// <summary>
     /// Interaction logic for EqualizerWindow.xaml
     /// </summary>
-    public partial class EqualizerWindow : Window
+    public partial class EqualizerWindow : MahApps.Metro.Controls.MetroWindow
     {
         Music.CSCoreEngine cscore;
         double WindowLeft;

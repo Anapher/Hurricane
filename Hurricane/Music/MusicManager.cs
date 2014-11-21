@@ -100,7 +100,7 @@ namespace Hurricane.Music
         {
             if (RepeatTrack)
             {
-                CSCoreEngine.OpenFile(CSCoreEngine.CurrentTrack);
+                CSCoreEngine.OpenTrack(CSCoreEngine.CurrentTrack);
                 CSCoreEngine.TogglePlayPause();
             }
             else
@@ -121,17 +121,18 @@ namespace Hurricane.Music
             {
                 CurrentPlaylist = Playlists[config.LastPlaylistIndex];
             }
-
+            
             if (config.LastTrackIndex > -1)
             {
                 Track t = CurrentPlaylist.Tracks[config.LastTrackIndex];
                 if (t.TrackExists)
                 {
-                    CSCoreEngine.OpenFile(t);
+                    CSCoreEngine.OpenTrack(t);
                     CSCoreEngine.Position = config.TrackPosition;
                     CSCoreEngine.OnPropertyChanged("Position");
                 }
             }
+
             if (config.SelectedPlaylist > -1)
             {
                 SelectedPlaylist = Playlists[config.SelectedPlaylist];
@@ -193,7 +194,7 @@ namespace Hurricane.Music
                         if (SelectedTrack != CSCoreEngine.CurrentTrack && SelectedTrack.TrackExists)
                         {
                             CSCoreEngine.StopPlayback();
-                            CSCoreEngine.OpenFile(SelectedTrack);
+                            CSCoreEngine.OpenTrack(SelectedTrack);
                             CSCoreEngine.TogglePlayPause();
                             CurrentPlaylist = SelectedPlaylist;
                         }
@@ -242,7 +243,7 @@ namespace Hurricane.Music
                     }
                 }
             }
-            CSCoreEngine.OpenFile(CurrentPlaylist.Tracks[nexttrackindex]);
+            CSCoreEngine.OpenTrack(CurrentPlaylist.Tracks[nexttrackindex]);
             CSCoreEngine.TogglePlayPause();
         }
 
@@ -293,7 +294,7 @@ namespace Hurricane.Music
                         break;
                 }
             }
-            CSCoreEngine.OpenFile(CurrentPlaylist.Tracks[nexttrackindex]);
+            CSCoreEngine.OpenTrack(CurrentPlaylist.Tracks[nexttrackindex]);
             CSCoreEngine.TogglePlayPause();
         }
 

@@ -41,6 +41,33 @@ namespace Hurricane.Utilities
             return wpfScreen;
         }
 
+        public static double MaxHeight
+        {
+            get
+            {
+
+                double i = 0;
+                foreach (var s in System.Windows.Forms.Screen.AllScreens)
+                    if (s.Bounds.Height > i) i = s.Bounds.Height;
+                return i;
+            }
+        }
+
+        protected static double allscreenswidth = -1;
+        public static double AllScreensWidth
+        {
+            get
+            {
+                if (allscreenswidth == -1)
+                {
+                    allscreenswidth = 0;
+                    foreach (var screen in Utilities.WpfScreen.AllScreens())
+                        allscreenswidth += screen.WorkingArea.Width;
+                }
+                return allscreenswidth;
+            }
+        }
+
         public static WpfScreen Primary
         {
             get { return new WpfScreen(System.Windows.Forms.Screen.PrimaryScreen); }

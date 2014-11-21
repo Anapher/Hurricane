@@ -34,6 +34,7 @@ namespace Hurricane.ViewModels
 
         public void Loaded(Window window)
         {
+            System.Diagnostics.Stopwatch sw = System.Diagnostics.Stopwatch.StartNew();
             this.BaseWindow = window;
             MySettings = Settings.HurricaneSettings.Instance;
 
@@ -49,6 +50,8 @@ namespace Hurricane.ViewModels
             };
             KListener = new Utilities.KeyboardListener();
             KListener.KeyDown += KListener_KeyDown;
+            System.Diagnostics.Debug.Print("MainViewModel: {0}", sw.ElapsedMilliseconds.ToString());
+            sw.Stop();
         }
         #endregion
 

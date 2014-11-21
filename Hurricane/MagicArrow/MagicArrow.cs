@@ -175,9 +175,7 @@ namespace Hurricane.MagicArrow
 
         public MagicArrow()
         {
-            maxwidth = 0;
-            foreach (var screen in Utilities.WpfScreen.AllScreens())
-                maxwidth += screen.WorkingArea.Width;
+            maxwidth = Utilities.WpfScreen.AllScreensWidth;
         }
 
         public void Unregister()
@@ -217,7 +215,6 @@ namespace Hurricane.MagicArrow
 
         #region DockSystem
         public DockManager.DockManager DockManager { get; set; }
-
         #endregion
 
     }

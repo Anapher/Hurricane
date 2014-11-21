@@ -13,7 +13,7 @@ using CSCore.Streams;
 
 namespace Hurricane.Music
 {
-   public class CSCoreEngine : PropertyChangedBase, IDisposable, WPFSoundVisualizationLib.ISpectrumPlayer
+    public class CSCoreEngine : PropertyChangedBase, IDisposable, WPFSoundVisualizationLib.ISpectrumPlayer
     {
         #region Commands
         private RelayCommand toggleplaypausecommand;
@@ -62,7 +62,7 @@ namespace Hurricane.Music
                     SoundSource.Position = value;
             }
         }
-        
+
         private Track currenttrack;
         public Track CurrentTrack
         {
@@ -132,27 +132,27 @@ namespace Hurricane.Music
 
         #endregion
 
-        public void OpenFile(Track track)
+        public void OpenTrack(Track track)
         {
             if (CurrentTrack != null) { CurrentTrack.IsPlaying = false; CurrentTrack.Unload(); }
-           if(SoundSource != null) SoundSource.Dispose();
+            if (SoundSource != null) SoundSource.Dispose();
             track.IsPlaying = true;
             SoundSource = CodecFactory.Instance.GetCodec(track.Path);
             if (Settings.SampleRate == -1 && SoundSource.WaveFormat.SampleRate < 44100)
             {
                 SoundSource = SoundSource.ChangeSampleRate(44100);
             }
-            else  if (Settings.SampleRate > -1) { SoundSource.ChangeSampleRate(Settings.SampleRate); }
-                
+            else if (Settings.SampleRate > -1) { SoundSource.ChangeSampleRate(Settings.SampleRate); }
+
             SimpleNotificationSource notifysource = new SimpleNotificationSource(SoundSource);
             notifysource.Interval = 100;
             notifysource.BlockRead += notifysource_BlockRead;
             this.MusicEqualizer = Equalizer.Create10BandEqualizer(notifysource);
             SetAllEqualizerSettings();
-            
+
             SingleBlockNotificationStream notificationSource = new SingleBlockNotificationStream(MusicEqualizer);
             notificationSource.SingleBlockRead += notificationSource_SingleBlockRead;
-            
+
             analyser = new Visualization.SampleAnalyser(FFTSize);
             analyser.Initialize(notificationSource.WaveFormat);
             soundOut.Initialize(notificationSource.ToWaveSource(Settings.WaveSourceBits));
@@ -256,7 +256,8 @@ namespace Hurricane.Music
                             }
                         }
 
-                        if (device == null) {
+                        if (device == null)
+                        {
                             Settings.SoundOutDeviceID = "-0";
                             RefreshSoundOut();
                             return;
@@ -279,7 +280,7 @@ namespace Hurricane.Music
             RefreshSoundOut();
             Track currenttrack = CurrentTrack;
             CurrentTrack = null;
-            if (currenttrack != null) OpenFile(currenttrack);
+            if (currenttrack != null) OpenTrack(currenttrack);
             this.Position = position;
             if (isplaying) TogglePlayPause();
         }

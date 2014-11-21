@@ -18,6 +18,7 @@ using System.Drawing;
 using System.IO;
 using System.Runtime.InteropServices;
 using Hurricane.Extensions;
+using System.Windows.Threading;
 
 namespace Hurricane
 {
@@ -26,7 +27,6 @@ namespace Hurricane
     /// </summary>
     public partial class MainWindow : MahApps.Metro.Controls.MetroWindow
     {
-
         private MagicArrow.MagicArrow MagicArrow;
         private Hurricane.Resources.Styles.DragDropListView.ServiceProviders.UI.ListViewDragDropManager<Music.Track> dragMgr;
 
@@ -44,10 +44,7 @@ namespace Hurricane
             dragMgr = new Resources.Styles.DragDropListView.ServiceProviders.UI.ListViewDragDropManager<Music.Track>(this.listview);
             dragMgr.ShowDragAdorner = true;
 
-            int i = 0;
-            foreach(var s in System.Windows.Forms.Screen.AllScreens)
-                if(s.Bounds.Height > i) i = s.Bounds.Height;
-            this.MaxHeight = i;
+            this.MaxHeight = Utilities.WpfScreen.MaxHeight;
         }
 
         void MainWindow_Loaded(object sender, RoutedEventArgs e)
@@ -170,7 +167,6 @@ namespace Hurricane
         {
             MagicArrow.DockManager.DragStop();
         }
-        #endregion
 
         private void buttonplus_Click(object sender, RoutedEventArgs e)
         {
@@ -184,5 +180,6 @@ namespace Hurricane
         {
             listview.ScrollIntoView(listview.SelectedItem);
         }
+        #endregion
     }
 }

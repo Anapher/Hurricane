@@ -14,14 +14,14 @@ namespace Hurricane.MagicArrow.DockManager
 
         public DockManager(Window window)
         {
-            maxwidth = 0;
-            foreach (var screen in Utilities.WpfScreen.AllScreens())
-                maxwidth += screen.WorkingArea.Width;
+            maxwidth = Utilities.WpfScreen.AllScreensWidth;
             basewindow = window;
         }
 
         public void DragStart()
         {
+            if (!dragstopped) return;
+            dragstopped = false;
             enabled = true;
             Utilities.HookManager.MouseHook.HookManager.MouseMove += HookManager_MouseMove;
         }
@@ -37,6 +37,7 @@ namespace Hurricane.MagicArrow.DockManager
         void HookManager_MouseMove(object sender, System.Windows.Forms.MouseEventArgs e)
         {
             if (!enabled) return;
+            if (System.Windows.Input.Mouse.LeftButton == System.Windows.Input.MouseButtonState.Released) { DragStop(); return; } //If the user doubleclicks the window, relocates the window and releases the mouse, it doesn't get stopped
             if (e.X < 5 || e.X >= maxwidth - 5)
             {
                 if (!isatborder)
@@ -47,7 +48,6 @@ namespace Hurricane.MagicArrow.DockManager
                     left = side == DockingSide.Left ? 0 : maxwidth - 300;
                     window = new DockRangeWindow(left, height);
                     window.Show();
-                    System.Diagnostics.Debug.Print("Changed side: {0}", side.ToString());
                 }
             }
             else if (isatborder) { isatborder = false; CloseWindowIfExists(); side = DockingSide.None; }
@@ -58,8 +58,11 @@ namespace Hurricane.MagicArrow.DockManager
             if (window != null) { window.Close(); window = null; }
         }
 
+        protected bool dragstopped;
         public void DragStop()
         {
+            if (dragstopped) return;
+            dragstopped = true;
             enabled = false;
             Utilities.HookManager.MouseHook.HookManager.MouseMove -= HookManager_MouseMove;
             
@@ -67,7 +70,6 @@ namespace Hurricane.MagicArrow.DockManager
             {
                 basewindow.Height = height;
                 basewindow.Left = left;
-                System.Diagnostics.Debug.Print("Applying: {0}, {1}", side.ToString(),left.ToString());
                 basewindow.Top = 0;
             }
             currentside = side;
