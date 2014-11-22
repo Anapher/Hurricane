@@ -20,14 +20,15 @@ namespace Hurricane.MagicArrow
         public bool MovedOut { get; set; }
         public MagicArrowWindow MagicWindow { get; set; }
 
-        public event EventHandler MoveOut;
+        public event EventHandler MoveOut; //When moving out
+        public event EventHandler MoveIn;
         public event DragEventHandler FilesDropped;
 
         #region Eventhandler
         void Application_Deactivated(object sender, EventArgs e)
         {
             System.Diagnostics.Debug.Print("Deactivated");
-            if (BaseWindow.ActualHeight == Utilities.WpfScreen.GetScreenFrom(new Point(BaseWindow.Left, 0)).WorkingArea.Height && (BaseWindow.Left == 0 || BaseWindow.Left == maxwidth -300) && BaseWindow.Top == 0)
+            if (BaseWindow.ActualHeight == Utilities.WpfScreen.GetScreenFrom(new Point(BaseWindow.Left, 0)).WorkingArea.Height && (BaseWindow.Left == 0 || BaseWindow.Left == maxwidth - 300) && BaseWindow.Top == 0)
             {
                 //The window is at a good site
                 MoveWindowOutOfScreen(BaseWindow.Left == 0 ? Side.Left : Side.Right);
@@ -63,9 +64,10 @@ namespace Hurricane.MagicArrow
             movedoutside = side;
         }
 
-        
+
         protected void MoveWindowBackInScreen()
         {
+            if (MoveIn != null) MoveIn(this, EventArgs.Empty);
             double newleft;
             if (movedoutside == Side.Left) { newleft = 0; } else { newleft = maxwidth - BaseWindow.Width; }
             Storyboard MoveWindowBackInScreenStoryboard = new Storyboard();
@@ -108,7 +110,7 @@ namespace Hurricane.MagicArrow
         {
             if (MovedOut)
             {
-                if (((e.X < 5 && movedoutside == Side.Left) || (e.X > maxwidth -5 && movedoutside == Side.Right))  && e.Y < System.Windows.SystemParameters.WorkArea.Height - 10) //That you can click on the startbutton
+                if (((e.X < 5 && movedoutside == Side.Left) || (e.X > maxwidth - 5 && movedoutside == Side.Right)) && e.Y < System.Windows.SystemParameters.WorkArea.Height - 10) //That you can click on the startbutton
                 {
                     if (!IsInZone)
                     {
@@ -219,5 +221,5 @@ namespace Hurricane.MagicArrow
 
     }
 
-    public enum Side { Left, Right}
+    public enum Side { Left, Right }
 }

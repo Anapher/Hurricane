@@ -16,10 +16,10 @@
                         <Trigger Property="IsMouseOver" Value="True">
                             <Setter TargetName="txt" Property="Foreground" Value="White"/>
                             <Setter TargetName="Chrome" Property="BorderThickness" Value="1"/>
-                            <Setter TargetName="Chrome" Property="Background" Value="{DynamicResource AccentColorBrush}"/>
+                            <Setter TargetName="Chrome" Property="Background" Value="{DynamicResource NormalColorBrush}"/>
                         </Trigger>
                         <Trigger Property="IsPressed" Value="True">
-                            <Setter TargetName="Chrome" Property="Background" Value="Black"/>
+                            <Setter TargetName="Chrome" Property="Background" Value="{DynamicResource DarkColorBrush}"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>

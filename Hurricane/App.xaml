@@ -13,6 +13,8 @@
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/Steel.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/BaseLight.xaml" />
             </ResourceDictionary.MergedDictionaries>
+            
+            <SolidColorBrush x:Key="SpectrumAnalyzerBrush" Color="Blue"/>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

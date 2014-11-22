@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Xml.Serialization;
 using System.IO;
 using System.Windows;
+using Hurricane.Settings.Themes;
 
 namespace Hurricane.Settings
 {
@@ -41,7 +42,7 @@ namespace Hurricane.Settings
         public string Language { get; set; }
         public Notification.NotificationType Notification { get; set; }
         public bool DisableNotificationInGame { get; set; }
-        public string Theme { get; set; }
+        public ThemeManager Theme { get; set; }
 
         private List<LanguageInfo> languages;
         [XmlIgnore]
@@ -56,20 +57,6 @@ namespace Hurricane.Settings
                     languages.Add(new LanguageInfo("English", "/Resources/Languages/Hurricane.en-us.xaml", new Uri("/Resources/Languages/Icons/us.png",UriKind.Relative), "Alkaline", "en"));
                 }
                 return languages;
-            }
-        }
-
-        private List<string> themes;
-        public List<string> Themes
-        {
-            get
-            {
-                if(themes == null)
-                {
-                    themes = new List<string>();
-                    themes.AddRange(new string[] { "Blue", "Brown", "Cobalt", "Crimson", "Cyan", "Emerald", "Green", "Indigo", "Lime", "Magenta", "Mauve", "Olive", "Orange", "Pink", "Purple", "Red", "Sienna", "Steel", "Taupe", "Teal", "Violet", "Yellow" });
-                }
-                return themes;
             }
         }
 
@@ -94,7 +81,8 @@ namespace Hurricane.Settings
             if (System.Threading.Thread.CurrentThread.CurrentCulture.TwoLetterISOLanguageName == "de") { this.Language = "de"; } else { this.Language = "en"; }
             Notification = Hurricane.Notification.NotificationType.Top;
             ApplicationState = null;
-            Theme = "Blue";
+            Theme = new ThemeManager();
+            Theme.LoadStandard();
         }
 
         private ResourceDictionary lastLanguage;
@@ -105,16 +93,6 @@ namespace Hurricane.Settings
             info.Load(Languages);
             lastLanguage = new ResourceDictionary() { Source = new Uri(info.Path, UriKind.Relative) };
             Application.Current.Resources.MergedDictionaries.Add(lastLanguage);
-        }
-
-        private ResourceDictionary lasttheme;
-        public void LoadTheme()
-        {
-            if (lasttheme != null) Application.Current.Resources.Remove(lasttheme);
-            var s = string.Format("pack://application:,,,/MahApps.Metro;component/Styles/Accents/{0}.xaml", Theme);
-            System.Diagnostics.Debug.Print(s);
-            lasttheme = new ResourceDictionary() { Source = new Uri(s, UriKind.Absolute) };
-            Application.Current.Resources.MergedDictionaries.Add(lasttheme);
         }
 
         public override void Save(string ProgramPath)
@@ -140,7 +118,7 @@ namespace Hurricane.Settings
                 result.SetStandardValues();
             }
             result.LoadLanguage();
-            result.LoadTheme();
+            result.Theme.LoadTheme();
             return result;
         }
 

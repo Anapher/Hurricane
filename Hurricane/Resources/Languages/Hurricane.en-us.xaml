@@ -101,4 +101,12 @@
     <system:String x:Key="includesubfolder">Include Subfolder</system:String>
     <system:String x:Key="add">Add</system:String>
     <system:String x:Key="theme">Theme</system:String>
+
+    <system:String x:Key="Blue">Blue</system:String>
+    <system:String x:Key="Green">Green</system:String>
+    <system:String x:Key="Magenta">Magenta</system:String>
+    <system:String x:Key="Orange">Orange</system:String>
+    <system:String x:Key="Red">Red</system:String>
+    <system:String x:Key="Siena">Siena</system:String>
+    <system:String x:Key="SpectrumAnalyzerColor">Spectrum Analyzer Color:</system:String>
 </ResourceDictionary>

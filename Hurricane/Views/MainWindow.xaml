@@ -97,14 +97,14 @@
                                 <Setter Property="BarStyle">
                                     <Setter.Value>
                                         <Style TargetType="{x:Type Rectangle}">
-                                            <Setter Property="Fill" Value="{DynamicResource AccentColorBrush}"/>
+                                            <Setter Property="Fill" Value="{DynamicResource SpectrumAnalyzerBrush}"/>
                                         </Style>
                                     </Setter.Value>
                                 </Setter>
                                 <Setter Property="PeakStyle">
                                     <Setter.Value>
                                         <Style TargetType="{x:Type Rectangle}">
-                                            <Setter Property="Fill" Value="{DynamicResource AccentColorBrush}"/>
+                                            <Setter Property="Fill" Value="{DynamicResource SpectrumAnalyzerBrush}"/>
                                         </Style>
                                     </Setter.Value>
                                 </Setter>
@@ -338,7 +338,7 @@
                                 <Grid.Resources>
                                     <converter:TrueFalseValueConverter TrueValue="2" FalseValue="0" x:Key="TrueFalseValueConverter"/>
                                 </Grid.Resources>
-                                <Border BorderBrush="{DynamicResource AccentColorBrush4}" BorderThickness="{Binding IsPlaying,Converter={StaticResource TrueFalseValueConverter}}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="-4">
+                                <Border BorderBrush="{DynamicResource LightColorBrush}" BorderThickness="{Binding IsPlaying,Converter={StaticResource TrueFalseValueConverter}}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="-4">
                                     <Border.Resources>
                                         <converter:TrueFalseValueConverter x:Key="boldifplaying" FalseValue="Normal" TrueValue="Bold"/>
                                     </Border.Resources>

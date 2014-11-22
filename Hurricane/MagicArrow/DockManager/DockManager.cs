@@ -7,7 +7,7 @@ using System.Windows;
 
 namespace Hurricane.MagicArrow.DockManager
 {
-   public class DockManager : IDisposable
+    public class DockManager : IDisposable
     {
         protected double maxwidth;
         protected Window basewindow;
@@ -28,7 +28,7 @@ namespace Hurricane.MagicArrow.DockManager
 
         private bool isatborder = false;
         private DockRangeWindow window;
-        
+
         protected double height;
         protected double left;
         protected DockingSide side; //new side
@@ -65,7 +65,7 @@ namespace Hurricane.MagicArrow.DockManager
             dragstopped = true;
             enabled = false;
             Utilities.HookManager.MouseHook.HookManager.MouseMove -= HookManager_MouseMove;
-            
+
             if (side != DockingSide.None)
             {
                 basewindow.Height = height;

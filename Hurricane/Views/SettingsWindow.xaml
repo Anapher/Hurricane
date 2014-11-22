@@ -5,6 +5,7 @@
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         xmlns:vm="clr-namespace:Hurricane.ViewModels"
         xmlns:settingsconverter="clr-namespace:Hurricane.Settings.Converter"
+        xmlns:tkt="http://schemas.xceed.com/wpf/xaml/toolkit"
         Title="{DynamicResource settings}" Height="400" Width="600" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" ShowInTaskbar="False" DataContext="{x:Static vm:SettingsViewModel.Instance}" GlowBrush="{DynamicResource AccentColorBrush}">
     <Grid>
         <Grid.Resources>
@@ -105,7 +106,11 @@
                     </CheckBox>
                     <TextBlock Text="{DynamicResource theme}" Margin="0,20,0,0"/>
                     <Separator />
-                    <ComboBox Margin="0,5,0,0" ItemsSource="{Binding Config.Themes}" SelectedItem="{Binding Config.Theme}" SelectionChanged="SomethingChanged"/>
+                    <ComboBox Margin="0,5,0,0" ItemsSource="{Binding Config.Theme.Themes}" SelectedItem="{Binding Config.Theme.SelectedColorTheme}" DisplayMemberPath="Name" SelectionChanged="SomethingChanged"/>
+                    <DockPanel Margin="0,5,0,0" >
+                        <CheckBox Content="{DynamicResource SpectrumAnalyzerColor}" VerticalAlignment="Center" IsChecked="{Binding Config.Theme.UseCustomSpectrumAnalyzerColor}" Checked="SomethingChanged" Unchecked="SomethingChanged"/>
+                        <tkt:ColorPicker Margin="10,0,0,0" IsEnabled="{Binding Config.Theme.UseCustomSpectrumAnalyzerColor}" SelectedColor="{Binding Config.Theme.SpectrumAnalyzerColor}" SelectedColorChanged="SomethingChanged"/>
+                    </DockPanel>
                 </StackPanel>
             </TabItem>
             <TabItem Header="Language">

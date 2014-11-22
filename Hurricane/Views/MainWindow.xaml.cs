@@ -36,7 +36,8 @@ namespace Hurricane
             System.Windows.Media.MediaTimeline.DesiredFrameRateProperty.OverrideMetadata(typeof(System.Windows.Media.Animation.Timeline), new FrameworkPropertyMetadata(60));
             MagicArrow = new MagicArrow.MagicArrow();
             MagicArrow.Register(this);
-            MagicArrow.MoveOut += (s, e) => { ViewModels.MainViewModel.Instance.MoveOut(); };
+            MagicArrow.MoveOut += (s, e) => { ViewModels.MainViewModel.Instance.MoveOut(); SpectrumAnalyzer.RefreshInterval = 2000; };
+            MagicArrow.MoveIn += (s, e) => { SpectrumAnalyzer.RefreshInterval = 25; };
             MagicArrow.FilesDropped += (s, e) => { ViewModels.MainViewModel.Instance.DragDropFiles((string[])e.Data.GetData(DataFormats.FileDrop)); };
 
             this.Closing += MainWindow_Closing;
