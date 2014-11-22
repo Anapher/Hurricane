@@ -58,7 +58,7 @@ namespace Hurricane.MagicArrow.DockManager
             if (window != null) { window.Close(); window = null; }
         }
 
-        protected bool dragstopped;
+        protected bool dragstopped = true;
         public void DragStop()
         {
             if (dragstopped) return;

@@ -29,7 +29,7 @@ namespace Hurricane.Utilities.HookManager.MouseHook
             {
                 s_MouseMove -= value;
                 TryUnsubscribeFromGlobalMouseEvents();
-                System.Diagnostics.Debug.Print("MouseHook unregistred");
+                System.Diagnostics.Debug.Print("MouseHook disabled");
             }
         }
 

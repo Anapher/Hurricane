@@ -248,11 +248,11 @@ namespace Hurricane.Utilities.HookManager.MouseHook
                 s_MouseMoveExt == null &&
                 s_MouseWheel == null)
             {
-                ForceUnsunscribeFromGlobalMouseEvents();
+                ForceUnsubscribeFromGlobalMouseEvents();
             }
         }
 
-        private static void ForceUnsunscribeFromGlobalMouseEvents()
+        private static void ForceUnsubscribeFromGlobalMouseEvents()
         {
             if (s_MouseHookHandle != 0)
             {

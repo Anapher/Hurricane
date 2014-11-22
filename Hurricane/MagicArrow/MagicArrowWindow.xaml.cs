@@ -34,12 +34,18 @@ namespace Hurricane.MagicArrow
             this.Left = toleft;
             if (side == Side.Right)
             {
-                img.RenderTransformOrigin = new Point(0.5, 0.5);
-                ScaleTransform flipTrans = new ScaleTransform();
-                flipTrans.ScaleX = -1;
-                img.RenderTransform = flipTrans;
+                RotateObject(arrow);
+                RotateObject(arrow2);
             }
             currentside = side;
+        }
+
+        private void RotateObject(UIElement element)
+        {
+            element.RenderTransformOrigin = new Point(0.5, 0.5);
+            ScaleTransform flipTrans = new ScaleTransform();
+            flipTrans.ScaleX = -1;
+            element.RenderTransform = flipTrans;
         }
 
         public double FromLeft { get; set; }

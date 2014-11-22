@@ -61,6 +61,7 @@ namespace Hurricane.ViewModels
                         Settings.HurricaneSettings.Instance.Config = Config;
                         if (Config.SoundOutDeviceID != original.SoundOutDeviceID) { MusicManager.CSCoreEngine.UpdateSoundOut(); }
                         if (original.Language != Config.Language) { Config.LoadLanguage(); }
+                        if (original.Theme != Config.Theme) { Config.LoadTheme(); }
                         Config = Utilities.ObjectCopier.Clone<Settings.ConfigSettings>(Settings.HurricaneSettings.Instance.Config);
                         OnPropertyChanged("CanApply");
                         CurrentLanguage = Config.Languages.First((x) => x.Code == Config.Language);

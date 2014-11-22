@@ -101,4 +101,5 @@
 
     <system:String x:Key="includesubfolder">Unterordner einschließen</system:String>
     <system:String x:Key="add">Hinzufügen</system:String>
+    <system:String x:Key="theme">Design</system:String>
 </ResourceDictionary>

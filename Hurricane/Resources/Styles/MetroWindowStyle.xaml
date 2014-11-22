@@ -6,7 +6,7 @@
                 <ControlTemplate TargetType="{x:Type ButtonBase}">
                     <Border
                             x:Name="Chrome"
-                            BorderBrush="Blue"
+                            BorderBrush="{DynamicResource AccentColorBrush}"
                             Margin="0"
                             Background="{TemplateBinding Background}"
                             SnapsToDevicePixels="True">
@@ -16,7 +16,7 @@
                         <Trigger Property="IsMouseOver" Value="True">
                             <Setter TargetName="txt" Property="Foreground" Value="White"/>
                             <Setter TargetName="Chrome" Property="BorderThickness" Value="1"/>
-                            <Setter TargetName="Chrome" Property="Background" Value="#3498DB"/>
+                            <Setter TargetName="Chrome" Property="Background" Value="{DynamicResource AccentColorBrush}"/>
                         </Trigger>
                         <Trigger Property="IsPressed" Value="True">
                             <Setter TargetName="Chrome" Property="Background" Value="Black"/>

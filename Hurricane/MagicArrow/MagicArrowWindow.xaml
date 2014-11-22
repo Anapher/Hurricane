@@ -11,6 +11,12 @@
             </BeginStoryboard>
         </EventTrigger>
     </Window.Triggers>
+    <Canvas Width="10.815" Height="45.103">
+        <Canvas>
+            <!-- Ebene 1/<Pfad> -->
+            <Path StrokeThickness="1.0" StrokeMiterLimit="1.0" Fill="{StaticResource AccentColorBrush}" Data="F1 M 0.500,0.500 L 5.500,0.500 L 10.500,5.274 L 10.500,40.284 L 5.728,45.241 L 0.500,45.241 L 0.500,0.500 Z" x:Name="arrow"/>
+            <Path StrokeThickness="3" VerticalAlignment="Center" HorizontalAlignment="Center" Stroke="White" Data="F1 M 0.406,0.296 L 5.591,7.343 L 0.406,14.567" Canvas.Left="1.5" Canvas.Top="14.666" x:Name="arrow2"/>
+        </Canvas>
+    </Canvas>
 
-    <Image Source="/Resources/MagicArrow/MagicArrow.png" Height="45" Width="10" x:Name="img"/>
 </Window>
