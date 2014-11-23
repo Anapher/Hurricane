@@ -132,10 +132,10 @@ namespace Hurricane.Music
 
         #endregion
 
-        public void OpenTrack(Track track)
+        public void OpenTrack(Track track, bool Crossfade = true)
         {
             if (CurrentTrack != null) { CurrentTrack.IsPlaying = false; CurrentTrack.Unload(); }
-            if (SoundSource != null) SoundSource.Dispose();
+            if (SoundSource != null && !Crossfade) { SoundSource.Dispose(); }
             track.IsPlaying = true;
             SoundSource = CodecFactory.Instance.GetCodec(track.Path);
             if (Settings.SampleRate == -1 && SoundSource.WaveFormat.SampleRate < 44100)
@@ -144,6 +144,11 @@ namespace Hurricane.Music
             }
             else if (Settings.SampleRate > -1) { SoundSource.ChangeSampleRate(Settings.SampleRate); }
 
+            /*
+            var fadeInOut = SoundSource.AppendSource(x => new FadeInOut(x));
+            linearFadeStrategy = new LinearFadeStrategy();
+            fadeInOut.FadeStrategy = linearFadeStrategy;
+            */
             SimpleNotificationSource notifysource = new SimpleNotificationSource(SoundSource);
             notifysource.Interval = 100;
             notifysource.BlockRead += notifysource_BlockRead;
@@ -161,6 +166,7 @@ namespace Hurricane.Music
             OnPropertyChanged("TrackLength");
             CurrentStateChanged();
             soundOut.Volume = Volume;
+            //if (Crossfade) { FadeIn(); }
             if (StartVisualization != null) StartVisualization(this, EventArgs.Empty);
             track.LastTimePlayed = DateTime.Now;
         }
@@ -205,13 +211,8 @@ namespace Hurricane.Music
         {
             if (CurrentTrack == null) return;
             if (soundOut.PlaybackState == PlaybackState.Playing)
-            {
-                soundOut.Pause();
-            }
-            else
-            {
-                soundOut.Play();
-            }
+            { soundOut.Pause(); }
+            else { soundOut.Play(); }
             CurrentStateChanged();
         }
 
@@ -228,7 +229,6 @@ namespace Hurricane.Music
             if (Settings.SoundOutDeviceID == "-0" && e.DeviceID != CurrentDeviceID)
             {
                 CurrentDeviceID = e.DeviceID;
-                System.Diagnostics.Debug.Print("SoundOutDevice changed");
                 System.Threading.Thread t = new System.Threading.Thread(() => { System.Threading.Thread.Sleep(100); System.Windows.Application.Current.Dispatcher.Invoke(() => UpdateSoundOut()); });
                 t.IsBackground = true;
                 t.Start();
@@ -255,7 +255,6 @@ namespace Hurricane.Music
                                 device = CurrentDevice;
                             }
                         }
-
                         if (device == null)
                         {
                             Settings.SoundOutDeviceID = "-0";
@@ -287,6 +286,46 @@ namespace Hurricane.Music
 
         public Settings.ConfigSettings Settings { get { return Hurricane.Settings.HurricaneSettings.Instance.Config; } }
 
+        /*
+        #region Crossfade
+        protected LinearFadeStrategy linearFadeStrategy;
+
+        protected void FadeOutAndDispose()
+        {
+            var fader = linearFadeStrategy;
+            var oldsoundsource = SoundSource;
+            //System.Diagnostics.Stopwatch sw = System.Diagnostics.Stopwatch.StartNew();
+            fader.FadingFinished += (s, e) =>
+            {
+                oldsoundsource.Dispose();
+                //System.Diagnostics.Debug.Print(sw.ElapsedMilliseconds.ToString());
+                //sw.Stop();
+            };
+            fader.StartFading(Volume, 0, 350); //350 -> 4135 ms
+        }
+
+        protected void FadeIn()
+        {
+            //Does not work
+            var fader = linearFadeStrategy;
+            var oldvolume = this.Volume;
+            this.Volume = 0;
+            fader.StartFading(0f, 0.3f, 350);
+            this.Volume = oldvolume;
+        }
+
+        private RelayCommand test;
+        public RelayCommand Test
+        {
+            get
+            {
+                if (test == null)
+                    test = new RelayCommand((object parameter) => { FadeIn(); });
+                return test;
+            }
+        }
+        #endregion
+        */
         #region Visualization Support
         Visualization.SampleAnalyser analyser;
         public bool GetFFTData(float[] fftDataBuffer)

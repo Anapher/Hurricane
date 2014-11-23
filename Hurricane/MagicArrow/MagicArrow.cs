@@ -41,6 +41,7 @@ namespace Hurricane.MagicArrow
         protected Side movedoutside;
         protected void MoveWindowOutOfScreen(Side side)
         {
+            BaseWindow.Topmost = true;
             if (MoveOut != null) MoveOut(this, EventArgs.Empty);
             double newleft;
             if (side == Side.Left) { newleft = -(BaseWindow.ActualWidth + 50); } else { newleft = maxwidth + BaseWindow.ActualWidth + 50; }
@@ -51,7 +52,7 @@ namespace Hurricane.MagicArrow
             outanimation.To = newleft;
             outanimation.Duration = TimeSpan.FromMilliseconds(150);
             outanimation.FillBehavior = FillBehavior.Stop;
-            outanimation.Completed += (s, e) => { BaseWindow.Left = newleft; };
+            outanimation.Completed += (s, e) => { BaseWindow.Left = newleft; BaseWindow.Topmost = false; };
             MoveWindowOutOfScreenStoryboard.Children.Add(outanimation);
             Storyboard.SetTargetName(outanimation, BaseWindow.Name);
             Storyboard.SetTargetProperty(outanimation, new PropertyPath(Window.LeftProperty));

@@ -109,6 +109,16 @@
                             Website
                         </Hyperlink>
                     </TextBlock>
+                    <TextBlock Margin="0,1,0,0">
+                        Freepik -
+                        <Hyperlink NavigateUri="http://www.freepik.com" RequestNavigate="Hyperlink_RequestNavigate">
+                            Website
+                        </Hyperlink>
+                         -
+                        <Hyperlink NavigateUri="https://creativecommons.org/licenses/by/3.0/" RequestNavigate="Hyperlink_RequestNavigate">
+                            License
+                        </Hyperlink>
+                    </TextBlock>
                 </StackPanel>
             </StackPanel>
         </ScrollViewer>

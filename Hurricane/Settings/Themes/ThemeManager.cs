@@ -79,5 +79,10 @@ namespace Hurricane.Settings.Themes
             if (other == null) return false;
             return this.SelectedColorTheme.FileName == other.SelectedColorTheme.FileName && this.UseCustomSpectrumAnalyzerColor == other.UseCustomSpectrumAnalyzerColor && this.SpectrumAnalyzerColor == other.SpectrumAnalyzerColor;
         }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
     }
 }

@@ -26,5 +26,10 @@ namespace Hurricane.Settings.Themes
             if (other == null) return false;
             return other.FileName == this.FileName;
         }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
     }
 }
