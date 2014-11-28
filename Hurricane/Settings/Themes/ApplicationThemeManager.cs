@@ -6,13 +6,14 @@ using System.Threading.Tasks;
 using System.Xml.Serialization;
 using System.Windows.Media;
 using System.Windows;
+using MahApps.Metro;
 
 namespace Hurricane.Settings.Themes
 {
     [Serializable]
-    public class ThemeManager
+    public class ApplicationThemeManager
     {
-        public ColorTheme SelectedColorTheme { get; set; }
+        public AccentColorTheme SelectedColorTheme { get; set; }
         public bool UseCustomSpectrumAnalyzerColor { get; set; }
         public string SpectrumAnalyzerHexColor { get; set; }
 
@@ -30,32 +31,23 @@ namespace Hurricane.Settings.Themes
             }
         }
 
-        private List<ColorTheme> themes;
+        private List<AccentColorTheme> themes;
         [XmlIgnore]
-        public List<ColorTheme> Themes
+        public List<AccentColorTheme> Themes
         {
             get
             {
                 if (themes == null)
                 {
-                    themes = new List<ColorTheme> { new ColorTheme() { FileName = "Blue" },
-                    new ColorTheme() { FileName = "Green"},
-                    new ColorTheme() { FileName = "Magenta"},
-                    new ColorTheme() { FileName = "Orange" },
-                    new ColorTheme() { FileName = "Red" },
-                    new ColorTheme() { FileName = "Siena" }};
+                    themes = ThemeManager.Accents.Select(a => new AccentColorTheme() { Name = a.Name }).OrderBy((x) => x.TranslatedName).ToList(); ;
                 }
                 return themes;
             }
         }
 
-        private ResourceDictionary lasttheme;
         public void LoadTheme()
         {
-            if (lasttheme != null) Application.Current.Resources.Remove(lasttheme);
-            var s = string.Format("/Resources/Themes/{0}.xaml", SelectedColorTheme.FileName);
-            lasttheme = new ResourceDictionary() { Source = new Uri(s, UriKind.Relative) };
-            Application.Current.Resources.MergedDictionaries.Add(lasttheme);
+            SelectedColorTheme.ApplyTheme();
             if (UseCustomSpectrumAnalyzerColor)
             {
                 Application.Current.Resources["SpectrumAnalyzerBrush"] = new SolidColorBrush((Color)ColorConverter.ConvertFromString(SpectrumAnalyzerHexColor));
@@ -68,16 +60,16 @@ namespace Hurricane.Settings.Themes
 
         public void LoadStandard()
         {
-            this.SelectedColorTheme = Themes[0];
+            this.SelectedColorTheme = Themes.Where((x) => x.Name == "Blue").First();
             this.UseCustomSpectrumAnalyzerColor = false;
             this.SpectrumAnalyzerHexColor = null;
         }
 
         public override bool Equals(object obj)
         {
-            var other = obj as ThemeManager;
+            var other = obj as ApplicationThemeManager;
             if (other == null) return false;
-            return this.SelectedColorTheme.FileName == other.SelectedColorTheme.FileName && this.UseCustomSpectrumAnalyzerColor == other.UseCustomSpectrumAnalyzerColor && this.SpectrumAnalyzerColor == other.SpectrumAnalyzerColor;
+            return this.SelectedColorTheme.Name == other.SelectedColorTheme.Name && this.UseCustomSpectrumAnalyzerColor == other.UseCustomSpectrumAnalyzerColor && this.SpectrumAnalyzerColor == other.SpectrumAnalyzerColor;
         }
 
         public override int GetHashCode()

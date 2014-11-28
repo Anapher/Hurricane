@@ -85,7 +85,6 @@
                 <StackPanel Orientation="Vertical" Margin="10">
                     <TextBlock Text="Magic Arrow"/>
                     <Separator />
-                    <CheckBox Content="{DynamicResource disablemagicarrowingame}" IsChecked="{Binding Config.DisableMagicArrowInGame}" Checked="SomethingChanged" Unchecked="SomethingChanged" Margin="0,5,0,0"/>
                     <CheckBox Content="{DynamicResource showmagicarrowbelowcursor}" IsChecked="{Binding Config.ShowMagicArrowBelowCursor}" Margin="0,10,0,0" Checked="SomethingChanged" Unchecked="SomethingChanged"/>
                     <TextBlock Text="{DynamicResource notifications}" Margin="0,20,0,0"/>
                     <Separator />
@@ -106,7 +105,16 @@
                     </CheckBox>
                     <TextBlock Text="{DynamicResource theme}" Margin="0,20,0,0"/>
                     <Separator />
-                    <ComboBox Margin="0,5,0,0" ItemsSource="{Binding Config.Theme.Themes}" SelectedItem="{Binding Config.Theme.SelectedColorTheme}" DisplayMemberPath="Name" SelectionChanged="SomethingChanged"/>
+                    <ComboBox Margin="0,5,0,0" ItemsSource="{Binding Config.Theme.Themes}" SelectedItem="{Binding Config.Theme.SelectedColorTheme}" SelectionChanged="SomethingChanged">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <DockPanel>
+                                    <Ellipse Width="16" Height="16" Fill="{Binding ColorBrush}"/>
+                                    <TextBlock Text="{Binding TranslatedName}" Margin="10,0,0,0"/>
+                                </DockPanel>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
                     <DockPanel Margin="0,5,0,0" >
                         <CheckBox Content="{DynamicResource SpectrumAnalyzerColor}" VerticalAlignment="Center" IsChecked="{Binding Config.Theme.UseCustomSpectrumAnalyzerColor}" Checked="SomethingChanged" Unchecked="SomethingChanged"/>
                         <tkt:ColorPicker Margin="10,0,0,0" IsEnabled="{Binding Config.Theme.UseCustomSpectrumAnalyzerColor}" SelectedColor="{Binding Config.Theme.SpectrumAnalyzerColor}" SelectedColorChanged="SomethingChanged"/>

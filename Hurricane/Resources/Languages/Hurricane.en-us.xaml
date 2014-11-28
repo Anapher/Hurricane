@@ -1,7 +1,7 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:system="clr-namespace:System;assembly=mscorlib">
-    <system:String x:Key="DateFormat">MM.dd.yyyy hh:mm</system:String>
+    <system:String x:Key="DateFormat">MM.dd.yyyy hh:mm tt</system:String>
     <system:String x:Key="search">Search...</system:String>
     <system:String x:Key="previoustrack">Previous track</system:String>
     <system:String x:Key="nexttrack">Next track</system:String>
@@ -58,7 +58,6 @@
     <system:String x:Key="apply">Apply</system:String>
     <system:String x:Key="playback">Playback</system:String>
     <system:String x:Key="device">Device</system:String>
-    <system:String x:Key="disablemagicarrowingame">Disable Magic Arrow during a fullscreen application</system:String>
     <system:String x:Key="samplesourcebits">Sample Source Bitrate</system:String>
     <system:String x:Key="samplerate">Samplerate</system:String>
     <system:String x:Key="showmagicarrowbelowcursor">Show Magic Arrow directly under the cursor</system:String>
@@ -102,11 +101,28 @@
     <system:String x:Key="add">Add</system:String>
     <system:String x:Key="theme">Theme</system:String>
 
+    <system:String x:Key="Amber">Amber</system:String>
     <system:String x:Key="Blue">Blue</system:String>
+    <system:String x:Key="Brown">Brown</system:String>
+    <system:String x:Key="Cobalt">Cobalt</system:String>
+    <system:String x:Key="Crimson">Crimson</system:String>
+    <system:String x:Key="Cyan">Cyan</system:String>
+    <system:String x:Key="Emerald">Emerald</system:String>
     <system:String x:Key="Green">Green</system:String>
+    <system:String x:Key="Indigo">Indigo</system:String>
+    <system:String x:Key="Lime">Lime</system:String>
     <system:String x:Key="Magenta">Magenta</system:String>
+    <system:String x:Key="Mauve">Mauve</system:String>
+    <system:String x:Key="Olive">Olive</system:String>
     <system:String x:Key="Orange">Orange</system:String>
+    <system:String x:Key="Pink">Pink</system:String>
+    <system:String x:Key="Purple">Purple</system:String>
     <system:String x:Key="Red">Red</system:String>
-    <system:String x:Key="Siena">Siena</system:String>
+    <system:String x:Key="Sienna">Sienna</system:String>
+    <system:String x:Key="Steel">Steel</system:String>
+    <system:String x:Key="Taupe">Taupe</system:String>
+    <system:String x:Key="Teal">Teal</system:String>
+    <system:String x:Key="Violet">Violet</system:String>
+    <system:String x:Key="Yellow">Yellow</system:String>
     <system:String x:Key="SpectrumAnalyzerColor">Spectrum Analyzer Color:</system:String>
 </ResourceDictionary>

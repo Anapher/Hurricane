@@ -132,24 +132,23 @@ namespace Hurricane.Music
 
         #endregion
 
-        public void OpenTrack(Track track, bool Crossfade = true)
+        public void OpenTrack(Track track)
         {
             if (CurrentTrack != null) { CurrentTrack.IsPlaying = false; CurrentTrack.Unload(); }
-            if (SoundSource != null && !Crossfade) { SoundSource.Dispose(); }
+            if (SoundSource != null) { SoundSource.Dispose(); }
             track.IsPlaying = true;
             SoundSource = CodecFactory.Instance.GetCodec(track.Path);
-            if (Settings.SampleRate == -1 && SoundSource.WaveFormat.SampleRate < 44100)
-            {
-                SoundSource = SoundSource.ChangeSampleRate(44100);
-            }
-            else if (Settings.SampleRate > -1) { SoundSource.ChangeSampleRate(Settings.SampleRate); }
-
-            /*
             var fadeInOut = SoundSource.AppendSource(x => new FadeInOut(x));
             linearFadeStrategy = new LinearFadeStrategy();
             fadeInOut.FadeStrategy = linearFadeStrategy;
-            */
-            SimpleNotificationSource notifysource = new SimpleNotificationSource(SoundSource);
+
+            if (Settings.SampleRate == -1 && fadeInOut.WaveFormat.SampleRate < 44100)
+            {
+                SoundSource = SoundSource.ChangeSampleRate(44100);
+            }
+            else if (Settings.SampleRate > -1) { fadeInOut.ChangeSampleRate(Settings.SampleRate); }
+
+            SimpleNotificationSource notifysource = new SimpleNotificationSource(fadeInOut.ToWaveSource());
             notifysource.Interval = 100;
             notifysource.BlockRead += notifysource_BlockRead;
             this.MusicEqualizer = Equalizer.Create10BandEqualizer(notifysource);
@@ -166,9 +165,10 @@ namespace Hurricane.Music
             OnPropertyChanged("TrackLength");
             CurrentStateChanged();
             soundOut.Volume = Volume;
-            //if (Crossfade) { FadeIn(); }
+
             if (StartVisualization != null) StartVisualization(this, EventArgs.Empty);
             track.LastTimePlayed = DateTime.Now;
+            //FadeIn();
         }
 
         protected void CurrentStateChanged()
@@ -267,6 +267,7 @@ namespace Hurricane.Music
             soundOut = new WasapiOut();
             soundOut.Device = device;
             soundOut.Volume = Volume;
+            soundOut.Latency = 50;
             soundOut.Stopped += soundOut_Stopped;
         }
 
@@ -286,46 +287,45 @@ namespace Hurricane.Music
 
         public Settings.ConfigSettings Settings { get { return Hurricane.Settings.HurricaneSettings.Instance.Config; } }
 
-        /*
         #region Crossfade
         protected LinearFadeStrategy linearFadeStrategy;
 
-        protected void FadeOutAndDispose()
+        protected void FadeOutAndDispose(TimeSpan duration)
         {
-            var fader = linearFadeStrategy;
             var oldsoundsource = SoundSource;
-            //System.Diagnostics.Stopwatch sw = System.Diagnostics.Stopwatch.StartNew();
-            fader.FadingFinished += (s, e) =>
-            {
-                oldsoundsource.Dispose();
-                //System.Diagnostics.Debug.Print(sw.ElapsedMilliseconds.ToString());
-                //sw.Stop();
-            };
-            fader.StartFading(Volume, 0, 350); //350 -> 4135 ms
+            //await Task.Run(() => Fade(this.Volume, 0, TimeSpan.FromMilliseconds(1000), false));
         }
 
-        protected void FadeIn()
+        /*
+        protected async void Fade(float from, float to, TimeSpan duration, bool GetLouder)
         {
-            //Does not work
-            var fader = linearFadeStrategy;
-            var oldvolume = this.Volume;
-            this.Volume = 0;
-            fader.StartFading(0f, 0.3f, 350);
-            this.Volume = oldvolume;
-        }
+            float different = Math.Abs(to - from);
+            float step = different / ((float)duration.TotalMilliseconds / 20);
+            float currentvolume = from;
 
-        private RelayCommand test;
-        public RelayCommand Test
-        {
-            get
+            for (int i = 0; i < duration.TotalMilliseconds / 20; i++)
             {
-                if (test == null)
-                    test = new RelayCommand((object parameter) => { FadeIn(); });
-                return test;
+                await Task.Delay(20);
+                if (GetLouder) { currentvolume += step; } else { currentvolume -= step; }
+                soundOut.Volume = currentvolume;
             }
         }
-        #endregion
         */
+        protected void FadeIn()
+        {
+            linearFadeStrategy.StartFading(0, this.Volume, TimeSpan.FromMilliseconds(5000));
+            System.Diagnostics.Stopwatch sw = System.Diagnostics.Stopwatch.StartNew();
+            linearFadeStrategy.FadingFinished += (s, e) => { System.Diagnostics.Debug.Print("Zeit: {0}", sw.ElapsedMilliseconds.ToString()); };
+            Task.Run(async () => {
+                while (linearFadeStrategy.IsFading)
+                {
+                    await Task.Delay(100);
+                    System.Diagnostics.Debug.Print(linearFadeStrategy.CurrentVolume.ToString());
+                }
+            });
+        }
+        #endregion
+
         #region Visualization Support
         Visualization.SampleAnalyser analyser;
         public bool GetFFTData(float[] fftDataBuffer)

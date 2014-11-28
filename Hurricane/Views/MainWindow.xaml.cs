@@ -34,6 +34,7 @@ namespace Hurricane
         {
             InitializeComponent();
             System.Windows.Media.MediaTimeline.DesiredFrameRateProperty.OverrideMetadata(typeof(System.Windows.Media.Animation.Timeline), new FrameworkPropertyMetadata(60));
+
             MagicArrow = new MagicArrow.MagicArrow();
             MagicArrow.Register(this);
             MagicArrow.MoveOut += (s, e) => { ViewModels.MainViewModel.Instance.MoveOut(); SpectrumAnalyzer.RefreshInterval = 2000; };
@@ -64,6 +65,7 @@ namespace Hurricane
             catch (Exception ex)
             {
                 MessageBox.Show(ex.ToString());
+                App.Current.Shutdown();
             }
         }
 
@@ -150,6 +152,7 @@ namespace Hurricane
         {
             e.Effects = DragDropEffects.Move; //Always move because if we would check if it's a file or not, the drag & drop function for the items wouldn't work
         }
+        
         #endregion
 
         #region Windowlogic

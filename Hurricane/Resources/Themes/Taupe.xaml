@@ -1,0 +1,11 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/Taupe.xaml" />
+    </ResourceDictionary.MergedDictionaries>
+
+    <SolidColorBrush x:Key="LightColorBrush" Color="#CCA3966A"/>
+    <SolidColorBrush x:Key="BrightColorBrush" Color="#CC918459"/>
+    <SolidColorBrush x:Key="NormalColorBrush" Color="#CC8F8155"/>
+    <SolidColorBrush x:Key="DarkColorBrush" Color="#CC686044"/>
+</ResourceDictionary>

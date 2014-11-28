@@ -1,0 +1,11 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/Violet.xaml" />
+    </ResourceDictionary.MergedDictionaries>
+
+    <SolidColorBrush x:Key="LightColorBrush" Color="#CCB735F7"/>
+    <SolidColorBrush x:Key="BrightColorBrush" Color="#CCAC1AF5"/>
+    <SolidColorBrush x:Key="NormalColorBrush" Color="#CCA101F0"/>
+    <SolidColorBrush x:Key="DarkColorBrush" Color="#CC590084"/>
+</ResourceDictionary>

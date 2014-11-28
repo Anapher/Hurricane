@@ -75,7 +75,6 @@ namespace Hurricane.MagicArrow.DockManager
             currentside = side;
             side = DockingSide.None;
             CloseWindowIfExists();
-
         }
 
         public void InitializeWindow()

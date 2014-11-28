@@ -34,7 +34,6 @@ namespace Hurricane.Settings
         public int SampleRate { get; set; }
 
         //Magic Arrow
-        public bool DisableMagicArrowInGame { get; set; }
         public bool ShowMagicArrowBelowCursor { get; set; }
         public MagicArrow.DockManager.DockingApplicationState ApplicationState { get; set; }
 
@@ -42,7 +41,7 @@ namespace Hurricane.Settings
         public string Language { get; set; }
         public Notification.NotificationType Notification { get; set; }
         public bool DisableNotificationInGame { get; set; }
-        public ThemeManager Theme { get; set; }
+        public ApplicationThemeManager Theme { get; set; }
 
         private List<LanguageInfo> languages;
         [XmlIgnore]
@@ -73,7 +72,6 @@ namespace Hurricane.Settings
             RandomTrack = false;
             EqualizerSettings = new Music.EqualizerSettings();
             EqualizerSettings.CreateNew();
-            DisableMagicArrowInGame = true;
             DisableNotificationInGame = true;
             ShowMagicArrowBelowCursor = true;
             WaveSourceBits = 16;
@@ -81,7 +79,7 @@ namespace Hurricane.Settings
             if (System.Threading.Thread.CurrentThread.CurrentCulture.TwoLetterISOLanguageName == "de") { this.Language = "de"; } else { this.Language = "en"; }
             Notification = Hurricane.Notification.NotificationType.Top;
             ApplicationState = null;
-            Theme = new ThemeManager();
+            Theme = new ApplicationThemeManager();
             Theme.LoadStandard();
         }
 
@@ -126,7 +124,6 @@ namespace Hurricane.Settings
         {
             if (other == null) return false;
             return (CompareTwoValues(this.SoundOutDeviceID, other.SoundOutDeviceID) &&
-                CompareTwoValues(this.DisableMagicArrowInGame, other.DisableMagicArrowInGame) &&
                 CompareTwoValues(this.WaveSourceBits, other.WaveSourceBits) &&
                 CompareTwoValues(this.ShowMagicArrowBelowCursor, other.ShowMagicArrowBelowCursor) &&
                 CompareTwoValues(this.SampleRate, other.SampleRate) &&

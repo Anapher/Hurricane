@@ -8,7 +8,7 @@ using System.Windows.Media.Imaging;
 
 namespace Hurricane.Extensions.Converter
 {
-    class VolumeToIndex : IValueConverter
+    class VolumeToImage : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {

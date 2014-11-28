@@ -41,11 +41,22 @@ namespace Hurricane
                 IntPtr hwnd = FindWindow(null, "Hurricane");
                 SendMessage(hwnd, BringTheWindowToFrontMessage, IntPtr.Zero, IntPtr.Zero);
                 App.Current.Shutdown();
+                return;
             }
 
-            ResourceDictionary dict = new ResourceDictionary();
-            dict.Source = new Uri("/Resources/Languages/Hurricane.de-de.xaml", UriKind.Relative);
-            this.Resources.MergedDictionaries.Add(dict);
+            if (Environment.GetCommandLineArgs().Length > 1)
+            {
+                switch (Environment.GetCommandLineArgs()[1])
+                {
+                    case "/test":
+                        Views.Test.TestWindow view = new Views.Test.TestWindow();
+                        view.Show();
+                        return;
+                }
+            }
+
+            Hurricane.MainWindow window = new MainWindow();
+            window.Show();
         }
 
         protected override void OnExit(ExitEventArgs e)

@@ -11,7 +11,7 @@
         xmlns:jas="clr-namespace:Hurricane.Resources.Styles.DragDropListView.ServiceProviders.UI"
         DataContext="{x:Static viewmodels:MainViewModel.Instance}"
         Title="Hurricane" Width="300" MinWidth="300" MaxWidth="300" MinHeight="400" Height="1000" SizeToContent="Manual" x:Name="window" Icon="/Resources/App/icon.ico"
-        ex:WindowCustomizer.CanMaximize="False" ex:WindowCustomizer.CanMinimize="False" ShowTitleBar="False" ShowMinButton="False" ShowMaxRestoreButton="False" ShowIconOnTitleBar="False" ShowCloseButton="False" GlowBrush="{DynamicResource AccentColorBrush}">
+        ex:WindowCustomizer.CanMaximize="False" ex:WindowCustomizer.CanMinimize="False" ShowTitleBar="False" ShowSystemMenuOnRightClick="False" ShowMinButton="False" ShowMaxRestoreButton="False" ShowIconOnTitleBar="False" ShowCloseButton="False" IsWindowDraggable="False" GlowBrush="{DynamicResource AccentColorBrush}">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -63,7 +63,7 @@
                     </StackPanel>
                     <TextBlock Margin="10,10,0,10" VerticalAlignment="Center" 
                                                        Foreground="#FFAAAAAA" TextWrapping="NoWrap" 
-                                                       Text="Hurricane" FontSize="16" HorizontalAlignment="Center"/>
+                                                       Text="Hurricane" FontSize="16" HorizontalAlignment="Center" Grid.ColumnSpan="2"/>
                     <Button x:Name="PART_CLOSE" Grid.Column="1"
                                                     VerticalAlignment="Center" Margin="5,0,10,0"
                                                     Height="20" Width="20" 
@@ -159,7 +159,7 @@
                     </Grid.ColumnDefinitions>
                     <DockPanel Grid.Column="1" Margin="20,0,0,0">
                         <DockPanel.Resources>
-                            <converter:VolumeToIndex x:Key="VolumeToImage"/>
+                            <converter:VolumeToImage x:Key="VolumeToImage"/>
                         </DockPanel.Resources>
                         <Image Source="{Binding ElementName=volumeslider,Path=Value,Converter={StaticResource VolumeToImage}}" Width="24" Height="24"/>
                         <Slider x:Name="volumeslider" Maximum="1" Minimum="0" IsMoveToPointEnabled="True" Style="{StaticResource VolumeSlider}" VerticalAlignment="Center" LargeChange="0.1" Value="{Binding MusicManager.CSCoreEngine.Volume}"/>
@@ -418,7 +418,7 @@
                     </ListView.ItemTemplate>
                 </ListView>
                 <StackPanel Orientation="Vertical" Grid.Row="2" Margin="5,0,5,5">
-                    <TextBox controls:TextboxHelper.Watermark="{StaticResource search}" Text="{Binding MusicManager.SearchText,UpdateSourceTrigger=PropertyChanged}"/>
+                    <TextBox controls:TextBoxHelper.Watermark="{StaticResource search}" Text="{Binding MusicManager.SearchText,UpdateSourceTrigger=PropertyChanged}"/>
                 </StackPanel>
             </Grid>
         </Grid>

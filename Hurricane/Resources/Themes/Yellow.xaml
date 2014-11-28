@@ -1,0 +1,11 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/Yellow.xaml" />
+    </ResourceDictionary.MergedDictionaries>
+
+    <SolidColorBrush x:Key="LightColorBrush" Color="#CCFFE537"/>
+    <SolidColorBrush x:Key="BrightColorBrush" Color="#CCF7DA17"/>
+    <SolidColorBrush x:Key="NormalColorBrush" Color="#CCF2D406"/>
+    <SolidColorBrush x:Key="DarkColorBrush" Color="#CC736707"/>
+</ResourceDictionary>

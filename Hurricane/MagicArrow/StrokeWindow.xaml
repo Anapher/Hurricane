@@ -1,0 +1,5 @@
+﻿<Window x:Class="Hurricane.MagicArrow.StrokeWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        ShowInTaskbar="False" WindowStyle="None" AllowsTransparency="True" Width="20" Left="-19" Height="10" SnapsToDevicePixels="True" Topmost="True" ShowActivated="False" Background="White" Opacity="0.01">
+</Window>

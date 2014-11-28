@@ -25,7 +25,7 @@ namespace Hurricane.MagicArrow
 
         private bool CanClose = true;
         private Side currentside;
-        public MagicArrowWindow(int top, double fromleft, double toleft, Side side)
+        public MagicArrowWindow(double top, double fromleft, double toleft, Side side)
         {
             this.FromLeft = fromleft;
             this.ToLeft = toleft;

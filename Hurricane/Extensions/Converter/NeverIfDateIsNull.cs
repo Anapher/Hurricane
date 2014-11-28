@@ -17,6 +17,7 @@ namespace Hurricane.Extensions.Converter
                 return Application.Current.FindResource("never").ToString();
             }
             else { return ((DateTime)value).ToString(Application.Current.FindResource("DateFormat").ToString()); }
+
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
