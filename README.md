@@ -3,11 +3,11 @@ Hurricane
 
 Hurricane is a powerful music player written in C# based on the [CSCore sound library](https://cscore.codeplex.com/).
 
-![Hurricane](http://s14.directupload.net/images/141109/dbvv274f.png)
+![Hurricane](http://www.vincentgri.de/hurricane/images/GitHub/Wallpaper.png)
 
 The goal is that you don't get annoyed by Hurricane so it's only visible if you really need it. If you need Hurricane, you can move your mouse to the left side of your monitor, so a blue arrow appears:
 
-![Magic Arrow](http://s14.directupload.net/images/141109/lrgkvg95.png)
+![Magic Arrow](http://www.vincentgri.de/hurricane/images/GitHub/MagicArrow.png)
 
 If you click on it, Hurricane appears.
 
@@ -22,6 +22,7 @@ A standard music player. Hurricane is a music player for listen music while you 
  - Modern design
  - Highly optimized Performance
  - Multilanguage (english and german)
+ - Colorthemes
  
 
 ##License
