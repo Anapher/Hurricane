@@ -44,10 +44,12 @@ namespace Hurricane.MagicArrow
             if (Utilities.WindowHelper.WindowIsFullscreen(hwnd))
             {
                 if (!strokewindow.IsInvisible) strokewindow.MoveInvisible();
+                System.Diagnostics.Debug.Print("{0}: Its a fullscreen window",DateTime.Now.ToString());
             }
             else
             {
                 if (strokewindow.IsInvisible) strokewindow.MoveVisible();
+                System.Diagnostics.Debug.Print("{0}: It isnt a fullscreen window", DateTime.Now.ToString());
             }
             if (!strokewindow.IsInvisible)
             {
@@ -118,6 +120,7 @@ namespace Hurricane.MagicArrow
                 strokewindow.Close();
                 strokewindow = null;
             }
+            activewindowhook.Unhook();
         }
 
         protected void StartMagic()
@@ -127,12 +130,8 @@ namespace Hurricane.MagicArrow
             strokewindow.MouseMove += strokewindow_MouseMove;
             strokewindow.MouseLeave += strokewindow_MouseLeave;
             activewindowhook.Hook();
+            activewindowhook.RaiseOne(); //If the current window is fullscreen, the event wouldn't be raised (because nothing changed)
             mousewasover = false;
-            Task.Run(async () =>
-            {
-                await Task.Delay(3000);
-                if (!mousewasover) HideMagicArrow();
-            });
         }
 
         protected bool MagicArrowIsShown = false;
@@ -188,6 +187,15 @@ namespace Hurricane.MagicArrow
             MagicWindow.MouseLeave += MagicWindow_MouseLeave;
             MagicWindow.Show();
             MagicWindow.FilesDropped += (s, e) => { if (this.FilesDropped != null) this.FilesDropped(this, e); };
+            Task.Run(async () =>
+            {
+                while (MagicArrowIsShown)
+                {
+                    await Task.Delay(3000);
+                    int cursorX = System.Windows.Forms.Cursor.Position.X;
+                    if ((movedoutside == Side.Left && cursorX > 4) || (movedoutside == Side.Right && cursorX < maxwidth - 4)) Application.Current.Dispatcher.Invoke(() => HideMagicArrow());
+                }
+            });
         }
 
         void MagicWindow_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
@@ -210,7 +218,6 @@ namespace Hurricane.MagicArrow
                 MagicWindow.Close();
                 MagicWindow = null;
             }
-            activewindowhook.Unhook();
         }
         #endregion
 

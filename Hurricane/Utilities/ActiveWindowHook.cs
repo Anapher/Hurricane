@@ -11,8 +11,6 @@ namespace Hurricane.Utilities
     {
         [DllImport("user32.dll")]
         static extern IntPtr GetForegroundWindow();
-        [DllImport("user32.dll")]
-        static extern int GetWindowText(IntPtr hWnd, StringBuilder text, int count);
 
         [DllImport("user32.dll")]
         static extern bool UnhookWinEvent(IntPtr hWinEventHook);
@@ -47,6 +45,12 @@ namespace Hurricane.Utilities
                 if (ActiveWindowChanged != null)
                     ActiveWindowChanged(this, hwnd);
             }
+        }
+
+        public void RaiseOne()
+        {
+            if (ActiveWindowChanged != null)
+                ActiveWindowChanged(this, GetForegroundWindow());
         }
 
         public void Unhook()
