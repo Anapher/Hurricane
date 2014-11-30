@@ -52,6 +52,8 @@ namespace Hurricane.ViewModels
             KListener.KeyDown += KListener_KeyDown;
             System.Diagnostics.Debug.Print("MainViewModel: {0}", sw.ElapsedMilliseconds.ToString());
             sw.Stop();
+            Updater = new Settings.UpdateService(MySettings.Config.Language == "de" ? Settings.UpdateService.Language.German : Settings.UpdateService.Language.English);
+            Updater.CheckForUpdates(BaseWindow);
         }
         #endregion
 
@@ -266,6 +268,21 @@ namespace Hurricane.ViewModels
                 return opentrackinformations;
             }
         }
+
+        private RelayCommand openupdater;
+        public RelayCommand OpenUpdater
+        {
+            get
+            {
+                if (openupdater == null)
+                    openupdater = new RelayCommand((object parameter) =>
+                    {
+                        Views.UpdateWindow window = new Views.UpdateWindow(Updater) { Owner = BaseWindow };
+                        window.ShowDialog();
+                    });
+                return openupdater;
+            }
+        }
         #endregion
 
         #region Methods
@@ -424,6 +441,16 @@ namespace Hurricane.ViewModels
             set
             {
                 SetProperty(value, ref musicmanager);
+            }
+        }
+        
+        private Settings.UpdateService updater;
+        public Settings.UpdateService Updater
+        {
+            get { return updater; }
+            set
+            {
+                SetProperty(value, ref updater);
             }
         }
         #endregion

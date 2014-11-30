@@ -8,7 +8,7 @@ using System.Windows;
 // Attribute gesteuert. Ändern Sie diese Attributwerte, um die Informationen zu ändern,
 // die mit einer Assembly verknüpft sind.
 [assembly: AssemblyTitle("Hurricane")]
-[assembly: AssemblyDescription("Hurricane is a powerful music player based on CScore")]
+[assembly: AssemblyDescription("Hurricane is a powerful music player based on CSCore")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("Hurricane")]

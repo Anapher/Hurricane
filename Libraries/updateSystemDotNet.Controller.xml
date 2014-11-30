@@ -1,0 +1,2926 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>updateSystemDotNet.Controller</name>
+    </assembly>
+    <members>
+        <member name="F:updateSystemDotNet.Internal.Strings.AppTitle">
+            <summary>
+            Der Titel der in Nachrichtenfelder etc angezeigt werden soll
+            </summary>
+        </member>
+        <member name="F:updateSystemDotNet.Internal.Strings.CompleteAppRegHive">
+            <summary>
+            Der Registry-Path an welchem die Orte der PoolAssemblies gespeichert werden mit HKCU
+            </summary>
+        </member>
+        <member name="F:updateSystemDotNet.Internal.Strings.AppRegHive">
+            <summary>
+            Der Registry-Path an welchem die Orte der PoolAssemblies gespeichert werden ohne HKCU
+            </summary>
+        </member>
+        <member name="T:updateSystemDotNet.checkForUpdatesCompletedEventHandler">
+            <summary>
+            Stellt die Methode dar, welche das <see cref="E:updateSystemDotNet.updateController.checkForUpdatesCompleted"/>-Event des <see cref="T:updateSystemDotNet.updateController"/> behandelt.
+            </summary>
+            <param name="sender">Die Quelle des Ereignisses.</param>
+            <param name="e">Ein <see cref="T:updateSystemDotNet.appEventArgs.checkForUpdatesCompletedEventArgs"/>, das die Ereignisdaten enthält.</param>
+        </member>
+        <member name="T:updateSystemDotNet.downloadUpdatesCompletedEventHandler">
+            <summary>
+            Stellt die Methode dar, welche das <see cref="E:updateSystemDotNet.updateController.downloadUpdatesCompleted"/>-Event des <see cref="T:updateSystemDotNet.updateController"/> behandelt.
+            </summary>
+            <param name="sender">Die Quelle des Ereignisses.</param>
+            <param name="e">Ein <see cref="T:System.ComponentModel.AsyncCompletedEventArgs"/>, das die Ereignisdaten enthält.</param>
+        </member>
+        <member name="T:updateSystemDotNet.downloadUpdatesProgressChangedEventHandler">
+            <summary>
+            Stellt die Methode dar, welche das <see cref="E:updateSystemDotNet.updateController.downloadUpdatesProgressChanged"/>-Event des <see cref="T:updateSystemDotNet.updateController"/> behandelt.
+            </summary>
+            <param name="sender">Die Quelle des Ereignisses.</param>
+            <param name="e">Ein <see cref="T:updateSystemDotNet.appEventArgs.downloadUpdatesProgressChangedEventArgs"/>, das die Ereignisdaten enthält.</param>
+        </member>
+        <member name="T:updateSystemDotNet.updateFoundEventHandler">
+            <summary>
+            Stellt die Methode dar, welche das <see cref="E:updateSystemDotNet.updateController.updateFound"/>-Event des <see cref="T:updateSystemDotNet.updateController"/> behandelt.
+            </summary>
+            <param name="sender">Die Quelle des Ereignisses.</param>
+            <param name="e">Ein <see cref="T:updateSystemDotNet.appEventArgs.updateFoundEventArgs"/>, das die Ereignisdaten enthält.</param>
+        </member>
+        <member name="T:updateSystemDotNet.updateInstallerStartedEventHandler">
+            <summary>
+            Stellt die Methode dar, welche das <see cref="E:updateSystemDotNet.updateController.updateInstallerStarted"/>-Event des <see cref="T:updateSystemDotNet.updateController"/> behandelt.
+            </summary>
+            <param name="sender">Die Quelle des Ereignisses.</param>
+            <param name="e">Ein <see cref="N:updateSystemDotNet.appEventArgs"/>, das die Ereignisdaten enthält.</param>
+        </member>
+        <member name="T:updateSystemDotNet.confirmUpdatePackageEventHandler">
+            <summary>
+            Stellt die Methode dar, welche das <see cref="E:updateSystemDotNet.updateController.confirmUpdatePackage"/>-Event des <see cref="T:updateSystemDotNet.updateController"/> behandelt.
+            </summary>
+            <param name="sender">Die Quelle des Ereignisses.</param>
+            <param name="e">Ein <see cref="T:updateSystemDotNet.appEventArgs.confirmUpdatePackageEventArgs"/></param>, das die Ereignisdaten enthält.
+            <returns>True wenn das Paket in die Liste der neuen Updates übernommen werden soll, False wenn es übersprungen werden soll.</returns>
+        </member>
+        <member name="T:updateSystemDotNet.appExceptions.corruptUpdateInstallerException">
+            <summary>
+            Die Ausnahme die ausgelöst wird, wenn die Prüfsumme des updateInstallers nicht bestätigt werden konnte.
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.appExceptions.corruptUpdateInstallerException.Message">
+            <summary>
+            Gibt eine Nachricht zurück welche den Fehler näher beschreibt.
+            </summary>
+        </member>
+        <member name="T:updateSystemDotNet.appEventArgs.downloadUpdatesProgressChangedEventArgs">
+            <summary>
+            Stellt Daten für das <see cref="E:updateSystemDotNet.updateController.downloadUpdatesProgressChanged"/>-Event des <see cref="T:updateSystemDotNet.updateController"/> bereit.
+            </summary>
+        </member>
+        <member name="T:updateSystemDotNet.Core.updateActions.renameFileAction">
+            <summary>
+            Updateaction zum umbennen einer Datei.
+            </summary>
+        </member>
+        <member name="T:updateSystemDotNet.Core.updateActions.actionBase">
+            <summary>
+            Abstrakte Klasse welche als Basis für alle Updateaktionen dient.
+            </summary>
+        </member>
+        <member name="M:updateSystemDotNet.Core.updateActions.actionBase.#ctor">
+            <summary>
+            Initialisiert eine neue Instanz von actionBase.
+            </summary>
+        </member>
+        <member name="M:updateSystemDotNet.Core.updateActions.actionBase.Validate">
+            <summary>
+            Überprüft in der Updateaction ob alle benötigen Parameter einen Wert besitzen.
+            </summary>
+            <returns>Gibt True zurück wenn die Überprüfung erfolgreich war, andernfalls false.</returns>
+        </member>
+        <member name="P:updateSystemDotNet.Core.updateActions.actionBase.ID">
+            <summary>
+            Gibt die eindeutige ID der Klasse zurück oder legt diese fest.
+            </summary>
+        </member>
+        <member name="M:updateSystemDotNet.Core.updateActions.renameFileAction.ToString">
+            <summary>
+            Gibt den Namen der Aktion zurück.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:updateSystemDotNet.Core.updateActions.renameFileAction.Validate">
+            <summary>
+            Überprüft in der Updateaction ob alle benötigen Parameter einen Wert besitzen.
+            </summary>
+            <returns>Gibt True zurück wenn die Überprüfung erfolgreich war, andernfalls false.</returns>
+        </member>
+        <member name="P:updateSystemDotNet.Core.updateActions.renameFileAction.Path">
+            <summary>
+            Gibt den vollständigen Pfad zu der Datei die umbenannt werden soll zurück oder legt diesen fest.
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.Core.updateActions.renameFileAction.newFilename">
+            <summary>
+            Gibt den neuen Dateinamen an oder legt diesen fest.
+            </summary>
+        </member>
+        <member name="T:updateSystemDotNet.Core.Types.updatePackage">
+            <summary>
+            Objekt welches Informationen über Updatepaket anbietet
+            </summary>
+        </member>
+        <member name="M:updateSystemDotNet.Core.Types.updatePackage.#ctor">
+            <summary>
+            Initialisiert eine neue Instanz von <see cref="T:updateSystemDotNet.Core.Types.updatePackage"/>.
+            </summary>
+        </member>
+        <member name="M:updateSystemDotNet.Core.Types.updatePackage.getFilename">
+            <summary>
+            Generiert den Dateinamen des Updatepaketes auf dem Server.
+            </summary>
+            <returns></returns>
+            <remarks>Neu in V.:1.1.</remarks>
+        </member>
+        <member name="M:updateSystemDotNet.Core.Types.updatePackage.getChangelogFilename">
+            <summary>
+            Generiert den Dateinamen des Changelogs auf dem Server
+            </summary>
+            <returns></returns>
+            <remarks>Neu in V.:1.1.</remarks>
+        </member>
+        <member name="M:updateSystemDotNet.Core.Types.updatePackage.Clone">
+            <summary>
+            Gibt eine Kopie des Objektes zurück.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="P:updateSystemDotNet.Core.Types.updatePackage.ID">
+            <summary>
+            Gibt die ID zur Identifizierung zurück oder legt diese fest.
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.Core.Types.updatePackage.Published">
+            <summary>
+            Gibt zurück oder legt fest, ob das Update veröffentlicht wurde.
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.Core.Types.updatePackage.Description">
+            <summary>
+            Gibt die Paketbeschreibung zurück oder legt diese fest.
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.Core.Types.updatePackage.Version">
+            <summary>
+            Gibt die Paketversion zurück oder legt diese fest.
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.Core.Types.updatePackage.ReleaseDate">
+            <summary>
+            Gibt das Datum zurück an welchem das Paket erstellt worden ist oder legt dieses fest.
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.Core.Types.updatePackage.packageSignature">
+            <summary>
+            Gibt die digitale Signatur zurück welche zur Validierung des Pakets verwendet werden soll oder legt diese fest.
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.Core.Types.updatePackage.UseOwnVersionList">
+            <summary>
+            Gibt an oder legt fest, ob nur eine bestimmte Liste mit erlaubten Versionen bei der Updatesuche verwendet werden soll.
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.Core.Types.updatePackage.OwnVersionList">
+            <summary>
+            Gibt die Liste mit den erlaubten Versionen zurück oder legt diese fest.
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.Core.Types.updatePackage.TargetArchitecture">
+            <summary>
+            Gibt die Prozessorarchitektur zurück für welche dieses Updatepaket ausgelegt ist oder legt diese fest.
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.Core.Types.updatePackage.packageSize">
+            <summary>
+            Gibt die Paketgröße in Byte zurück oder legt diese fest.
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.Core.Types.updatePackage.isBeta">
+            <summary>
+            Gibt an oder legt fest, ob es sich bei diesem Updatepaket um eine Betaversion handelt.
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.Core.Types.updatePackage.isServicePack">
+            <summary>
+            Gibt zurück oder legt fest, ob es sich bei diesem Updatepaket um ein Service Pack handelt.
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.Core.Types.updatePackage.releaseInfo">
+            <summary>
+            Gibt den Releasetype für dieses Updatepaket zurück oder legt diesen fest.
+            </summary>
+            <remarks>Neu in V.:1.1.</remarks>
+        </member>
+        <member name="P:updateSystemDotNet.Core.Types.updatePackage.useNewFileFormat">
+            <summary>
+            Gibt an oder legt fest ob für dieses Paket bereits der neue Dateiname verwendet wird.
+            </summary>
+            <remarks>Neu in V.:1.1.</remarks>
+        </member>
+        <member name="P:updateSystemDotNet.Core.Types.updatePackage.customFields">
+            <summary>Gibt ein Dictionary mit Benutzerdefinierten Daten zurück oder legt dieses fest.</summary>
+        </member>
+        <member name="P:updateSystemDotNet.Core.Types.updatePackage.actionOrder">
+            <summary>
+            Gibt die Reihenfolge der Updateactions zurück oder legt diese fest.
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.Core.Types.updatePackage.closeProcessActions">
+            <summary>
+            Gibt die closeProcessActions für das Updatepaket zurück oder legt diese fest.
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.Core.Types.updatePackage.startProcessActions">
+            <summary>
+            Gibt die startProcessActions für das Updatepaket zurück oder legt diese fest.
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.Core.Types.updatePackage.fileCopyActions">
+            <summary>
+            Gibt die fileCopyActions für das Updatepaket zurück oder legt diese fest.
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.Core.Types.updatePackage.renameFileActions">
+            <summary>
+            Gibt die renameFileActions für das Updatepaket zurück oder legt diese fest.
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.Core.Types.updatePackage.deleteFilesActions">
+            <summary>
+            Gibt die deleteFilesActions für das Updatepaket zurück oder legt diese fest.
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.Core.Types.updatePackage.startServiceActions">
+            <summary>
+            Gibt die startServiceActions für das Updatepaket zurück oder legt diese fest.
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.Core.Types.updatePackage.stopServiceActions">
+            <summary>
+            Gibt die stopServiceActions für das Updatepaket zurück oder legt diese fest.
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.Core.Types.updatePackage.addRegistryKeyActions">
+            <summary>
+            Gibt die addRegistryKeyActions für das Updatepaket zurück oder legt diese fest.
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.Core.Types.updatePackage.removeRegistryKeyActions">
+            <summary>
+            Gibt die removeRegistryKeyActions für das Updatepaket zurück oder legt diese fest.
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.Core.Types.updatePackage.addRegistryValueActions">
+            <summary>
+            Gibt die addRegistryValueActions für das Updatepaket zurück oder legt diese fest.
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.Core.Types.updatePackage.removeRegistryValueActions">
+            <summary>
+            Gibt die removeRegistryValueActions für das Updatetpaket zurück oder legt diese fest.
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.Core.Types.updatePackage.userInteractionActions">
+            <summary>
+            Gibt die userInteractionActions für das Updatepaket zurück oder legt diese fest.
+            </summary>
+        </member>
+        <member name="T:updateSystemDotNet.Core.Types.updatePackage.SupportedArchitectures">
+            <summary>
+            Enumeration mit unterstützten Prozessorarchitekturen
+            </summary>
+        </member>
+        <member name="F:updateSystemDotNet.Core.Types.updatePackage.SupportedArchitectures.Both">
+            <summary>
+            Beide Architekturen, x84 und x64
+            </summary>
+        </member>
+        <member name="F:updateSystemDotNet.Core.Types.updatePackage.SupportedArchitectures.x86">
+            <summary>
+            Nur x86
+            </summary>
+        </member>
+        <member name="F:updateSystemDotNet.Core.Types.updatePackage.SupportedArchitectures.x64">
+            <summary>
+            Nur x64
+            </summary>
+        </member>
+        <member name="T:updateSystemDotNet.Core.Helper">
+            <summary>
+            Klasse welche Hilfsfunktionen bereitstellt.
+            </summary>
+        </member>
+        <member name="M:updateSystemDotNet.Core.Helper.shrinkImage(System.Drawing.Image,System.Drawing.Size)">
+            <summary>
+            Verkleinert die Größe eines Bildes.
+            </summary>
+            <param name="originalImage">Das Bild welches verkleinert werden soll.</param>
+            <param name="newSize">Die neue Größe des Bildes.</param>
+            <returns>Gibt das verkleinerte Bild zurück.</returns>
+        </member>
+        <member name="M:updateSystemDotNet.Core.Helper.hashPassword(System.String)">
+            <summary>
+            Berechnet den Saltedhash eines Passwortes.
+            </summary>
+            <param name="plainPassword">Das Passwort das gehasht werden soll.</param>
+            <returns>Gibt das gehashte Passwort zurück.</returns>
+        </member>
+        <member name="M:updateSystemDotNet.Core.Helper.GetArchitecture">
+            <summary>
+            Gibt die aktuelle Plattform zurück
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:updateSystemDotNet.Core.Helper.getPraefix(updateSystemDotNet.Core.Types.updatePackage.SupportedArchitectures)">
+            <summary>
+            Gibt den Packagepräfix an Hand der Zielarchitektur zurück
+            </summary>
+            <param name="architecure">Zielarchitektur</param>
+            <returns></returns>
+        </member>
+        <member name="M:updateSystemDotNet.Core.Helper.Combine_ftp_Path(System.String)">
+            <summary>
+            Funktion zur korrekten Behandlung eines FTP-Pfades
+            </summary>
+            <param name="path1"></param>
+            <returns></returns>
+        </member>
+        <member name="M:updateSystemDotNet.Core.Helper.Combine_ftp_Path(System.String,System.String)">
+            <summary>
+            Funktion zur korrekten Behandlung zweier FTP-Pfade
+            </summary>
+            <param name="path1"></param>
+            <param name="path2"></param>
+            <returns></returns>
+        </member>
+        <member name="M:updateSystemDotNet.Core.Helper.IsNetAssembly(System.String)">
+            <summary>
+            Gibt zurück ob es sich bei der Eingabedatei um ein .Net Assembly handelt
+            </summary>
+            <param name="filename">Die Eingabedatei</param>
+            <returns></returns>
+        </member>
+        <member name="M:updateSystemDotNet.Core.Helper.DeleteDirectory(System.String)">
+            <summary>
+            Entfernt alle Dateien aus dem angegebenen Verzeichnis.
+            </summary>
+            <param name="directory">Der Pfad des Verzeichnisses, welche gelöscht werden soll.</param>
+        </member>
+        <member name="M:updateSystemDotNet.Core.Helper.Percent(System.Int64,System.Int64)">
+            <summary>
+            Diese Funktion berechnet den Prozentsatz aus zwei Werten.
+            </summary>
+            <param name="CurrVal">Der aktuelle Wert.</param>
+            <param name="MaxVal">Der maximalwert</param>
+            <returns>Gibt den Prozentsatz aus den beiden gegebenen Werten zurück.</returns>
+        </member>
+        <member name="M:updateSystemDotNet.Core.Helper.AESEncrypt(System.String,System.String,System.String,System.String,System.Int32,System.String,System.Int32)">
+            <summary>
+            Verschlüsselt einen String mit dem AES Algorythmus.
+            </summary>
+            <param name="PlainText">Der Klartext der verschlüsselt werden soll.</param>
+            <param name="Password">Das zuverwendende Passwort.</param>
+            <param name="Salt">Der Salt.</param>
+            <param name="HashAlgorithm">Der Hashalgorithmus (MD5 oder Sha1).</param>
+            <param name="PasswordIterations">Die Passworditerations</param>
+            <param name="InitialVector">Der Initialvector. (16 ASCII Zeichen lang)</param>
+            <param name="KeySize">Die Schlüsselgröße (128 o. 256)</param>
+            <returns>Gibt den verschlüsselten String zurück.</returns>
+        </member>
+        <member name="M:updateSystemDotNet.Core.Helper.AESDecrypt(System.String,System.String,System.String,System.String,System.Int32,System.String,System.Int32)">
+            <summary>
+            Entschlüsselt einen String.
+            </summary>
+            <param name="CipherText">Der Verschlüsselte Text.</param>
+            <param name="Password">Das Passwort.</param>
+            <param name="Salt">Der Salt.</param>
+            <param name="HashAlgorithm">Der Hashalgorithmus (MD5 o. Sha1)</param>
+            <param name="PasswordIterations">Die Passworditerations.</param>
+            <param name="InitialVector">Der Initialvector (16 ASCII Zeichen lang)</param>
+            <param name="KeySize">Die Schlüsselgröße (128 o. 256).</param>
+            <returns>Gibt den entschlüsselten String zurück.</returns>
+        </member>
+        <member name="M:updateSystemDotNet.Core.Helper.readPublicKey(System.String)">
+            <summary>
+            Liest den öffentlichen Schlüssel aus einem Assembly aus.
+            </summary>
+            <param name="targetFilename">Der Pfad zu dem .Net Assembly welches den öffentlichen Schlüssel enthält.</param>
+            <returns>Gibt den öffentlichen Schlüssel als einen String zurück.</returns>
+        </member>
+        <member name="M:updateSystemDotNet.Core.Helper.readPublicKey(System.Reflection.Assembly)">
+            <summary>
+            Liest den öffentlichen Schlüssel aus einem Assembly.
+            </summary>
+            <param name="targetAssembly">Das Assembly aus welchem der öffentliche Schlüssel ausgelesen werden soll.</param>
+            <returns>Gibt den öffentlichen Schlüssel als einen String zurück.</returns>
+        </member>
+        <member name="M:updateSystemDotNet.Core.Helper.generateUniqueCertificateId(System.Security.Cryptography.X509Certificates.X509Certificate)">
+            <summary>
+            Generiert einen eindeutigen String zur Identifizierung eines X509-Zertifikates.
+            </summary>
+            <param name="certificate">Der zertifikat aus welchem der String ermittelt werden soll.</param>
+            <returns>Gibt einen eindeutigen String zurück welcher das X509-Zertifikat identifiziert.</returns>
+        </member>
+        <member name="M:updateSystemDotNet.Core.Helper.GetFileSize(System.Double)">
+            <summary>
+            Gibt die größe einer Datei in einem formatiertem String wieder.
+            </summary>
+            <param name="lenght">Die Größe der Datei in Bytes</param>
+            <returns></returns>
+        </member>
+        <member name="M:updateSystemDotNet.Core.Helper.setButtonShield(System.Windows.Forms.Button)">
+            <summary>
+            Setzt das UAC-Shield auf einen Button.
+            </summary>
+            <param name="button">Der Button auf welchem das Shield angezeigt werden soll.</param>
+        </member>
+        <member name="M:updateSystemDotNet.Core.Helper.removeButtonShield(System.Windows.Forms.Button)">
+            <summary>
+            Entfernt das UAC-Shield von einem Button.
+            </summary>
+            <param name="button">Der Button von welchem das Shield entfernt werden soll.</param>
+        </member>
+        <member name="P:updateSystemDotNet.Core.Helper.isSevenOrGreater">
+            <summary>
+            Gibt True zurück wenn das aktuelle Betriebssystem Windows 7 oder neuer ist, anderfalls False.
+            </summary>
+        </member>
+        <member name="T:updateSystemDotNet.UpdateSettings">
+            <summary>
+            Die Einstellungen die an den UpdateClient übergeben werden sollen.
+            </summary>
+        </member>
+        <member name="M:updateSystemDotNet.UpdateSettings.#ctor">
+            <summary>
+            Kontruktor
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.UpdateSettings.Update_URL">
+            <summary>
+            Die URL an der nach Updates gesucht werden soll
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.UpdateSettings.Language">
+            <summary>
+            Die zuverwendende Sprache
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.UpdateSettings.AppLocation">
+            <summary>
+            Der Pfad an welchem die aufrufende Anwendung zu finden ist
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.UpdateSettings.LocalVersion">
+            <summary>
+            Die aktuell installierte Version
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.UpdateSettings.PublicKey">
+            <summary>
+            Öffentlicher Schlüssel zur Validierung der Updatekonfiguration und der Updatepakete
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.UpdateSettings.ProjektID">
+            <summary>
+            Gibt die GUID zum eindeutigen Identifizieren des Projektes wieder oder legt diese fest
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.UpdateSettings.Updateinterval">
+            <summary>
+            Gibt den Interval an, nach welchem nach Updates gesucht werden soll oder legt diesen Fest
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.UpdateSettings.CustomUpdateInterval">
+            <summary>
+            Der Benutzerdefinierte Updateinterval in Tagen.
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.UpdateSettings.Config">
+            <summary>
+            Die Updatekonfiguration
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.UpdateSettings.Result">
+            <summary>
+            Das Suchresultat
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.UpdateSettings.SkipOK">
+            <summary>
+            Gibt zurück oder legt fest, ob der Updateinstaller nach dem Fertigstellen des Updates
+            automatisch geschlossen werden soll.
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.UpdateSettings.allowBetaversions">
+            <summary>
+            Gibt zurück oder legt fest, ob Betaversionen bei der Updatesuche berücksichtigt werden.
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.UpdateSettings.sessionID">
+            <summary>
+            Gibt die SessionID zurück oder legt diese fest.
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.UpdateSettings.restartApplication">
+            <summary>
+            Gibt an oder legt fest ob die Anwendung nach dem Update neu gestartet werden soll.
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.UpdateSettings.commandlineArguments">
+            <summary>
+            Gibt die ausgelesenen Befehlszeilenargumente zurück oder legt diese fest.
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.UpdateSettings.applicationPath">
+            <summary>
+            Gibt den Pfad der Anwendung zurück, die nach dem Update neu gestartet werden soll oder legt diesen fest.
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.UpdateSettings.authenticationMode">
+            <summary>
+            Gibt den Authentifizierungsmodus für die Updatesuche und den Download zurück oder legt diese fest.
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.UpdateSettings.authenticationUsername">
+            <summary>
+            Gibt den Benutzernamen für die Authentifizierung zurück oder legt diesen fest.
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.UpdateSettings.authenticationPassword">
+            <summary>
+            Gibt das Passwort für die Authentifizierung zurück oder legt dieses fest.
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.UpdateSettings.downloadLocation">
+            <summary>
+            Gibt den Pfad des Ordners zurück in welchen die Dateien heruntergeladen werden.<para />
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.UpdateSettings.proxyEnabled">
+            <summary>
+            Gibt an ob ein Proxy verwendet werden soll oder legt dieses fest.
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.UpdateSettings.proxyUrl">
+            <summary>
+            Gibt die ProxyUrl zurück oder legt diese fest.
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.UpdateSettings.proxyPort">
+            <summary>
+            Gibt den Port für den Proxyserver zurück oder legt diesen fest.
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.UpdateSettings.proxyUsername">
+            <summary>
+            Gibt den Benutzernamen für den Proxy zurück oder legt diesen fest.
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.UpdateSettings.proxyPassword">
+            <summary>
+            Gibt das Passwort für den Proxy zurück oder legt dieses fest.
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.UpdateSettings.proxyUseDefaultCredentials">
+            <summary>
+            Gibt an oder legt fest ob für die Proxyauthentifizierung die Default Networkcredentials verwendet werden sollen.
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.UpdateSettings.processSafetyLevel">
+            <summary>
+            Gibt den Sicherheitslevel für Prozesse mit erhöhten Rechten zurück oder legt diesen fest.
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.UpdateSettings.disableCancel">
+            <summary>
+            Gibt an oder legt fest, ob der Abbrechenbutton im updateInstaller deaktiviert werden soll.
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.UpdateSettings.showTaskBarProgress">
+            <summary>
+            Gibt an oder legt fest, ob der Fortschritt von dem Updatedownload und der Updateinstallation unter Windows 7 zusätzlich in dem TaskBarButton angezeigt werden soll.
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.UpdateSettings.enableLogging">
+            <summary>
+            Gibt an oder legt fest ob die Aktionen der Updatesuchen geloggt werden sollen.
+            <para>Die Logs werden nach %TMP%\updateSystem.Net.Logs geschrieben.</para>
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.UpdateSettings.releaseInfo">
+            <summary>
+            Gibt den Releasestatus zurück oder legt diesen fest.
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.UpdateSettings.releaseFilter">
+            <summary>
+            Gibt den Filter zurück welcher bestimmte Releaseversionen bei der Updatesuche ausschließt oder legt diesen fest.
+            </summary>
+        </member>
+        <member name="T:updateSystemDotNet.Internal.Language">
+            <summary>
+            Klasse zur Verwaltung von Sprachen
+            </summary>
+        </member>
+        <member name="M:updateSystemDotNet.Internal.Language.Set_Language(updateSystemDotNet.Languages)">
+            <summary>
+            Initialisiert den ResourceManager zum auslesen der Sprache
+            </summary>
+            <param name="language">Die Sprache die ausgelesen werden soll</param>
+        </member>
+        <member name="M:updateSystemDotNet.Internal.Language.getLanguageId(updateSystemDotNet.Languages)">
+            <summary>
+            Gibt die ID zu der ausgewählten Sprache zurück.
+            </summary>
+            <param name="language">Die Sprache von welcher die ID ermittelt werden soll</param>
+            <returns>Die ID der Sprache.</returns>
+        </member>
+        <member name="M:updateSystemDotNet.Internal.Language.GetString(System.String)">
+            <summary>
+            Gibt den entsprechenden String anhand der festgelegten Sprache wieder
+            </summary>
+            <param name="ID">Die ID zu welcher der passende Languagestring zurückgegeben werden soll</param>
+            <returns></returns>
+        </member>
+        <member name="T:updateSystemDotNet.Languages">
+            <summary>
+            Enumeration der verfügbaren Sprachen
+            </summary>
+        </member>
+        <member name="F:updateSystemDotNet.Languages.Auto">
+            <summary>
+            Versucht die Sprache des Systems automatisch zu ermitteln. Wird die Systemsprache nicht unterstützt, wird <see cref="F:updateSystemDotNet.Languages.English"/> verwendet.
+            </summary>
+        </member>
+        <member name="F:updateSystemDotNet.Languages.Deutsch">
+            <summary>
+            Benutzt 'Deutsch' als Sprache für den UpdateClient
+            </summary>
+        </member>
+        <member name="F:updateSystemDotNet.Languages.English">
+            <summary>
+            Benutzt 'Englisch' als Sprache für den UpdateClient
+            </summary>
+        </member>
+        <member name="T:updateSystemDotNet.Interval">
+            <summary>
+            Der Interval nach dem nach Updates gesucht werden soll
+            </summary>
+        </member>
+        <member name="F:updateSystemDotNet.Interval.Always">
+            <summary>
+            Führt bei jedem Aufruf einen Updatecheck aus
+            </summary>
+        </member>
+        <member name="F:updateSystemDotNet.Interval.Daily">
+            <summary>
+            Führt einmal pro Tag einen Updatecheck aus
+            </summary>
+        </member>
+        <member name="F:updateSystemDotNet.Interval.Weekly">
+            <summary>
+            Führt einmal pro Woche einen Updatecheck aus
+            </summary>
+        </member>
+        <member name="F:updateSystemDotNet.Interval.Monthly">
+            <summary>
+            Führt einmal pro Monat einen Updatechek aus
+            </summary>
+        </member>
+        <member name="F:updateSystemDotNet.Interval.Custom">
+            <summary>
+            Führt zu einem Benutzerdefiniertem Zeitpunkt einen Updatecheck aus
+            </summary>
+        </member>
+        <member name="T:updateSystemDotNet.authenticationModes">
+            <summary>
+            Enumeration mit verfügbaren Authentifizierungsmodi für die Updatesuche und den Download.
+            </summary>
+        </member>
+        <member name="F:updateSystemDotNet.authenticationModes.None">
+            <summary>
+            Verwenden Sie diese Option wenn keine Authentifizierung erforderlich ist.
+            </summary>
+        </member>
+        <member name="F:updateSystemDotNet.authenticationModes.Credentials">
+            <summary>
+            Authentifizierung mit Benutzername und Passwort.
+            </summary>
+        </member>
+        <member name="T:updateSystemDotNet.processSafetyLevel">
+            <summary>
+            <para>Enumeration mit Sicherheitsleveln welche angewendet werden können, wenn während des Updatevorgangs</para>
+            <para>ein Prozess mittels <see cref="P:updateSystemDotNet.Core.updateActions.startProcessAction.needElevatedRights"/> erhöhte Rechte anfordert.</para>
+            </summary>
+        </member>
+        <member name="F:updateSystemDotNet.processSafetyLevel.AskAlways">
+            <summary>
+            Zeigt dem Benutzer sowohl bei signierten wie auch bei unsignierten Dateien einen Sicherheitsdialog an, der Bestätigt werden muss.
+            </summary>
+        </member>
+        <member name="F:updateSystemDotNet.processSafetyLevel.AskIfUnsigned">
+            <summary>
+            Zeigt dem Benutzer nur bei unsignierten Dateien einen Sicherheitsdialog an, der Bestätigt werden muss.
+            </summary>
+        </member>
+        <member name="F:updateSystemDotNet.processSafetyLevel.AskNever">
+            <summary>
+            Zeigt dem Benutzer weder bei signierten noch bei unsignierten Dateien einen Bestätigungsdialog an.
+            </summary>
+        </member>
+        <member name="T:updateSystemDotNet.releaseTypes">
+            <summary>
+            Eine Enumeration mit den verfügbaren Releasetypen.
+            </summary>
+            <remarks>Neu in V.:1.1.</remarks>
+        </member>
+        <member name="F:updateSystemDotNet.releaseTypes.Alpha">
+            <summary>
+            Unfertige und instabile Version.
+            </summary>
+        </member>
+        <member name="F:updateSystemDotNet.releaseTypes.Beta">
+            <summary>
+            Unfertigere Version.
+            </summary>
+        </member>
+        <member name="F:updateSystemDotNet.releaseTypes.Final">
+            <summary>
+            Finale Version.
+            </summary>
+        </member>
+        <member name="T:updateSystemDotNet.Core.updateActions.deleteFilesAction">
+            <summary>
+            Updateaktion zum löschen einer oder mehrerer Dateien auf dem Zielsystem.
+            </summary>
+        </member>
+        <member name="M:updateSystemDotNet.Core.updateActions.deleteFilesAction.ToString">
+            <summary>
+            Gibt den Anzeigenamen der Aktion zurück.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:updateSystemDotNet.Core.updateActions.deleteFilesAction.Validate">
+            <summary>
+            Überprüft in der Updateaction ob alle benötigen Parameter einen Wert besitzen.
+            </summary>
+            <returns>Gibt True zurück wenn die Überprüfung erfolgreich war, andernfalls false.</returns>
+        </member>
+        <member name="P:updateSystemDotNet.Core.updateActions.deleteFilesAction.Path">
+            <summary>
+            Gibt den Pfad zurück aus welchem die Dateien entfernt werden sollen oder legt diesen fest.
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.Core.updateActions.deleteFilesAction.filesToRemove">
+            <summary>
+            Gibt die Namen von den Dateien zurück die entfernt werden sollen oder legt diese fest.
+            </summary>
+        </member>
+        <member name="T:updateSystemDotNet.appEventArgs.updateInstallerStartedEventArgs">
+            <summary>
+            Stellt Daten für das <see cref="E:updateSystemDotNet.updateController.updateInstallerStarted"/>-Event des <see cref="T:updateSystemDotNet.updateController"/> bereit.
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.appEventArgs.updateInstallerStartedEventArgs.Handle">
+            <summary>
+            Gibt das Handle des updateInstaller-Prozesses zurück.
+            </summary>
+        </member>
+        <member name="T:updateSystemDotNet.Core.updateActions.validatePackageAction">
+            <summary>
+            Klasse zum validieren der Signatur eines Updatepaketes.
+            </summary>
+        </member>
+        <member name="M:updateSystemDotNet.Core.updateActions.validatePackageAction.Validate">
+            <summary>
+            Überprüft in der Updateaction ob alle benötigen Parameter einen Wert besitzen.
+            </summary>
+            <returns>Gibt True zurück wenn die Überprüfung erfolgreich war, andernfalls false.</returns>
+        </member>
+        <member name="T:updateSystemDotNet.Core.updateActions.addRegistryKeyAction">
+            <summary>
+            Updateaction zum erstellen eines Registryschlüssels.
+            </summary>
+        </member>
+        <member name="T:updateSystemDotNet.Core.updateActions.registryActionBase">
+            <summary>
+            Abstrakte Klasse welche als Grundlage für alle Registryactions dient.
+            </summary>
+        </member>
+        <member name="M:updateSystemDotNet.Core.updateActions.registryActionBase.Validate">
+            <summary>
+            Überprüft in der Updateaction ob alle benötigen Parameter einen Wert besitzen.
+            </summary>
+            <returns>Gibt True zurück wenn die Überprüfung erfolgreich war, andernfalls false.</returns>
+        </member>
+        <member name="P:updateSystemDotNet.Core.updateActions.registryActionBase.rootHive">
+            <summary>
+            Gibt den Basisschlüssel für die Registryaction zurück oder legt diesen fest.
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.Core.updateActions.registryActionBase.Path">
+            <summary>
+            Gibt den Pfad zu dem Schlüssel in der Registry zurück oder legt diesen fest.
+            </summary>
+        </member>
+        <member name="M:updateSystemDotNet.Core.updateActions.addRegistryKeyAction.ToString">
+            <summary>
+            Gibt den Namen der Aktion zurück.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:updateSystemDotNet.Core.updateActions.addRegistryKeyAction.Validate">
+            <summary>
+            Überprüft in der Updateaction ob alle benötigen Parameter einen Wert besitzen.
+            </summary>
+            <returns>Gibt True zurück wenn die Überprüfung erfolgreich war, andernfalls false.</returns>
+        </member>
+        <member name="T:updateSystemDotNet.Core.Types.SecureContainer">
+            <summary>
+            Sicherer XML-Container welcher neben einem Datenblock auch einen Signaturblock enthält
+            </summary>
+        </member>
+        <member name="M:updateSystemDotNet.Core.Types.SecureContainer.Load(System.Byte[])">
+            <summary>
+            Byte Array welches das sichere XML-Dokument enthält
+            </summary>
+            <param name="Data"></param>
+        </member>
+        <member name="M:updateSystemDotNet.Core.Types.SecureContainer.Save">
+            <summary>
+            Speichert die Daten in einem Byte Array
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="P:updateSystemDotNet.Core.Types.SecureContainer.Content">
+            <summary>
+            Der Datenblock
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.Core.Types.SecureContainer.Signature">
+            <summary>
+            Die digitale Signatur des Datenblocks
+            </summary>
+        </member>
+        <member name="T:updateSystemDotNet.Internal.updateUI.updateBaseView">
+            <summary>Basiscontrol für alle Ansichten der verschiedenen Updatedialoge.</summary>
+        </member>
+        <member name="M:updateSystemDotNet.Internal.updateUI.updateBaseView.initializeComponents">
+            <summary>Initialisiert die Controls in dem View</summary>
+        </member>
+        <member name="M:updateSystemDotNet.Internal.updateUI.updateBaseView.Execute">
+            <summary>Führt Aktionen nach dem Öffnen des Views aus, z.B. Updatesuche oder Download.</summary>
+        </member>
+        <member name="P:updateSystemDotNet.Internal.updateUI.updateBaseView.Title">
+            <summary>Gibt den Titel für den UpdateDialog zurück.</summary>
+        </member>
+        <member name="P:updateSystemDotNet.Internal.updateUI.updateBaseView.showInstallButton">
+            <summary>Gibt zurück oder legt fest, ob der Button zur Updateinstallation angezeigt werden soll.</summary>
+        </member>
+        <member name="P:updateSystemDotNet.Internal.updateUI.updateBaseView.showCancelButton">
+            <summary>Gibt zurück oder legt fest, ob der Abbrechenbutton angezeigt werden soll.</summary>
+        </member>
+        <member name="P:updateSystemDotNet.Internal.updateUI.updateBaseView.availableViewStates">
+            <summary>Verknüpfung von erlaubten Ansichten.</summary>
+        </member>
+        <member name="P:updateSystemDotNet.Internal.updateUI.updateBaseView.controllerInstance">
+            <summary>Referenz auf das updateController-Objekt von welchem aus der Dialog aufgerufen wurde.</summary>
+        </member>
+        <member name="P:updateSystemDotNet.Internal.updateUI.updateBaseView.dataExchange">
+            <summary>Dictionary zum austauschen von Daten unter den Views</summary>
+        </member>
+        <member name="E:updateSystemDotNet.Internal.updateUI.updateBaseView.changeUpdateView">
+            <summary>Event welches eintritt, wenn die Ansicht gewechselt werden soll.</summary>
+        </member>
+        <member name="E:updateSystemDotNet.Internal.updateUI.updateBaseView.titleChanged">
+            <summary>Event welches eintritt, wenn sich der Titel verändert hat.</summary>
+        </member>
+        <member name="F:updateSystemDotNet.Internal.UI.versionEditorControl.components">
+            <summary> 
+            Erforderliche Designervariable.
+            </summary>
+        </member>
+        <member name="M:updateSystemDotNet.Internal.UI.versionEditorControl.Dispose(System.Boolean)">
+            <summary> 
+            Verwendete Ressourcen bereinigen.
+            </summary>
+            <param name="disposing">True, wenn verwaltete Ressourcen gelöscht werden sollen; andernfalls False.</param>
+        </member>
+        <member name="M:updateSystemDotNet.Internal.UI.versionEditorControl.InitializeComponent">
+            <summary> 
+            Erforderliche Methode für die Designerunterstützung. 
+            Der Inhalt der Methode darf nicht mit dem Code-Editor geändert werden.
+            </summary>
+        </member>
+        <member name="T:updateSystemDotNet.Core.updateActions.startProcessAction">
+            <summary>
+            Updateaction welche zum Starten eines Prozesses verwendet wird.
+            </summary>
+        </member>
+        <member name="M:updateSystemDotNet.Core.updateActions.startProcessAction.#ctor">
+            <summary>
+            Initialisiert eine neue Instanz der <see cref="T:updateSystemDotNet.Core.updateActions.startProcessAction"/>.
+            </summary>
+        </member>
+        <member name="M:updateSystemDotNet.Core.updateActions.startProcessAction.#ctor(System.String)">
+            <summary>
+            Initialisiert eine neue Instanz der <see cref="T:updateSystemDotNet.Core.updateActions.startProcessAction"/>.
+            </summary>
+            <param name="Path"></param>
+        </member>
+        <member name="M:updateSystemDotNet.Core.updateActions.startProcessAction.#ctor(System.String,System.String)">
+            <summary>
+            Initialisiert eine neue Instanz der <see cref="T:updateSystemDotNet.Core.updateActions.startProcessAction"/>.
+            </summary>
+            <param name="Path">Der Pfad der auszuführenden Datei.</param>
+            <param name="Args">Befehlszeilenargumente die an die Datei weitergegeben werden sollen.</param>
+        </member>
+        <member name="M:updateSystemDotNet.Core.updateActions.startProcessAction.#ctor(System.String,System.String,System.Boolean)">
+            <summary>
+            Initialisiert eine neue Instanz der <see cref="T:updateSystemDotNet.Core.updateActions.startProcessAction"/>.
+            </summary>
+            <param name="Path">Der Pfad der auszuführenden Datei.</param>
+            <param name="Args">Befehlszeilenargumente die an die Datei weitergegeben sollen.</param>
+            <param name="WaitForExit">Gibt an ob der Updater auf das beenden dieses Prozesses warten soll.</param>
+        </member>
+        <member name="M:updateSystemDotNet.Core.updateActions.startProcessAction.ToString">
+            <summary>
+            Gibt den Namen der Aktion zurück
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:updateSystemDotNet.Core.updateActions.startProcessAction.Validate">
+            <summary>
+            Überprüft in der Updateaction ob alle benötigen Parameter einen Wert besitzen.
+            </summary>
+            <returns>Gibt True zurück wenn die Überprüfung erfolgreich war, andernfalls false.</returns>
+        </member>
+        <member name="P:updateSystemDotNet.Core.updateActions.startProcessAction.Path">
+            <summary>
+            Gibt den Pfad zu der Datei zurück die ausgeführt werden soll oder legt diesen fest.
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.Core.updateActions.startProcessAction.Arguments">
+            <summary>
+            Gibt die Befehlszeilenargumente für die Auszuführende Datei zurück oder legt diese fest.
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.Core.updateActions.startProcessAction.waitForExit">
+            <summary>
+            Gibt an oder legt fest, ob der Updater auf das beenden der Datei warten soll.
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.Core.updateActions.startProcessAction.dontRunIfExists">
+            <summary>
+            Gibt an oder legt fest, ob der Prozess nicht gestartet werden soll, wenn bereits ein anderer Prozess mit dem gleichen Namen läuft.
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.Core.updateActions.startProcessAction.needElevatedRights">
+            <summary>
+            Gibt an oder legt fest, ob der Prozess erhöhte Rechte benötigt.
+            </summary>
+        </member>
+        <member name="T:updateSystemDotNet.Core.updateActions.cleanupAction">
+            <summary>
+            Klasse zum aufräumen der Updatedateien.
+            </summary>
+        </member>
+        <member name="M:updateSystemDotNet.Core.updateActions.cleanupAction.Validate">
+            <summary>
+            Überprüft in der Updateaction ob alle benötigen Parameter einen Wert besitzen.
+            </summary>
+            <returns>Gibt True zurück wenn die Überprüfung erfolgreich war, andernfalls false.</returns>
+        </member>
+        <member name="T:updateSystemDotNet.Core.Types.updateConfiguration">
+            <summary>
+            Objekt welches eine Auflistung aller Optionen und Dateien enthält
+            </summary>
+        </member>
+        <member name="M:updateSystemDotNet.Core.Types.updateConfiguration.#ctor">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:updateSystemDotNet.Core.Types.updateConfiguration.Clone">
+            <summary>
+            Gibt eine genaue Kopie der Updatekonfiguration zurück.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="P:updateSystemDotNet.Core.Types.updateConfiguration.applicationName">
+            <summary>
+            Gibt den Namen der Anwendung zurück oder legt diesen fest.
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.Core.Types.updateConfiguration.updateUrl">
+            <summary>
+            Gibt die vollqualifizierte Adresse zur Updatekonfigurationsdatei zurück oder legt diese fest.
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.Core.Types.updateConfiguration.enableStatistics">
+            <summary>
+            Gibt zurück oder legt fest, ob bei der Updatesuche und dem Download Statistiken an den Statistikserver übermittelt werden sollen.
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.Core.Types.updateConfiguration.statisticServer">
+            <summary>
+            Gibt den verwendeten Statistikserver zurück oder legt diesen fest.
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.Core.Types.updateConfiguration.PublicKey">
+            <summary>
+            Gibt den öffentlichen Schlüssel zurück, der für die Validierung der Updatepakete und der Updatekonfiguration verwendet werden soll, oder legt diesen fest.
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.Core.Types.updateConfiguration.updatePackages">
+            <summary>
+            Gibt eine Auflistung mit allen verfügbaren Updatepaketen zurück oder legt diese fest.
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.Core.Types.updateConfiguration.projectId">
+            <summary>
+            Gibt den Identifer für diese Updatekonfiguration zurück oder legt diesen fest.
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.Core.Types.updateConfiguration.startParameterSuccess">
+            <summary>
+            Legt den Parameter fest, der bei einem erfolgreichem Update an die aufrufende Anwendung übergeben werden soll, oder gibt diesen zurück.
+            <para>Vorraussetzung dafür ist, dass die Eigenschaft <see cref="P:updateSystemDotNet.updateController.restartApplication"/> den Wert True besitzt.</para>
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.Core.Types.updateConfiguration.startParameterFailed">
+            <summary>
+            Legt den Parameter fest, der bei einem fehlgeschlagenen oder abgebrochenem Update an die Aufrufende Anwendung übergeben werden soll, oder gibt diesen zurück.
+            <para>Vorraussetzung dafür ist, dass die Eigenschaft <see cref="P:updateSystemDotNet.updateController.restartApplication"/> den Wert True besitzt.</para>
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.Core.Types.updateConfiguration.setupId">
+            <summary>
+            Gibt die SetupId zurück oder legt diese fest welche verwendet wird um die Programversion in der Registry zu aktualisieren.
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.Core.Types.updateConfiguration.generateNativeImages">
+            <summary>
+            Legt fest, ob während der Updateinstallation von .NET Assemblies native abbilder erstellt werden sollen.
+            </summary>
+        </member>
+        <member name="T:updateSystemDotNet.Core.Types.changelogDocumentItem">
+            <summary>
+            Klasse welche Informationen über die einzelnen Changelogeinträge bereitstellt.
+            <para>Wird von <see cref="T:updateSystemDotNet.Core.Types.changelogDocument"/> benötigt.</para>
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.Core.Types.changelogDocumentItem.Developer">
+            <summary>
+            Gibt den Namen des Entwicklers zurück.
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.Core.Types.changelogDocumentItem.itemType">
+            <summary>
+            Gibt den Typ des Eintrages zurück. Zum Beispiel "Bug" oder "Verbesserung".
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.Core.Types.changelogDocumentItem.Language">
+            <summary>
+            Gibt die Sprache des Eintrages zurück.
+            <para>Hinweis: Der Enumwert <see cref="F:updateSystemDotNet.Languages.Auto"/> wird nie verwendet.</para>
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.Core.Types.changelogDocumentItem.Change">
+            <summary>
+            Gibt den Text der Änderung zurück.
+            </summary>
+        </member>
+        <member name="T:updateSystemDotNet.updateController">
+            <summary>
+            Updatekomponente zum herunterladen und installieren von Programmaktualisierungen.
+            </summary>
+        </member>
+        <member name="M:updateSystemDotNet.updateController.#ctor">
+            <summary>
+            Initialisiert eine neue Instanz des <see cref="T:updateSystemDotNet.updateController"/>.
+            </summary>
+        </member>
+        <member name="M:updateSystemDotNet.updateController.#ctor(System.String)">
+            <summary>
+            Initialisiert eine neue Instanz des <see cref="T:updateSystemDotNet.updateController"/>.
+            </summary>
+            <param name="updateLocation">Die Internetadresse der Updatekonfiguration.</param>
+        </member>
+        <member name="M:updateSystemDotNet.updateController.#ctor(System.String,System.String)">
+            <summary>
+            Initialisiert eine neue Instanz des <see cref="T:updateSystemDotNet.updateController"/>.
+            </summary>
+            <param name="updateLocation">Die Internetadresse der Updatekonfiguration.</param>
+            <param name="currentVersion">Die aktuell Installierte Version der Anwendung (String.Empty wenn diese automatisch ermittelt werden soll).</param>
+        </member>
+        <member name="M:updateSystemDotNet.updateController.#ctor(System.String,System.String,System.String)">
+            <summary>
+            Initialisiert eine neue Instanz des <see cref="T:updateSystemDotNet.updateController"/>.
+            </summary>
+            <param name="updateLocation">Die Internetadresse der Updatekonfiguration.</param>
+            <param name="currentVersion">Die aktuell Installierte Version der Anwendung (String.Empty wenn diese automatisch ermittelt werden soll)</param>
+            <param name="sPublicKey">Der öffentliche Schlüssel welcher zum Überprüfen der Updatepakete und der Updatekonfiguration verwendet werden soll.</param>
+        </member>
+        <member name="M:updateSystemDotNet.updateController.checkForUpdates">
+            <summary>
+            <para>Sucht nach verfügbaren Aktualisierungen.</para>
+            <para>Informationen über die Updates können über die Eigenschaft <see cref="P:updateSystemDotNet.updateController.currentUpdateResult"/> abgerufen werden.</para>
+            </summary>
+            <returns>Gibt true zurück wenn ein Update gefunden wurde, andernfalls false.</returns>
+        </member>
+        <member name="M:updateSystemDotNet.updateController.checkForUpdatesAsync">
+            <summary>
+            <para>Sucht nach verfügbaren Aktualisierungen.</para>
+            <para>Informationen über die Updates können über die Eigenschaft <see cref="P:updateSystemDotNet.updateController.currentUpdateResult"/> abgerufen werden.</para>
+            <para>Diese Methode blockiert nicht den aufrufenden Thread.</para>
+            </summary>
+        </member>
+        <member name="M:updateSystemDotNet.updateController.checkForUpdatesDialog">
+            <summary>
+            Sucht nach Aktualisierungen während dem Benutzer ein modaler Dialog angezeigt wird.
+            </summary>
+            <returns><see cref="F:System.Windows.Forms.DialogResult.OK"/> wenn Aktualisierungen gefunden wurden, anderfalls <see cref="F:System.Windows.Forms.DialogResult.Cancel"/>.</returns>
+        </member>
+        <member name="M:updateSystemDotNet.updateController.checkForUpdatesDialog(System.Windows.Forms.IWin32Window)">
+            <summary>
+            Sucht nach Aktualisierungen während dem Benutzer ein modaler Dialog angezeigt wird.
+            </summary>
+            <param name="owner">Ein beliebiges Objekt, das <see cref="T:System.Windows.Forms.IWin32Window"/> implementiert, das das Fenster der obersten Ebene und damit den Besitzer des modalen Dialogfelds darstellt.</param>
+            <returns><see cref="F:System.Windows.Forms.DialogResult.OK"/> wenn Aktualisierungen gefunden wurden, anderfalls <see cref="F:System.Windows.Forms.DialogResult.Cancel"/>.</returns>
+        </member>
+        <member name="M:updateSystemDotNet.updateController.showUpdateDialog">
+            <summary>
+            Zeigt Informationen über die gefunden Updates in einem modalen Dialog an.
+            </summary>
+            <returns><see cref="F:System.Windows.Forms.DialogResult.OK"/>wenn der Benutzer auf 'Update installieren' geklickt hat, andernfalls <see cref="F:System.Windows.Forms.DialogResult.Cancel"/>.</returns>
+            <exception cref="T:System.InvalidOperationException">Tritt ein, wenn keine Updates verfügbar sind oder das <see cref="P:updateSystemDotNet.updateController.currentUpdateResult"/> null ist.</exception>
+        </member>
+        <member name="M:updateSystemDotNet.updateController.showUpdateDialog(System.Windows.Forms.IWin32Window)">
+            <summary>
+            Zeigt Informationen über die gefunden Updates in einem modalen Dialog an.
+            </summary>
+            <param name="owner">Ein beliebiges Objekt, das <see cref="T:System.Windows.Forms.IWin32Window"/> implementiert, das das Fenster der obersten Ebene und damit den Besitzer des modalen Dialogfelds darstellt.</param>
+            <returns><see cref="F:System.Windows.Forms.DialogResult.OK"/>wenn der Benutzer auf 'Update installieren' geklickt hat, andernfalls <see cref="F:System.Windows.Forms.DialogResult.Cancel"/>.</returns>
+            <exception cref="T:System.InvalidOperationException">Tritt ein, wenn keine Updates verfügbar sind oder das <see cref="P:updateSystemDotNet.updateController.currentUpdateResult"/> null ist.</exception>
+        </member>
+        <member name="M:updateSystemDotNet.updateController.downloadUpdates">
+            <summary>
+            <para>Lädt die gefundenen Aktualisierungen asychron herunter.</para>
+            <para>Diese Methode blockiert nicht den aufrufenden Thread.</para>
+            </summary>
+            <exception cref="T:System.InvalidOperationException">Tritt ein, wenn keine Updates verfügbar sind oder das <see cref="P:updateSystemDotNet.updateController.currentUpdateResult"/> null ist.</exception>
+            <exception cref="T:System.InvalidOperationException">Tritt ein, wenn der Updatedownload bereits läuft.</exception>
+        </member>
+        <member name="M:updateSystemDotNet.updateController.cancelUpdateDownload">
+            <summary>
+            Bricht den Updatedownload ab.
+            </summary>
+            <exception cref="T:System.InvalidOperationException">
+            <para>Tritt ein, wenn bereits ein anderer Updatedownload läuft.</para>
+            <para>Kann mit <see cref="P:updateSystemDotNet.updateController.isUpdateDownloaderBusy"/> vorhher überprüft und damit abgefangen werden.</para>
+            </exception>
+        </member>
+        <member name="M:updateSystemDotNet.updateController.downloadUpdatesDialog">
+            <summary>
+            Lädt die gefunden Aktualisierungen herunter während dem Benutzer ein modaler Dialog angezeigt wird.
+            </summary>
+            <returns><see cref="F:System.Windows.Forms.DialogResult.OK"/>wenn der Download erfolgreich abgeschlossen wurde, anderfalls <see cref="F:System.Windows.Forms.DialogResult.Cancel"/>.</returns>
+            <exception cref="T:System.InvalidOperationException">Tritt ein, wenn keine Updates verfügbar sind oder das <see cref="P:updateSystemDotNet.updateController.currentUpdateResult"/> null ist.</exception>
+        </member>
+        <member name="M:updateSystemDotNet.updateController.downloadUpdatesDialog(System.Windows.Forms.IWin32Window)">
+            <summary>
+            Lädt die gefunden Aktualisierungen herunter während dem Benutzer ein modaler Dialog angezeigt wird.
+            </summary>
+            <param name="owner">Ein beliebiges Objekt, das <see cref="T:System.Windows.Forms.IWin32Window"/> implementiert, das das Fenster der obersten Ebene und damit den Besitzer des modalen Dialogfelds darstellt.</param>
+            <returns><see cref="F:System.Windows.Forms.DialogResult.OK"/>wenn der Download erfolgreich abgeschlossen wurde, anderfalls <see cref="F:System.Windows.Forms.DialogResult.Cancel"/>.</returns>
+            <exception cref="T:System.InvalidOperationException">Tritt ein, wenn keine Updates verfügbar sind oder das <see cref="P:updateSystemDotNet.updateController.currentUpdateResult"/> null ist.</exception>
+        </member>
+        <member name="M:updateSystemDotNet.updateController.downloadUpdatesDialog(updateSystemDotNet.updateDownloadBaseForm)">
+            <summary>
+            Lädt die gefunden Aktualisierungen herunter während dem Benutzer ein modaler Dialog angezeigt wird.
+            </summary>
+            <param name="downloadDialog">Ein beliebiges Objekt, das <see cref="T:updateSystemDotNet.updateDownloadBaseForm"/> implementiert und den Fortschritt des Downloads dem Benutzer anzeigt.</param>
+            <returns><see cref="F:System.Windows.Forms.DialogResult.OK"/>wenn der Download erfolgreich abgeschlossen wurde, anderfalls <see cref="F:System.Windows.Forms.DialogResult.Cancel"/>.</returns>
+            <exception cref="T:System.InvalidOperationException">Tritt ein, wenn keine Updates verfügbar sind oder das <see cref="P:updateSystemDotNet.updateController.currentUpdateResult"/> null ist.</exception>
+        </member>
+        <member name="M:updateSystemDotNet.updateController.downloadUpdatesDialog(System.Windows.Forms.IWin32Window,updateSystemDotNet.updateDownloadBaseForm)">
+            <summary>
+            Lädt die gefunden Aktualisierungen herunter während dem Benutzer ein modaler Dialog angezeigt wird.
+            </summary>
+            <param name="owner">Ein beliebiges Objekt, das <see cref="T:System.Windows.Forms.IWin32Window"/> implementiert, das das Fenster der obersten Ebene und damit den Besitzer des modalen Dialogfelds darstellt.</param>
+            <param name="downloadDialog">Ein beliebiges Objekt, das <see cref="T:updateSystemDotNet.updateDownloadBaseForm"/> implementiert und den Fortschritt des Downloads dem Benutzer anzeigt.</param>
+            <returns><see cref="F:System.Windows.Forms.DialogResult.OK"/>wenn der Download erfolgreich abgeschlossen wurde, anderfalls <see cref="F:System.Windows.Forms.DialogResult.Cancel"/>.</returns>
+            <exception cref="T:System.InvalidOperationException">Tritt ein, wenn keine Updates verfügbar sind oder das <see cref="P:updateSystemDotNet.updateController.currentUpdateResult"/> null ist.</exception>
+        </member>
+        <member name="M:updateSystemDotNet.updateController.applyUpdate">
+            <summary>
+            Startet die Aktualisierung.
+            </summary>
+            <exception cref="T:updateSystemDotNet.appExceptions.invalidSignatureException">Tritt ein, wenn der Updatedownload fehlerhaft war.</exception>
+            <exception cref="T:System.InvalidOperationException">Tritt ein, wenn keine Updates verfügbar sind oder das <see cref="P:updateSystemDotNet.updateController.currentUpdateResult"/> null ist.</exception>
+            <exception cref="T:System.IO.DirectoryNotFoundException">Tritt ein, wenn das Downloadverzeichnis nicht gefunden werden konnte.</exception>
+            <exception cref="T:System.IO.FileNotFoundException">Tritt ein, wenn der updateInstaller oder ein Updatepaket nicht gefunden wurde.</exception>
+        </member>
+        <member name="M:updateSystemDotNet.updateController.updateInteractive">
+            <summary>
+            Benutzt die Built-In Dialoge um den Benutzer durch den kompletten Updateprozess zu führen.
+            </summary>
+        </member>
+        <member name="M:updateSystemDotNet.updateController.updateInteractive(System.Windows.Forms.IWin32Window)">
+            <summary>
+            Benutzt die Built-In Dialoge um den Benutzer durch den kompletten Updateprozess zu führen.
+            </summary>
+            <param name="owner">Ein beliebiges Objekt, das <see cref="T:System.Windows.Forms.IWin32Window"/> implementiert, das das Fenster der obersten Ebene und damit den Besitzer des modalen Dialogfelds darstellt.</param>
+        </member>
+        <member name="M:updateSystemDotNet.updateController.updateInteractive(updateSystemDotNet.updateDownloadBaseForm)">
+            <summary>
+            Benutzt die Built-In Dialoge um den Benutzer durch den kompletten Updateprozess zu führen.
+            </summary>
+            <param name="downloadDialog">Ein beliebiges Objekt, das <see cref="T:updateSystemDotNet.updateDownloadBaseForm"/> implementiert und den Fortschritt des Downloads dem Benutzer anzeigt.</param>
+        </member>
+        <member name="M:updateSystemDotNet.updateController.updateInteractive(System.Windows.Forms.IWin32Window,updateSystemDotNet.updateDownloadBaseForm)">
+            <summary>
+            Benutzt die Built-In Dialoge um den Benutzer durch den kompletten Updateprozess zu führen.
+            </summary>
+            <param name="owner">Ein beliebiges Objekt, das <see cref="T:System.Windows.Forms.IWin32Window"/> implementiert, das das Fenster der obersten Ebene und damit den Besitzer des modalen Dialogfelds darstellt.</param>
+            <param name="downloadDialog">Ein beliebiges Objekt, das <see cref="T:updateSystemDotNet.updateDownloadBaseForm"/> implementiert und den Fortschritt des Downloads dem Benutzer anzeigt.</param>
+        </member>
+        <member name="M:updateSystemDotNet.updateController.prepareUpdateCheck">
+            <summary>
+            Hilfsmethode welche vor jedem UpdateCheck aufgerufen werden muss.
+            </summary>
+        </member>
+        <member name="M:updateSystemDotNet.updateController.prepareShowUpdateDialog">
+            <summary>
+            Hilfsmethode welche vor dem Anzeigen des UpdateDialogs aufgerufen werden muss.
+            </summary>
+        </member>
+        <member name="M:updateSystemDotNet.updateController.prepareUpdateDownload">
+            <summary>
+            Hilfsmethode welche vor dem Updatedownload aufgerufen werden muss.
+            </summary>
+        </member>
+        <member name="M:updateSystemDotNet.updateController.prepareUpdate">
+            <summary>
+            Hilfsmethode welche vor der Updateinstallation aufgerufen werden muss.
+            </summary>
+            <returns>Gibt des updateInstallers zurück.</returns>
+        </member>
+        <member name="M:updateSystemDotNet.updateController.Clone">
+            <summary>Erstellt eine identische Kopie des updateController-Objektes</summary>
+        </member>
+        <member name="E:updateSystemDotNet.updateController.checkForUpdatesCompleted">
+            <summary>
+            <para>Tritt ein, wenn die Updatesuche abgeschlossen wurde.</para>
+            </summary>
+        </member>
+        <member name="E:updateSystemDotNet.updateController.downloadUpdatesCompleted">
+            <summary>
+            <para>Tritt ein, wenn der Updatedownload abgeschlossen wurde.</para>
+            </summary>
+        </member>
+        <member name="E:updateSystemDotNet.updateController.downloadUpdatesProgressChanged">
+            <summary>
+            Tritt ein, wenn sich der Fortschritt des Updatedownloads ändert.
+            </summary>
+        </member>
+        <member name="E:updateSystemDotNet.updateController.updateFound">
+            <summary>
+            <para>Tritt ein, wenn über die <see cref="M:updateSystemDotNet.updateController.checkForUpdatesAsync"/>-Methode ein oder mehrere Aktualisierungen gefunden wurden.</para>
+            </summary>
+        </member>
+        <member name="E:updateSystemDotNet.updateController.updateInstallerStarted">
+            <summary>
+            Tritt ein, wenn der updateInstaller gestartet wurde.
+            </summary>
+        </member>
+        <member name="E:updateSystemDotNet.updateController.confirmUpdatePackage">
+            <summary>
+            Tritt ein, wenn während der Updatesuche ein neues Updatepaket gefunden wurde, welches neuer als die lokale Version ist.
+            <para>Durch das Abonieren dieses Events kann mit der Rückgabe von True bzw. False im EventHandler dieses Paket bestätigt respekive abgelehnt werden.</para>
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.updateController.isUpdateDownloaderBusy">
+            <summary>
+            Gibt true zurück wenn bereits ein Updatedownload läuft, andernfalls false.
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.updateController.publicKey">
+            <summary>
+            Gibt den öffentlichen Schlüssel für die Signaturüberprüfung der Updatedaten zurück oder legt diesen fest.
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.updateController.projectId">
+            <summary>
+            Gibt die Projekt-Id zurück oder legt diese fest.
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.updateController.restartApplication">
+            <summary>
+            Gibt zurück oder legt fest, ob die Anwendung nach dem Update automatisch gestartet werden soll.
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.updateController.Language">
+            <summary>
+            Gibt die Sprache der Updatedialoge zurück oder legt diese fest.
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.updateController.updateUrl">
+            <summary>
+            <para>Gibt die Internetadresse der Updatekonfiguration zurück oder legt diese fest.</para>
+            <para>Zum Beispiel: http://meinServer.de/meinProdukt/updates/</para>
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.updateController.autoCopyCommandlineArguments">
+            <summary>
+            <para>Gibt zurück oder legt fest ob die Argumente der aufrufenden Anwendung nach Abschluss des Updates erneut übergeben werden sollen.</para>
+            <para>Diese Eigenschaft wird nur Berücksichtigt wenn <see cref="P:updateSystemDotNet.updateController.restartApplication"/> true ist.</para>
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.updateController.requestElevation">
+            <summary>
+            <para>Gibt zurück oder legt fest, ob der updateInstaller während des Starts Administratorrechte einfordern soll.</para>
+            <para>Setzen Sie diese Eigenschaft nur auf false, wenn Sie sicher sind, dass während dem Update zu keiner Zeit erhöhte Recht erforderlich sind. Anderfalls schlägt die Aktualisierung fehl.</para>
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.updateController.allowBetaversions">
+            <summary>
+            Gibt zurück oder legt fest, ob auch als Beta markierte Versionen bei der Updatesuche berücksichtigt werden sollen.
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.updateController.autoCloseUpdateInstaller">
+            <summary>
+            Gibt zurück oder legt fest, ob der updateInstaller direkt nach der Aktualisierung geschlossen werden soll.
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.updateController.Version">
+            <summary>
+            <para>Gibt die aktuelle Version der Anwendung zurück oder legt diese fest.</para>
+            <para>Lassen Sie diesen Wert frei oder setzen Sie die Eigenschaft <see cref="P:updateSystemDotNet.updateController.retrieveHostVersion"/> auf true wenn die Version automatisch aus der aufrufenden Anwendung ermitteln werden soll.</para>
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.updateController.releaseInfo">
+            <summary>
+            Gibt den Releasestatus zurück oder legt diesen fest.
+            </summary>
+            <remarks>Neu in V.: 1.1.</remarks>
+        </member>
+        <member name="P:updateSystemDotNet.updateController.releaseFilter">
+            <summary>
+            Gibt zurück oder legt fest, welche Releasetypen bei der Suche nach neuen Updates berücksichtigt werden sollen.
+            </summary>
+            <remarks>Neu in V.: 1.1.</remarks>
+        </member>
+        <member name="P:updateSystemDotNet.updateController.applicationLocation">
+            <summary>
+            <para>Gibt das Stammverzeichnis der Anwendung zurück oder legt dieses fest.</para>
+            <para>Lassen Sie diese Eigenschaft leer, wenn das Stammverzeichnis automatisch anhand der aufrufenden Anwendung ermittelt werden soll.</para>
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.updateController.retrieveHostVersion">
+            <summary>
+            Gibt zurück oder legt fest, ob als <see cref="P:updateSystemDotNet.updateController.Version"/> die Version der aufrufenden Anwendung verwendet werden soll.
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.updateController.currentUpdateResult">
+            <summary>
+            Gibt das <see cref="T:updateSystemDotNet.UpdateResult"/> des letzten UpdateChecks zurück.
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.updateController.processSafetyLevel">
+            <summary>
+            <para>Gibt das Sicherheitslevel zurück welches verwendet wird, wenn via <see cref="P:updateSystemDotNet.Core.updateActions.startProcessAction.needElevatedRights"/> erhöhte Rechte angefordert werden oder legt dieses fest.</para>
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.updateController.disableCancel">
+            <summary>
+            Gibt zurück oder legt fest, ob der Abbrechenbutton des updateInstallers deaktiviert werden soll.
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.updateController.autoCloseHostApplication">
+            <summary>
+            Gibt zurück oder legt fest, ob die Anwendung automatisch vom updateController geschlossen werden soll nachdem der updateInstaller gestartet wurde.
+            <para>Hat die Eigenschaft den Wert True, so wird das Event <see cref="E:updateSystemDotNet.updateController.updateInstallerStarted"/> nicht aufgerufen.</para>
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.updateController.showTaskBarProgress">
+            <summary>
+            <para>Gibt an oder legt fest, ob der Fortschritt von dem Updatedownload und der Updateinstallation</para>
+            <para>unter Windows 7 zusätzlich in dem TaskBarButton angezeigt werden soll.</para>
+            </summary>
+            <remarks>
+            <para>Der updateController und Installer überprüft automatisch ob das ausführende Betriebssystem Windows 7 oder</para>
+            <para>höher ist. Diese Eigenschaft kann daher auch bei Betriebssystemen die älter als Windows 7 sind auf True gesetzt werden,</para>
+            <para>es findet dann jedoch keine Aktion statt.</para>
+            </remarks>
+        </member>
+        <member name="P:updateSystemDotNet.updateController.enableLogging">
+            <summary>
+            Gibt an oder legt fest ob die Aktionen des updateControllers und updateInstallers geloggt werden soll.
+            <para>Wenn aktiviert werden die Logs nach %TMP%\updateSystem.Net.Logs geschrieben.</para>
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.updateController.lastSuccessfullUpdateCheck">
+            <summary>
+            Gibt das Datum der letzten erfogreichen Updatesuche zurück.
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.updateController.showDialogsInTaskbar">
+            <summary>
+            Gibt zurück oder legt fest, ob die Updatedialoge in der Taskleiste angezeigt werden soll.
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.updateController.alwaysRaiseUpdateFoundEvent">
+            <summary>
+            Gibt zurück oder legt fest, ob das <see cref="E:updateSystemDotNet.updateController.updateFound"/>-Event auch bei der Updatesuche mittels den Updatedialogen gefeuert werden soll.
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.updateController.authenticationMode">
+            <summary>
+            <para>Gibt den authentificationMode für die Updatesuche und den Download zurück oder legt diesen fest.</para>
+            <remarks>Verwenden Sie <see cref="F:updateSystemDotNet.authenticationModes.Credentials"/>, wenn Sie den Zugang zu den Updatedateien beispielsweise mit .htaccess verwalten.</remarks>
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.updateController.authenticationUsername">
+            <summary>
+            Gibt den Benutzernamen zurück welcher für die Authentifizierung verwendet werden soll oder legt diesen fest.
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.updateController.authenticationPassword">
+            <summary>
+            Gibt das Password zurück welches für die Authentifizierung verwendet werden soll oder legt dieses fest.
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.updateController.updateCheckInterval">
+            <summary>
+            Gibt das Interval für die Updatesuchen zurück oder legt dieses fest.
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.updateController.customUpdateCheckInterval">
+            <summary>
+            <para>Das Benutzerdefinierte Suchinterval in Tagen.</para>
+            <para>Wird nur Berücksichtigt, wenn <see cref="P:updateSystemDotNet.updateController.updateCheckInterval"/> auf <see cref="F:updateSystemDotNet.Interval.Custom"/> gesetzt wurde.</para>
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.updateController.proxyEnabled">
+            <summary>
+            Gibt zurück oder legt fest, ob für die Updatesuche und den Download ein Proxy verwendet werden soll.
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.updateController.proxyUrl">
+            <summary>
+            Gibt die Adresse für den Proxyserver zurück oder legt diese fest.
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.updateController.proxyPort">
+            <summary>
+            Gibt den Port des Proxyservers zurück oder legt diesen fest.
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.updateController.proxyUsername">
+            <summary>
+            <para>Gibt den Benutzernamen für den Proxyserver zurück oder legt diesen fest.</para>
+            <para>Optional, wenn der Server eine Authentifizierung benötigt.</para>
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.updateController.proxyPassword">
+            <summary>
+            <para>Gbt das Passwort für den Proxyserver zurück oder legt dieses fest.</para>
+            <para>Optional, wenn der Server eine Authentifizierung benötigt.</para>
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.updateController.proxyUseDefaultCredentials">
+            <summary>
+            Gibt zurück oder legt fest, ob für die Proxyauthentifizierung die aktuellen Benutzercredentials verwendet werden sollen.
+            <para>Setzen Sie diese Eigenschaft auf True wenn Sie Probleme mit der Kommunikation durch einen Microsoft ISA haben.</para>
+            </summary>
+        </member>
+        <member name="F:updateSystemDotNet.Internal.UI.updateSearchDialog.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:updateSystemDotNet.Internal.UI.updateSearchDialog.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:updateSystemDotNet.Internal.UI.updateSearchDialog.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="T:updateSystemDotNet.Internal.ScheduledStart">
+            <summary>
+            Verwaltungsklasse für die geplanten UpdateStarts
+            </summary>
+        </member>
+        <member name="M:updateSystemDotNet.Internal.ScheduledStart.#ctor(System.String,updateSystemDotNet.Interval,System.Int32)">
+            <summary>
+            Kontruktor
+            </summary>
+            <param name="ProjektID">ProjektID nach welcher der letzte Updateaufruf ermittelt werden soll</param>
+            <param name="interval">Der Interval nach welchem nach Updates gesucht werden soll</param>
+            <param name="custom_interval">Der Benutzerdefinierte Updateinterval in Tagen</param>
+        </member>
+        <member name="M:updateSystemDotNet.Internal.ScheduledStart.CanCheck">
+            <summary>
+            Funktion die True zurückgibt, wenn der Zeitpunkt der nächsten Updatesuche erreicht ist
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:updateSystemDotNet.Internal.ScheduledStart.Next_Date">
+            <summary>
+            Gibt das Datum des nächsten Updatechecks zurück
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:updateSystemDotNet.Internal.ScheduledStart.RetrieveLastDate">
+            <summary>
+            Funktion welche das letzte Datum zurückgibt an welchem nach Updates gesucht wurde
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:updateSystemDotNet.Internal.ScheduledStart.WriteCurrentDate">
+            <summary>
+            Schreibt das aktuelle Datum in die Registry
+            </summary>
+        </member>
+        <member name="T:updateSystemDotNet.Internal.taskBarManager">
+            <summary>
+            Klasse zum Verwalten der neuen TaskBar-Funktionalitäten unter Windows 7.
+            <para>Singleton.</para>
+            </summary>
+        </member>
+        <member name="M:updateSystemDotNet.Internal.taskBarManager.#ctor">
+            <summary>
+            Initialisiert eine neue Instanz von TaskBarManager
+            </summary>
+        </member>
+        <member name="M:updateSystemDotNet.Internal.taskBarManager.setTaskBarProgressState(updateSystemDotNet.Internal.taskBarProgressState)">
+            <summary>
+            Setzt den TaskBarState im TaskBarButton.
+            </summary>
+            <param name="state">Der Status.</param>
+        </member>
+        <member name="M:updateSystemDotNet.Internal.taskBarManager.setTaskBarProgressValue(System.UInt64,System.UInt64)">
+            <summary>
+            Setzt den Fortschritt im TaskBarButton.
+            </summary>
+            <param name="currentValue">Die aktuelle Wert.</param>
+            <param name="maxValue">Der maximal Wert.</param>
+        </member>
+        <member name="P:updateSystemDotNet.Internal.taskBarManager.Instance">
+            <summary>
+            Gibt die Singleton Instanz des TaskBarManagers zurück.
+            </summary>
+        </member>
+        <member name="T:updateSystemDotNet.appEventArgs.checkForUpdatesCompletedEventArgs">
+            <summary>
+            Stellt Daten für das <see cref="E:updateSystemDotNet.updateController.checkForUpdatesCompleted"/>-Event des <see cref="T:updateSystemDotNet.updateController"/> bereit.
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.appEventArgs.checkForUpdatesCompletedEventArgs.Result">
+            <summary>
+            Gibt true zurück wenn Aktualisierungen gefunden wurden, andernfalls false.
+            </summary>
+        </member>
+        <member name="T:updateSystemDotNet.Core.updateActions.startServiceAction">
+            <summary>
+            Updateaction zum starten eines Windowsdienstes.
+            </summary>
+        </member>
+        <member name="M:updateSystemDotNet.Core.updateActions.startServiceAction.ToString">
+            <summary>
+            Gibt den Namen der Action zurück.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:updateSystemDotNet.Core.updateActions.startServiceAction.Validate">
+            <summary>
+            Überprüft in der Updateaction ob alle benötigen Parameter einen Wert besitzen.
+            </summary>
+            <returns>Gibt True zurück wenn die Überprüfung erfolgreich war, andernfalls false.</returns>
+        </member>
+        <member name="P:updateSystemDotNet.Core.updateActions.startServiceAction.serviceName">
+            <summary>
+            Gibt den Namen des Dienstes zurück oder legt diesen fest.
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.Core.updateActions.startServiceAction.restartIfRunnig">
+            <summary>
+            Gibt an oder legt fest ob der Dienst neu gestartet werden soll wenn dieser bereits läuft.
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.Core.updateActions.startServiceAction.Arguments">
+            <summary>
+            Gibt die Argumente an, die an den Service übermittelt werden sollen oder legt diese fest.
+            </summary>
+        </member>
+        <member name="T:updateSystemDotNet.Core.updateActions.removeRegistryKeyAction">
+            <summary>
+            Updateaktion zum entfernen eines Registryschlüssels.
+            </summary>
+        </member>
+        <member name="M:updateSystemDotNet.Core.updateActions.removeRegistryKeyAction.ToString">
+            <summary>
+            Gibt den Namen der Action zurück.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:updateSystemDotNet.Core.updateActions.removeRegistryKeyAction.Validate">
+            <summary>
+            Überprüft in der Updateaction ob alle benötigen Parameter einen Wert besitzen.
+            </summary>
+            <returns>Gibt True zurück wenn die Überprüfung erfolgreich war, andernfalls false.</returns>
+        </member>
+        <member name="T:updateSystemDotNet.Core.RSA">
+            <summary>
+            Statische Klasse welche RSA Verschlüsselung und Signierung bereitstellt.
+            </summary>
+        </member>
+        <member name="M:updateSystemDotNet.Core.RSA.EncryptString(System.String,System.Int32,System.String)">
+            <summary>
+            Verschlüsselt einen String
+            </summary>
+            <param name="inputString">Der String der verschlüsselt werden soll</param>
+            <param name="dwKeySize">Die Schlüsselgröße (z.B. 1024Bit)</param>
+            <param name="xmlPublicKey">Der öffentliche Teil des RSA-Keypairs</param>
+            <returns></returns>
+        </member>
+        <member name="M:updateSystemDotNet.Core.RSA.DecryptString(System.String,System.Int32,System.String)">
+            <summary>
+            Entschlüsselt einen String
+            </summary>
+            <param name="inputString">Der verschlüsselte String der decodiert werden soll</param>
+            <param name="dwKeySize">Die Schlüsselgröße (z.B. 1024Bit)</param>
+            <param name="xmlPrivateKey">Der private Teil des RSA-Keypairs</param>
+            <returns></returns>
+        </member>
+        <member name="M:updateSystemDotNet.Core.RSA.CreateNewKeys">
+            <summary>
+            Erstellt ein neues Schlüsselpaar
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:updateSystemDotNet.Core.RSA.Sign(System.String,System.String)">
+            <summary>
+            Signiert einen Text mit dem angegebenen privaten Schlüssel.
+            </summary>
+            <param name="textToSign">Der zusignierende Text.</param>
+            <param name="privateKey">Der private Schlüssel.</param>
+            <returns></returns>
+        </member>
+        <member name="M:updateSystemDotNet.Core.RSA.validateSign(System.String,System.String,System.String)">
+            <summary>
+            Validiert einen signierten String
+            </summary>
+            <param name="textToValidate">Der unsignierte Text welcher mit der Signatur überprüft werden soll.</param>
+            <param name="signToValidate">Die Signatur des Textes.</param>
+            <param name="publicKey">Der öffentliche Schlüssel.</param>
+            <returns></returns>
+        </member>
+        <member name="M:updateSystemDotNet.Core.RSA.SignXmlDocument(System.Xml.XmlDocument,System.String)">
+            <summary>
+            Signiert ein Xml-Document.
+            </summary>
+            <param name="xDoc">Das Dokument welches die Daten enthält die signiert werden sollen.</param>
+            <param name="privateKey">Der private Schlüssel.</param>
+            <returns>Gibt ein Xml Element mit den Signierten daten zurück.</returns>
+        </member>
+        <member name="M:updateSystemDotNet.Core.RSA.validateXmlDocument(System.Xml.XmlDocument)">
+            <summary>
+            Überprüft die Signatur eines Xml Dokuments.
+            </summary>
+            <param name="xDoc">Das Dokument welches überprüft werden soll.</param>
+            <returns>Gibt True zurück wenn die Signatur gültig ist, andernfalls False.</returns>
+        </member>
+        <member name="T:updateSystemDotNet.Core.Serializer">
+            <summary>
+            Klasse welche Funktionen zur de-/serialisierung von Projektdateien bereistellt
+            </summary>
+        </member>
+        <member name="M:updateSystemDotNet.Core.Serializer.Serialize(updateSystemDotNet.Core.Types.updateConfiguration)">
+            <summary>
+            Serialisiert die Konfigurationsdatei und gibt diese als String zurück
+            </summary>
+            <param name="Config">The Configurationinstance</param>
+            <returns>string</returns>
+        </member>
+        <member name="M:updateSystemDotNet.Core.Serializer.Deserialize(System.String)">
+            <summary>
+            Deserialisiert die Konfigurationsdatei aus einem String
+            </summary>
+            <param name="data">Der String welcher die Konfigurationsdatei enthält</param>
+            <returns>Types.updateConfig</returns>
+        </member>
+        <member name="T:updateSystemDotNet.appEventArgs.confirmUpdatePackageEventArgs">
+            <summary>
+            Stellt Daten für das <see cref="E:updateSystemDotNet.updateController.confirmUpdatePackage"/>-Event des <see cref="T:updateSystemDotNet.updateController"/> bereit.
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.appEventArgs.confirmUpdatePackageEventArgs.updatePackage">
+            <summary>
+            Gibt das Updatepaket zurück, welches Bestätigt werden soll.
+            </summary>
+        </member>
+        <member name="F:updateSystemDotNet.Internal.UI.releaseFilterControl.components">
+            <summary> 
+            Erforderliche Designervariable.
+            </summary>
+        </member>
+        <member name="M:updateSystemDotNet.Internal.UI.releaseFilterControl.Dispose(System.Boolean)">
+            <summary> 
+            Verwendete Ressourcen bereinigen.
+            </summary>
+            <param name="disposing">True, wenn verwaltete Ressourcen gelöscht werden sollen; andernfalls False.</param>
+        </member>
+        <member name="M:updateSystemDotNet.Internal.UI.releaseFilterControl.InitializeComponent">
+            <summary> 
+            Erforderliche Methode für die Designerunterstützung. 
+            Der Inhalt der Methode darf nicht mit dem Code-Editor geändert werden.
+            </summary>
+        </member>
+        <member name="T:updateSystemDotNet.Internal.taskBarProgressState">
+            <summary>
+            Represents the thumbnail progress bar state.
+            </summary>
+        </member>
+        <member name="F:updateSystemDotNet.Internal.taskBarProgressState.NoProgress">
+            <summary>
+            No progress is displayed.
+            </summary>
+        </member>
+        <member name="F:updateSystemDotNet.Internal.taskBarProgressState.Indeterminate">
+            <summary>
+            The progress is indeterminate (marquee).
+            </summary>
+        </member>
+        <member name="F:updateSystemDotNet.Internal.taskBarProgressState.Normal">
+            <summary>
+            Normal progress is displayed.
+            </summary>
+        </member>
+        <member name="F:updateSystemDotNet.Internal.taskBarProgressState.Error">
+            <summary>
+            An error occurred (red).
+            </summary>
+        </member>
+        <member name="F:updateSystemDotNet.Internal.taskBarProgressState.Paused">
+            <summary>
+            The operation is paused (yellow).
+            </summary>
+        </member>
+        <member name="M:updateSystemDotNet.Internal.Designer.SmartTagActionListBase.RefreshDesigner">
+            <summary>
+            Refreshes the contets of designer smart tag panel.
+            </summary>
+        </member>
+        <member name="M:updateSystemDotNet.Internal.Designer.SmartTagActionListBase.HideDesigner">
+            <summary>
+            Hides the smart tag panel of this component.
+            </summary>
+        </member>
+        <member name="M:updateSystemDotNet.Internal.Designer.SmartTagActionListBase.SetPropertyByName(System.Object,System.String,System.Object)">
+            <summary>
+            Sets the specified property of specified control to the given value.
+            Note: by means of Reflection methods, "Undo" and "Menu Updates" in IDE work properly! (donot modify control properties directly through the code, but use this method)
+            </summary>
+            <param name="ComponentObject">The Name of the Component.</param>
+            <param name="propName">The Name from the Property</param>
+            <param name="value">The Value</param>
+        </member>
+        <member name="M:updateSystemDotNet.Internal.Designer.SmartTagActionListBase.ClearControlText">
+            <summary>
+            Clears the text of the related Control. Note: this is valid only for Controls (Not Components)
+            </summary>
+        </member>
+        <member name="M:updateSystemDotNet.Internal.Designer.SmartTagActionListBase.ClearActionList">
+            <summary>
+            Clears all action items.
+            </summary>
+        </member>
+        <member name="M:updateSystemDotNet.Internal.Designer.SmartTagActionListBase.AddActionText(System.String,System.String)">
+            <summary>
+            Adds a static Text item to ActionItems. Call it in GetSortedActionItems() function.
+            </summary>
+        </member>
+        <member name="M:updateSystemDotNet.Internal.Designer.SmartTagActionListBase.AddActionProperty(System.String,System.String,System.String,System.String)">
+            <summary>
+            Adds a Property item to ActionItems. Call it in GetSortedActionItems() function.
+            </summary>
+            <param name="memberName">The property name defined in your DesignerActionList (Not your control property!)</param>
+            <param name="category">The Category for this Property.</param>
+            <param name="description">The Description for this Property</param>
+            <param name="displayName">The Displayname for this Property</param>
+        </member>
+        <member name="M:updateSystemDotNet.Internal.Designer.SmartTagActionListBase.AddActionMethod(System.String,System.String,System.String,System.String,System.Boolean)">
+            <summary>
+            Adds a Method item to ActionItems. Call it in GetSortedActionItems() function.
+            </summary>
+            <param name="memberName">The property name defined in your DesignerActionList (Not yout control property!)</param>
+            <param name="category">The Category for this Method.</param>
+            <param name="description">The Description for this Method.</param>
+            <param name="displayName">The Displayname for this Mathod.</param>
+            <param name="includeAsDesignerVerb">Set this to True if this Method should used as DesignerVerb, otherwise False.</param>
+        </member>
+        <member name="M:updateSystemDotNet.Internal.Designer.SmartTagActionListBase.AddActionHeader(System.String)">
+            <summary>
+            Adds a Header (Category) item to ActionItems. Call it in GetSortedActionItems() function
+            </summary>
+        </member>
+        <member name="M:updateSystemDotNet.Internal.Designer.SmartTagActionListBase.GetSortedActionItems">
+            <summary>
+            Usually you should override DefineSortedActionItems() method to define your action items.
+            But if you want, You can override this function to specify your smart tag action items.
+            Call AddActionInit() and then some AddAction*() methods to add your items to ActionItems property.
+            Finally you should return ActionItems.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:updateSystemDotNet.Internal.Designer.SmartTagActionListBase.AddActionItems">
+            <summary>
+            You should Override this method to specify your smart tag action items. Call AddAction*() methods to define your action items in this method.
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.Internal.Designer.SmartTagActionListBase.DesignerService">
+            <summary>
+            Gets access to the Designer Action UI Serice which manages the user interface (UI) for the smart tag panel.
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.Internal.Designer.SmartTagActionListBase.ActionList">
+            <summary>
+            Gets the interal DesignerActionItemCollection of this class which represents a collection if Action Items to display on the smart tag panel.
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.Internal.Designer.SmartTagActionListBase.Container">
+            <summary>
+            Gets the container which sites this Component or Control.
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.Internal.Designer.SmartTagActionListBase.Control">
+            <summary>
+            Gets this Control (if associated Components is a Control).
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.Internal.Designer.SmartTagActionListBase.RightToLeft">
+            <summary>
+            Note: This property is valid only for Controls (Not Components)
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.Internal.Designer.SmartTagActionListBase.Font">
+            <summary>
+            This property is valid only for Controls (Not Components)
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.Internal.Designer.SmartTagActionListBase.Text">
+            <summary>
+            This property is valid only for Controls (Not Components)
+            </summary>
+        </member>
+        <member name="T:updateSystemDotNet.Core.Types.enhancedVersion">
+            <summary>
+            Ein Klasse welche erweiterte Versionsinformationen bereitstellt.
+            </summary>
+        </member>
+        <member name="M:updateSystemDotNet.Core.Types.enhancedVersion.#ctor(updateSystemDotNet.Core.Types.releaseInfo)">
+            <summary>
+            Initialisiert eine neue Instanz von <see cref="T:updateSystemDotNet.Core.Types.enhancedVersion"/>.
+            </summary>
+            <param name="rInfo">Das Versionsobjekt welches für diese Instanz verwendeten werden soll.</param>
+        </member>
+        <member name="M:updateSystemDotNet.Core.Types.enhancedVersion.#ctor(updateSystemDotNet.Core.Types.releaseInfo,updateSystemDotNet.Core.Types.updatePackage.SupportedArchitectures)">
+            <summary>
+            Initialisiert eine neue Instanz von <see cref="T:updateSystemDotNet.Core.Types.enhancedVersion"/>.
+            </summary>
+            <param name="rInfo">Das Versionsobjekt welches für diese Instanz verwendeten werden soll.</param>
+            <param name="architecture">Die Prozessorarchitektur für welche dieses Versionsobjekt gültig ist.</param>
+        </member>
+        <member name="P:updateSystemDotNet.Core.Types.enhancedVersion.releaseInfo">
+            <summary>
+            Gibt die Versionsnummer zurück oder legt diese fest.
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.Core.Types.enhancedVersion.Architecture">
+            <summary>
+            Gibt die Prozessorarchitektur dieser Version zurück oder legt diese fest.
+            </summary>
+        </member>
+        <member name="T:updateSystemDotNet.Core.Types.changelogDocument">
+            <summary>
+            Bietet direkten Zugriff auf die Daten eines updateSystem.Net Changelogs im Xml-Format.
+            </summary>
+        </member>
+        <member name="M:updateSystemDotNet.Core.Types.changelogDocument.#ctor(System.Xml.XmlDocument)">
+            <summary>
+            Initialisiert eine neue Instanz der <see cref="T:updateSystemDotNet.Core.Types.changelogDocument"/>-Klasse.
+            </summary>
+            <param name="changelogXml"></param>
+        </member>
+        <member name="P:updateSystemDotNet.Core.Types.changelogDocument.germanChanges">
+            <summary>
+            Gibt die Änderungen in deutscher Sprache zurück.
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.Core.Types.changelogDocument.englishChanges">
+            <summary>
+            Gibt die Änderungen in englischer Sprache zurück.
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.Core.Types.changelogDocument.changelogItems">
+            <summary>
+            Gibt eine Liste von <see cref="T:updateSystemDotNet.Core.Types.changelogDocumentItem"/> zurück.
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.Core.Types.changelogDocument.rawChangelog">
+            <summary>
+            Gibt das original Changelogdokument zurück.
+            </summary>
+        </member>
+        <member name="T:updateSystemDotNet.UpdateResult">
+            <summary>
+            Resultat welches von der Funktion 'CheckForUpdates' zurückgegeben wird.
+            </summary>
+        </member>
+        <member name="F:updateSystemDotNet.UpdateResult.m_config">
+            <summary>
+            Die heruntergeladene Serverkonfiguration
+            </summary>
+        </member>
+        <member name="M:updateSystemDotNet.UpdateResult.#ctor(System.Collections.Generic.List{updateSystemDotNet.Core.Types.updatePackage},updateSystemDotNet.Core.Types.updateConfiguration,updateSystemDotNet.Core.Types.changelogDictionary)">
+            <summary>
+            Initialisiert eine neue Instanz des <see cref="T:updateSystemDotNet.UpdateResult"/>.
+            </summary>
+            <param name="Result">Das Suchresultat</param>
+            <param name="Configuration">Die heruntergeladene Updatekonfiguration</param>
+            <param name="changelogs">Ein Dictionary mit den Heruntergeladenen Changelogs.</param>
+        </member>
+        <member name="P:updateSystemDotNet.UpdateResult.UpdatesAvailable">
+            <summary>
+            Gibt 'True' zurück wenn Aktualisierungen gefunden wurden, andernfalls 'False'.
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.UpdateResult.Configuration">
+            <summary>
+            Die heruntergeladene Updatekonfiguration.
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.UpdateResult.newUpdatePackages">
+            <summary>
+            Gibt eine Auflistung mit den gefundenen Updatepakten zurück.
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.UpdateResult.Changelogs">
+            <summary>
+            Gibt die Changelogs für die Updatepakete zurück oder legt diese fest.<para/>
+            Der Key dieses Dictionarys ist die Versionsnummer des Updatepaketes, die Value ist der Changelog als <see cref="T:updateSystemDotNet.Core.Types.changelogDocument"/>.
+            </summary>
+        </member>
+        <member name="T:updateSystemDotNet.Core.updateActions.updateRegistryAction">
+            <summary>
+            Klasse zum aktualsieren der Registryversion
+            </summary>
+        </member>
+        <member name="M:updateSystemDotNet.Core.updateActions.updateRegistryAction.Validate">
+            <summary>
+            Überprüft in der Updateaction ob alle benötigen Parameter einen Wert besitzen.
+            </summary>
+            <returns>Gibt True zurück wenn die Überprüfung erfolgreich war, andernfalls false.</returns>
+        </member>
+        <member name="P:updateSystemDotNet.Core.updateActions.updateRegistryAction.newVersion">
+            <summary>
+            Gibt die neue Version zurück welche in die Registry eingetragen werden soll oder legt diese fest.
+            </summary>
+        </member>
+        <member name="T:updateSystemDotNet.Core.Types.statisticServerTypes">
+            <summary>
+            Enumeration mit verfügbaren Statistiktechnologien.
+            </summary>
+        </member>
+        <member name="F:updateSystemDotNet.Core.Types.statisticServerTypes.AspNet">
+            <summary>
+            Ein ASP.Net und Microsoft SQL Webdienst.
+            </summary>
+        </member>
+        <member name="F:updateSystemDotNet.Core.Types.statisticServerTypes.Php">
+            <summary>
+            Ein PHP und MySql Webdienst.
+            </summary>
+        </member>
+        <member name="T:updateSystemDotNet.Core.Types.statisticServerType">
+            <summary>
+            Stellt Informationen über den Statistikserver bereit.
+            </summary>
+        </member>
+        <member name="M:updateSystemDotNet.Core.Types.statisticServerType.#ctor">
+            <summary>
+            Initialisiert eine neue Instanz der statisticServerType-Klasse.
+            </summary>
+        </member>
+        <member name="M:updateSystemDotNet.Core.Types.statisticServerType.#ctor(System.String,updateSystemDotNet.Core.Types.statisticServerTypes)">
+            <summary>
+            Initialisiert eine neue Instanz der statisticServerType-Klasse.
+            </summary>
+            <param name="Url">Die Url unter welcher der Webservice erreichbar ist.</param>
+            <param name="sType">Der Typ der Technologie die auf dem Server zur Verwaltung der Statistiken verwendet wird.</param>
+        </member>
+        <member name="M:updateSystemDotNet.Core.Types.statisticServerType.Clone">
+            <summary>
+            Gibt eine Kopie des statisticServerType zurück.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="P:updateSystemDotNet.Core.Types.statisticServerType.Name">
+            <summary>
+            Gibt den Anzeigenamen für den Statistikserver zurück oder legt diesen fest.
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.Core.Types.statisticServerType.Id">
+            <summary>
+            Gibt eine ID zurück welche das Element Identifiziert oder legt diese fest.
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.Core.Types.statisticServerType.serverUrl">
+            <summary>
+            Gibt die Url des Webservice zurück oder legt diese fest.
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.Core.Types.statisticServerType.serverType">
+            <summary>
+            Gibt die verwendete Technologie zurück oder legt diese fest.
+            </summary>
+        </member>
+        <member name="F:updateSystemDotNet.Internal.UI.updatePreviewDialog.m_settings">
+            <summary>
+            UpdateSettings welche der Benutzer oder Entwickler dem UpdateHelper mitgegeben haben
+            </summary>
+        </member>
+        <member name="F:updateSystemDotNet.Internal.UI.updatePreviewDialog.m_result">
+            <summary>
+            Resultat des Suchproviders
+            </summary>
+        </member>
+        <member name="F:updateSystemDotNet.Internal.UI.updatePreviewDialog.m_config">
+            <summary>
+            Heruntergeladene Updatekonfiguration
+            </summary>
+        </member>
+        <member name="M:updateSystemDotNet.Internal.UI.updatePreviewDialog.#ctor(updateSystemDotNet.UpdateSettings,System.Collections.Generic.List{updateSystemDotNet.Core.Types.updatePackage},updateSystemDotNet.Core.Types.updateConfiguration,updateSystemDotNet.Core.Types.changelogDictionary,System.Boolean)">
+            <summary>
+            Kontruktor
+            </summary>
+            <param name="Settings">Die lokalen Updateeinstellungen</param>
+            <param name="Result">Das Suchresultat</param>
+            <param name="Config">Die heruntergeladene Updatekonfiguration</param>
+            <param name="changelogs">Die Changelogs</param>
+            <param name="requestElevation">Gibt an, ob eine Elevation notwendig ist.</param>
+        </member>
+        <member name="M:updateSystemDotNet.Internal.UI.updatePreviewDialog.IsAdmin">
+            <summary>
+            Returns true if the current User has Administratorprivilegs, otherwise false.
+            </summary>
+            <returns>bool</returns>
+        </member>
+        <member name="M:updateSystemDotNet.Internal.UI.updatePreviewDialog.GetFileSize(System.Single)">
+            <summary>
+            Gibt die größe einer Datei in einem formatiertem String wieder.
+            </summary>
+            <param name="lenght">Die Größe der Datei in Bytes</param>
+            <returns></returns>
+        </member>
+        <member name="F:updateSystemDotNet.Internal.UI.updatePreviewDialog.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:updateSystemDotNet.Internal.UI.updatePreviewDialog.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:updateSystemDotNet.Internal.UI.updatePreviewDialog.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="T:updateSystemDotNet.Core.updateActions.registryHives">
+            <summary>
+            Enumeration mit allen unterstützten Registryzweigen.
+            </summary>
+        </member>
+        <member name="F:updateSystemDotNet.Core.updateActions.registryHives.HKEY_CLASSES_ROOT">
+            <summary>
+            Unter diesem Hauptschlüssel befindet sich für jeden registrierten Dateityp ein Unterschlüssel. Dieser wiederum kann eine Reihe weiterer Unterschlüssel wie zum Beispiel „ShellEx”, „ShellNew”, „OpenWithList” und viele mehr enthalten.
+            </summary>
+        </member>
+        <member name="F:updateSystemDotNet.Core.updateActions.registryHives.HKEY_CURRENT_USER">
+            <summary>
+            Der Hauptschlüssel HKEY_CURRENT_USER wird auch als „HKCU“ abgekürzt und enthält die benutzerspezifischen Konfigurationsdaten für den aktuell angemeldeten Benutzer.
+            </summary>
+        </member>
+        <member name="F:updateSystemDotNet.Core.updateActions.registryHives.HKEY_LOCAL_MACHINE">
+            <summary>
+            Dieser Hauptschlüssel enthält alle computerspezifischen Einstellungen. Er wird auch als „HKLM“ abgekürzt.
+            </summary>
+        </member>
+        <member name="T:updateSystemDotNet.Core.updateActions.registryValueTypes">
+            <summary>
+            Enumeration mit allen unterstützten Datentypen für die Registrywerte.
+            </summary>
+        </member>
+        <member name="F:updateSystemDotNet.Core.updateActions.registryValueTypes.REG_SZ">
+            <summary>
+            REG_SZ, reiner, beliebiger Klartext (Zeichenkette).
+            </summary>
+        </member>
+        <member name="F:updateSystemDotNet.Core.updateActions.registryValueTypes.REG_BINARY">
+            <summary>
+            REG_BINARY, binär, dezimal und hexadezimal.
+            </summary>
+        </member>
+        <member name="F:updateSystemDotNet.Core.updateActions.registryValueTypes.REG_DWORD">
+            <summary>
+            REG_DWORD, Werte von 4 Byte (Doppelwort = Double-Word), Zahlenwert zwischen 0 und 255 (Dezimal) oder 00 und FF (Hexadezimal).
+            </summary>
+        </member>
+        <member name="F:updateSystemDotNet.Core.updateActions.registryValueTypes.REG_EXPAND_SZ">
+            <summary>
+            REG_EXPAND_SZ (expandierbarer Text), eine erweiterbare Zeichenkette mit Variablen wie %SYSTEMROOT%, die durch die jeweils aktuellen Werte ersetzt werden, wenn ein Programm oder ein Dienst darauf zugreift (nur Windows XP).
+            </summary>
+        </member>
+        <member name="F:updateSystemDotNet.Core.updateActions.registryValueTypes.REG_MULTI_SZ">
+            <summary>
+            REG_MULTI_SZ, eine mehrzeilige Zeichenkette (Mehrfachzeichenkette), zum Beispiel eine Liste, in der die Einträge durch Leerzeichen, Kommas oder andere Trennzeichen voneinander getrennt werden (nur Windows XP).
+            </summary>
+        </member>
+        <member name="T:updateSystemDotNet.Core.Types.releaseFilterType">
+            <summary>
+            Klasse zum Filtern der Releasetypen während der Updatesuche.
+            </summary>
+            <remarks>Neu in V.: 1.1.</remarks>
+        </member>
+        <member name="M:updateSystemDotNet.Core.Types.releaseFilterType.#ctor">
+            <summary>
+            Initialisiert eine neue Instanz von <see cref="T:updateSystemDotNet.Core.Types.releaseFilterType"/>.
+            </summary>
+        </member>
+        <member name="M:updateSystemDotNet.Core.Types.releaseFilterType.Contains(updateSystemDotNet.releaseTypes)">
+            <summary>
+            Überprüft ob der Release Type den im Filter angegebenen Werten entspricht.
+            </summary>
+            <param name="releaseType">Der zu prüfende Releasetype.</param>
+            <returns>Gibt True zurück wenn der Releasetype mit dem Filter überein stimmt, andernfalls False.</returns>
+        </member>
+        <member name="M:updateSystemDotNet.Core.Types.releaseFilterType.ToString">
+            <summary></summary>
+            <returns></returns>
+        </member>
+        <member name="P:updateSystemDotNet.Core.Types.releaseFilterType.checkForFinal">
+            <summary>
+            Gibt zurück oder legt fest, ob nach Finalenversionen gesucht werden soll.
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.Core.Types.releaseFilterType.checkForBeta">
+            <summary>
+            Gibt zurück oder legt fest, ob nach Betaversionen gesucht werden soll.
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.Core.Types.releaseFilterType.checkForAlpha">
+            <summary>
+            Gibt zurück oder legt fest, ob nach Alphaversionen gesucht werden soll.
+            </summary>
+        </member>
+        <member name="T:updateSystemDotNet.Core.updateActions.closeProcessAction">
+            <summary>
+            Updateaktion zum beenden von Prozessen.
+            </summary>
+        </member>
+        <member name="M:updateSystemDotNet.Core.updateActions.closeProcessAction.#ctor">
+            <summary>
+            Initialisiert eine neue Instanz der <see cref="T:updateSystemDotNet.Core.updateActions.closeProcessAction"/>.
+            </summary>
+        </member>
+        <member name="M:updateSystemDotNet.Core.updateActions.closeProcessAction.#ctor(System.String)">
+            <summary>
+            Initialisiert eine neue Instanz der <see cref="T:updateSystemDotNet.Core.updateActions.closeProcessAction"/>.
+            </summary>
+            <param name="processName">Ein einzelner Prozess welcher zu der Liste der zu schließenden Prozesse hinzugefügt werden soll.</param>
+        </member>
+        <member name="M:updateSystemDotNet.Core.updateActions.closeProcessAction.ToString">
+            <summary>
+            Gibt den Namen der Aktion zurück
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:updateSystemDotNet.Core.updateActions.closeProcessAction.Validate">
+            <summary>
+            Überprüft in der Updateaction ob alle benötigen Parameter einen Wert besitzen.
+            </summary>
+            <returns>Gibt True zurück wenn die Überprüfung erfolgreich war, andernfalls false.</returns>
+        </member>
+        <member name="P:updateSystemDotNet.Core.updateActions.closeProcessAction.processList">
+            <summary>
+            Gibt die Liste mit Prozessen zurück die beendet werden sollen oder legt diese fest.
+            </summary>
+        </member>
+        <member name="T:updateSystemDotNet.updateDownloadBaseForm">
+            <summary>
+            Basisform für alle Updatedownloadforms.
+            </summary>
+        </member>
+        <member name="M:updateSystemDotNet.updateDownloadBaseForm.#ctor">
+            <summary>
+            Initialisiert eine neue Instanz der <see cref="T:updateSystemDotNet.updateDownloadBaseForm"/>.
+            </summary>
+        </member>
+        <member name="M:updateSystemDotNet.updateDownloadBaseForm.initializeForm(updateSystemDotNet.UpdateSettings,updateSystemDotNet.UpdateResult)">
+            <summary>
+            Initialisiert die Updateform. Diese Methode wird automatisch vom <see cref="T:updateSystemDotNet.updateController"/> aufgerufen und muss daher nicht manuell aufgerufen werden.
+            </summary>
+            <param name="settings">Die Updatesettings.</param>
+            <param name="result">Das Suchresultat des UpdateControllers.</param>
+        </member>
+        <member name="M:updateSystemDotNet.updateDownloadBaseForm.ShowDialog(System.Windows.Forms.IWin32Window)">
+            <summary>
+            Zeigt das Formular als modales Dialogfeld an.
+            </summary>
+            <param name="owner">Ein beliebiges Objekt, das <see cref="T:System.Windows.Forms.IWin32Window"/> implementiert, das das Fenster der obersten Ebene und damit den Besitzer des modalen Dialogfelds darstellt.</param>
+            <returns>Einer der DialogResult-Werte.</returns>
+        </member>
+        <member name="M:updateSystemDotNet.updateDownloadBaseForm.startDownload">
+            <summary>
+            Beginnt mit dem Download der Updates.
+            </summary>
+        </member>
+        <member name="M:updateSystemDotNet.updateDownloadBaseForm.cancelDownload">
+            <summary>
+            Bricht den Updatedownload ab.
+            </summary>
+        </member>
+        <member name="M:updateSystemDotNet.updateDownloadBaseForm.OnFormClosing(System.Windows.Forms.FormClosingEventArgs)">
+            <summary>
+            Überschriebene Closing-Methode welche den aktiven Updatedownload erst beendet und dann das Event weiterreicht.
+            </summary>
+            <param name="e"></param>
+        </member>
+        <member name="E:updateSystemDotNet.updateDownloadBaseForm.downloadUpdatesCompleted">
+            <summary>
+            Tritt ein, wenn der Updatedownload abgeschlossen wurde.
+            </summary>
+        </member>
+        <member name="E:updateSystemDotNet.updateDownloadBaseForm.downloadUpdatesProgressChanged">
+            <summary>
+            Tritt ein, wenn sich der Fortschritt des Updatedownloads ändert.
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.updateDownloadBaseForm.Result">
+            <summary>
+            Bietet Zugriff auf das Suchresultat.
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.updateDownloadBaseForm.isBusy">
+            <summary>
+            Gibt true zurück wenn der Updatedownload läuft, andernfalls false.
+            </summary>
+        </member>
+        <member name="F:updateSystemDotNet.Internal.UI.updateDownloadDialog.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:updateSystemDotNet.Internal.UI.updateDownloadDialog.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:updateSystemDotNet.Internal.UI.updateDownloadDialog.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="T:updateSystemDotNet.Internal.updateDownloader">
+            <summary>
+            Client zum herunterladen der Updates.
+            </summary>
+        </member>
+        <member name="M:updateSystemDotNet.Internal.updateDownloader.sFinalize">
+            <summary>
+            Führt Abschließende Funktionen aus.
+            </summary>
+        </member>
+        <member name="M:updateSystemDotNet.Internal.updateDownloader.Percent(System.Int64,System.Int64)">
+            <summary>
+            Diese Funktion berechnet den Prozentsatz aus zwei Werten.
+            </summary>
+            <param name="CurrVal">Der aktuelle Wert.</param>
+            <param name="MaxVal">Der maximalwert</param>
+            <returns>Gibt den Prozentsatz aus den beiden gegebenen Werten zurück.</returns>
+        </member>
+        <member name="M:updateSystemDotNet.Internal.updateDownloader.extractFilename(System.String)">
+            <summary>
+            Extrahiert den Dateinamen aus einer Url
+            </summary>
+            <param name="url">Die Url welche einen Dateinamen am Ende enthält</param>
+            <returns>Gibt den Dateinamen ohne Url zurück</returns>
+        </member>
+        <member name="M:updateSystemDotNet.Internal.updateDownloader.CombineURL(System.String,System.String)">
+            <summary>
+            Kombiniert zwei Url's miteinander
+            </summary>
+            <param name="url1">Die erste Url</param>
+            <param name="url2">Die zweite Url</param>
+            <returns>Gibt eine aus den beiden Url's kombinierte Url mit einem '/' am Ende zurück</returns>
+        </member>
+        <member name="M:updateSystemDotNet.Internal.updateDownloader.GetFileSize(System.Double)">
+            <summary>
+            Gibt die größe einer Datei in einem formatiertem String wieder.
+            </summary>
+            <param name="lenght">Die Größe der Datei in Bytes</param>
+            <returns></returns>
+        </member>
+        <member name="T:updateSystemDotNet.Core.updateActions.stopServiceAction">
+            <summary>
+            Updateaction zum stoppen eines Dienstes.
+            </summary>
+        </member>
+        <member name="M:updateSystemDotNet.Core.updateActions.stopServiceAction.ToString">
+            <summary>
+            Gibt den anzeigenamen der Action zurück.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:updateSystemDotNet.Core.updateActions.stopServiceAction.Validate">
+            <summary>
+            Überprüft in der Updateaction ob alle benötigen Parameter einen Wert besitzen.
+            </summary>
+            <returns>Gibt True zurück wenn die Überprüfung erfolgreich war, andernfalls false.</returns>
+        </member>
+        <member name="P:updateSystemDotNet.Core.updateActions.stopServiceAction.serviceName">
+            <summary>
+            Gibt den Namen des Dienstes zurück oder legt diesen fest.
+            </summary>
+        </member>
+        <member name="T:updateSystemDotNet.Internal.Statistics">
+            <summary>
+            Interne Klasse zur Statistikübertragung
+            </summary>
+        </member>
+        <member name="M:updateSystemDotNet.Internal.Statistics.#ctor(updateSystemDotNet.UpdateSettings,updateSystemDotNet.Core.Types.updateConfiguration)">
+            <summary>
+            Initialisiert eine neue Klasse der Statistikerfassung.
+            </summary>
+            <param name="currentConfig">Die heruntergeladene Updatekonfigurationsdatei.</param>
+            <param name="settings">Instanz der UpdateSettings</param>
+        </member>
+        <member name="M:updateSystemDotNet.Internal.Statistics.sendStatisticRequest(System.Int32,System.String,System.String)">
+            <summary>
+            Sendet einen Statistikrequest an den festgelegten Server.
+            </summary>
+            <param name="requestType">Der Requesttype. 0 für Suchanfrage, 1 für Download.</param>
+            <param name="version">Die Version von welcher angefragt wird.</param>
+            <param name="projectId">Die festgelegte Projekt-ID.</param>
+        </member>
+        <member name="T:updateSystemDotNet.Core.updateActions.addRegistryValueAction">
+            <summary>
+            Updateaktionen zum hinzufügen von einem oder mehreren Registrywerten.
+            </summary>
+        </member>
+        <member name="M:updateSystemDotNet.Core.updateActions.addRegistryValueAction.ToString">
+            <summary>
+            Gibt den Namen der Aktion zurück.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:updateSystemDotNet.Core.updateActions.addRegistryValueAction.Validate">
+            <summary>
+            Überprüft in der Updateaction ob alle benötigen Parameter einen Wert besitzen.
+            </summary>
+            <returns>Gibt True zurück wenn die Überprüfung erfolgreich war, andernfalls false.</returns>
+        </member>
+        <member name="P:updateSystemDotNet.Core.updateActions.addRegistryValueAction.Items">
+            <summary>
+            Gibt die neuen Einträge für die Registry zurück oder legt diese fest.
+            </summary>
+        </member>
+        <member name="T:updateSystemDotNet.Core.updateActions.addRegistryValueAction.registryItem">
+            <summary>
+            Item mit Informationen zu einem neuen Registryeintrag.
+            </summary>
+        </member>
+        <member name="M:updateSystemDotNet.Core.updateActions.addRegistryValueAction.registryItem.Clone">
+            <summary>
+            Erstellt eine Kopie des aktuellen Objekts.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="P:updateSystemDotNet.Core.updateActions.addRegistryValueAction.registryItem.ID">
+            <summary>
+            Gibt den Identifer für dieses Item zurück oder legt diesen fest.
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.Core.updateActions.addRegistryValueAction.registryItem.Name">
+            <summary>
+            Gibt den Namen des Eintrags zurück oder legt diesen fest.
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.Core.updateActions.addRegistryValueAction.registryItem.Value">
+            <summary>
+            Gibt den Wert für den neuen Eintrag zurück oder legt diesen fest.
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.Core.updateActions.addRegistryValueAction.registryItem.Type">
+            <summary>
+            Gibt den Datentyp für den neuen Wert zurück oder legt diesen fest.
+            </summary>
+        </member>
+        <member name="T:updateSystemDotNet.Core.Types.Directories">
+            <summary>
+            Klasse welche Verzeichnisse bereitstellt die durch Umgebungsvariabeln ersetzt werden.
+            </summary>
+        </member>
+        <member name="M:updateSystemDotNet.Core.Types.Directories.#ctor">
+            <summary>
+            Konstruktor
+            </summary>
+        </member>
+        <member name="M:updateSystemDotNet.Core.Types.Directories.GetDirectories">
+            <summary>
+            Gibt alle verfügbaren Verzeichnisse in einem ObjektArray zurück
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:updateSystemDotNet.Core.Types.Directories.ParsePath(System.String,System.String)">
+            <summary>
+            Konvertiert einen Pfad aus variablen zu einem "echten" Pfad
+            </summary>
+            <param name="path">Der Pfad der konvertiert werden soll</param>
+            <param name="appLocation">Der Pfad der aufrufenden Anwendung</param>
+            <returns></returns>
+        </member>
+        <member name="M:updateSystemDotNet.Core.Types.Directories.CombinePath(System.String,System.String)">
+            <summary>
+            Kombiniert zwei Pfadangaben miteinander.
+            </summary>
+            <param name="rootPath">Das Stammverzeichnis</param>
+            <param name="subPath">Das Unterverzeichnis</param>
+            <returns></returns>
+        </member>
+        <member name="M:updateSystemDotNet.Core.Types.Directories.GetDisplayname(System.String)">
+            <summary>
+            Gibt den Anzeigenamen anhand des Wertes wieder
+            </summary>
+            <param name="value">Der Wert</param>
+            <returns></returns>
+        </member>
+        <member name="M:updateSystemDotNet.Core.Types.Directories.GetValue(System.String)">
+            <summary>
+            Gibt den Wert anhand des Anzeigenamens wieder
+            </summary>
+            <param name="displayName">Der Anzeigename</param>
+            <returns></returns>
+        </member>
+        <member name="T:updateSystemDotNet.Core.Types.Directories.DirectoryItem">
+            <summary>
+            Directoryitem zum anzeigen in der ComboBox.
+            </summary>
+        </member>
+        <member name="M:updateSystemDotNet.Core.Types.Directories.DirectoryItem.#ctor(System.String,System.String)">
+            <summary>
+            Konstruktor
+            </summary>
+            <param name="displayText">Der Text der angezeigt werden soll.</param>
+            <param name="Value">Der eigentliche Wert</param>
+        </member>
+        <member name="M:updateSystemDotNet.Core.Types.Directories.DirectoryItem.ToString">
+            <summary>
+            Gibt den Wert zum anzeigen in der Combobox zurück
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="P:updateSystemDotNet.Core.Types.Directories.DirectoryItem.Value">
+            <summary>
+            Gibt den Wert des Items zurück.
+            </summary>
+        </member>
+        <member name="T:updateSystemDotNet.appEventArgs.updateFoundEventArgs">
+            <summary>
+            Stellt Daten für das <see cref="E:updateSystemDotNet.updateController.updateFound"/>-Event des <see cref="T:updateSystemDotNet.updateController"/> bereit.
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.appEventArgs.updateFoundEventArgs.Result">
+            <summary>
+            <para>Das Suchresultat welches die gefundenen Aktualisierungen beinhaltet.</para>
+            <para>Alternativ kann das Resultat auch der Eigenschaft <see cref="P:updateSystemDotNet.updateController.currentUpdateResult"/> des <see cref="T:updateSystemDotNet.updateController"/> entnommen werden.</para>
+            </summary>
+        </member>
+        <member name="T:updateSystemDotNet.Core.updateActions.fileCopyAction">
+            <summary>
+            updateAction welche zum Kopieren von Dateien verwendet wird.
+            </summary>
+        </member>
+        <member name="M:updateSystemDotNet.Core.updateActions.fileCopyAction.ToString">
+            <summary>
+            Überschriebene ToString()-Funktion welche den Namen der Aktion zurückgibt.
+            </summary>
+            <returns>Gibt den Namen der Aktion zurück.</returns>
+        </member>
+        <member name="M:updateSystemDotNet.Core.updateActions.fileCopyAction.Validate">
+            <summary>
+            Überprüft in der Updateaction ob alle benötigen Parameter einen Wert besitzen.
+            </summary>
+            <returns>Gibt True zurück wenn die Überprüfung erfolgreich war, andernfalls false.</returns>
+        </member>
+        <member name="P:updateSystemDotNet.Core.updateActions.fileCopyAction.Files">
+            <summary>
+            Gibt eine Liste mit Dateien zurück oder legt diese fest.
+            </summary>
+        </member>
+        <member name="T:updateSystemDotNet.Internal.systemFontManager">
+            <summary>
+            Interne Klasse zum Anpassen der Schriftarten in den Built-In Dialogen an die Systemschriftart.
+            </summary>
+        </member>
+        <member name="M:updateSystemDotNet.Internal.systemFontManager.#ctor(System.Windows.Forms.Form)">
+            <summary>
+            Initialisiert eine neue Instanz des <see cref="T:updateSystemDotNet.Internal.systemFontManager"/>.
+            </summary>
+            <param name="form">Die Form auf welcher die Schriftarten angepasst werden sollen.</param>
+        </member>
+        <member name="M:updateSystemDotNet.Internal.Designer.ControllerActionList.#ctor(System.ComponentModel.IComponent)">
+            <summary>
+            Konstruktur
+            </summary>
+            <param name="component">Der UpdateController welcher um den SmartTag erweitert werden soll.</param>
+        </member>
+        <member name="T:updateSystemDotNet.Core.updateActions.interactionButtons">
+            <summary>
+            Enumeration mit den verfügbaren Buttons für den Nachrichtendialog.
+            </summary>
+        </member>
+        <member name="F:updateSystemDotNet.Core.updateActions.interactionButtons.Close">
+            <summary>
+            Schließen
+            </summary>
+        </member>
+        <member name="F:updateSystemDotNet.Core.updateActions.interactionButtons.OkCancel">
+            <summary>
+            Ok, Abbrechen
+            </summary>
+        </member>
+        <member name="F:updateSystemDotNet.Core.updateActions.interactionButtons.YesNo_1">
+            <summary>
+            Ja, Nein (Updateabbruch bei 'Ja')
+            </summary>
+        </member>
+        <member name="F:updateSystemDotNet.Core.updateActions.interactionButtons.YesNo_2">
+            <summary>
+            Ja, Nein (Updateabbruch bei 'Nein')
+            </summary>
+        </member>
+        <member name="T:updateSystemDotNet.Core.updateActions.userInteractionAction">
+            <summary>
+            Action zum Anzeigen von Nachrichten an den Benutzer während des Updateprozesses.
+            </summary>
+        </member>
+        <member name="M:updateSystemDotNet.Core.updateActions.userInteractionAction.#ctor">
+            <summary>
+            Initialisiert eine neue Instanz der <see cref="T:updateSystemDotNet.Core.updateActions.userInteractionAction"/>.
+            </summary>
+        </member>
+        <member name="M:updateSystemDotNet.Core.updateActions.userInteractionAction.ToString">
+            <summary>
+            Gibt den Namen Action zurück.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:updateSystemDotNet.Core.updateActions.userInteractionAction.Validate">
+            <summary>
+            Überprüft in der Updateaction ob alle benötigen Parameter einen Wert besitzen.
+            </summary>
+            <returns>Gibt True zurück wenn die Überprüfung erfolgreich war, andernfalls false.</returns>
+        </member>
+        <member name="P:updateSystemDotNet.Core.updateActions.userInteractionAction.englishTitle">
+            <summary>
+            Gibt den englischen Titel der Nachricht zurück oder legt diesen fest.
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.Core.updateActions.userInteractionAction.englishMessage">
+            <summary>
+            Gibt den englischen Inhalt der Nachricht zurück oder legt diesen fest.
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.Core.updateActions.userInteractionAction.germanTitle">
+            <summary>
+            Gibt den deutschen Titel der Nachricht zurück oder legt diesen fest.
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.Core.updateActions.userInteractionAction.germanMessage">
+            <summary>
+            Gibt den deutschen Inhalt der Nachricht zurück oder legt diesen fest.
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.Core.updateActions.userInteractionAction.Buttons">
+            <summary>
+            Gibt die Schaltflächen für die Nachricht zurück oder legt diese fest.
+            </summary>
+        </member>
+        <member name="T:updateSystemDotNet.Core.Types.fileCopyFlags">
+            <summary>
+            Flags zum Dateihandling.
+            </summary>
+        </member>
+        <member name="F:updateSystemDotNet.Core.Types.fileCopyFlags.AlwaysOverwrite">
+            <summary>
+            Die Datei soll immer kopiert werden auch wenn diese bereits existiert (Default)
+            </summary>
+        </member>
+        <member name="F:updateSystemDotNet.Core.Types.fileCopyFlags.OnlyIfExists">
+            <summary>
+            Die Datei soll nur kopiert werden, wenn die Datei bereits auf dem Zielcomputer existiert.
+            </summary>
+        </member>
+        <member name="F:updateSystemDotNet.Core.Types.fileCopyFlags.OnlyIfNotExists">
+            <summary>
+            Die Datei soll nur kopiert werden, wenn die Datei auf dem Zielcomputer noch nicht existiert.
+            </summary>
+        </member>
+        <member name="T:updateSystemDotNet.Core.Types.FileType">
+            <summary>
+            Objekt welches verschiedene Informationen zu einer Datei enthält
+            </summary>
+        </member>
+        <member name="F:updateSystemDotNet.Core.Types.FileType.m_ID">
+            <summary>
+            Die ID welche die Datei eindeutig identifiziert
+            </summary>
+        </member>
+        <member name="F:updateSystemDotNet.Core.Types.FileType.m_Fullpath">
+            <summary>
+            Der vollständige Pfad zur Datei auf dem Entwicklungssystem
+            </summary>
+        </member>
+        <member name="F:updateSystemDotNet.Core.Types.FileType.m_Filename">
+            <summary>
+            Der Dateiname
+            </summary>
+        </member>
+        <member name="F:updateSystemDotNet.Core.Types.FileType.m_Destination">
+            <summary>
+            Das Zielverzeichnis auf dem Client-System
+            </summary>
+        </member>
+        <member name="F:updateSystemDotNet.Core.Types.FileType.m_Hash">
+            <summary>
+            Der eindeutige Hashwert der Datei, als Hashmethode wird MD5 verwendet.
+            </summary>
+        </member>
+        <member name="F:updateSystemDotNet.Core.Types.FileType.m_fVersion">
+            <summary>
+            Die Version der Datei, falls vorhanden.
+            </summary>
+        </member>
+        <member name="M:updateSystemDotNet.Core.Types.FileType.Clone">
+            <summary>
+            Gibt eine Kopie des Filetypobjekts zurück.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="P:updateSystemDotNet.Core.Types.FileType.ID">
+            <summary>
+            Gibt die eindeutige ID dieses Objektes zurück oder legt diese fest.
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.Core.Types.FileType.Fullpath">
+            <summary>
+            Gibt den vollständigen Pfad der Datei auf dem Entwicklungsrechner zurück oder legt diesen fest.
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.Core.Types.FileType.Filename">
+            <summary>
+            Gibt den Namen der Datei zurück oder legt diesen fest.
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.Core.Types.FileType.Destination">
+            <summary>
+            Gibt den Ziel-Rootordner der Datei an oder legt diesen fest.
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.Core.Types.FileType.Hash">
+            <summary>
+            Gibt den Hashwert der Datei (MD5) zurück oder legt diesen fest.
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.Core.Types.FileType.fileVersion">
+            <summary>
+            Gibt die Version der Datei zurück oder legt diese fest.
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.Core.Types.FileType.copyFlag">
+            <summary>
+            Gibt die copyFlag für diese Datei zurück oder legt diese fest.
+            </summary>
+        </member>
+        <member name="M:updateSystemDotNet.Internal.updateUI.updateViewDialog.loadView(System.Type)">
+            <summary>Lädt eine Ansicht in den Contentpanel des Dialogs</summary>
+        </member>
+        <member name="M:updateSystemDotNet.Internal.updateUI.updateViewDialog.loadView``1">
+            <summary>Lädt eine Ansicht in den Contentpanel des Dialogs</summary>
+        </member>
+        <member name="T:updateSystemDotNet.Core.updateActions.removeRegistryValuesAction">
+            <summary>
+            Updateaction zum entfernen eines oder mehreren Registrywerten.
+            </summary>
+        </member>
+        <member name="M:updateSystemDotNet.Core.updateActions.removeRegistryValuesAction.ToString">
+            <summary>
+            Gibt den Name der Updateaction zurück.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:updateSystemDotNet.Core.updateActions.removeRegistryValuesAction.Validate">
+            <summary>
+            Überprüft in der Updateaction ob alle benötigen Parameter einen Wert besitzen.
+            </summary>
+            <returns>Gibt True zurück wenn die Überprüfung erfolgreich war, andernfalls false.</returns>
+        </member>
+        <member name="P:updateSystemDotNet.Core.updateActions.removeRegistryValuesAction.valueNames">
+            <summary>
+            Gibt eine Liste mit den Namen der Werte zurück die entfernt werden sollen oder legt diese fest.
+            </summary>
+        </member>
+        <member name="T:updateSystemDotNet.Properties.Resources">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.Properties.Resources.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.Properties.Resources.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="T:updateSystemDotNet.Internal.Designer.ControllerDesigner">
+            <summary>
+            Abgeleitete Klasse für Designersupport im Visual Studio Designer
+            </summary>
+        </member>
+        <member name="T:updateSystemDotNet.Core.Types.VersionEx">
+            <summary>
+            Erweiterte Versionsklasse
+            </summary>
+        </member>
+        <member name="M:updateSystemDotNet.Core.Types.VersionEx.#ctor">
+            <summary>
+            Default-Kontruktor
+            </summary>
+        </member>
+        <member name="M:updateSystemDotNet.Core.Types.VersionEx.#ctor(System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Kontruktor
+            </summary>
+            <param name="vMajor">Der Major Versionsnummer</param>
+            <param name="vMinor">Die Minor Versionsnummer</param>
+            <param name="vBuild">Die Build Versionsnummer</param>
+            <param name="vRevision">Die Revisions Versionsnummer</param>
+        </member>
+        <member name="M:updateSystemDotNet.Core.Types.VersionEx.#ctor(System.String)">
+            <summary>
+            Kontruktor
+            </summary>
+            <param name="VersionString">Ein String welcher die komplette Versionsnummer enthält</param>
+        </member>
+        <member name="M:updateSystemDotNet.Core.Types.VersionEx.ToString">
+            <summary>
+            Gibt die vollständig formatierte Versionsnummer zurück
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:updateSystemDotNet.Core.Types.VersionEx.ToVersion">
+            <summary>
+            Gibt die einzelnen Versionsnummer in einem 'Version'-Objekt zurück
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="F:updateSystemDotNet.Core.Types.VersionEx.Major">
+            <summary>
+            Die Major Versionsnummer
+            </summary>
+        </member>
+        <member name="F:updateSystemDotNet.Core.Types.VersionEx.Minor">
+            <summary>
+            Die Minor Versionsnummer
+            </summary>
+        </member>
+        <member name="F:updateSystemDotNet.Core.Types.VersionEx.Build">
+            <summary>
+            Die Build Versionsnummer
+            </summary>
+        </member>
+        <member name="F:updateSystemDotNet.Core.Types.VersionEx.Revision">
+            <summary>
+            Die Revision Versionsnummer
+            </summary>
+        </member>
+        <member name="T:updateSystemDotNet.Core.Types.releaseInfo">
+            <summary>
+            Klasse welche nähere Informationen über den Zustand des Releases bereitstellt.
+            </summary>
+            <remarks>Neu in V.:1.1</remarks>
+        </member>
+        <member name="M:updateSystemDotNet.Core.Types.releaseInfo.#ctor">
+            <summary>
+            Initialisiert eine neue Instanz von <see cref="T:updateSystemDotNet.Core.Types.releaseInfo"/>.
+            </summary>
+        </member>
+        <member name="M:updateSystemDotNet.Core.Types.releaseInfo.#ctor(System.String)">
+            <summary>
+            Initialisiert eine neue Instanz von <see cref="T:updateSystemDotNet.Core.Types.releaseInfo"/>.
+            </summary>
+            <param name="version">Die Versionnummer dieses Releases.</param>
+        </member>
+        <member name="M:updateSystemDotNet.Core.Types.releaseInfo.#ctor(System.String,updateSystemDotNet.releaseTypes)">
+            <summary>
+            Initialisiert eine neue Instanz von <see cref="T:updateSystemDotNet.Core.Types.releaseInfo"/>.
+            </summary>
+            <param name="version">Die Versionnummer dieses Releases.</param>
+            <param name="rType">Der Zustand des Releases (Final, Beta oder Alpha).</param>
+        </member>
+        <member name="M:updateSystemDotNet.Core.Types.releaseInfo.#ctor(System.String,updateSystemDotNet.releaseTypes,System.Int32)">
+            <summary>
+            Initialisiert eine neue Instanz von <see cref="T:updateSystemDotNet.Core.Types.releaseInfo"/>.
+            </summary>
+            <param name="version">Die Versionnummer dieses Releases.</param>
+            <param name="rType">Der Zustand des Releases (Final, Beta oder Alpha).</param>
+            <param name="rStep">Der aktuelle Entwicklungsschritt des Releaes (nur relevant wenn der Zustand Alpha oder Beta ist).</param>
+        </member>
+        <member name="P:updateSystemDotNet.Core.Types.releaseInfo.Type">
+            <summary>
+            Gibt den Zustand (Final, Beta oder Alpha) des Updatepaketes zurück oder legt diesen fest.
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.Core.Types.releaseInfo.Step">
+            <summary>
+            Gibt den aktuellen Entwicklungsschritt des Releases zurück oder legt diesen fest.
+            <para>Diese Eigenschaft ist nur relevant wenn der <see cref="P:updateSystemDotNet.Core.Types.releaseInfo.Type"/> den Wert Alpha oder Beta besitzt.</para>
+            <example>1</example>
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.Core.Types.releaseInfo.Version">
+            <summary>
+            Gibt die Versionsnummer zurück oder legt diese fest.
+            </summary>
+        </member>
+        <member name="T:updateSystemDotNet.Core.Types.changelogDictionary">
+            <summary>
+            Ein Dictionary welches eine Auflistung von Changelogs anhand erweiterter Versionsinformationen bereitstellt.
+            </summary>
+        </member>
+        <member name="P:updateSystemDotNet.Core.Types.changelogDictionary.Item(System.String)">
+            <summary>
+            Gibt ein Array von <see cref="T:updateSystemDotNet.Core.Types.changelogDocument"/> zurück, da es mehrere Changelogdokumente mit der gleichen Versionsnummer aber unterschiedlichlicher Zielplattform geben kann.
+            </summary>
+            <param name="version">Der Versionsstring für welchen die Changelogs zurückgegeben werden sollen.</param>
+            <returns>Gibt ein Array von <see cref="T:updateSystemDotNet.Core.Types.changelogDocument"/> zurück, da es mehrere Changelogdokumente mit der gleichen Versionsnummer aber unterschiedlichlicher Zielplattform geben kann.</returns>
+        </member>
+        <member name="P:updateSystemDotNet.Core.Types.changelogDictionary.Item(updateSystemDotNet.Core.Types.updatePackage)">
+            <summary>
+            Gibt ein <see cref="T:updateSystemDotNet.Core.Types.changelogDocument"/> passend zum übergebenen Updatepaket zurück.
+            </summary>
+            <param name="package">Das Updatepaket zu welchem der Changelog gesucht werden soll.</param>
+            <returns>Gibt ein <see cref="T:updateSystemDotNet.Core.Types.changelogDocument"/> zurück.</returns>
+        </member>
+        <member name="T:updateSystemDotNet.appExceptions.invalidSignatureException">
+            <summary>
+            Die Ausnahme die ausgelöst wird, wenn die digitale Signatur einer Datei nicht bestätigt werden konnte.
+            </summary>
+        </member>
+        <member name="M:updateSystemDotNet.appExceptions.invalidSignatureException.#ctor(System.String)">
+            <summary>
+            Initialisiert eine neue Instanz der <see cref="T:updateSystemDotNet.appExceptions.invalidSignatureException"/>.
+            </summary>
+            <param name="file">Der vollständige Pfad zu der Datei die nicht validiert werden konnte.</param>
+        </member>
+    </members>
+</doc>

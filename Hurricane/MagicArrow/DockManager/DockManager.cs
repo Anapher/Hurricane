@@ -31,7 +31,7 @@ namespace Hurricane.MagicArrow.DockManager
 
         protected double height;
         protected double left;
-        protected DockingSide side; //new side
+        protected DockingSide side = DockingSide.None; //new side
         protected DockingSide currentside; //the applied side
         protected bool enabled;
         void HookManager_MouseMove(object sender, System.Windows.Forms.MouseEventArgs e)

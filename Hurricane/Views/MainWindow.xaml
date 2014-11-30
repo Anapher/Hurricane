@@ -19,6 +19,7 @@
                 <ResourceDictionary Source="/Resources/Styles/VolumeSlider.xaml"/>
                 <ResourceDictionary Source="/Resources/Styles/MetroWindowStyle.xaml"/>
             </ResourceDictionary.MergedDictionaries>
+            <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
         </ResourceDictionary>
     </Window.Resources>
     <Grid>
@@ -77,12 +78,22 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <Grid.Resources>
                 <converter:CollapsedOnNullValue x:Key="CollapsedOnNullValue"/>
             </Grid.Resources>
-            <DockPanel Grid.Row="0" Margin="5,5,0,0" Visibility="{Binding MusicManager.CSCoreEngine.CurrentTrack,Converter={StaticResource CollapsedOnNullValue}}">
+            <Grid>
+                <Button Background="{DynamicResource NormalColorBrush}" Height="30" Visibility="{Binding Updater.UpdateFound,Converter={StaticResource BooleanToVisibilityConverter}}" ex:VisibilityAnimation.AnimationType="Fade" Command="{Binding OpenUpdater}">
+                    <Button.Resources>
+                        <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/FlatButton.xaml" />
+                    </Button.Resources>
+
+                    <TextBlock Text="Neues Update verfügbar!" Foreground="White"/>
+                </Button>
+            </Grid>
+            <DockPanel Grid.Row="1" Margin="5,5,0,0" Visibility="{Binding MusicManager.CSCoreEngine.CurrentTrack,Converter={StaticResource CollapsedOnNullValue}}">
                 <Polygon Points="0,0 8,5, 0,10"
           Stroke="{DynamicResource AccentColorBrush}" StrokeThickness="2" VerticalAlignment="Center" Margin="0,2,0,0"/>
                 <TextBlock Text="{Binding MusicManager.CSCoreEngine.CurrentTrack}" Margin="5,0,5,0" VerticalAlignment="Center" TextTrimming="CharacterEllipsis">
@@ -91,7 +102,7 @@
                     </TextBlock.InputBindings>
                 </TextBlock>
             </DockPanel>
-            <StackPanel Grid.Row="1" Margin="5">
+            <StackPanel Grid.Row="2" Margin="5">
                 <Grid Margin="0,0,0,10">
                     <wpfsvl:SpectrumAnalyzer x:Name="SpectrumAnalyzer" BarCount="32">
                         <wpfsvl:SpectrumAnalyzer.Style>
@@ -210,7 +221,7 @@
                 </Grid>
                 <Slider VerticalAlignment="Bottom" IsMoveToPointEnabled="True" Margin="0,2,0,-2" Style="{StaticResource TimelineSlider}" Maximum="{Binding MusicManager.CSCoreEngine.TrackLength}" Value="{Binding MusicManager.CSCoreEngine.Position}"/>
             </StackPanel>
-            <Grid Grid.Row="2">
+            <Grid Grid.Row="3">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="auto"/>
                     <RowDefinition Height="*"/>

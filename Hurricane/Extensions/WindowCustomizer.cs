@@ -15,7 +15,7 @@ namespace Hurricane.Extensions
     {
         #region CanMaximize
         public static readonly DependencyProperty CanMaximize =
-            DependencyProperty.RegisterAttached("CanMaximize", typeof(bool), typeof(Window),
+            DependencyProperty.RegisterAttached("CanMaximize", typeof(bool), typeof(WindowCustomizer),
                 new PropertyMetadata(true, new PropertyChangedCallback(OnCanMaximizeChanged)));
         private static void OnCanMaximizeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
@@ -58,7 +58,7 @@ namespace Hurricane.Extensions
 
         #region CanMinimize
         public static readonly DependencyProperty CanMinimize =
-            DependencyProperty.RegisterAttached("CanMinimize", typeof(bool), typeof(Window),
+            DependencyProperty.RegisterAttached("CanMinimize", typeof(bool), typeof(WindowCustomizer),
                 new PropertyMetadata(true, new PropertyChangedCallback(OnCanMinimizeChanged)));
         private static void OnCanMinimizeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {

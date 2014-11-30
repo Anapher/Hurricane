@@ -126,4 +126,12 @@
     <system:String x:Key="Violet">Violett</system:String>
     <system:String x:Key="Yellow">Gelb</system:String>
     <system:String x:Key="SpectrumAnalyzerColor">Spektrumanalysator Farbe:</system:String>
+
+    <system:String x:Key="updatechangelogtext">Änderungen in der Version {0} (Veröffentlicht am {1})</system:String>
+    <system:String x:Key="updatesavailable">Aktualisierungen verfügbar</system:String>
+    <system:String x:Key="currentversion">Aktuelle Version:</system:String>
+    <system:String x:Key="newversion">Neue Version:</system:String>
+    <system:String x:Key="changelog">Changelog:</system:String>
+    <system:String x:Key="size">Größe:</system:String>
+    <system:String x:Key="update">Aktualisieren</system:String>
 </ResourceDictionary>
