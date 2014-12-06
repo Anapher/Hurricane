@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -24,11 +25,14 @@ namespace Hurricane.Views.Test
         protected FileInfo logfile;
         public TestWindow()
         {
-            logfile = new FileInfo("log.txt");
-            LogPath = "Logfile location: " + logfile.FullName;
+            //logfile = new FileInfo("log.txt");
+            //LogPath = "Logfile location: " + logfile.FullName;
             InitializeComponent();
             this.Loaded += TestWindow_Loaded;
         }
+
+        [DllImport("user32.dll")]
+        static extern int GetClassName(int hWnd, StringBuilder lpClassName, int nMaxCount);
 
         public Steps CurrentStep { get; set; }
         public string LogPath { get; set; }
@@ -36,12 +40,15 @@ namespace Hurricane.Views.Test
         protected override void OnClosing(CancelEventArgs e)
         {
             base.OnClosing(e);
-            CloseStream();
-            Utilities.HookManager.MouseHook.HookManager.MouseMove -= HookManager_MouseMove;
+            //CloseStream();
+            //Utilities.HookManager.MouseHook.HookManager.MouseMove -= HookManager_MouseMove;
+            hook.Unhook();
         }
 
+        Utilities.ActiveWindowHook hook = new Utilities.ActiveWindowHook();
         void TestWindow_Loaded(object sender, RoutedEventArgs e)
         {
+            /*
             try
             {
                 Utilities.HookManager.MouseHook.HookManager.MouseMove += HookManager_MouseMove;
@@ -54,6 +61,28 @@ namespace Hurricane.Views.Test
                 AddLineToLog("Error with subscribing MouseHook: " + ex.ToString());
                 CloseStream();
             }
+             * */
+
+            hook.ActiveWindowChanged += hook_ActiveWindowChanged;
+            hook.Hook();
+        }
+
+        void hook_ActiveWindowChanged(object sender, IntPtr hwnd)
+        {
+            //var desktophandle = Utilities.WindowHelper.GetDesktopWindow(Utilities.WindowHelper.DesktopWindow.ProgMan);
+            //txt.Text = string.Format("Desktop Handle: {0} | Aktuelles Handle: {1} | Desktop im Vordergrund: {2}", desktophandle, hwnd.ToString(), desktophandle == hwnd);
+            const int maxChars = 256;
+            bool desktopisactive = false;
+            StringBuilder className = new StringBuilder(maxChars);
+            if (GetClassName((int)hwnd, className, maxChars) > 0)
+            {
+                string cName = className.ToString();
+                desktopisactive = cName == "Progman" || cName == "WorkerW";
+                txt.Text = string.Format("Aktueller Classname: {0}; Ist Desktop: {1}", cName, desktopisactive);
+                txt.Foreground = desktopisactive ? Brushes.Green : Brushes.Red;
+            }
+            else { txt.Text = "Fehler"; }
+            
         }
 
         void HookManager_MouseMove(object sender, System.Windows.Forms.MouseEventArgs e)

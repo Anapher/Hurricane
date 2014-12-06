@@ -111,6 +111,7 @@ namespace Hurricane.Music
 
         public void LoadFromSettings()
         {
+            
             Settings.HurricaneSettings settings = Settings.HurricaneSettings.Instance;
             this.Playlists = settings.Playlists.Playlists;
             Settings.ConfigSettings config = settings.Config;
@@ -121,7 +122,7 @@ namespace Hurricane.Music
             {
                 CurrentPlaylist = Playlists[config.LastPlaylistIndex];
             }
-            
+            System.Diagnostics.Stopwatch sw = System.Diagnostics.Stopwatch.StartNew();
             if (config.LastTrackIndex > -1)
             {
                 Track t = CurrentPlaylist.Tracks[config.LastTrackIndex];
@@ -132,7 +133,8 @@ namespace Hurricane.Music
                     CSCoreEngine.OnPropertyChanged("Position");
                 }
             }
-
+            System.Diagnostics.Debug.Print("MainViewModel: {0}", sw.ElapsedMilliseconds.ToString());
+            sw.Stop();
             if (config.SelectedPlaylist > -1)
             {
                 SelectedPlaylist = Playlists[config.SelectedPlaylist];
@@ -147,6 +149,7 @@ namespace Hurricane.Music
             {
                 lst.RefreshList(Predicate);
             }
+
         }
 
         protected bool Predicate(object item)

@@ -133,4 +133,5 @@
     <system:String x:Key="changelog">Changelog:</system:String>
     <system:String x:Key="size">Size:</system:String>
     <system:String x:Key="update">Update</system:String>
+    <system:String x:Key="newupdateavailable">New update available!</system:String>
 </ResourceDictionary>

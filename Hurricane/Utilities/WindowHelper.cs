@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -22,6 +23,22 @@ namespace Hurricane.Utilities
         [DllImport("user32.dll")]
         private static extern int GetWindowText(IntPtr hWnd, StringBuilder text, int count);
 
+        [DllImport("user32.dll")]
+        static extern IntPtr GetShellWindow();
+
+        [DllImport("user32.dll", SetLastError = true)]
+        public static extern IntPtr FindWindowEx(IntPtr parentHandle, IntPtr childAfter, string className, string windowTitle);
+
+        public delegate bool EnumedWindow(IntPtr handleWindow, ArrayList handles);
+
+        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool EnumWindows(EnumedWindow lpEnumFunc, ArrayList lParam);
+
+        [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
+        static extern int GetClassName(IntPtr hWnd, StringBuilder lpClassName, int nMaxCount);
+
+
         public struct WINDOWPLACEMENT
         {
             public int length;
@@ -32,7 +49,7 @@ namespace Hurricane.Utilities
             public System.Drawing.Rectangle rcNormalPosition;
         }
 
-        private static string GetActiveWindowTitle(IntPtr handle)
+        public static string GetActiveWindowTitle(IntPtr handle)
         {
             const int nChars = 256;
             StringBuilder Buff = new StringBuilder(nChars);
@@ -50,16 +67,27 @@ namespace Hurricane.Utilities
             placement.length = Marshal.SizeOf(placement);
             GetWindowPlacement(window, ref placement);
             var workarea = System.Windows.SystemParameters.WorkArea;
-            return ((placement.showCmd == 1 && placement.ptMinPosition.X == -1 && placement.ptMinPosition.Y == -1 && placement.rcNormalPosition.X == 0 && placement.rcNormalPosition.Y == 0 && placement.rcNormalPosition.Width == workarea.Width && !(GetActiveWindowTitle(window) == "Program Manager")));
+            string cname = GetClassName(window);
+            return ((placement.showCmd == 1 && placement.ptMinPosition.X == -1 && placement.ptMinPosition.Y == -1 && placement.rcNormalPosition.X == 0 && placement.rcNormalPosition.Y == 0 && placement.rcNormalPosition.Width == workarea.Width && !(cname == "Progman" || cname == "WorkerW")));
             /*
             System.Diagnostics.Debug.Print("==================================");
-            System.Diagnostics.Debug.Print(GetActiveWindowTitle(ForegroundWindow));
             System.Diagnostics.Debug.Print("showCmd: {0}", placement.showCmd);
             System.Diagnostics.Debug.Print("rcNormalPosition: {0}", placement.rcNormalPosition);
             System.Diagnostics.Debug.Print("ptMinPosition: {0}", placement.ptMinPosition);
             System.Diagnostics.Debug.Print("ptMaxPosition: {0}", placement.ptMaxPosition);
             System.Diagnostics.Debug.Print("==================================");
              * */
+        }
+
+        public static string GetClassName(IntPtr handle)
+        {
+            const int maxChars = 256;
+            StringBuilder className = new StringBuilder(maxChars);
+            if (GetClassName(handle, className, maxChars) > 0)
+            {
+                return className.ToString();
+            }
+            return string.Empty;
         }
 
         [StructLayout(LayoutKind.Sequential)]

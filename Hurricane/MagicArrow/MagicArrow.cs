@@ -129,9 +129,24 @@ namespace Hurricane.MagicArrow
             strokewindow.Show();
             strokewindow.MouseMove += strokewindow_MouseMove;
             strokewindow.MouseLeave += strokewindow_MouseLeave;
+            strokewindow.MouseDown += strokewindow_MouseDown;
             activewindowhook.Hook();
             activewindowhook.RaiseOne(); //If the current window is fullscreen, the event wouldn't be raised (because nothing changed)
             mousewasover = false;
+        }
+
+        void strokewindow_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            if (MagicWindow != null)
+            {
+                var cursorposition = System.Windows.Forms.Cursor.Position;
+                if (cursorposition.Y > MagicWindow.Top && cursorposition.Y < MagicWindow.Top + MagicWindow.Height && (movedoutside == Side.Left ?  cursorposition.X < MagicWindow.Width : cursorposition.X > maxwidth - MagicWindow.Width))
+                {
+                    MoveWindowBackInScreen();
+                    IsInZone = false;
+                    HideMagicArrow();
+                }
+            }
         }
 
         protected bool MagicArrowIsShown = false;
@@ -167,6 +182,7 @@ namespace Hurricane.MagicArrow
         protected double maxwidth;
         protected void ShowMagicArrow(double top, Side side)
         {
+
             MagicArrowIsShown = true;
             if (!Settings.HurricaneSettings.Instance.Config.ShowMagicArrowBelowCursor)
             {
@@ -180,7 +196,6 @@ namespace Hurricane.MagicArrow
             MagicWindow.MoveVisible += (s, e) =>
             {
                 MoveWindowBackInScreen();
-                MagicArrowIsShown = false;
                 IsInZone = false;
                 HideMagicArrow();
             };

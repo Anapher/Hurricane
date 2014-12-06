@@ -30,7 +30,6 @@ namespace Hurricane.Music
 
         public ObservableCollection<Track> Tracks { get; set; }
 
-        
         private CollectionView viewsource;
         [System.Xml.Serialization.XmlIgnore]
         public CollectionView ViewSource

@@ -34,6 +34,7 @@ namespace Hurricane.Settings
             updController.restartApplication = true;
             updController.retrieveHostVersion = true;
             updController.autoCloseHostApplication = true;
+            updController.Language = this.language == Language.English ? updateSystemDotNet.Languages.English : updateSystemDotNet.Languages.Deutsch;
         }
 
         void updController_downloadUpdatesProgressChanged(object sender, updateSystemDotNet.appEventArgs.downloadUpdatesProgressChangedEventArgs e)
@@ -61,6 +62,7 @@ namespace Hurricane.Settings
         public void CancelUpdate()
         {
             updController.cancelUpdateDownload();
+            this.UpdateFound = false;
         }
         #endregion
 
@@ -110,7 +112,7 @@ namespace Hurricane.Settings
                 sb.AppendLine(changelogseperator);
                 sb.AppendLine(this.language == Language.English ? updController.currentUpdateResult.Changelogs[package].englishChanges : updController.currentUpdateResult.Changelogs[package].germanChanges);
                 sb.AppendLine();
-                UpdateSize += package.packageSize * 1024; //The packageSize is in kb
+                UpdateSize += package.packageSize;
             }
             this.Changelog = sb.ToString();
             UpdateFound = true;

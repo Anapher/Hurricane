@@ -3,12 +3,17 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="TestWindow" Height="261" Width="498" x:Name="window">
     <Grid>
-        <TextBlock Text="{Binding ElementName=window,Path=LogPath}" VerticalAlignment="Top" HorizontalAlignment="Left"/>
+        <Grid Visibility="Hidden">
+                   <TextBlock Text="{Binding ElementName=window,Path=LogPath}" VerticalAlignment="Top" HorizontalAlignment="Left"/>
         <TextBlock Text="" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" x:Name="txtStatus" Margin="10"/>
         <StackPanel VerticalAlignment="Bottom" HorizontalAlignment="Right" Orientation="Horizontal">
             <Button Content="All Ok" x:Name="btnOk" Margin="10" Click="btnOk_Click" Visibility="Hidden"/>
             <Button Content="Doesn't work..." x:Name="btnDoesntWork" Margin="10" Click="btnDoesntWork_Click"/>
-        </StackPanel>
+        </StackPanel> 
+        </Grid>
+        <Grid>
+            <TextBlock Text="Hallo" VerticalAlignment="Center" HorizontalAlignment="Center" x:Name="txt"/>
+        </Grid>
  
     </Grid>
 </Window>

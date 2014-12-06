@@ -84,7 +84,7 @@ namespace Hurricane.Music
 
         public bool IsPlaying
         {
-            get { return (soundOut == null ? false : soundOut.PlaybackState == PlaybackState.Playing); }
+            get { return (soundOut == null ? false : (isfadingout ? false : soundOut.PlaybackState == PlaybackState.Playing)); }
         }
 
         public PlaybackState CurrentState
@@ -138,17 +138,14 @@ namespace Hurricane.Music
             if (SoundSource != null) { SoundSource.Dispose(); }
             track.IsPlaying = true;
             SoundSource = CodecFactory.Instance.GetCodec(track.Path);
-            var fadeInOut = SoundSource.AppendSource(x => new FadeInOut(x));
-            linearFadeStrategy = new LinearFadeStrategy();
-            fadeInOut.FadeStrategy = linearFadeStrategy;
 
-            if (Settings.SampleRate == -1 && fadeInOut.WaveFormat.SampleRate < 44100)
+            if (Settings.SampleRate == -1 && SoundSource.WaveFormat.SampleRate < 44100)
             {
                 SoundSource = SoundSource.ChangeSampleRate(44100);
             }
-            else if (Settings.SampleRate > -1) { fadeInOut.ChangeSampleRate(Settings.SampleRate); }
+            else if (Settings.SampleRate > -1) { SoundSource.ChangeSampleRate(Settings.SampleRate); }
 
-            SimpleNotificationSource notifysource = new SimpleNotificationSource(fadeInOut.ToWaveSource());
+            SimpleNotificationSource notifysource = new SimpleNotificationSource(SoundSource);
             notifysource.Interval = 100;
             notifysource.BlockRead += notifysource_BlockRead;
             this.MusicEqualizer = Equalizer.Create10BandEqualizer(notifysource);
@@ -168,7 +165,6 @@ namespace Hurricane.Music
 
             if (StartVisualization != null) StartVisualization(this, EventArgs.Empty);
             track.LastTimePlayed = DateTime.Now;
-            //FadeIn();
         }
 
         protected void CurrentStateChanged()
@@ -181,7 +177,6 @@ namespace Hurricane.Music
         void soundOut_Stopped(object sender, PlaybackStoppedEventArgs e)
         {
             if (manualstop) { manualstop = false; return; }
-            System.Diagnostics.Debug.Print("end of track");
             TrackFinished(this, EventArgs.Empty);
             CurrentStateChanged();
         }
@@ -207,13 +202,28 @@ namespace Hurricane.Music
             OnPropertyChanged("Position");
         }
 
-        public void TogglePlayPause()
+        private bool isfading = false;
+        private bool isfadingout = false;
+        public async void TogglePlayPause()
         {
             if (CurrentTrack == null) return;
+            if (isfading) return;
+            isfading = true;
             if (soundOut.PlaybackState == PlaybackState.Playing)
-            { soundOut.Pause(); }
-            else { soundOut.Play(); }
-            CurrentStateChanged();
+            {
+                isfadingout = true;
+                CurrentStateChanged();
+                await FadeOut();
+                soundOut.Pause();
+                isfadingout = false;
+            }
+            else
+            {
+                soundOut.Play();
+                CurrentStateChanged();
+                await FadeIn();
+            }
+            isfading = false;
         }
 
         MMNotificationClient client = new MMNotificationClient();
@@ -287,17 +297,19 @@ namespace Hurricane.Music
 
         public Settings.ConfigSettings Settings { get { return Hurricane.Settings.HurricaneSettings.Instance.Config; } }
 
-        #region Crossfade
-        protected LinearFadeStrategy linearFadeStrategy;
+        #region Fading
 
-        protected void FadeOutAndDispose(TimeSpan duration)
+        protected async Task FadeIn()
         {
-            var oldsoundsource = SoundSource;
-            //await Task.Run(() => Fade(this.Volume, 0, TimeSpan.FromMilliseconds(1000), false));
+            await Fade(0, this.Volume, TimeSpan.FromMilliseconds(300), true);
         }
 
-        /*
-        protected async void Fade(float from, float to, TimeSpan duration, bool GetLouder)
+        protected async Task FadeOut()
+        {
+           await Fade(this.Volume, 0, TimeSpan.FromMilliseconds(300), false);
+        }
+
+        protected async Task Fade(float from, float to, TimeSpan duration, bool GetLouder)
         {
             float different = Math.Abs(to - from);
             float step = different / ((float)duration.TotalMilliseconds / 20);
@@ -309,20 +321,6 @@ namespace Hurricane.Music
                 if (GetLouder) { currentvolume += step; } else { currentvolume -= step; }
                 soundOut.Volume = currentvolume;
             }
-        }
-        */
-        protected void FadeIn()
-        {
-            linearFadeStrategy.StartFading(0, this.Volume, TimeSpan.FromMilliseconds(5000));
-            System.Diagnostics.Stopwatch sw = System.Diagnostics.Stopwatch.StartNew();
-            linearFadeStrategy.FadingFinished += (s, e) => { System.Diagnostics.Debug.Print("Zeit: {0}", sw.ElapsedMilliseconds.ToString()); };
-            Task.Run(async () => {
-                while (linearFadeStrategy.IsFading)
-                {
-                    await Task.Delay(100);
-                    System.Diagnostics.Debug.Print(linearFadeStrategy.CurrentVolume.ToString());
-                }
-            });
         }
         #endregion
 
