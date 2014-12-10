@@ -22,6 +22,9 @@
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
         </ResourceDictionary>
     </Window.Resources>
+    <Window.InputBindings>
+        <KeyBinding Key="Space" Command="{Binding MusicManager.CSCoreEngine.TogglePlayPauseCommand}"/>
+    </Window.InputBindings>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
@@ -125,12 +128,12 @@
                         </wpfsvl:SpectrumAnalyzer.Style>
                     </wpfsvl:SpectrumAnalyzer>
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Center" Grid.Column="1">
-                        <Button Style="{DynamicResource MetroCircleButtonStyle}" Height="45" Width="45" Background="White" Command="{Binding MusicManager.GoBackwardCommand}">
+                        <Button Style="{DynamicResource MetroCircleButtonStyle}" Height="45" Width="45" Background="White" Command="{Binding MusicManager.GoBackwardCommand}" Focusable="False">
                             <Grid>
                                 <Viewbox Child="{StaticResource VectorFastBackward}" Width="20" Height="20" RenderOptions.BitmapScalingMode="HighQuality" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="-1,0,1,0"/>
                             </Grid>
                         </Button>
-                        <Button Style="{DynamicResource MetroCircleButtonStyle}" Height="60" Width="60" Command="{Binding MusicManager.CSCoreEngine.TogglePlayPauseCommand}" Background="White">
+                        <Button Style="{DynamicResource MetroCircleButtonStyle}" Height="60" Width="60" Command="{Binding MusicManager.CSCoreEngine.TogglePlayPauseCommand}" Background="White" Focusable="False">
                             <Grid VerticalAlignment="Center" HorizontalAlignment="Center">
                                 <Viewbox Width="26" Height="26" Child="{StaticResource VectorPlay}" Stretch="Uniform" Margin="5,0,0,0">
                                     <Viewbox.Resources>
@@ -156,7 +159,7 @@
                                 </Viewbox>
                             </Grid>
                         </Button>
-                        <Button Style="{DynamicResource MetroCircleButtonStyle}" Height="45" Width="45" Background="White" Command="{Binding MusicManager.GoForwardCommand}">
+                        <Button Style="{DynamicResource MetroCircleButtonStyle}" Height="45" Width="45" Background="White" Command="{Binding MusicManager.GoForwardCommand}" Focusable="False">
                             <Grid>
                                 <Viewbox Child="{StaticResource VectorFastForward}" Width="20" Height="20" RenderOptions.BitmapScalingMode="HighQuality" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="1,0,-1,0"/>
                             </Grid>
@@ -283,14 +286,21 @@
                         </Button.Content>
                     </Button>
                 </Grid>
-                <ListView SelectionMode="Extended" Grid.Row="1" ItemsSource="{Binding MusicManager.SelectedPlaylist.ViewSource}" Drop="ListView_Drop" DragEnter="ListView_DragEnter" x:Name="listview" SelectedItem="{Binding MusicManager.SelectedTrack}" ScrollViewer.VerticalScrollBarVisibility="Visible" Margin="0,5,0,0" HorizontalContentAlignment="Stretch" ScrollViewer.HorizontalScrollBarVisibility="Disabled" SelectionChanged="listview_SelectionChanged" IsSynchronizedWithCurrentItem="True"
-                          VirtualizingPanel.IsVirtualizing="True">
+                <ListView SelectionMode="Extended" Grid.Row="1" ItemsSource="{Binding MusicManager.SelectedPlaylist.ViewSource}" Drop="ListView_Drop" DragEnter="ListView_DragEnter" x:Name="listview" SelectedItem="{Binding MusicManager.SelectedTrack}" ScrollViewer.VerticalScrollBarVisibility="Visible" Margin="0,5,0,0" HorizontalContentAlignment="Stretch" ScrollViewer.HorizontalScrollBarVisibility="Disabled" SelectionChanged="listview_SelectionChanged" IsSynchronizedWithCurrentItem="True">
+                    <ListView.Style>
+                        <Style TargetType="{x:Type ListView}" BasedOn="{StaticResource MetroListView}">
+                            <Setter Property="VirtualizingStackPanel.IsVirtualizing" Value="True"/>
+                            <Setter Property="VirtualizingStackPanel.VirtualizationMode" Value="Recycling"/>
+                        </Style>
+                    </ListView.Style>
                     <ListView.InputBindings>
                         <KeyBinding Key="Delete" Command="{Binding RemoveSelectedTracks}"/>
                         <KeyBinding Key="Enter" Command="{Binding MusicManager.PlaySelectedTrack}"/>
                         <KeyBinding Key="O" Modifiers="Alt" Command="{Binding MusicManager.OpenFileLocation}"/>
+                        <KeyBinding Key="Space" Command="{Binding MusicManager.CSCoreEngine.TogglePlayPauseCommand}"/>
                     </ListView.InputBindings>
                     <ListView.Resources>
+                        <converter:TrueFalseValueConverter x:Key="boldifplaying" FalseValue="Normal" TrueValue="Bold"/>
                         <ContextMenu x:Key="ItemContextMenu" DataContext="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}, Path=DataContext}">
                             <MenuItem Header="{DynamicResource play}" Command="{Binding MusicManager.PlaySelectedTrack}" IsEnabled="{Binding MusicManager.SelectedTrack.TrackExists}">
                                 <MenuItem.Icon>
@@ -395,9 +405,6 @@
                                     <converter:TrueFalseValueConverter TrueValue="2" FalseValue="0" x:Key="TrueFalseValueConverter"/>
                                 </Grid.Resources>
                                 <Border BorderBrush="{DynamicResource LightColorBrush}" BorderThickness="{Binding IsPlaying,Converter={StaticResource TrueFalseValueConverter}}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="-4">
-                                    <Border.Resources>
-                                        <converter:TrueFalseValueConverter x:Key="boldifplaying" FalseValue="Normal" TrueValue="Bold"/>
-                                    </Border.Resources>
                                     <StackPanel Orientation="Vertical" Margin="3">
                                         <Grid>
                                             <Grid.ColumnDefinitions>

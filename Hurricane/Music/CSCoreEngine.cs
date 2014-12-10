@@ -48,7 +48,7 @@ namespace Hurricane.Music
             set
             {
                 SetProperty(value, ref volume);
-                if (soundOut != null)
+                if (soundOut != null && soundOut.WaveSource != null)
                     soundOut.Volume = value;
             }
         }
@@ -78,7 +78,6 @@ namespace Hurricane.Music
 
         public long TrackLength
         {
-
             get { return SoundSource == null ? 0 : SoundSource.Length; }
         }
 
@@ -118,8 +117,8 @@ namespace Hurricane.Music
             var newvalue = (float)(perc * MaxDB);
 
             //the tag of the trackbar contains the index of the filter
-            EqFilterEntry filter = MusicEqualizer.SampleFilters[number];
-            filter.SetGain(newvalue);
+            EqualizerFilter filter = MusicEqualizer.SampleFilters[number];
+            filter.AverageGainDB = newvalue;
         }
 
         protected void SetAllEqualizerSettings()
@@ -145,18 +144,24 @@ namespace Hurricane.Music
             }
             else if (Settings.SampleRate > -1) { SoundSource.ChangeSampleRate(Settings.SampleRate); }
 
-            SimpleNotificationSource notifysource = new SimpleNotificationSource(SoundSource);
-            notifysource.Interval = 100;
-            notifysource.BlockRead += notifysource_BlockRead;
-            this.MusicEqualizer = Equalizer.Create10BandEqualizer(notifysource);
-            SetAllEqualizerSettings();
+            Equalizer equalizer;
+            SimpleNotificationSource simpleNotificationSource;
+            SingleBlockNotificationStream singleBlockNotificationStream;
+            SoundSource = SoundSource
+    .AppendSource(Equalizer.Create10BandEqualizer, out equalizer)
+    .AppendSource(x => new SimpleNotificationSource(x) { Interval = 100 }, out simpleNotificationSource)
+    .AppendSource(x => new SingleBlockNotificationStream(x), out singleBlockNotificationStream)
+    .ToWaveSource(Settings.WaveSourceBits);
 
-            SingleBlockNotificationStream notificationSource = new SingleBlockNotificationStream(MusicEqualizer);
-            notificationSource.SingleBlockRead += notificationSource_SingleBlockRead;
+            this.MusicEqualizer = equalizer;
+            SetAllEqualizerSettings();
+            simpleNotificationSource.BlockRead += notifysource_BlockRead;
+            singleBlockNotificationStream.SingleBlockRead += notificationSource_SingleBlockRead;
 
             analyser = new Visualization.SampleAnalyser(FFTSize);
-            analyser.Initialize(notificationSource.WaveFormat);
-            soundOut.Initialize(notificationSource.ToWaveSource(Settings.WaveSourceBits));
+            analyser.Initialize(SoundSource.WaveFormat);
+            soundOut.Initialize(SoundSource);
+
             track.Load();
             CurrentTrack = track;
             OnPropertyChanged("TrackLength");
@@ -202,18 +207,18 @@ namespace Hurricane.Music
             OnPropertyChanged("Position");
         }
 
-        private bool isfading = false;
-        private bool isfadingout = false;
+        private VolumeFading fader;
+        protected bool isfadingout = false;
         public async void TogglePlayPause()
         {
             if (CurrentTrack == null) return;
-            if (isfading) return;
-            isfading = true;
+            if (fader != null && fader.IsFading) { fader.CancelFading(); await Task.Delay(20); } //To be sure that it canceled
+            fader = new VolumeFading();
             if (soundOut.PlaybackState == PlaybackState.Playing)
             {
                 isfadingout = true;
                 CurrentStateChanged();
-                await FadeOut();
+                await fader.FadeOut(soundOut, this.Volume);
                 soundOut.Pause();
                 isfadingout = false;
             }
@@ -221,9 +226,8 @@ namespace Hurricane.Music
             {
                 soundOut.Play();
                 CurrentStateChanged();
-                await FadeIn();
+                await fader.FadeIn(soundOut, this.Volume);
             }
-            isfading = false;
         }
 
         MMNotificationClient client = new MMNotificationClient();
@@ -276,7 +280,6 @@ namespace Hurricane.Music
             }
             soundOut = new WasapiOut();
             soundOut.Device = device;
-            soundOut.Volume = Volume;
             soundOut.Latency = 50;
             soundOut.Stopped += soundOut_Stopped;
         }
@@ -296,33 +299,6 @@ namespace Hurricane.Music
         }
 
         public Settings.ConfigSettings Settings { get { return Hurricane.Settings.HurricaneSettings.Instance.Config; } }
-
-        #region Fading
-
-        protected async Task FadeIn()
-        {
-            await Fade(0, this.Volume, TimeSpan.FromMilliseconds(300), true);
-        }
-
-        protected async Task FadeOut()
-        {
-           await Fade(this.Volume, 0, TimeSpan.FromMilliseconds(300), false);
-        }
-
-        protected async Task Fade(float from, float to, TimeSpan duration, bool GetLouder)
-        {
-            float different = Math.Abs(to - from);
-            float step = different / ((float)duration.TotalMilliseconds / 20);
-            float currentvolume = from;
-
-            for (int i = 0; i < duration.TotalMilliseconds / 20; i++)
-            {
-                await Task.Delay(20);
-                if (GetLouder) { currentvolume += step; } else { currentvolume -= step; }
-                soundOut.Volume = currentvolume;
-            }
-        }
-        #endregion
 
         #region Visualization Support
         Visualization.SampleAnalyser analyser;

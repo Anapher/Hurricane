@@ -23,5 +23,18 @@ namespace Hurricane.Music
                 }
             }
         }
+
+        public EqualizerBand(string label)
+        {
+            this.Label = label;
+        }
+
+        public EqualizerBand()
+        {
+
+        }
+
+        [System.Xml.Serialization.XmlIgnore]
+        public string Label { get; set; }
     }
 }

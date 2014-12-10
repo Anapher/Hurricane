@@ -43,7 +43,7 @@
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <Slider Orientation="Vertical" Maximum="100" Minimum="-100" Margin="5,0,5,0" Value="{Binding Value}"/>
+                            <Slider Orientation="Vertical" Maximum="100" Minimum="-100" Margin="5,0,5,0" Value="{Binding Value}" ToolTip="{Binding Label}"/>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>

@@ -38,6 +38,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -55,11 +56,13 @@
     <StartupObject>Hurricane.App</StartupObject>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="CSCore">
-      <HintPath>..\packages\CSCore.1.0.0.0\lib\net35-client\CSCore.dll</HintPath>
+    <Reference Include="CSCore, Version=1.0.0.2, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Libraries\CSCore.dll</HintPath>
     </Reference>
-    <Reference Include="MahApps.Metro">
-      <HintPath>..\packages\MahApps.Metro.0.14.0.0\lib\net45\MahApps.Metro.dll</HintPath>
+    <Reference Include="MahApps.Metro, Version=0.14.0.0, Culture=neutral, PublicKeyToken=f4fb5a3c4d1e5b4f, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Libraries\MahApps.Metro.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.WindowsAPICodePack">
       <HintPath>..\packages\WindowsAPICodePack-Core.1.1\lib\Microsoft.WindowsAPICodePack.dll</HintPath>
@@ -74,9 +77,6 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\MahApps.Metro.0.14.0.0\lib\net45\System.Windows.Interactivity.dll</HintPath>
-    </Reference>
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -85,11 +85,17 @@
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
+    <Reference Include="updateSystemDotNet.Controller">
+      <HintPath>..\Libraries\updateSystemDotNet.Controller.dll</HintPath>
+    </Reference>
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="WPFSoundVisualizationLib">
       <HintPath>..\Libraries\WPFSoundVisualizationLib.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.Toolkit">
+      <HintPath>..\packages\Extended.Wpf.Toolkit.2.3\lib\net40\Xceed.Wpf.Toolkit.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -97,14 +103,27 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Extensions\Converter\CollapsedOnNullValue.cs" />
+    <Compile Include="Extensions\ItemsControlExtensions.cs" />
+    <Compile Include="Extensions\VisibilityAnimation.cs" />
+    <Compile Include="MagicArrow\DockManager\DockingApplicationState.cs" />
+    <Compile Include="MagicArrow\DockManager\DockManager.cs" />
+    <Compile Include="MagicArrow\DockManager\DockRangeWindow.xaml.cs">
+      <DependentUpon>DockRangeWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Extensions\Converter\RoundSizeConverter.cs" />
     <Compile Include="Extensions\Converter\NeverIfDateIsNull.cs" />
     <Compile Include="Extensions\WindowBehaviours.cs" />
+    <Compile Include="Extensions\WindowCustomizer.cs" />
+    <Compile Include="MagicArrow\StrokeWindow.xaml.cs">
+      <DependentUpon>StrokeWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Music\Equalizer\EqualizerBand.cs" />
     <Compile Include="Music\EventArgs\EqualizerChangedEventArgs.cs" />
     <Compile Include="Music\Equalizer\EqualizerSettings.cs" />
     <Compile Include="Music\EventArgs\TrackImportProgressChanged.cs" />
     <Compile Include="Music\TrackComparer.cs" />
+    <Compile Include="Music\VolumeFading.cs" />
     <Compile Include="Notification\NotificationService.cs" />
     <Compile Include="Notification\Views\NotificationRightBottomWindow.xaml.cs">
       <DependentUpon>NotificationRightBottomWindow.xaml</DependentUpon>
@@ -119,11 +138,21 @@
     <Compile Include="Settings\LanguageInfo.cs" />
     <Compile Include="Settings\PlaylistSettings.cs" />
     <Compile Include="Settings\SettingsBase.cs" />
+    <Compile Include="Settings\Themes\AccentColorTheme.cs" />
+    <Compile Include="Settings\Themes\ApplicationThemeManager.cs" />
+    <Compile Include="Settings\UpdateService.cs" />
+    <Compile Include="Utilities\ActiveWindowHook.cs" />
     <Compile Include="Utilities\GeneralHelper.cs" />
     <Compile Include="Utilities\Keyboard.cs" />
     <Compile Include="Utilities\ObjectCopier.cs" />
     <Compile Include="Utilities\WindowHelper.cs" />
+    <Compile Include="Utilities\WpfScreen.cs" />
     <Compile Include="ViewModels\SettingsViewModel.cs" />
+    <Compile Include="ViewPerformance\AsyncVirtualizingCollection.cs" />
+    <Compile Include="ViewPerformance\IItemsProvider.cs" />
+    <Compile Include="ViewPerformance\TrackLoader.cs" />
+    <Compile Include="ViewPerformance\TrackProvider.cs" />
+    <Compile Include="ViewPerformance\VirtualizingCollection.cs" />
     <Compile Include="Views\AboutWindow.xaml.cs">
       <DependentUpon>AboutWindow.xaml</DependentUpon>
     </Compile>
@@ -142,10 +171,28 @@
     <Compile Include="Views\SettingsWindow.xaml.cs">
       <DependentUpon>SettingsWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Test\TestWindow.xaml.cs">
+      <DependentUpon>TestWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\TrackInformationWindow.xaml.cs">
       <DependentUpon>TrackInformationWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\UpdateWindow.xaml.cs">
+      <DependentUpon>UpdateWindow.xaml</DependentUpon>
+    </Compile>
+    <Page Include="MagicArrow\Blue.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="MagicArrow\DockManager\DockRangeWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MagicArrow\MagicArrowWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="MagicArrow\StrokeWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -170,6 +217,102 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Resources\Styles\VolumeSlider.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Resources\Themes\Amber.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Resources\Themes\Lime.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Themes\Indigo.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Themes\Cyan.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Themes\Crimson.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Themes\Cobalt.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Themes\Brown.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Themes\Blue.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Themes\Emerald.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Themes\Green.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Themes\Yellow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Themes\Violet.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Themes\Teal.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Themes\Taupe.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Themes\Purple.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Themes\Pink.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Themes\Olive.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Themes\Mauve.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Themes\Magenta.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Themes\Orange.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Themes\Red.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Themes\Sienna.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Themes\Steel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Resources\VectorGraphics.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -245,7 +388,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\Test\TestWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\TrackInformationWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\UpdateWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -283,9 +434,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\MagicArrow\MagicArrow.png" />
-  </ItemGroup>
-  <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.5">
       <Visible>False</Visible>
       <ProductName>Microsoft .NET Framework 4.5 %28x86 and x64%29</ProductName>
@@ -303,28 +451,12 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\MediaIcons\Essentials\back.png" />
-    <Resource Include="Resources\MediaIcons\Essentials\forward.png" />
-    <Resource Include="Resources\MediaIcons\Essentials\pause.png" />
-    <Resource Include="Resources\MediaIcons\Essentials\play.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Resources\MediaIcons\Advanced\Volume\loud.png" />
     <Resource Include="Resources\MediaIcons\Advanced\Volume\medium.png" />
     <Resource Include="Resources\MediaIcons\Advanced\Volume\mute.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\MediaIcons\Advanced\Options\equalizer.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\MediaIcons\Advanced\Options\random.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\MediaIcons\Advanced\Options\repeat.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\MediaIcons\Advanced\Options\random_white.png" />
-    <Resource Include="Resources\MediaIcons\Advanced\Options\repeat_white.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\MediaIcons\ThumbButtons\backward.png" />
@@ -348,25 +480,6 @@
     <Resource Include="Resources\MediaIcons\Thumbnail\StandardThumbnail.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\GUI\plus.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\GUI\addfile.png" />
-    <Resource Include="Resources\GUI\addfolder.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\GUI\folder.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\GUI\info.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\GUI\delete.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\GUI\settings.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Resources\App\icon.ico" />
   </ItemGroup>
   <ItemGroup>
@@ -382,13 +495,7 @@
     <Resource Include="Resources\Languages\Icons\us.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\GUI\refresh.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\GUI\remove.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\GUI\add.png" />
+    <Resource Include="Resources\GUI\updater.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

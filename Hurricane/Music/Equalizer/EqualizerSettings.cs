@@ -11,45 +11,49 @@ using System.Windows.Controls;
 namespace Hurricane.Music
 {
     [Serializable]
-   public class EqualizerSettings : PropertyChangedBase
+    public class EqualizerSettings : PropertyChangedBase
     {
         public event EventHandler<EqualizerChangedEventArgs> EqualizerChanged;
 
-       public void CreateNew()
+        protected List<string> bandlabels = new List<string>(new string[] { "31Hz", "62Hz", "125Hz", "250Hz", "500Hz", "1KHz", "2KHz", "4KHz", "8KHz", "16KHz" });
+
+        public void CreateNew()
         {
             if (Bands != null) { Bands.Clear(); } else { Bands = new ObservableCollection<EqualizerBand>(); }
-            
+
             for (int i = 0; i < 10; i++)
             {
-                Bands.Add(new EqualizerBand());
+                Bands.Add(new EqualizerBand(bandlabels[i]));
             }
             Loaded();
         }
 
-       public void Loaded()
+        public void Loaded()
         {
             foreach (EqualizerBand b in Bands)
             {
                 b.EqualizerChanged += (s, e) => { EqualizerChanged(this, new EqualizerChangedEventArgs(Bands.IndexOf(b), b.Value)); };
+                b.Label = bandlabels[Bands.IndexOf(b)];
             }
         }
 
-       private RelayCommand resetequalizer;
-       public RelayCommand ResetEqualizer
-       {
-           get
-           {
-               if (resetequalizer == null)
-                   resetequalizer = new RelayCommand((object parameter) => {
-                       foreach (EqualizerBand band in Bands)
-                       {
-                           band.Value = 0;
-                       }
-                   });
-               return resetequalizer;
-           }
-       }
-        
+        private RelayCommand resetequalizer;
+        public RelayCommand ResetEqualizer
+        {
+            get
+            {
+                if (resetequalizer == null)
+                    resetequalizer = new RelayCommand((object parameter) =>
+                    {
+                        foreach (EqualizerBand band in Bands)
+                        {
+                            band.Value = 0;
+                        }
+                    });
+                return resetequalizer;
+            }
+        }
+
         private ObservableCollection<EqualizerBand> bands;
         public ObservableCollection<EqualizerBand> Bands
         {
@@ -66,7 +70,8 @@ namespace Hurricane.Music
             get
             {
                 if (loadpresetbass == null)
-                    loadpresetbass = new RelayCommand((object parameter) => {
+                    loadpresetbass = new RelayCommand((object parameter) =>
+                    {
                         LoadPreset(50, 35, 20, 5, -10, -10, 0, -2, 0, 2);
                     });
                 return loadpresetbass;
@@ -79,7 +84,8 @@ namespace Hurricane.Music
             get
             {
                 if (loadpresetbassexteme == null)
-                    loadpresetbassexteme = new RelayCommand((object parameter) => {
+                    loadpresetbassexteme = new RelayCommand((object parameter) =>
+                    {
                         LoadPreset(90, 85, 65, 30, 0, -5, -5, 0, 2, 0);
                     });
                 return loadpresetbassexteme;
@@ -114,7 +120,7 @@ namespace Hurricane.Music
             get
             {
                 if (loadpresetclassic == null)
-                    loadpresetclassic = new RelayCommand((object parameter) => { LoadPreset(0,0,0,0,0,0, -10,-10,-10,-20); });
+                    loadpresetclassic = new RelayCommand((object parameter) => { LoadPreset(0, 0, 0, 0, 0, 0, -10, -10, -10, -20); });
                 return loadpresetclassic;
             }
         }
@@ -125,7 +131,7 @@ namespace Hurricane.Music
             get
             {
                 if (loadpresetdance == null)
-                    loadpresetdance = new RelayCommand((object parameter) => { LoadPreset(30,15,10,0,0,-10,-5,-5,0,0); });
+                    loadpresetdance = new RelayCommand((object parameter) => { LoadPreset(30, 15, 10, 0, 0, -10, -5, -5, 0, 0); });
                 return loadpresetdance;
             }
         }
@@ -136,7 +142,7 @@ namespace Hurricane.Music
             get
             {
                 if (loadpresetrock == null)
-                    loadpresetrock = new RelayCommand((object parameter) => { LoadPreset(25,10,5, -10,-5,5,10,20,20,20); });
+                    loadpresetrock = new RelayCommand((object parameter) => { LoadPreset(25, 10, 5, -10, -5, 5, 10, 20, 20, 20); });
                 return loadpresetrock;
             }
         }
@@ -147,7 +153,7 @@ namespace Hurricane.Music
             get
             {
                 if (loadpresettechno == null)
-                    loadpresettechno = new RelayCommand((object parameter) => { LoadPreset(20,20,0,-10,-5,0,10,40,40,40); });
+                    loadpresettechno = new RelayCommand((object parameter) => { LoadPreset(20, 20, 0, -10, -5, 0, 10, 40, 40, 40); });
                 return loadpresettechno;
             }
         }
@@ -169,7 +175,7 @@ namespace Hurricane.Music
             get
             {
                 if (loadpresetsoftbass == null)
-                    loadpresetsoftbass = new RelayCommand((object parameter) => { LoadPreset(10,10,10,0,-10,-10,0,0,0,0); });
+                    loadpresetsoftbass = new RelayCommand((object parameter) => { LoadPreset(10, 10, 10, 0, -10, -10, 0, 0, 0, 0); });
                 return loadpresetsoftbass;
             }
         }
@@ -184,7 +190,6 @@ namespace Hurricane.Music
                 return loadpresetsoftheights;
             }
         }
-
 
         protected void LoadPreset(double zero, double one, double two, double three, double four, double five, double six, double seven, double eight, double nine)
         {

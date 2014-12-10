@@ -33,7 +33,7 @@ namespace Hurricane
         public MainWindow()
         {
             InitializeComponent();
-            System.Windows.Media.MediaTimeline.DesiredFrameRateProperty.OverrideMetadata(typeof(System.Windows.Media.Animation.Timeline), new FrameworkPropertyMetadata(60));
+            //System.Windows.Media.MediaTimeline.DesiredFrameRateProperty.OverrideMetadata(typeof(System.Windows.Media.Animation.Timeline), new FrameworkPropertyMetadata(60));
 
             MagicArrow = new MagicArrow.MagicArrow();
             MagicArrow.Register(this);
