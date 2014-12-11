@@ -38,16 +38,6 @@ namespace Hurricane.Music
             }
         }
 
-        private bool isselected;
-        public bool IsSelected
-        {
-            get { return isselected; }
-            set
-            {
-                SetProperty(value, ref isselected);
-            }
-        }
-
         public TimeSpan DurationTimespan
         {
             get

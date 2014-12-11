@@ -2,8 +2,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Collections.Specialized;
 
-namespace Hurricane.ViewPerformance
+namespace Hurricane.DataVirtualization
 {
     /// <summary>
     /// Specialized list implementation that provides data virtualization. The collection is divided up into pages,
@@ -17,7 +18,7 @@ namespace Hurricane.ViewPerformance
     /// data bound to a suitable ItemsControl.
     /// </remarks>
     /// <typeparam name="T"></typeparam>
-    public class VirtualizingCollection<T> : IList<T>, IList
+    public class VirtualizingCollection<T> : IList<T>, IList, INotifyCollectionChanged
     {
         #region Constructors
 
@@ -73,7 +74,7 @@ namespace Hurricane.ViewPerformance
 
         #region PageSize
 
-        private readonly int _pageSize = 100;
+        private readonly int _pageSize = 200;
 
         /// <summary>
         /// Gets the size of the page.
@@ -147,7 +148,7 @@ namespace Hurricane.ViewPerformance
                 // determine which page and offset within page
                 int pageIndex = index / PageSize;
                 int pageOffset = index % PageSize;
-
+                System.Diagnostics.Debug.Print("fetch index {0}", index);
                 // request primary page
                 RequestPage(pageIndex);
 
@@ -213,17 +214,10 @@ namespace Hurricane.ViewPerformance
         #endregion
 
         #region Add
-
-        /// <summary>
-        /// Not supported.
-        /// </summary>
-        /// <param name="item">The object to add to the <see cref="T:System.Collections.Generic.ICollection`1"/>.</param>
-        /// <exception cref="T:System.NotSupportedException">
-        /// The <see cref="T:System.Collections.Generic.ICollection`1"/> is read-only.
-        /// </exception>
         public void Add(T item)
         {
-            throw new NotSupportedException();
+            this.ItemsProvider.BaseList.Add(item);
+            this.RefreshView(ItemsProvider.BaseList.IndexOf(item), new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, item));
         }
 
         int IList.Add(object value)
@@ -240,31 +234,20 @@ namespace Hurricane.ViewPerformance
             return Contains((T)value);
         }
 
-        /// <summary>
-        /// Not supported.
-        /// </summary>
-        /// <param name="item">The object to locate in the <see cref="T:System.Collections.Generic.ICollection`1"/>.</param>
-        /// <returns>
-        /// Always false.
-        /// </returns>
         public bool Contains(T item)
         {
-            return false;
+            return this.ItemsProvider.BaseList.Contains(item);
         }
 
         #endregion
 
         #region Clear
-
-        /// <summary>
-        /// Not supported.
-        /// </summary>
-        /// <exception cref="T:System.NotSupportedException">
-        /// The <see cref="T:System.Collections.Generic.ICollection`1"/> is read-only.
-        /// </exception>
         public void Clear()
         {
-            throw new NotSupportedException();
+            this.ItemsProvider.BaseList.Clear();
+            _pages.Clear();
+            _pageTouchTimes.Clear();
+            OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
         }
 
         #endregion
@@ -276,36 +259,18 @@ namespace Hurricane.ViewPerformance
             return IndexOf((T)value);
         }
 
-        /// <summary>
-        /// Not supported
-        /// </summary>
-        /// <param name="item">The object to locate in the <see cref="T:System.Collections.Generic.IList`1"/>.</param>
-        /// <returns>
-        /// Always -1.
-        /// </returns>
         public int IndexOf(T item)
         {
-            return -1;
+            return this.ItemsProvider.BaseList.IndexOf(item);
         }
 
         #endregion
 
-        #region Insert
-
-        /// <summary>
-        /// Not supported.
-        /// </summary>
-        /// <param name="index">The zero-based index at which <paramref name="item"/> should be inserted.</param>
-        /// <param name="item">The object to insert into the <see cref="T:System.Collections.Generic.IList`1"/>.</param>
-        /// <exception cref="T:System.ArgumentOutOfRangeException">
-        /// 	<paramref name="index"/> is not a valid index in the <see cref="T:System.Collections.Generic.IList`1"/>.
-        /// </exception>
-        /// <exception cref="T:System.NotSupportedException">
-        /// The <see cref="T:System.Collections.Generic.IList`1"/> is read-only.
-        /// </exception>
+        #region Insert & Move
         public void Insert(int index, T item)
         {
-            throw new NotSupportedException();
+            this.ItemsProvider.BaseList.Insert(index, item);
+            RefreshView(index, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, item, index));
         }
 
         void IList.Insert(int index, object value)
@@ -313,23 +278,28 @@ namespace Hurricane.ViewPerformance
             Insert(index, (T)value);
         }
 
+        public void Move(int oldIndex, int newIndex)
+        {
+            //this.ItemsProvider.BaseList.Move(oldindex, newindex);
+            var item = ItemsProvider.BaseList[oldIndex];
+
+            ItemsProvider.BaseList.RemoveAt(oldIndex);
+
+            if (newIndex > oldIndex) newIndex--;
+            // the actual index could have shifted due to the removal
+
+            ItemsProvider.BaseList.Insert(newIndex, item);
+            RefreshView(newIndex, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Move, item, newIndex, oldIndex));
+        }
         #endregion
 
         #region Remove
 
-        /// <summary>
-        /// Not supported.
-        /// </summary>
-        /// <param name="index">The zero-based index of the item to remove.</param>
-        /// <exception cref="T:System.ArgumentOutOfRangeException">
-        /// 	<paramref name="index"/> is not a valid index in the <see cref="T:System.Collections.Generic.IList`1"/>.
-        /// </exception>
-        /// <exception cref="T:System.NotSupportedException">
-        /// The <see cref="T:System.Collections.Generic.IList`1"/> is read-only.
-        /// </exception>
         public void RemoveAt(int index)
         {
-            throw new NotSupportedException();
+            var itemtoremove = ItemsProvider.BaseList[index];
+            this.ItemsProvider.BaseList.RemoveAt(index);
+            RefreshView(index, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, itemtoremove, index));
         }
 
         void IList.Remove(object value)
@@ -337,19 +307,15 @@ namespace Hurricane.ViewPerformance
             throw new NotSupportedException();
         }
 
-        /// <summary>
-        /// Not supported.
-        /// </summary>
-        /// <param name="item">The object to remove from the <see cref="T:System.Collections.Generic.ICollection`1"/>.</param>
-        /// <returns>
-        /// true if <paramref name="item"/> was successfully removed from the <see cref="T:System.Collections.Generic.ICollection`1"/>; otherwise, false. This method also returns false if <paramref name="item"/> is not found in the original <see cref="T:System.Collections.Generic.ICollection`1"/>.
-        /// </returns>
-        /// <exception cref="T:System.NotSupportedException">
-        /// The <see cref="T:System.Collections.Generic.ICollection`1"/> is read-only.
-        /// </exception>
         public bool Remove(T item)
         {
-            throw new NotSupportedException();
+            var index = ItemsProvider.BaseList.IndexOf(item);
+            if (this.ItemsProvider.BaseList.Remove(item))
+            {
+                RefreshView(index, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, item, index));
+                return true;
+            }
+            return false;
         }
 
         #endregion
@@ -539,5 +505,33 @@ namespace Hurricane.ViewPerformance
         }
 
         #endregion
+
+        #region INotifyPropertyChanged
+
+        protected void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
+        {
+            if (CollectionChanged != null) CollectionChanged(this, e);
+        }
+
+        protected void RefreshView(int itemchangedindex, NotifyCollectionChangedEventArgs args)
+        {
+            List<int> keys = new List<int>(_pageTouchTimes.Keys);
+            int pageIndex = itemchangedindex / PageSize;
+            if (keys.Count > 0 && keys.Count > pageIndex)
+            {
+                var key = keys[pageIndex];
+                _pages.Remove(key);
+                _pageTouchTimes.Remove(key);
+            }
+            OnCollectionChanged(args);
+        }
+
+        public void RefreshView(int itemchangedindex)
+        {
+            this.RefreshView(itemchangedindex, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+        }
+        #endregion
+
+        public event NotifyCollectionChangedEventHandler CollectionChanged;
     }
 }

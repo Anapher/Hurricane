@@ -23,7 +23,7 @@
     <system:String x:Key="selectfiles">Dateien auswählen</system:String>
     <system:String x:Key="selectfolder">Ordner auswählen</system:String>
     <system:String x:Key="removeplaylist">Wiedergabeliste entfernen</system:String>
-    <system:String x:Key="removetrack">Tracks entfernen</system:String>
+    <system:String x:Key="removetrack">Track entfernen</system:String>
     <system:String x:Key="removeduplicates">Doppelte Tracks entfernen</system:String>
 
     <system:String x:Key="presets">Vorlagen</system:String>
@@ -40,7 +40,7 @@
     <system:String x:Key="softheights">Weiche Höhen</system:String>
     
     <system:String x:Key="removetracks">Tracks entfernen</system:String>
-    <system:String x:Key="removetracksmessage">Sind Sie sicher, dass sie {0} Track(s) aus der Wiedergabeliste entfernen möchten?</system:String>
+    <system:String x:Key="removetracksmessage">Sind Sie sicher, dass Sie den Track '{0}' aus der Wiedergabeliste entfernen möchten?</system:String>
     <system:String x:Key="error">Fehler</system:String>
     <system:String x:Key="trackisplaying">Ein Fehler ist aufgetreten. Der Track "{0}" kann nicht entfernt werden, weil er momentan abgespielt wird.</system:String>
     <system:String x:Key="reallydeleteplaylist">Sind Sie sicher, dass sie die Wiedergabeliste '{0}' entfernen wollen?</system:String>

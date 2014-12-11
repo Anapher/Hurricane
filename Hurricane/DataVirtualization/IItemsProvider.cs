@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
-namespace Hurricane.ViewPerformance
+namespace Hurricane.DataVirtualization
 {
     /// <summary>
     /// Represents a provider of collection details.
@@ -21,5 +22,7 @@ namespace Hurricane.ViewPerformance
         /// <param name="count">The number of items to fetch.</param>
         /// <returns></returns>
         IList<T> FetchRange(int startIndex, int count);
+
+        List<T> BaseList { get; set; }
     }
 }

@@ -148,11 +148,9 @@
     <Compile Include="Utilities\WindowHelper.cs" />
     <Compile Include="Utilities\WpfScreen.cs" />
     <Compile Include="ViewModels\SettingsViewModel.cs" />
-    <Compile Include="ViewPerformance\AsyncVirtualizingCollection.cs" />
-    <Compile Include="ViewPerformance\IItemsProvider.cs" />
-    <Compile Include="ViewPerformance\TrackLoader.cs" />
-    <Compile Include="ViewPerformance\TrackProvider.cs" />
-    <Compile Include="ViewPerformance\VirtualizingCollection.cs" />
+    <Compile Include="DataVirtualization\IItemsProvider.cs" />
+    <Compile Include="DataVirtualization\TrackProvider.cs" />
+    <Compile Include="DataVirtualization\VirtualizingCollection.cs" />
     <Compile Include="Views\AboutWindow.xaml.cs">
       <DependentUpon>AboutWindow.xaml</DependentUpon>
     </Compile>

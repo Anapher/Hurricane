@@ -23,7 +23,7 @@
     <system:String x:Key="selectfiles">Select files</system:String>
     <system:String x:Key="selectfolder">Select folder</system:String>
     <system:String x:Key="removeplaylist">Remove playlist</system:String>
-    <system:String x:Key="removetrack">Remove tracks</system:String>
+    <system:String x:Key="removetrack">Remove track</system:String>
     <system:String x:Key="removeduplicates">Remove duplicates</system:String>
 
     <system:String x:Key="presets">Presets</system:String>
@@ -40,7 +40,7 @@
     <system:String x:Key="softheights">Soft heights</system:String>
 
     <system:String x:Key="removetracks">Remove tracks</system:String>
-    <system:String x:Key="removetracksmessage">Are you sure that you want to remove the track(s) {0} from the playlist?</system:String>
+    <system:String x:Key="removetracksmessage">Are you sure that you want to remove the track '{0}' from the playlist?</system:String>
     <system:String x:Key="error">Error</system:String>
     <system:String x:Key="trackisplaying">An error has occurred. The track {0} can't be removed because it is currently playing.</system:String>
     <system:String x:Key="reallydeleteplaylist">Are you sure that you want to remove the playlist '{0}'?</system:String>

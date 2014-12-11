@@ -111,7 +111,6 @@ namespace Hurricane.Music
 
         public void LoadFromSettings()
         {
-            
             Settings.HurricaneSettings settings = Settings.HurricaneSettings.Instance;
             this.Playlists = settings.Playlists.Playlists;
             Settings.ConfigSettings config = settings.Config;
@@ -322,7 +321,6 @@ namespace Hurricane.Music
                     {
                         this.SelectedPlaylist = this.CurrentPlaylist;
                         this.SelectedTrack = this.CSCoreEngine.CurrentTrack;
-                        SelectedTrack.IsSelected = true;
                     });
                 return jumptoplayingtrack;
             }

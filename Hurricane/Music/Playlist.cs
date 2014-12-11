@@ -7,6 +7,8 @@ using System.Collections.ObjectModel;
 using System.Windows.Data;
 using System.IO;
 using Hurricane.Utilities;
+using System.ComponentModel;
+using System.Xml.Serialization;
 
 namespace Hurricane.Music
 {
@@ -15,7 +17,7 @@ namespace Hurricane.Music
     {
         public Playlist()
         {
-            Tracks = new ObservableCollection<Track>();
+            Tracks = new List<Track>();
         }
 
         private String name;
@@ -28,13 +30,19 @@ namespace Hurricane.Music
             }
         }
 
-        public ObservableCollection<Track> Tracks { get; set; }
+        public List<Track> Tracks { get; protected set; }
+
+        [XmlIgnore]
+        public DataVirtualization.VirtualizingCollection<Track> TrackCollection { get; set; }
 
         private CollectionView viewsource;
-        [System.Xml.Serialization.XmlIgnore]
+        [XmlIgnore]
         public CollectionView ViewSource
         {
-            get { return viewsource; }
+            get
+            {
+                return viewsource;
+            }
             set
             {
                 SetProperty(value, ref viewsource);
@@ -45,7 +53,9 @@ namespace Hurricane.Music
         {
             if (Tracks != null)
             {
-                ViewSource = (CollectionView)CollectionViewSource.GetDefaultView(Tracks);
+                DataVirtualization.TrackProvider loader = new DataVirtualization.TrackProvider(Tracks);
+                TrackCollection = new DataVirtualization.VirtualizingCollection<Track>(loader, 200);
+                ViewSource = (CollectionView)CollectionViewSource.GetDefaultView(TrackCollection);
                 ViewSource.Filter = filter;
             }
         }
@@ -62,7 +72,7 @@ namespace Hurricane.Music
                     t.Path = fi.FullName;
                     if (!t.LoadInformations()) continue;
                     t.TimeAdded = DateTime.Now;
-                    if (FromAnotherThread) { System.Windows.Application.Current.Dispatcher.Invoke(() => this.Tracks.Add(t)); } else {this.Tracks.Add(t); }
+                    if (FromAnotherThread) { System.Windows.Application.Current.Dispatcher.Invoke(() => this.TrackCollection.Add(t)); } else {this.TrackCollection.Add(t); }
                 }
             }
 
@@ -104,7 +114,7 @@ namespace Hurricane.Music
             for (int i = Tracks.Count -1; i > -1; i--)
             {
                 Track t = Tracks[i];
-                if (!t.TrackExists) this.Tracks.Remove(t);
+                if (!t.TrackExists) this.TrackCollection.Remove(t);
             }
             OnPropertyChanged("ContainsMissingTracks");
         }
@@ -119,7 +129,7 @@ namespace Hurricane.Music
             IEnumerable<Track> noduplicates = this.Tracks.Distinct(new TrackComparer());
             if (noduplicates.Any() && noduplicates.Count() != this.Tracks.Count)
             {
-                if (FromAnotherThread) { System.Windows.Application.Current.Dispatcher.Invoke(() => { this.Tracks = new ObservableCollection<Track>(noduplicates); ViewSource = (CollectionView)CollectionViewSource.GetDefaultView(Tracks); }); } else { this.Tracks = new ObservableCollection<Track>(noduplicates); ViewSource = (CollectionView)CollectionViewSource.GetDefaultView(Tracks); };
+                if (FromAnotherThread) { System.Windows.Application.Current.Dispatcher.Invoke(() => { this.Tracks = new List<Track>(noduplicates); RefreshList(ViewSource.Filter); }); } else { this.Tracks = new List<Track>(noduplicates); RefreshList(ViewSource.Filter); };
             }
             return counter - noduplicates.Count();
         }

@@ -11,6 +11,7 @@ using System.Windows.Input;
 using Hurricane.Resources.Styles.DragDropListView.Adorners;
 using Hurricane.Resources.Styles.DragDropListView.Utilities;
 using System.Windows.Data;
+using Hurricane.DataVirtualization;
 
 namespace Hurricane.Resources.Styles.DragDropListView.ServiceProviders.UI
 {
@@ -340,7 +341,7 @@ namespace Hurricane.Resources.Styles.DragDropListView.ServiceProviders.UI
                 throw new Exception(
                     "A ListView managed by ListViewDragManager must have its ItemsSource set to an CollectionView.");
 
-            ObservableCollection<ItemType> itemsSource = collectionview.SourceCollection as ObservableCollection<ItemType>;
+            VirtualizingCollection<ItemType> itemsSource = collectionview.SourceCollection as VirtualizingCollection<ItemType>;
 
 
             int oldIndex = itemsSource.IndexOf(data);
@@ -568,7 +569,7 @@ namespace Hurricane.Resources.Styles.DragDropListView.ServiceProviders.UI
             // We need to use MouseUtilities to figure out the cursor
             // coordinates because, during a drag-drop operation, the WPF
             // mechanisms for getting the coordinates behave strangely.
-
+            if (target == null) return false;
             Rect bounds = VisualTreeHelper.GetDescendantBounds(target);
             Point mousePos = MouseUtilities.GetMousePosition(target);
             return bounds.Contains(mousePos);
@@ -782,7 +783,7 @@ namespace Hurricane.Resources.Styles.DragDropListView.ServiceProviders.UI
     {
         #region Data
 
-        ObservableCollection<ItemType> itemsSource;
+        VirtualizingCollection<ItemType> itemsSource;
         ItemType dataItem;
         int oldIndex;
         int newIndex;
@@ -794,7 +795,7 @@ namespace Hurricane.Resources.Styles.DragDropListView.ServiceProviders.UI
         #region Constructor
 
         internal ProcessDropEventArgs(
-            ObservableCollection<ItemType> itemsSource,
+            VirtualizingCollection<ItemType> itemsSource,
             ItemType dataItem,
             int oldIndex,
             int newIndex,
@@ -814,7 +815,7 @@ namespace Hurricane.Resources.Styles.DragDropListView.ServiceProviders.UI
         /// <summary>
         /// The items source of the ListView where the drop occurred.
         /// </summary>
-        public ObservableCollection<ItemType> ItemsSource
+        public VirtualizingCollection<ItemType> ItemsSource
         {
             get { return this.itemsSource; }
         }

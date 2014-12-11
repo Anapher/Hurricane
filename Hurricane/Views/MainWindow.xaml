@@ -235,7 +235,17 @@
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="auto"/>
                     </Grid.ColumnDefinitions>
-                    <ComboBox ItemsSource="{Binding MusicManager.Playlists}" DisplayMemberPath="Name" SelectedItem="{Binding MusicManager.SelectedPlaylist}" VerticalAlignment="Center" Margin="0,0,3,0" Height="27"/>
+                    <ComboBox ItemsSource="{Binding MusicManager.Playlists}" DisplayMemberPath="Name" SelectedItem="{Binding MusicManager.SelectedPlaylist}" VerticalAlignment="Center" Margin="0,0,3,0" Height="27">
+                        <ComboBox.Triggers>
+                            <EventTrigger RoutedEvent="ComboBox.SelectionChanged">
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation From="0.5" To="1" Storyboard.TargetProperty="Opacity" Storyboard.Target="{Binding ElementName=listview}"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger>
+                        </ComboBox.Triggers>
+                    </ComboBox>
                     <Button Grid.Column="1" Width="27" Height="27" x:Name="buttonplus" Click="buttonplus_Click" Focusable="False">
                         <Button.ContextMenu>
                             <ContextMenu x:Name="contextmenuplus">
@@ -286,15 +296,15 @@
                         </Button.Content>
                     </Button>
                 </Grid>
-                <ListView SelectionMode="Extended" Grid.Row="1" ItemsSource="{Binding MusicManager.SelectedPlaylist.ViewSource}" Drop="ListView_Drop" DragEnter="ListView_DragEnter" x:Name="listview" SelectedItem="{Binding MusicManager.SelectedTrack}" ScrollViewer.VerticalScrollBarVisibility="Visible" Margin="0,5,0,0" HorizontalContentAlignment="Stretch" ScrollViewer.HorizontalScrollBarVisibility="Disabled" SelectionChanged="listview_SelectionChanged" IsSynchronizedWithCurrentItem="True">
+                <ListView ItemsSource="{Binding MusicManager.SelectedPlaylist.ViewSource}" SelectionMode="Single" Grid.Row="1" Drop="ListView_Drop" DragEnter="ListView_DragEnter" x:Name="listview" SelectedItem="{Binding MusicManager.SelectedTrack}" ScrollViewer.VerticalScrollBarVisibility="Visible" Margin="0,5,0,0" HorizontalContentAlignment="Stretch" ScrollViewer.HorizontalScrollBarVisibility="Disabled" SelectionChanged="listview_SelectionChanged" IsSynchronizedWithCurrentItem="True">
                     <ListView.Style>
-                        <Style TargetType="{x:Type ListView}" BasedOn="{StaticResource MetroListView}">
+                        <Style TargetType="{x:Type ListView}">
                             <Setter Property="VirtualizingStackPanel.IsVirtualizing" Value="True"/>
                             <Setter Property="VirtualizingStackPanel.VirtualizationMode" Value="Recycling"/>
                         </Style>
                     </ListView.Style>
                     <ListView.InputBindings>
-                        <KeyBinding Key="Delete" Command="{Binding RemoveSelectedTracks}"/>
+                        <KeyBinding Key="Delete" Command="{Binding RemoveSelectedTrack}"/>
                         <KeyBinding Key="Enter" Command="{Binding MusicManager.PlaySelectedTrack}"/>
                         <KeyBinding Key="O" Modifiers="Alt" Command="{Binding MusicManager.OpenFileLocation}"/>
                         <KeyBinding Key="Space" Command="{Binding MusicManager.CSCoreEngine.TogglePlayPauseCommand}"/>
@@ -343,7 +353,7 @@
                                 </MenuItem.Icon>
                             </MenuItem>
                             <Separator />
-                            <MenuItem Header="{DynamicResource remove}" Command="{Binding RemoveSelectedTracks}" InputGestureText="{DynamicResource del}">
+                            <MenuItem Header="{DynamicResource remove}" Command="{Binding RemoveSelectedTrack}" InputGestureText="{DynamicResource del}">
                                 <MenuItem.Icon>
                                     <Path Height="16" Width="16" Fill="#ff000000" Data="F1 M 4.000,7.000 L 4.000,9.000 L 12.000,9.000 L 12.000,7.000 L 4.000,7.000 Z M 8.000,16.000 C 3.582,16.000 0.000,12.418 0.000,8.000 C 0.000,3.582 3.582,0.000 8.000,0.000 C 12.418,0.000 16.000,3.582 16.000,8.000 C 16.000,12.418 12.418,16.000 8.000,16.000 Z"/>
                                 </MenuItem.Icon>
@@ -365,7 +375,6 @@
                             <Setter Property="HorizontalContentAlignment" Value="Stretch" />
                             <Setter Property="Border.BorderThickness" Value="0,0,0,0.5" />
                             <Setter Property="Border.BorderBrush" Value="LightGray" />
-                            <Setter Property="IsSelected" Value="{Binding Mode=TwoWay, Path=IsSelected}"/>
                             <Setter Property="ContextMenu" Value="{StaticResource ItemContextMenu}"/>
                             <Setter Property="LayoutTransform">
                                 <Setter.Value>
@@ -379,16 +388,6 @@
                                 <Trigger Property="jas:ListViewItemDragState.IsUnderDragCursor" Value="True">
                                     <Setter Property="Background" Value="{StaticResource MouseOverBrush}" />
                                 </Trigger>
-                                <EventTrigger RoutedEvent="Loaded">
-                                    <EventTrigger.Actions>
-                                        <BeginStoryboard>
-                                            <Storyboard>
-                                                <ThicknessAnimation Storyboard.TargetProperty="Margin" From="20,0,-20,0" To="0,0,0,0" Duration="0:0:.3"/>
-                                                <DoubleAnimation Storyboard.TargetProperty="Opacity" From="0.5" To="1" Duration="0:0:.2"/>
-                                            </Storyboard>
-                                        </BeginStoryboard>
-                                    </EventTrigger.Actions>
-                                </EventTrigger>
                                 <DataTrigger Binding="{Binding TrackExists}" Value="False">
                                     <Setter Property="Background" Value="#FFF2F2F2"/>
                                 </DataTrigger>
@@ -435,7 +434,8 @@
                         </DataTemplate>
                     </ListView.ItemTemplate>
                 </ListView>
-                <StackPanel Orientation="Vertical" Grid.Row="2" Margin="5,0,5,5">
+                
+                <StackPanel Orientation="Vertical" Grid.Row="2" Margin="5,5,5,5">
                     <TextBox controls:TextBoxHelper.Watermark="{StaticResource search}" Text="{Binding MusicManager.SearchText,UpdateSourceTrigger=PropertyChanged}"/>
                 </StackPanel>
             </Grid>

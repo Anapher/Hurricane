@@ -163,37 +163,28 @@ namespace Hurricane.ViewModels
             }
         }
 
-        private RelayCommand removeselectedtracks;
-        public RelayCommand RemoveSelectedTracks
+        private RelayCommand removeselectedtrack;
+        public RelayCommand RemoveSelectedTrack
         {
             get
             {
-                if (removeselectedtracks == null)
-                    removeselectedtracks = new RelayCommand((object parameter) => {
-                        List<Music.Track> tracks = new List<Music.Track>();
-                        foreach (Music.Track t in MusicManager.SelectedPlaylist.Tracks)
+                if (removeselectedtrack == null)
+                    removeselectedtrack = new RelayCommand((object parameter) => {
+                        Music.Track track = MusicManager.SelectedTrack;
+                        if (track == null) return;
+                        if (track.IsPlaying)
                         {
-                            if (t.IsSelected == true && MusicManager.SelectedPlaylist.Tracks.Contains(t))
-                            {
-                                if (t.IsPlaying)
-                                {
-                                    Views.MessageWindow errorbox = new Views.MessageWindow(string.Format(Application.Current.FindResource("trackisplaying").ToString(), t.Title), Application.Current.FindResource("error").ToString(), false) { Owner = BaseWindow };
-                                    errorbox.ShowDialog();
-                                    return;
-                                }
-                                tracks.Add(t);
-                            }
+                            Views.MessageWindow errorbox = new Views.MessageWindow(string.Format(Application.Current.FindResource("trackisplaying").ToString(), track.Title), Application.Current.FindResource("error").ToString(), false) { Owner = BaseWindow };
+                            errorbox.ShowDialog();
+                            return;
                         }
-                        Views.MessageWindow messagebox = new Views.MessageWindow(string.Format(Application.Current.FindResource("removetracksmessage").ToString(), tracks.Count), Application.Current.FindResource("removetracks").ToString(), true) { Owner = BaseWindow };
+                        Views.MessageWindow messagebox = new Views.MessageWindow(string.Format(Application.Current.FindResource("removetracksmessage").ToString(),track.Title), Application.Current.FindResource("removetracks").ToString(), true) { Owner = BaseWindow };
                         if (messagebox.ShowDialog() == true)
                         {
-                            foreach (Music.Track t in tracks)
-                            {
-                                MusicManager.SelectedPlaylist.Tracks.Remove(t);
-                            }
+                            MusicManager.SelectedPlaylist.TrackCollection.Remove(track);
                         }
                     });
-                return removeselectedtracks;
+                return removeselectedtrack;
             }
         }
 
