@@ -7,54 +7,18 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Interop;
+using Hurricane.Utilities.Native;
 
 namespace Hurricane.Utilities
 {
     class WindowHelper
     {
-        /// <summary>The GetForegroundWindow function returns a handle to the foreground window.</summary>
-        [DllImport("user32.dll")]
-        public static extern IntPtr GetForegroundWindow();
-
-        [DllImport("user32.dll", SetLastError = true)]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        private static extern bool GetWindowPlacement(IntPtr hWnd, ref WINDOWPLACEMENT lpwndpl);
-
-        [DllImport("user32.dll")]
-        private static extern int GetWindowText(IntPtr hWnd, StringBuilder text, int count);
-
-        [DllImport("user32.dll")]
-        static extern IntPtr GetShellWindow();
-
-        [DllImport("user32.dll", SetLastError = true)]
-        public static extern IntPtr FindWindowEx(IntPtr parentHandle, IntPtr childAfter, string className, string windowTitle);
-
-        public delegate bool EnumedWindow(IntPtr handleWindow, ArrayList handles);
-
-        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        public static extern bool EnumWindows(EnumedWindow lpEnumFunc, ArrayList lParam);
-
-        [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
-        static extern int GetClassName(IntPtr hWnd, StringBuilder lpClassName, int nMaxCount);
-
-
-        public struct WINDOWPLACEMENT
-        {
-            public int length;
-            public int flags;
-            public int showCmd;
-            public System.Drawing.Point ptMinPosition;
-            public System.Drawing.Point ptMaxPosition;
-            public System.Drawing.Rectangle rcNormalPosition;
-        }
-
         public static string GetActiveWindowTitle(IntPtr handle)
         {
             const int nChars = 256;
             StringBuilder Buff = new StringBuilder(nChars);
 
-            if (GetWindowText(handle, Buff, nChars) > 0)
+            if (UnsafeNativeMethods.GetWindowText(handle, Buff, nChars) > 0)
             {
                 return Buff.ToString();
             }
@@ -65,52 +29,28 @@ namespace Hurricane.Utilities
         {
             WINDOWPLACEMENT placement = new WINDOWPLACEMENT();
             placement.length = Marshal.SizeOf(placement);
-            GetWindowPlacement(window, ref placement);
+            UnsafeNativeMethods.GetWindowPlacement(window, ref placement);
             var workarea = System.Windows.SystemParameters.WorkArea;
             string cname = GetClassName(window);
-            return ((placement.showCmd == 1 && placement.ptMinPosition.X == -1 && placement.ptMinPosition.Y == -1 && placement.rcNormalPosition.X == 0 && placement.rcNormalPosition.Y == 0 && placement.rcNormalPosition.Width == workarea.Width && !(cname == "Progman" || cname == "WorkerW")));
-            /*
-            System.Diagnostics.Debug.Print("==================================");
-            System.Diagnostics.Debug.Print("showCmd: {0}", placement.showCmd);
-            System.Diagnostics.Debug.Print("rcNormalPosition: {0}", placement.rcNormalPosition);
-            System.Diagnostics.Debug.Print("ptMinPosition: {0}", placement.ptMinPosition);
-            System.Diagnostics.Debug.Print("ptMaxPosition: {0}", placement.ptMaxPosition);
-            System.Diagnostics.Debug.Print("==================================");
-             * */
+            return ((placement.showCmd == 1 && placement.minPosition.X == -1 && placement.minPosition.Y == -1 && placement.normalPosition.left == 0 && placement.normalPosition.top == 0 && placement.normalPosition.Width == workarea.Width && !(cname == "Progman" || cname == "WorkerW")));
+        }
+
+        public static RECT GetWindowRectangle(Window window)
+        {
+            RECT rect;
+            UnsafeNativeMethods.GetWindowRect((new WindowInteropHelper(window)).Handle, out rect);
+            return rect;
         }
 
         public static string GetClassName(IntPtr handle)
         {
             const int maxChars = 256;
             StringBuilder className = new StringBuilder(maxChars);
-            if (GetClassName(handle, className, maxChars) > 0)
+            if (UnsafeNativeMethods.GetClassName(handle, className, maxChars) > 0)
             {
                 return className.ToString();
             }
             return string.Empty;
         }
-
-        [StructLayout(LayoutKind.Sequential)]
-        public struct RECT
-        {
-            public int Left;
-            public int Top;
-            public int Right;
-            public int Bottom;
-        }
-
-        [DllImport("user32.dll")]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        public static extern bool GetWindowRect(IntPtr hWnd, out RECT lpRect);
-
-        public static RECT GetWindowRectangle(Window window)
-        {
-            RECT rect;
-            GetWindowRect((new WindowInteropHelper(window)).Handle, out rect);
-            return rect;
-        }
-
-        [DllImport("user32.dll", SetLastError = true)]
-        public static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
     }
 }

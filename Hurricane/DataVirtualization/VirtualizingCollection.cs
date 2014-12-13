@@ -506,7 +506,7 @@ namespace Hurricane.DataVirtualization
 
         #endregion
 
-        #region INotifyPropertyChanged
+        #region NotifyCollectionChangedEventHandler
 
         protected void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
         {
@@ -530,8 +530,8 @@ namespace Hurricane.DataVirtualization
         {
             this.RefreshView(itemchangedindex, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
         }
-        #endregion
 
         public event NotifyCollectionChangedEventHandler CollectionChanged;
+        #endregion
     }
 }

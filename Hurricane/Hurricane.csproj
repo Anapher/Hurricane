@@ -60,6 +60,15 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Libraries\CSCore.dll</HintPath>
     </Reference>
+    <Reference Include="Exceptionless">
+      <HintPath>..\packages\Exceptionless.1.5.2092\lib\net45\Exceptionless.dll</HintPath>
+    </Reference>
+    <Reference Include="Exceptionless.Models">
+      <HintPath>..\packages\Exceptionless.1.5.2092\lib\net45\Exceptionless.Models.dll</HintPath>
+    </Reference>
+    <Reference Include="Exceptionless.Wpf">
+      <HintPath>..\packages\Exceptionless.Wpf.1.5.2092\lib\net45\Exceptionless.Wpf.dll</HintPath>
+    </Reference>
     <Reference Include="MahApps.Metro, Version=0.14.0.0, Culture=neutral, PublicKeyToken=f4fb5a3c4d1e5b4f, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Libraries\MahApps.Metro.dll</HintPath>
@@ -131,6 +140,7 @@
     <Compile Include="Notification\Views\NotificationTopWindow.xaml.cs">
       <DependentUpon>NotificationTopWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Notification\WindowMessages\WindowMessanger.cs" />
     <Compile Include="Settings\ConfigSettings.cs" />
     <Compile Include="Settings\Converter\BitrateToIndexConverter.cs" />
     <Compile Include="Settings\Converter\NotificationTypeConverter.cs" />
@@ -144,7 +154,13 @@
     <Compile Include="Utilities\ActiveWindowHook.cs" />
     <Compile Include="Utilities\GeneralHelper.cs" />
     <Compile Include="Utilities\Keyboard.cs" />
+    <Compile Include="Utilities\Native\CopyDataStruct.cs" />
+    <Compile Include="Utilities\Native\Message.cs" />
+    <Compile Include="Utilities\Native\POINT.cs" />
+    <Compile Include="Utilities\Native\RECT.cs" />
+    <Compile Include="Utilities\Native\WINDOWPLACEMENT.cs" />
     <Compile Include="Utilities\ObjectCopier.cs" />
+    <Compile Include="Utilities\Native\UnsafeNativeMethods.cs" />
     <Compile Include="Utilities\WindowHelper.cs" />
     <Compile Include="Utilities\WpfScreen.cs" />
     <Compile Include="ViewModels\SettingsViewModel.cs" />
@@ -165,6 +181,9 @@
     </Compile>
     <Compile Include="Views\ProgressWindow.xaml.cs">
       <DependentUpon>ProgressWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ReportExceptionWindow.xaml.cs">
+      <DependentUpon>ReportExceptionWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\SettingsWindow.xaml.cs">
       <DependentUpon>SettingsWindow.xaml</DependentUpon>
@@ -382,6 +401,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\ReportExceptionWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\SettingsWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -494,6 +517,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\GUI\updater.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\GUI\error.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

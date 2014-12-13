@@ -195,14 +195,19 @@ namespace Hurricane.Music
                         SelectedTrack.RefreshTrackExists();
                         if (SelectedTrack != CSCoreEngine.CurrentTrack && SelectedTrack.TrackExists)
                         {
-                            CSCoreEngine.StopPlayback();
-                            CSCoreEngine.OpenTrack(SelectedTrack);
-                            CSCoreEngine.TogglePlayPause();
-                            CurrentPlaylist = SelectedPlaylist;
+                            PlayTrack(SelectedTrack, SelectedPlaylist);
                         }
                     });
                 return playselectedtrack;
             }
+        }
+
+        public void PlayTrack(Track track, Playlist playlist)
+        {
+            CSCoreEngine.StopPlayback();
+            CSCoreEngine.OpenTrack(track);
+            CSCoreEngine.TogglePlayPause();
+            CurrentPlaylist = playlist;
         }
 
         private RelayCommand goforwardcommand;

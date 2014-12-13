@@ -1,0 +1,30 @@
+﻿<controls:MetroWindow x:Class="Hurricane.Views.ReportExceptionWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
+        Title="{StaticResource ExceptionTitle}" SizeToContent="Height" Width="450" GlowBrush="{StaticResource AccentColorBrush}" ResizeMode="NoResize" x:Name="window">
+    <StackPanel Orientation="Vertical" Margin="10">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Image Width="54" Height="54" Source="/Resources/GUI/error.png"/>
+            <TextBlock Text="{StaticResource ExceptionWindowTitle}" TextWrapping="Wrap" Grid.Column="1" Margin="10"/>
+        </Grid>
+        <Separator />
+        <TextBlock Text="{StaticResource ExceptionText}" TextWrapping="Wrap" Margin="10"/>
+        <DockPanel Margin="10">
+            <TextBlock Text="{StaticResource Exception}" FontWeight="Bold" VerticalAlignment="Center"/>
+            <TextBlock Text=":" Margin="0,0,5,0" FontWeight="Bold" VerticalAlignment="Center"/>
+            <TextBox Text="{Binding ElementName=window,Path=Error.Message,Mode=OneWay}" IsReadOnly="True"/>
+        </DockPanel>
+        <TextBlock Margin="10" Text="{StaticResource ExceptionNote}" TextWrapping="Wrap"/>
+        <TextBox Height="100" AcceptsReturn="True" AcceptsTab="True" x:Name="txtNote"/>
+        <DockPanel LastChildFill="False" Margin="10,10,10,5">
+            <Button Content="{StaticResource SendExceptionAndClose}" DockPanel.Dock="Right" Click="ButtonSendErrorReport_Click"/>
+            <Button Content="{StaticResource close}" DockPanel.Dock="Left" Click="ButtonClose_Click"/>
+        </DockPanel>
+        <controls:MetroProgressBar x:Name="prg"/>
+    </StackPanel>
+</controls:MetroWindow>

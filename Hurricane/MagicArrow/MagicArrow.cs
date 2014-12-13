@@ -243,11 +243,6 @@ namespace Hurricane.MagicArrow
             this.BaseWindow = window;
             Application.Current.Deactivated += Application_Deactivated;
 
-            window.SourceInitialized += (s, e) =>
-            {
-                HwndSource source = PresentationSource.FromVisual(BaseWindow) as HwndSource;
-                source.AddHook(WndProc);
-            };
             DockManager = new DockManager.DockManager(BaseWindow);
             activewindowhook = new Utilities.ActiveWindowHook();
             activewindowhook.ActiveWindowChanged += activewindowhook_ActiveWindowChanged;
@@ -271,26 +266,17 @@ namespace Hurricane.MagicArrow
             activewindowhook.Dispose();
             Unregister();
         }
-        #endregion
 
-        #region External Calls
-        const int BringTheWindowToFrontMessage = 3532;
-        private IntPtr WndProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
+        public void BringToFront()
         {
-            switch (msg)
-            {
-                case BringTheWindowToFrontMessage:
-                    if (MovedOut) { MoveWindowBackInScreen(); }
+            if (MovedOut) { MoveWindowBackInScreen(); }
 
-                    System.Windows.Window mainwindow = Application.Current.MainWindow;
-                    mainwindow.Topmost = true; //else the application wouldnt get focused
-                    mainwindow.Activate();
+            System.Windows.Window mainwindow = Application.Current.MainWindow;
+            mainwindow.Topmost = true; //else the application wouldnt get focused
+            mainwindow.Activate();
 
-                    mainwindow.Focus();
-                    mainwindow.Topmost = false;
-                    break;
-            }
-            return IntPtr.Zero;
+            mainwindow.Focus();
+            mainwindow.Topmost = false;
         }
         #endregion
 

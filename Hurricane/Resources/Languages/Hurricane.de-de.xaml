@@ -135,4 +135,11 @@
     <system:String x:Key="size">Größe:</system:String>
     <system:String x:Key="update">Aktualisieren</system:String>
     <system:String x:Key="newupdateavailable">Neues Update verfügbar!</system:String>
+    
+    <system:String x:Key="ExceptionTitle">Hurricane - Fehler</system:String>
+    <system:String x:Key="ExceptionWindowTitle">Gottverdammte sche.... Ein Fehler ist aufgetreten und Hurricane musste beendet werden. Wir entschuldigen uns für die Unannehmlichkeiten.</system:String>
+    <system:String x:Key="ExceptionText">Ein Fehlerbericht wurde generiert und steht zum Senden bereit. Der Bericht wird vertraulich behandelt und dient ausschließlich zur Behebung des Fehlers.</system:String>
+    <system:String x:Key="ExceptionNote">Um zu helfen, die die Ursache des Fehlers zu diagnostizieren, können Sie hier kurz zusammenfassen, wie es zu dem Fehler kam: (Optional)</system:String>
+    <system:String x:Key="Exception">Fehler</system:String>
+    <system:String x:Key="SendExceptionAndClose">Fehler senden und schließen</system:String>
 </ResourceDictionary>

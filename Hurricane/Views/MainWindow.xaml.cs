@@ -27,7 +27,7 @@ namespace Hurricane
     /// </summary>
     public partial class MainWindow : MahApps.Metro.Controls.MetroWindow
     {
-        private MagicArrow.MagicArrow MagicArrow;
+        public MagicArrow.MagicArrow MagicArrow { get; set; }
         private Hurricane.Resources.Styles.DragDropListView.ServiceProviders.UI.ListViewDragDropManager<Music.Track> dragMgr;
 
         public MainWindow()
@@ -64,8 +64,12 @@ namespace Hurricane
             }
             catch (Exception ex)
             {
+#if (!DEBUG)
+                Views.ReportExceptionWindow window = new Views.ReportExceptionWindow(ex) { Owner = this };
+                window.ShowDialog();
+#else
                 MessageBox.Show(ex.ToString());
-                App.Current.Shutdown();
+#endif
             }
         }
 
@@ -185,5 +189,11 @@ namespace Hurricane
             listview.ScrollIntoView(listview.SelectedItem);
         }
         #endregion
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            string s = null;
+            s.Replace("0", "1");
+        }
     }
 }

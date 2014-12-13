@@ -92,8 +92,10 @@ namespace Hurricane.MagicArrow.DockManager
             if (appstate.CurrentSide == DockingSide.None)
             {
                 basewindow.Top = appstate.Top;
-                if (appstate.Left <= maxwidth) //When the user disconnects the monitor, the application would be out of range
-                    basewindow.Left = appstate.Left;
+                if (appstate.Left < 0) //When the user disconnects the monitor, the application would be out of range
+                { basewindow.Left = 0; }
+                else if (appstate.Left > maxwidth) { basewindow.Left = maxwidth - 300; }
+                
                 basewindow.Height = appstate.Height;
             }
             else

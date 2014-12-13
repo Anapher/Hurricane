@@ -45,7 +45,7 @@ namespace Hurricane.ViewModels
             BaseWindow.LocationChanged += (s, e) => {
                 if (EqualizerIsOpen) {
                     var rect = Utilities.WindowHelper.GetWindowRectangle(BaseWindow);
-                    equalizerwindow.SetLeft(rect.Left + BaseWindow.ActualWidth); equalizerwindow.Top = rect.Top + 25;
+                    equalizerwindow.SetLeft(rect.left + BaseWindow.ActualWidth); equalizerwindow.Top = rect.top + 25;
                 };
             };
             KListener = new Utilities.KeyboardListener();
@@ -315,6 +315,24 @@ namespace Hurricane.ViewModels
             if (KListener != null)
                 KListener.Dispose();
         }
+
+        public void OpenFile(FileInfo file)
+        {
+            var found = false;
+            foreach (var playlist in MusicManager.Playlists)
+            {
+                foreach (var track in playlist.Tracks)
+                {
+                    if (track.Path == file.FullName)
+                    {
+                        MusicManager.PlayTrack(track, playlist);
+                        found = true;
+                        break;
+                    }
+                }
+                if (found) break;
+            }
+        }
         #endregion
 
         #region equalizer
@@ -332,7 +350,7 @@ namespace Hurricane.ViewModels
                         if (!EqualizerIsOpen)
                         {
                             var rect = Utilities.WindowHelper.GetWindowRectangle(BaseWindow);
-                            equalizerwindow = new Views.EqualizerWindow(MusicManager.CSCoreEngine, rect.Left + BaseWindow.ActualWidth, rect.Top + 25);
+                            equalizerwindow = new Views.EqualizerWindow(MusicManager.CSCoreEngine, rect.left + BaseWindow.ActualWidth, rect.top + 25);
                             equalizerwindow.Closed += (s, e) => EqualizerIsOpen = false;
                             equalizerwindow.Show();
                             EqualizerIsOpen = true;
