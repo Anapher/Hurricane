@@ -45,7 +45,7 @@ namespace Hurricane.ViewModels
             BaseWindow.LocationChanged += (s, e) => {
                 if (EqualizerIsOpen) {
                     var rect = Utilities.WindowHelper.GetWindowRectangle(BaseWindow);
-                    equalizerwindow.SetLeft(rect.left + BaseWindow.ActualWidth); equalizerwindow.Top = rect.top + 25;
+                    equalizerwindow.SetPosition(rect, BaseWindow.ActualWidth);
                 };
             };
             KListener = new Utilities.KeyboardListener();
@@ -277,7 +277,6 @@ namespace Hurricane.ViewModels
         #endregion
 
         #region Methods
-
         void ImportFiles(string[] paths)
         {
             Views.ProgressWindow progresswindow = new Views.ProgressWindow(Application.Current.FindResource("filesgetimported").ToString(), false) { Owner = BaseWindow };
@@ -333,10 +332,15 @@ namespace Hurricane.ViewModels
                 if (found) break;
             }
         }
+
+        public void MoveOut()
+        {
+            if (EqualizerIsOpen) { equalizerwindow.Close(); EqualizerIsOpen = false; }
+        }
+
         #endregion
 
-        #region equalizer
-
+        #region Commands
         private RelayCommand openequalizer;
         private bool EqualizerIsOpen;
         Views.EqualizerWindow equalizerwindow;
@@ -350,8 +354,9 @@ namespace Hurricane.ViewModels
                         if (!EqualizerIsOpen)
                         {
                             var rect = Utilities.WindowHelper.GetWindowRectangle(BaseWindow);
-                            equalizerwindow = new Views.EqualizerWindow(MusicManager.CSCoreEngine, rect.left + BaseWindow.ActualWidth, rect.top + 25);
+                            equalizerwindow = new Views.EqualizerWindow(MusicManager.CSCoreEngine, rect, BaseWindow.ActualWidth);
                             equalizerwindow.Closed += (s, e) => EqualizerIsOpen = false;
+                            equalizerwindow.BeginCloseAnimation += (s, e) => BaseWindow.Activate();
                             equalizerwindow.Show();
                             EqualizerIsOpen = true;
                         }
@@ -434,11 +439,6 @@ namespace Hurricane.ViewModels
                     });
                 return removeduplicatetracks;
             }
-        }
-
-        public void MoveOut()
-        {
-            if (EqualizerIsOpen) { equalizerwindow.Close(); EqualizerIsOpen = false; }
         }
         #endregion
 

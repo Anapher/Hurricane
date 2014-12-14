@@ -59,8 +59,9 @@ namespace Hurricane
                 App.Current.Shutdown();
                 return;
             }
-
-            EnableExteptionless();
+#if !DEBUG
+                        EnableExteptionless();
+#endif
 
             Hurricane.MainWindow window = new MainWindow();
 

@@ -10,7 +10,7 @@ namespace Hurricane.Music
 {
     class MusicManager : PropertyChangedBase, IDisposable
     {
-        #region GUIProperties
+        #region Public Properties
         private Track selectedtrack;
         public Track SelectedTrack
         {
@@ -61,7 +61,6 @@ namespace Hurricane.Music
                 if (SelectedPlaylist != null && SelectedPlaylist.ViewSource != null) SelectedPlaylist.ViewSource.Refresh();
             }
         }
-        #endregion
 
         private ObservableCollection<Playlist> playlists;
         public ObservableCollection<Playlist> Playlists
@@ -85,28 +84,27 @@ namespace Hurricane.Music
         }
 
         public CSCoreEngine CSCoreEngine { get; protected set; }
+
         public Notification.NotificationService Notification { get; set; }
 
+        public MusicManagerCommands Commands { get; protected set; }
+
+        public QueueManager Queue { get; set; }
+        #endregion
+
+        #region Contructor and Loading
         public MusicManager()
         {
             CSCoreEngine = new CSCoreEngine();
             Playlists = new ObservableCollection<Playlist>();
             CSCoreEngine.TrackFinished += CSCoreEngine_TrackFinished;
-            random = new Random();
+            CSCoreEngine.TrackChanged += CSCoreEngine_TrackChanged;
             Notification = new Notification.NotificationService(CSCoreEngine);
-        }
+            this.Commands = new MusicManagerCommands(this);
 
-        void CSCoreEngine_TrackFinished(object sender, EventArgs e)
-        {
-            if (RepeatTrack)
-            {
-                CSCoreEngine.OpenTrack(CSCoreEngine.CurrentTrack);
-                CSCoreEngine.TogglePlayPause();
-            }
-            else
-            {
-                GoForward();
-            }
+            random = new Random();
+            this.lasttracks = new List<TrackPlaylistPair>();
+            this.Queue = new QueueManager();
         }
 
         public void LoadFromSettings()
@@ -148,8 +146,37 @@ namespace Hurricane.Music
             {
                 lst.RefreshList(Predicate);
             }
-
+            if (config.Queue != null) { this.Queue = config.Queue; this.Queue.Initialize(Playlists.ToList()); }
         }
+        #endregion
+
+        #region Event Handler
+        void CSCoreEngine_TrackFinished(object sender, EventArgs e)
+        {
+            if (RepeatTrack)
+            {
+                CSCoreEngine.OpenTrack(CSCoreEngine.CurrentTrack);
+                CSCoreEngine.TogglePlayPause();
+            }
+            else
+            {
+                GoForward();
+            }
+        }
+
+        void CSCoreEngine_TrackChanged(object sender, TrackChangedEventArgs e)
+        {
+            if (openedtrackwithstandardbackward) { openedtrackwithstandardbackward = false; return; }
+            if (lasttracks.Count == 0 || !(lasttracks.Last().Track == e.NewTrack))
+            {
+                lasttracks.Add(new TrackPlaylistPair(e.NewTrack, this.CurrentPlaylist));
+            }
+        }
+        #endregion
+
+        #region Protected Members and Methods
+        protected Random random;
+        protected List<TrackPlaylistPair> lasttracks;
 
         protected bool Predicate(object item)
         {
@@ -157,11 +184,119 @@ namespace Hurricane.Music
             if (string.IsNullOrWhiteSpace(SearchText)) { return true; } else { return (track.Title.ToUpper().Contains(SearchText.ToUpper()) || (!string.IsNullOrEmpty(track.Artist) && track.Artist.ToUpper().StartsWith(SearchText.ToUpper()))); }
         }
 
+        #endregion
+
+        #region Public Methods
         public void RegisterPlaylist(Playlist playlist)
         {
             playlist.RefreshList(Predicate);
         }
 
+        public void PlayTrack(Track track, Playlist playlist)
+        {
+            CSCoreEngine.StopPlayback();
+            CSCoreEngine.OpenTrack(track);
+            CSCoreEngine.TogglePlayPause();
+            CurrentPlaylist = playlist;
+        }
+
+        public void GoForward()
+        {
+            if (CurrentPlaylist == null || CurrentPlaylist.Tracks.Count == 0) return;
+            Track nexttrack;
+
+            if (this.Queue.HasTracks)
+            {
+                var tuple = Queue.PlayNextTrack();
+                nexttrack = tuple.Item1;
+                this.CurrentPlaylist = tuple.Item2;
+            }
+            else
+            {
+                int currenttrackindex = CurrentPlaylist.Tracks.IndexOf(CSCoreEngine.CurrentTrack);
+                int nexttrackindex = currenttrackindex;
+                if (CheckIfTracksExists(CurrentPlaylist))
+                {
+                    if (RandomTrack)
+                    {
+                        while (true)
+                        {
+                            int i = random.Next(0, CurrentPlaylist.Tracks.Count);
+                            if (i != currenttrackindex && CurrentPlaylist.Tracks[i].TrackExists) { nexttrackindex = i; break; }
+                        }
+                    }
+                    else
+                    {
+                        while (true)
+                        {
+                            nexttrackindex++;
+                            if (CurrentPlaylist.Tracks.Count - 1 < nexttrackindex)
+                                nexttrackindex = 0;
+                            if (CurrentPlaylist.Tracks[nexttrackindex].TrackExists)
+                                break;
+                        }
+                    }
+                }
+                nexttrack = CurrentPlaylist.Tracks[nexttrackindex];
+            }
+
+            CSCoreEngine.StopPlayback();
+            CSCoreEngine.OpenTrack(nexttrack);
+            CSCoreEngine.TogglePlayPause();
+        }
+
+        private bool CheckIfTracksExists(Playlist list)
+        {
+            int counter = 0;
+            bool result = false;
+            foreach (Track t in list.Tracks)
+            {
+                t.RefreshTrackExists();
+                if (t.TrackExists) { counter++; if (counter == 2) result = true; } //Don't cancel because all tracks need to refresh
+            }
+            return result;
+        }
+
+        private bool openedtrackwithstandardbackward = false;
+        public void GoBackward()
+        {
+            if (CurrentPlaylist == null || CurrentPlaylist.Tracks.Count == 0) return;
+            Track newtrack;
+            if (lasttracks.Count > 1) //Check if there are more than two tracks, because the current track is the last one in the list
+            {
+                lasttracks.Remove(lasttracks.Where((x) => x.Track == this.CSCoreEngine.CurrentTrack).Last());
+                newtrack = lasttracks.Last().Track;
+                this.CurrentPlaylist = lasttracks.Last().Playlist;
+            }
+            else
+            {
+                int currenttrackindex = CurrentPlaylist.Tracks.IndexOf(CSCoreEngine.CurrentTrack);
+                int nexttrackindex = currenttrackindex;
+                if (CheckIfTracksExists(CurrentPlaylist))
+                {
+                    while (true)
+                    {
+                        nexttrackindex--;
+                        if (0 > nexttrackindex)
+                        {
+                            nexttrackindex = CurrentPlaylist.Tracks.Count - 1;
+                        }
+                        if (CurrentPlaylist.Tracks[nexttrackindex].TrackExists)
+                            break;
+                    }
+                }
+                openedtrackwithstandardbackward = true;
+                newtrack = CurrentPlaylist.Tracks[nexttrackindex];
+            }
+
+            CSCoreEngine.StopPlayback();
+            CSCoreEngine.OpenTrack(newtrack);
+            CSCoreEngine.TogglePlayPause();
+        }
+
+        #endregion
+
+        #region Save and Deconstruction
         public void SaveToSettings()
         {
             Settings.HurricaneSettings settings = Settings.HurricaneSettings.Instance;
@@ -176,6 +311,7 @@ namespace Hurricane.Music
             config.RandomTrack = this.RandomTrack;
             config.TrackPosition = CSCoreEngine.CurrentTrack == null ? 0 : CSCoreEngine.Position;
             config.EqualizerSettings = CSCoreEngine.EqualizerSettings;
+            config.Queue = this.Queue.Count > 0 ? this.Queue : null;
         }
 
         public void Dispose()
@@ -183,153 +319,6 @@ namespace Hurricane.Music
             CSCoreEngine.Dispose();
         }
 
-        #region Commands
-        private RelayCommand playselectedtrack;
-        public RelayCommand PlaySelectedTrack
-        {
-            get
-            {
-                if (playselectedtrack == null)
-                    playselectedtrack = new RelayCommand((object parameter) =>
-                    {
-                        SelectedTrack.RefreshTrackExists();
-                        if (SelectedTrack != CSCoreEngine.CurrentTrack && SelectedTrack.TrackExists)
-                        {
-                            PlayTrack(SelectedTrack, SelectedPlaylist);
-                        }
-                    });
-                return playselectedtrack;
-            }
-        }
-
-        public void PlayTrack(Track track, Playlist playlist)
-        {
-            CSCoreEngine.StopPlayback();
-            CSCoreEngine.OpenTrack(track);
-            CSCoreEngine.TogglePlayPause();
-            CurrentPlaylist = playlist;
-        }
-
-        private RelayCommand goforwardcommand;
-        public RelayCommand GoForwardCommand
-        {
-            get
-            {
-                if (goforwardcommand == null)
-                    goforwardcommand = new RelayCommand((object parameter) => { GoForward(); });
-                return goforwardcommand;
-            }
-        }
-
-        protected Random random;
-        public void GoForward()
-        {
-            if (CurrentPlaylist == null || CurrentPlaylist.Tracks.Count == 0) return;
-            CSCoreEngine.StopPlayback();
-            int currenttrackindex = CurrentPlaylist.Tracks.IndexOf(CSCoreEngine.CurrentTrack);
-            int nexttrackindex = currenttrackindex;
-            if (CheckIfTracksExists(CurrentPlaylist))
-            {
-                if (RandomTrack)
-                {
-                    while (true)
-                    {
-                        int i = random.Next(0, CurrentPlaylist.Tracks.Count);
-                        if (i != currenttrackindex && CurrentPlaylist.Tracks[i].TrackExists) { nexttrackindex = i; break; }
-                    }
-                }
-                else
-                {
-                    while (true)
-                    {
-                        nexttrackindex++;
-                        if (CurrentPlaylist.Tracks.Count - 1 < nexttrackindex)
-                            nexttrackindex = 0;
-                        if (CurrentPlaylist.Tracks[nexttrackindex].TrackExists)
-                            break;
-                    }
-                }
-            }
-            CSCoreEngine.OpenTrack(CurrentPlaylist.Tracks[nexttrackindex]);
-            CSCoreEngine.TogglePlayPause();
-        }
-
-        /// <summary>
-        /// Checks if two or more tracks in the playlist exists
-        /// </summary>
-        /// <param name="list"></param>
-        /// <returns></returns>
-        private bool CheckIfTracksExists(Playlist list)
-        {
-            int counter = 0;
-            bool result = false;
-            foreach (Track t in list.Tracks)
-            {
-                t.RefreshTrackExists();
-                if (t.TrackExists) { counter++; if (counter == 2) result = true; } //Don't cancel because all tracks need to refresh
-            }
-            return result;
-        }
-
-        private RelayCommand gobackwardcommand;
-        public RelayCommand GoBackwardCommand
-        {
-            get
-            {
-                if (gobackwardcommand == null)
-                    gobackwardcommand = new RelayCommand((object parameter) => { GoBackward(); });
-                return gobackwardcommand;
-            }
-        }
-
-        public void GoBackward()
-        {
-            if (CurrentPlaylist == null || CurrentPlaylist.Tracks.Count == 0) return;
-            CSCoreEngine.StopPlayback();
-            int currenttrackindex = CurrentPlaylist.Tracks.IndexOf(CSCoreEngine.CurrentTrack);
-            int nexttrackindex = currenttrackindex;
-            if (CheckIfTracksExists(CurrentPlaylist))
-            {
-                while (true)
-                {
-                    nexttrackindex--;
-                    if (0 > nexttrackindex)
-                    {
-                        nexttrackindex = CurrentPlaylist.Tracks.Count - 1;
-                    }
-                    if (CurrentPlaylist.Tracks[nexttrackindex].TrackExists)
-                        break;
-                }
-            }
-            CSCoreEngine.OpenTrack(CurrentPlaylist.Tracks[nexttrackindex]);
-            CSCoreEngine.TogglePlayPause();
-        }
-
-        private RelayCommand openfilelocation;
-        public RelayCommand OpenFileLocation
-        {
-            get
-            {
-                if (openfilelocation == null)
-                    openfilelocation = new RelayCommand((object parameter) => { System.Diagnostics.Process.Start("explorer.exe", "/select, \"" + SelectedTrack.Path + "\""); });
-                return openfilelocation;
-            }
-        }
-
-        private RelayCommand jumptoplayingtrack;
-        public RelayCommand JumpToPlayingTrack
-        {
-            get
-            {
-                if (jumptoplayingtrack == null)
-                    jumptoplayingtrack = new RelayCommand((object parameter) =>
-                    {
-                        this.SelectedPlaylist = this.CurrentPlaylist;
-                        this.SelectedTrack = this.CSCoreEngine.CurrentTrack;
-                    });
-                return jumptoplayingtrack;
-            }
-        }
         #endregion
     }
 }

@@ -109,8 +109,8 @@ namespace Hurricane.ViewModels
             }
         }
         
-        private List<Music.CSCoreEngine.AudioDevice> audiodevices;
-        public List<Music.CSCoreEngine.AudioDevice> AudioDevices
+        private List<Music.AudioDevice> audiodevices;
+        public List<Music.AudioDevice> AudioDevices
         {
             get { return audiodevices; }
             set
@@ -121,8 +121,8 @@ namespace Hurricane.ViewModels
         }
 
         
-        private Music.CSCoreEngine.AudioDevice selectedaudiodevice;
-        public Music.CSCoreEngine.AudioDevice SelectedAudioDevice
+        private Music.AudioDevice selectedaudiodevice;
+        public Music.AudioDevice SelectedAudioDevice
         {
             get { return selectedaudiodevice; }
             set

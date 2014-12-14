@@ -21,16 +21,13 @@ namespace Hurricane.Views
     public partial class EqualizerWindow : MahApps.Metro.Controls.MetroWindow
     {
         Music.CSCoreEngine cscore;
-        double WindowLeft;
+        public event EventHandler BeginCloseAnimation;
 
-        public EqualizerWindow(Music.CSCoreEngine cscore, double left, double top)
+        public EqualizerWindow(Music.CSCoreEngine cscore, Utilities.Native.RECT rect,double width)
         {
             InitializeComponent();
             this.cscore = cscore;
-            this.WindowLeft = left;
-            this.Left = left;
-            this.Top = top;
-            this.Loaded += EqualizerWindow_Loaded;
+            this.SetPosition(rect, width);
             this.Closing += EqualizerWindow_Closing;
         }
 
@@ -45,33 +42,34 @@ namespace Hurricane.Views
                 {
                     IsClosing = true;
                     Storyboard story = new Storyboard();
-                    DoubleAnimation doubleanimation = new DoubleAnimation(this.Left, this.Left - 25, TimeSpan.FromMilliseconds(100));
+                    DoubleAnimation doubleanimation = new DoubleAnimation(IsLeft ? this.Left - 25 : this.Left + 25, TimeSpan.FromMilliseconds(100));
                     Storyboard.SetTargetProperty(doubleanimation, new PropertyPath(Window.LeftProperty));
                     Storyboard.SetTarget(doubleanimation, this);
                     story.Children.Add(doubleanimation);
 
                     story.Completed += (s, es) => { CanClose = true; this.Close(); };
                     story.Begin(this);
+
+                    if (BeginCloseAnimation != null) BeginCloseAnimation(this, EventArgs.Empty);
                 }
             }
         }
 
-        public void SetLeft(double value)
+        protected const double width = 300; //the wídht of this window. we can't use this.ActualWidth because the window isn't always initialized
+        protected bool IsLeft;
+        public void SetPosition(Utilities.Native.RECT ParentRecantgle, double width)
         {
-            this.Left = value;
-        }
-
-        void EqualizerWindow_Loaded(object sender, RoutedEventArgs e)
-        {
-            /*
-            Storyboard story = new Storyboard();
-            DoubleAnimation doubleanimation = new DoubleAnimation(WindowLeft - 25, WindowLeft, TimeSpan.FromMilliseconds(100));
-            Storyboard.SetTargetProperty(doubleanimation, new PropertyPath(Window.LeftProperty));
-            Storyboard.SetTarget(doubleanimation, this);
-            story.Children.Add(doubleanimation);
-
-            story.Begin(this);
-             * */
+            this.Top = ParentRecantgle.top + 25;
+            if (ParentRecantgle.left + width + width - Utilities.WpfScreen.AllScreensWidth > 0) //If left from the parent isn't 300 space
+            {
+                this.Left = ParentRecantgle.left - width;
+                IsLeft = false;
+            }
+            else
+            {
+                this.Left = ParentRecantgle.left + width;
+                IsLeft = true;
+            }
         }
 
         private void PART_CLOSE_Click(object sender, RoutedEventArgs e)

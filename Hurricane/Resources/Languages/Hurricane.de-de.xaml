@@ -142,4 +142,15 @@
     <system:String x:Key="ExceptionNote">Um zu helfen, die die Ursache des Fehlers zu diagnostizieren, können Sie hier kurz zusammenfassen, wie es zu dem Fehler kam: (Optional)</system:String>
     <system:String x:Key="Exception">Fehler</system:String>
     <system:String x:Key="SendExceptionAndClose">Fehler senden und schließen</system:String>
+    
+    <system:String x:Key="queue">Warteschlange</system:String>
+    <system:String x:Key="addtoqueue">Zur Warteschlange hinzufügen</system:String>
+    <system:String x:Key="removefromqueue">Von Warteschlange entfernen</system:String>
+    <system:String x:Key="clearqueue">Warteschlange leeren</system:String>
+    <system:String x:Key="queuemanager">Warteschlangen Manager</system:String>
+    
+    <system:String x:Key="strgins">Strg+Einfg</system:String>
+    <system:String x:Key="ins">Einfg</system:String>
+    <system:String x:Key="number">Nummer</system:String>
+    <system:String x:Key="playlist">Wiedergabeliste</system:String>
 </ResourceDictionary>

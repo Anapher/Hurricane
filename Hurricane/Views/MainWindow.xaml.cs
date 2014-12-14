@@ -14,11 +14,11 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Microsoft.WindowsAPICodePack.Taskbar;
 using System.Windows.Interop;
-using System.Drawing;
 using System.IO;
 using System.Runtime.InteropServices;
 using Hurricane.Extensions;
 using System.Windows.Threading;
+using System.Windows.Media.Animation;
 
 namespace Hurricane
 {
@@ -33,7 +33,7 @@ namespace Hurricane
         public MainWindow()
         {
             InitializeComponent();
-            //System.Windows.Media.MediaTimeline.DesiredFrameRateProperty.OverrideMetadata(typeof(System.Windows.Media.Animation.Timeline), new FrameworkPropertyMetadata(60));
+            System.Windows.Media.MediaTimeline.DesiredFrameRateProperty.OverrideMetadata(typeof(System.Windows.Media.Animation.Timeline), new FrameworkPropertyMetadata(60));
 
             MagicArrow = new MagicArrow.MagicArrow();
             MagicArrow.Register(this);
@@ -95,14 +95,14 @@ namespace Hurricane
                     int maxheight = 141;
 
                     System.Drawing.Size newsize = Utilities.ImageHelper.GetMinimumSize(img.Size, maxwidth, maxheight);
-                    Bitmap bit = Utilities.ImageHelper.ResizeImage(new Bitmap(img), newsize);
-                    Bitmap bittodisplay = bit.Clone(new RectangleF(0, 0, maxwidth, maxheight), img.PixelFormat);
+                    System.Drawing.Bitmap bit = Utilities.ImageHelper.ResizeImage(new System.Drawing.Bitmap(img), newsize);
+                    System.Drawing.Bitmap bittodisplay = bit.Clone(new System.Drawing.RectangleF(0, 0, maxwidth, maxheight), img.PixelFormat);
                     bit.Dispose();
 
                     customPreview.SetImage(bittodisplay);
                 }
                 else
-                { customPreview.SetImage(new Bitmap(Application.GetResourceStream(new Uri("pack://application:,,,/Hurricane;component/Resources/MediaIcons/Thumbnail/StandardThumbnail.png")).Stream)); }
+                { customPreview.SetImage(new System.Drawing.Bitmap(Application.GetResourceStream(new Uri("pack://application:,,,/Hurricane;component/Resources/MediaIcons/Thumbnail/StandardThumbnail.png")).Stream)); }
             };
 
             ThumbnailToolBarButton thumbnailButtonBack = new ThumbnailToolBarButton(Utilities.ImageHelper.GetIconFromResource("/Resources/MediaIcons/ThumbButtons/backward.ico"), Application.Current.FindResource("previoustrack").ToString());
@@ -190,10 +190,41 @@ namespace Hurricane
         }
         #endregion
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        #region Animations
+        private void GridCurrentTrack_MouseEnter(object sender, MouseEventArgs e)
         {
-            string s = null;
-            s.Replace("0", "1");
+            Grid grid = sender as Grid;
+            if (grid == null) return;
+            CurrentTrackAnimation(grid, txtCurrentTrack, polyplay, true);
         }
+
+        private void GridCurrentTrack_MouseLeave(object sender, MouseEventArgs e)
+        {
+            Grid grid = sender as Grid;
+            if (grid == null) return;
+            CurrentTrackAnimation(grid, txtCurrentTrack, polyplay, false);
+        }
+
+        private void CurrentTrackAnimation(Grid grid, TextBlock txt, Polygon poly, bool InAnimate)
+        {
+            Storyboard story = new Storyboard();
+            ColorAnimation coloranimation = new ColorAnimation(InAnimate ? (Color)Application.Current.FindResource("AccentColor") : Colors.Transparent, TimeSpan.FromMilliseconds(500));
+            Storyboard.SetTarget(coloranimation, grid);
+            Storyboard.SetTargetProperty(coloranimation, new PropertyPath("Background.Color"));
+
+            ColorAnimation coloranimation2 = new ColorAnimation(InAnimate ? ((SolidColorBrush)Application.Current.FindResource("DarkColorBrush")).Color : Colors.Black, TimeSpan.FromMilliseconds(250));
+            Storyboard.SetTarget(coloranimation2, txtCurrentTrack);
+            Storyboard.SetTargetProperty(coloranimation2, new PropertyPath("Foreground.Color"));
+
+            ThicknessAnimation thicknessanimation = new ThicknessAnimation(InAnimate ? new Thickness(3, 2, -3, 0) : new Thickness(0,2,0,0), TimeSpan.FromMilliseconds(250));
+            Storyboard.SetTarget(thicknessanimation, poly);
+            Storyboard.SetTargetProperty(thicknessanimation, new PropertyPath(Polygon.MarginProperty));
+
+            //story.Children.Add(coloranimation);
+            story.Children.Add(coloranimation2);
+            story.Children.Add(thicknessanimation);
+            story.Begin(this);
+        }
+        #endregion
     }
 }

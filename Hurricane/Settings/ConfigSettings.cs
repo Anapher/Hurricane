@@ -25,6 +25,7 @@ namespace Hurricane.Settings
         public int LastTrackIndex { get; set; }
         public int SelectedPlaylist { get; set; }
         public int SelectedTrack { get; set; }
+        public Music.QueueManager Queue { get; set; }
 
         //Playback
         public bool RepeatTrack { get; set; }

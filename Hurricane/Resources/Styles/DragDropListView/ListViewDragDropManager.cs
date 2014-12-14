@@ -339,7 +339,7 @@ namespace Hurricane.Resources.Styles.DragDropListView.ServiceProviders.UI
             CollectionView collectionview = this.listView.ItemsSource as CollectionView;
             if (collectionview == null)
                 throw new Exception(
-                    "A ListView managed by ListViewDragManager must have its ItemsSource set to an CollectionView.");
+                    "A ListView managed by ListViewDragManager must have its ItemsSource set to a CollectionView.");
 
             VirtualizingCollection<ItemType> itemsSource = collectionview.SourceCollection as VirtualizingCollection<ItemType>;
 

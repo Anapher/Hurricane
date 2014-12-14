@@ -8,7 +8,7 @@ using CSCore.SoundOut;
 
 namespace Hurricane.Music
 {
-    class VolumeFading
+    public class VolumeFading
     {
         public bool IsFading { get; set; }
         private bool _cancel = false;

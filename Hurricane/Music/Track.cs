@@ -8,12 +8,14 @@ using System.IO;
 using CSCore;
 using CSCore.Codecs;
 using CSCore.Codecs.MP3;
+using System.Xml.Serialization;
 
 namespace Hurricane.Music
 {
     [Serializable]
-   public class Track : ViewModelBase.PropertyChangedBase
+    public class Track : ViewModelBase.PropertyChangedBase
     {
+        #region Properties
         public string Duration { get; set; }
         public int kHz { get; set; }
         public int kbps { get; set; }
@@ -21,14 +23,27 @@ namespace Hurricane.Music
         public string Path { get; set; }
         public string Artist { get; set; }
         public string Extension { get; set; }
-        [System.Xml.Serialization.XmlIgnore]
-        public System.Drawing.Image Image { get; set; }
-
         public DateTime TimeAdded { get; set; }
         public DateTime LastTimePlayed { get; set; }
 
+        [XmlIgnore]
+        public System.Drawing.Image Image { get; set; }
+
+        [XmlIgnore]
+        public ID3v2QuickInfo TagInfo { get; set; }
+
+        private String queueid;
+        [XmlIgnore]
+        public String QueueID //I know that the id should be an int, but it wouldn't make sense because what would be the id for non queued track? We would need a converter -> less performance -> string is wurf
+        {
+            get { return queueid; }
+            set
+            {
+                SetProperty(value, ref queueid);
+            }
+        }
         private bool isplaying;
-        [System.Xml.Serialization.XmlIgnore]
+        [XmlIgnore]
         public bool IsPlaying
         {
             get { return isplaying; }
@@ -46,24 +61,15 @@ namespace Hurricane.Music
             }
         }
 
-        protected string RemoveInvalidXMLChars(string content)
+        public bool TrackExists
         {
-            try
+            get
             {
-                System.Xml.XmlConvert.VerifyXmlChars(content);
-                return content;
-            }
-            catch
-            {
-                return new string(content.Where(ch => System.Xml.XmlConvert.IsXmlChar(ch)).ToArray());
+                return TrackInformations.Exists;
             }
         }
 
-        [System.Xml.Serialization.XmlIgnore]
-        public ID3v2QuickInfo TagInfo { get; set; }
-
         private FileInfo trackinformations;
-        [System.Xml.Serialization.XmlIgnore]
         public FileInfo TrackInformations
         {
             get
@@ -137,16 +143,20 @@ namespace Hurricane.Music
             return true;
         }
 
-        /// <summary>
-        /// Delete all which was needed for playing
-        /// </summary>
-        public void Unload()
+        public override string ToString()
         {
-            if (this.Image != null)
-            {
-                this.Image.Dispose();
-                this.Image = null;
-            }
+            if (!string.IsNullOrEmpty(Artist))
+                return string.Format("{0} - {1}", this.Artist, this.Title);
+
+            return Title;
+        }
+        #endregion
+
+        #region Methods
+        public void RefreshTrackExists()
+        {
+            trackinformations = null;
+            OnPropertyChanged("TrackExists");
         }
 
         /// <summary>
@@ -165,31 +175,47 @@ namespace Hurricane.Music
             }
         }
 
-        public override string ToString()
+        /// <summary>
+        /// Delete all which was needed for playing
+        /// </summary>
+        public void Unload()
         {
-            if (!string.IsNullOrEmpty(Artist))
-                return string.Format("{0} - {1}", this.Artist, this.Title);
-
-            return Title;
-        }
-
-        public bool TrackExists
-        {
-            get
+            if (this.Image != null)
             {
-                return TrackInformations.Exists;
+                this.Image.Dispose();
+                this.Image = null;
             }
         }
 
-        public void RefreshTrackExists()
+        public string GenerateHash()
         {
-            trackinformations = null;
-            OnPropertyChanged("TrackExists");
+            using (var md5Hasher = System.Security.Cryptography.MD5.Create())
+            {
+                byte[] data = md5Hasher.ComputeHash(Encoding.Default.GetBytes(this.Path));
+                return BitConverter.ToString(data);
+            }
         }
 
+        protected string RemoveInvalidXMLChars(string content)
+        {
+            try
+            {
+                System.Xml.XmlConvert.VerifyXmlChars(content);
+                return content;
+            }
+            catch
+            {
+                return new string(content.Where(ch => System.Xml.XmlConvert.IsXmlChar(ch)).ToArray());
+            }
+        }
+        #endregion
+
+        #region Static Methods
         public static bool IsSupported(FileInfo fi)
         {
             return CodecFactory.Instance.GetSupportedFileExtensions().Contains(fi.Extension.ToLower().Replace(".", string.Empty));
         }
+
+        #endregion
     }
 }

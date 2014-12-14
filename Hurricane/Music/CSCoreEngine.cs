@@ -15,21 +15,7 @@ namespace Hurricane.Music
 {
     public class CSCoreEngine : PropertyChangedBase, IDisposable, WPFSoundVisualizationLib.ISpectrumPlayer
     {
-        #region Commands
-        private RelayCommand toggleplaypausecommand;
-        public RelayCommand TogglePlayPauseCommand
-        {
-            get
-            {
-                if (toggleplaypausecommand == null)
-                    toggleplaypausecommand = new RelayCommand((object parameter) => { TogglePlayPause(); });
-                return toggleplaypausecommand;
-            }
-        }
-        #endregion
-
-        #region consts
-
+        #region Consts
         const int FFTSize = 4096;
 
         #endregion
@@ -39,8 +25,10 @@ namespace Hurricane.Music
         public event EventHandler TrackFinished;
         public event EventHandler<TrackChangedEventArgs> TrackChanged;
         public event EventHandler PlayStateChanged;
+
         #endregion
 
+        #region Properties
         private float volume = 1.0f;
         public float Volume
         {
@@ -94,9 +82,20 @@ namespace Hurricane.Music
             }
         }
 
-        protected WasapiOut soundOut;
-
         public IWaveSource SoundSource { get; protected set; }
+
+        public Settings.ConfigSettings Settings { get { return Hurricane.Settings.HurricaneSettings.Instance.Config; } }
+        #endregion
+
+        #region Members
+        private string CurrentDeviceID;
+        protected WasapiOut soundOut;
+        protected MMNotificationClient client;
+        protected bool manualstop = false;
+        protected VolumeFading fader;
+        protected bool isfadingout = false;
+
+        #endregion
 
         #region Equalizer
         public Equalizer MusicEqualizer { get; set; }
@@ -117,8 +116,9 @@ namespace Hurricane.Music
             var newvalue = (float)(perc * MaxDB);
 
             //the tag of the trackbar contains the index of the filter
-            EqualizerFilter filter = MusicEqualizer.SampleFilters[number];
-            filter.AverageGainDB = newvalue;
+            //EqualizerFilter filter = MusicEqualizer.SampleFilters[number];
+            //filter.AverageGainDB = newvalue;
+            //MusicEqualizer.SampleFilters[number].SetGain(newvalue);
         }
 
         protected void SetAllEqualizerSettings()
@@ -131,6 +131,7 @@ namespace Hurricane.Music
 
         #endregion
 
+        #region Public Methods
         public void OpenTrack(Track track)
         {
             if (CurrentTrack != null) { CurrentTrack.IsPlaying = false; CurrentTrack.Unload(); }
@@ -172,21 +173,6 @@ namespace Hurricane.Music
             track.LastTimePlayed = DateTime.Now;
         }
 
-        protected void CurrentStateChanged()
-        {
-            OnPropertyChanged("IsPlaying");
-            OnPropertyChanged("CurrentState");
-            if (PlayStateChanged != null) PlayStateChanged(this, EventArgs.Empty);
-        }
-
-        void soundOut_Stopped(object sender, PlaybackStoppedEventArgs e)
-        {
-            if (manualstop) { manualstop = false; return; }
-            TrackFinished(this, EventArgs.Empty);
-            CurrentStateChanged();
-        }
-
-        private bool manualstop = false;
         public void StopPlayback()
         {
             if (soundOut.PlaybackState == PlaybackState.Playing || soundOut.PlaybackState == PlaybackState.Paused)
@@ -196,19 +182,6 @@ namespace Hurricane.Music
             }
         }
 
-        void notificationSource_SingleBlockRead(object sender, SingleBlockReadEventArgs e)
-        {
-            if (analyser != null)
-                analyser.Add(e.Left, e.Right);
-        }
-
-        void notifysource_BlockRead(object sender, EventArgs e)
-        {
-            OnPropertyChanged("Position");
-        }
-
-        private VolumeFading fader;
-        protected bool isfadingout = false;
         public async void TogglePlayPause()
         {
             if (CurrentTrack == null) return;
@@ -229,15 +202,40 @@ namespace Hurricane.Music
                 await fader.FadeIn(soundOut, this.Volume);
             }
         }
+        #endregion
 
-        MMNotificationClient client = new MMNotificationClient();
+        #region Protected Methods
+        protected void CurrentStateChanged()
+        {
+            OnPropertyChanged("IsPlaying");
+            OnPropertyChanged("CurrentState");
+            if (PlayStateChanged != null) PlayStateChanged(this, EventArgs.Empty);
+        }
+
+        void notificationSource_SingleBlockRead(object sender, SingleBlockReadEventArgs e)
+        {
+            if (analyser != null)
+                analyser.Add(e.Left, e.Right);
+        }
+
+        void notifysource_BlockRead(object sender, EventArgs e)
+        {
+            OnPropertyChanged("Position");
+        }
+
+        #endregion
+
+        #region Constructor
         public CSCoreEngine()
         {
+            client = new MMNotificationClient();
             RefreshSoundOut();
             client.DefaultDeviceChanged += client_DefaultDeviceChanged;
         }
 
-        private string CurrentDeviceID;
+        #endregion
+
+        #region SoundOut
         void client_DefaultDeviceChanged(object sender, DefaultDeviceChangedEventArgs e)
         {
             if (Settings.SoundOutDeviceID == "-0" && e.DeviceID != CurrentDeviceID)
@@ -298,7 +296,13 @@ namespace Hurricane.Music
             if (isplaying) TogglePlayPause();
         }
 
-        public Settings.ConfigSettings Settings { get { return Hurricane.Settings.HurricaneSettings.Instance.Config; } }
+        void soundOut_Stopped(object sender, PlaybackStoppedEventArgs e)
+        {
+            if (manualstop) { manualstop = false; return; }
+            TrackFinished(this, EventArgs.Empty);
+            CurrentStateChanged();
+        }
+        #endregion
 
         #region Visualization Support
         Visualization.SampleAnalyser analyser;
@@ -350,18 +354,6 @@ namespace Hurricane.Music
             }
 
             return result;
-        }
-
-        public class AudioDevice
-        {
-            public string ID { get; set; }
-            public string Name { get; set; }
-            public bool IsDefault { get; set; }
-
-            public override string ToString()
-            {
-                return this.IsDefault ? Name + " (Default)" : Name;
-            }
         }
         #endregion
     }

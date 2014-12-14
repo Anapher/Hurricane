@@ -127,11 +127,15 @@
     <Compile Include="MagicArrow\StrokeWindow.xaml.cs">
       <DependentUpon>StrokeWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Music\AudioDevice.cs" />
     <Compile Include="Music\Equalizer\EqualizerBand.cs" />
     <Compile Include="Music\EventArgs\EqualizerChangedEventArgs.cs" />
     <Compile Include="Music\Equalizer\EqualizerSettings.cs" />
     <Compile Include="Music\EventArgs\TrackImportProgressChanged.cs" />
+    <Compile Include="Music\MusicManagerCommands.cs" />
+    <Compile Include="Music\QueueManager.cs" />
     <Compile Include="Music\TrackComparer.cs" />
+    <Compile Include="Music\TrackPlaylistPair.cs" />
     <Compile Include="Music\VolumeFading.cs" />
     <Compile Include="Notification\NotificationService.cs" />
     <Compile Include="Notification\Views\NotificationRightBottomWindow.xaml.cs">
@@ -181,6 +185,9 @@
     </Compile>
     <Compile Include="Views\ProgressWindow.xaml.cs">
       <DependentUpon>ProgressWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\QueueManager.xaml.cs">
+      <DependentUpon>QueueManager.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\ReportExceptionWindow.xaml.cs">
       <DependentUpon>ReportExceptionWindow.xaml</DependentUpon>
@@ -398,6 +405,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\ProgressWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\QueueManager.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

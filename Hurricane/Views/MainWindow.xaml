@@ -20,10 +20,11 @@
                 <ResourceDictionary Source="/Resources/Styles/MetroWindowStyle.xaml"/>
             </ResourceDictionary.MergedDictionaries>
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+            <converter:FalseOnEmptyString x:Key="FalseOnEmptyString"/>
         </ResourceDictionary>
     </Window.Resources>
     <Window.InputBindings>
-        <KeyBinding Key="Space" Command="{Binding MusicManager.CSCoreEngine.TogglePlayPauseCommand}"/>
+        <KeyBinding Key="Space" Command="{Binding MusicManager.Commands.TogglePlayPause}"/>
     </Window.InputBindings>
     <Grid>
         <Grid.RowDefinitions>
@@ -31,9 +32,7 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <DockPanel LastChildFill="True">
-            <Border x:Name="PART_TITLEBAR" 
-                                            Margin="0,0,0,0" Height="40" DockPanel.Dock="Top"  
-                                            Background="Transparent" MouseLeftButtonDown="PART_TITLEBAR_MouseLeftButtonDown" MouseLeftButtonUp="PART_TITLEBAR_MouseLeftButtonUp">
+            <Border x:Name="PART_TITLEBAR" Margin="0,0,0,0" Height="40" DockPanel.Dock="Top" Background="Transparent" MouseLeftButtonDown="PART_TITLEBAR_MouseLeftButtonDown" MouseLeftButtonUp="PART_TITLEBAR_MouseLeftButtonUp">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
@@ -97,13 +96,14 @@
                 </Button>
             </Grid>
             <DockPanel Grid.Row="1" Margin="5,5,0,0" Visibility="{Binding MusicManager.CSCoreEngine.CurrentTrack,Converter={StaticResource CollapsedOnNullValue}}">
-                <Polygon Points="0,0 8,5, 0,10"
-          Stroke="{DynamicResource AccentColorBrush}" StrokeThickness="2" VerticalAlignment="Center" Margin="0,2,0,0"/>
-                <TextBlock Text="{Binding MusicManager.CSCoreEngine.CurrentTrack}" Margin="5,0,5,0" VerticalAlignment="Center" TextTrimming="CharacterEllipsis">
-                    <TextBlock.InputBindings>
-                        <MouseBinding Command="{Binding MusicManager.JumpToPlayingTrack}" MouseAction="LeftClick"/>
-                    </TextBlock.InputBindings>
-                </TextBlock>
+                <Polygon Points="0,0 8,5, 0,10" Stroke="{DynamicResource AccentColorBrush}" StrokeThickness="2" VerticalAlignment="Center" Margin="0,2,0,0" x:Name="polyplay"/>
+                <Grid Margin="5,0,5,0" VerticalAlignment="Center" MouseEnter="GridCurrentTrack_MouseEnter" MouseLeave="GridCurrentTrack_MouseLeave" Background="White">
+                    <TextBlock Text="{Binding MusicManager.CSCoreEngine.CurrentTrack}" TextTrimming="CharacterEllipsis" x:Name="txtCurrentTrack" Foreground="Black" Margin="1">
+                        <TextBlock.InputBindings>
+                            <MouseBinding Command="{Binding MusicManager.Commands.JumpToPlayingTrack}" MouseAction="LeftClick"/>
+                        </TextBlock.InputBindings>
+                    </TextBlock>
+                </Grid>
             </DockPanel>
             <StackPanel Grid.Row="2" Margin="5">
                 <Grid Margin="0,0,0,10">
@@ -128,12 +128,12 @@
                         </wpfsvl:SpectrumAnalyzer.Style>
                     </wpfsvl:SpectrumAnalyzer>
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Center" Grid.Column="1">
-                        <Button Style="{DynamicResource MetroCircleButtonStyle}" Height="45" Width="45" Background="White" Command="{Binding MusicManager.GoBackwardCommand}" Focusable="False">
+                        <Button Style="{DynamicResource MetroCircleButtonStyle}" Height="45" Width="45" Background="White" Command="{Binding MusicManager.Commands.GoBackward}" Focusable="False">
                             <Grid>
                                 <Viewbox Child="{StaticResource VectorFastBackward}" Width="20" Height="20" RenderOptions.BitmapScalingMode="HighQuality" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="-1,0,1,0"/>
                             </Grid>
                         </Button>
-                        <Button Style="{DynamicResource MetroCircleButtonStyle}" Height="60" Width="60" Command="{Binding MusicManager.CSCoreEngine.TogglePlayPauseCommand}" Background="White" Focusable="False">
+                        <Button Style="{DynamicResource MetroCircleButtonStyle}" Height="60" Width="60" Command="{Binding MusicManager.Commands.TogglePlayPause}" Background="White" Focusable="False">
                             <Grid VerticalAlignment="Center" HorizontalAlignment="Center">
                                 <Viewbox Width="26" Height="26" Child="{StaticResource VectorPlay}" Stretch="Uniform" Margin="5,0,0,0">
                                     <Viewbox.Resources>
@@ -159,7 +159,7 @@
                                 </Viewbox>
                             </Grid>
                         </Button>
-                        <Button Style="{DynamicResource MetroCircleButtonStyle}" Height="45" Width="45" Background="White" Command="{Binding MusicManager.GoForwardCommand}" Focusable="False">
+                        <Button Style="{DynamicResource MetroCircleButtonStyle}" Height="45" Width="45" Background="White" Command="{Binding MusicManager.Commands.GoForward}" Focusable="False">
                             <Grid>
                                 <Viewbox Child="{StaticResource VectorFastForward}" Width="20" Height="20" RenderOptions.BitmapScalingMode="HighQuality" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="1,0,-1,0"/>
                             </Grid>
@@ -305,14 +305,20 @@
                     </ListView.Style>
                     <ListView.InputBindings>
                         <KeyBinding Key="Delete" Command="{Binding RemoveSelectedTrack}"/>
-                        <KeyBinding Key="Enter" Command="{Binding MusicManager.PlaySelectedTrack}"/>
-                        <KeyBinding Key="O" Modifiers="Alt" Command="{Binding MusicManager.OpenFileLocation}"/>
-                        <KeyBinding Key="Space" Command="{Binding MusicManager.CSCoreEngine.TogglePlayPauseCommand}"/>
+                        <KeyBinding Key="Enter" Command="{Binding MusicManager.Commands.PlaySelectedTrack}"/>
+                        <KeyBinding Key="O" Modifiers="Alt" Command="{Binding MusicManager.Commands.OpenTrackLocation}"/>
+                        <KeyBinding Key="Space" Command="{Binding MusicManager.Commands.TogglePlayPause}"/>
+                        <KeyBinding Key="Q" Command="{Binding MusicManager.Commands.AddTrackToQueue}"/>
+                        <KeyBinding Key="Q" Modifiers="Alt" Command="{Binding MusicManager.Commands.RemoveFromQueue}"/>
+                        <KeyBinding Key="Q" Modifiers="Control" Command="{Binding MusicManager.Commands.OpenQueueManager}"/>
+                        <KeyBinding Key="Insert" Command="{Binding AddFilesToPlaylist}"/>
+                        <KeyBinding Key="Insert" Modifiers="Control" Command="{Binding AddFolderToPlaylist}"/>
+                        <KeyBinding Key="F4" Command="{Binding OpenTrackInformations}"/>
                     </ListView.InputBindings>
                     <ListView.Resources>
                         <converter:TrueFalseValueConverter x:Key="boldifplaying" FalseValue="Normal" TrueValue="Bold"/>
                         <ContextMenu x:Key="ItemContextMenu" DataContext="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}, Path=DataContext}">
-                            <MenuItem Header="{DynamicResource play}" Command="{Binding MusicManager.PlaySelectedTrack}" IsEnabled="{Binding MusicManager.SelectedTrack.TrackExists}">
+                            <MenuItem Header="{DynamicResource play}" Command="{Binding MusicManager.Commands.PlaySelectedTrack}" IsEnabled="{Binding MusicManager.SelectedTrack.TrackExists}" InputGestureText="Enter">
                                 <MenuItem.Icon>
                                     <Viewbox Stretch="Uniform" Width="16" Height="16">
                                         <Path Fill="#ff000000" Data="F1 M 309.200,168.900 L 30.800,3.200 C 27.400,1.200 23.900,0.000 19.900,0.000 C 9.000,0.000 0.100,9.000 0.100,20.000 L 0.000,20.000 L 0.000,364.000 L 0.100,364.000 C 0.100,375.000 9.000,384.000 19.900,384.000 C 24.000,384.000 27.400,382.600 31.100,380.600 L 309.200,215.100 C 315.800,209.600 320.000,201.300 320.000,192.000 C 320.000,182.700 315.800,174.500 309.200,168.900 Z"/>
@@ -321,14 +327,14 @@
                             </MenuItem>
                             <Separator />
                             <MenuItem Header="{DynamicResource addtracks}">
-                                <MenuItem Header="{DynamicResource addfiles}" Command="{Binding AddFilesToPlaylist}">
+                                <MenuItem Header="{DynamicResource addfiles}" Command="{Binding AddFilesToPlaylist}" InputGestureText="{DynamicResource ins}">
                                     <MenuItem.Icon>
                                         <Viewbox Stretch="Uniform" Height="16" Width="16">
                                             <Path Fill="#ff000000" Data="F1 M 5.000,5.000 L 5.000,7.000 L 3.000,7.000 L 3.000,9.000 L 5.000,9.000 L 5.000,11.000 L 7.000,11.000 L 7.000,9.000 L 9.000,9.000 L 9.000,7.000 L 7.000,7.000 L 7.000,5.000 L 5.000,5.000 L 5.000,5.000 Z M 9.016,0.012 L 12.059,4.028 L 9.016,4.028 L 9.016,0.012 L 9.016,0.012 Z M 0.000,0.000 L 8.000,0.000 L 8.000,5.000 L 12.000,5.000 L 12.000,15.000 L 8.000,15.000 L 0.000,15.000 L 0.000,0.000 L 0.000,0.000 Z"/>
                                         </Viewbox>
                                     </MenuItem.Icon>
                                 </MenuItem>
-                                <MenuItem Header="{DynamicResource adddirectories}" Command="{Binding AddFolderToPlaylist}">
+                                <MenuItem Header="{DynamicResource adddirectories}" Command="{Binding AddFolderToPlaylist}" InputGestureText="{DynamicResource strgins}">
                                     <MenuItem.Icon>
                                         <Viewbox Stretch="Uniform" Height="16" Width="16">
                                             <Path Fill="#ff000000" Data="F1 M 3.000,0.000 L 7.000,0.000 L 8.000,1.000 L 2.000,1.000 L 3.000,0.000 Z M 7.000,4.000 L 7.000,6.000 L 5.000,6.000 L 5.000,8.000 L 7.000,8.000 L 7.000,10.000 L 9.000,10.000 L 9.000,8.000 L 11.000,8.000 L 11.000,6.000 L 9.000,6.000 L 9.000,4.000 L 7.000,4.000 Z M 0.000,3.000 C 0.000,2.500 0.500,2.000 1.000,2.000 L 15.000,2.000 C 15.500,2.000 16.000,2.500 16.000,3.000 L 16.000,11.000 C 16.000,11.500 15.500,12.000 15.000,12.000 L 1.000,12.000 C 0.500,12.000 0.000,11.500 0.000,11.000 L 0.000,3.000 Z"/>
@@ -337,12 +343,24 @@
                                 </MenuItem>
                             </MenuItem>
                             <Separator />
-                            <MenuItem Header="{DynamicResource fileinfos}" Command="{Binding OpenTrackInformations}" IsEnabled="{Binding MusicManager.SelectedTrack.TrackExists}">
+                            <MenuItem Header="{DynamicResource queue}">
+                                <MenuItem Header="{DynamicResource addtoqueue}" Command="{Binding MusicManager.Commands.AddTrackToQueue}" InputGestureText="Q">
+                                    
+                                </MenuItem>
+                                <MenuItem Header="{DynamicResource removefromqueue}" Command="{Binding MusicManager.Commands.RemoveFromQueue}" InputGestureText="Alt+Q">
+
+                                </MenuItem>
+                                <MenuItem Header="{DynamicResource clearqueue}" Command="{Binding MusicManager.Commands.ClearQueue}" IsEnabled="{Binding MusicManager.Queue.HasTracks}"/>
+                                <Separator />
+                                <MenuItem Header="{DynamicResource queuemanager}" Command="{Binding MusicManager.Command.OpenQueueManager}" InputGestureText="Strg+Q"/>
+                            </MenuItem>
+                            <Separator />
+                            <MenuItem Header="{DynamicResource fileinfos}" Command="{Binding OpenTrackInformations}" IsEnabled="{Binding MusicManager.SelectedTrack.TrackExists}" InputGestureText="F4">
                                 <MenuItem.Icon>
                                     <Viewbox Width="16" Height="16" Stretch="Uniform" Child="{StaticResource VectorInfo}"/>
                                 </MenuItem.Icon>
                             </MenuItem>
-                            <MenuItem Header="{DynamicResource filelocation}" Command="{Binding MusicManager.OpenFileLocation}" InputGestureText="Alt + O" IsEnabled="{Binding MusicManager.SelectedTrack.TrackExists}">
+                            <MenuItem Header="{DynamicResource filelocation}" Command="{Binding MusicManager.Commands.OpenTrackLocation}" InputGestureText="Alt + O" IsEnabled="{Binding MusicManager.SelectedTrack.TrackExists}">
                                 <MenuItem.Icon>
                                     <Viewbox Stretch="Uniform" Width="16" Height="16">
                                         <Grid>
@@ -398,7 +416,7 @@
                         <DataTemplate>
                             <Grid Background="#01FFFFFF" Margin="4">
                                 <Grid.InputBindings>
-                                    <MouseBinding Gesture="LeftDoubleClick" Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=DataContext.MusicManager.PlaySelectedTrack}"/>
+                                    <MouseBinding Gesture="LeftDoubleClick" Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=DataContext.MusicManager.Commands.PlaySelectedTrack}"/>
                                 </Grid.InputBindings>
                                 <Grid.Resources>
                                     <converter:TrueFalseValueConverter TrueValue="2" FalseValue="0" x:Key="TrueFalseValueConverter"/>
@@ -407,11 +425,17 @@
                                     <StackPanel Orientation="Vertical" Margin="3">
                                         <Grid>
                                             <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="auto"/>
                                                 <ColumnDefinition Width="*"/>
                                                 <ColumnDefinition Width="50"/>
                                             </Grid.ColumnDefinitions>
-                                            <TextBlock Text="{Binding Title}" TextTrimming="CharacterEllipsis" FontWeight="{Binding IsPlaying,Converter={StaticResource boldifplaying}}"/>
-                                            <TextBlock Text="{Binding Duration}" TextAlignment="Right" Grid.Column="1" x:Name="txt2" FontWeight="{Binding IsPlaying,Converter={StaticResource boldifplaying}}"/>
+                                            <StackPanel Visibility="{Binding QueueID,Converter={StaticResource CollapsedOnNullValue}}" Orientation="Horizontal">
+                                                <TextBlock Text="["/>
+                                                <TextBlock Text="{Binding QueueID}"/>
+                                                <TextBlock Text="]"/>
+                                            </StackPanel>
+                                            <TextBlock Text="{Binding Title}" TextTrimming="CharacterEllipsis" FontWeight="{Binding IsPlaying,Converter={StaticResource boldifplaying}}" Grid.Column="1"/>
+                                            <TextBlock Text="{Binding Duration}" TextAlignment="Right" x:Name="txt2" FontWeight="{Binding IsPlaying,Converter={StaticResource boldifplaying}}" Grid.Column="2"/>
                                         </Grid>
                                         <StackPanel Orientation="Horizontal">
                                             <StackPanel.Resources>
