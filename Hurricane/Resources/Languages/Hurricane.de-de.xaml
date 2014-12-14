@@ -151,6 +151,11 @@
     
     <system:String x:Key="strgins">Strg+Einfg</system:String>
     <system:String x:Key="ins">Einfg</system:String>
+    <system:String x:Key="ctrlq">Strg+Q</system:String>
     <system:String x:Key="number">Nummer</system:String>
     <system:String x:Key="playlist">Wiedergabeliste</system:String>
+    <system:String x:Key="totaltime">Gesamtzeit</system:String>
+    <system:String x:Key="removeselectedfiles">Entferne ausgewählte Dateien</system:String>
+    <system:String x:Key="moveup">Nach oben</system:String>
+    <system:String x:Key="movedown">Nach unten</system:String>
 </ResourceDictionary>

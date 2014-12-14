@@ -88,194 +88,6 @@ namespace Hurricane.ViewModels
         }
         #endregion
 
-        #region Commands
-        private RelayCommand addfilestoplaylist;
-        public RelayCommand AddFilesToPlaylist
-        {
-            get
-            {
-                if (addfilestoplaylist == null)
-                    addfilestoplaylist = new RelayCommand((object parameter) =>
-                    {
-                        Ookii.Dialogs.Wpf.VistaOpenFileDialog ofd = new Ookii.Dialogs.Wpf.VistaOpenFileDialog();
-                        ofd.CheckFileExists = true;
-                        ofd.Title = System.Windows.Application.Current.FindResource("selectfiles").ToString();
-                        ofd.Filter = CSCore.Codecs.CodecFactory.SupportedFilesFilterEn;
-                        ofd.Multiselect = true;
-                        if (ofd.ShowDialog(BaseWindow) == true)
-                        {
-                            ImportFiles(ofd.FileNames);
-                        }
-                    });
-                return addfilestoplaylist;
-            }
-        }
-
-        private RelayCommand addfoldertoplaylist;
-        public RelayCommand AddFolderToPlaylist
-        {
-            get
-            {
-                if (addfoldertoplaylist == null)
-                    addfoldertoplaylist = new RelayCommand((object parameter) =>
-                    {
-                        Views.FolderImportWindow window = new Views.FolderImportWindow();
-                        window.Owner = BaseWindow;
-                        if (window.ShowDialog() == true)
-                        {
-                            DirectoryInfo di = new DirectoryInfo(window.SelectedPath);
-                            List<string> filestoadd = new List<string>();
-                            foreach (FileInfo fi in di.GetFiles("*.*", window.IncludeSubfolder ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly))
-                            {
-                                if (Music.Track.IsSupported(fi))
-                                {
-                                    filestoadd.Add(fi.FullName);
-                                }
-                            }
-
-                            ImportFiles(filestoadd.ToArray());
-                        }
-                    });
-                return addfoldertoplaylist;
-            }
-        }
-
-        private RelayCommand addnewplaylist;
-        public RelayCommand AddNewPlaylist
-        {
-            get
-            {
-                if (addnewplaylist == null)
-                    addnewplaylist = new RelayCommand((object parameter) =>
-                    {
-                        Views.CreateNewPlaylistWindow window = new Views.CreateNewPlaylistWindow() { Owner = BaseWindow };
-                        if (window.ShowDialog() == true)
-                        {
-                            Music.Playlist newplaylist = new Music.Playlist() { Name = window.PlaylistName };
-                            MusicManager.Playlists.Add(newplaylist);
-                            MusicManager.RegisterPlaylist(newplaylist);
-                            MusicManager.SelectedPlaylist = newplaylist;
-                            MusicManager.SaveToSettings();
-                            MySettings.Save();
-                        }
-                    });
-                return addnewplaylist;
-            }
-        }
-
-        private RelayCommand removeselectedtrack;
-        public RelayCommand RemoveSelectedTrack
-        {
-            get
-            {
-                if (removeselectedtrack == null)
-                    removeselectedtrack = new RelayCommand((object parameter) => {
-                        Music.Track track = MusicManager.SelectedTrack;
-                        if (track == null) return;
-                        if (track.IsPlaying)
-                        {
-                            Views.MessageWindow errorbox = new Views.MessageWindow(string.Format(Application.Current.FindResource("trackisplaying").ToString(), track.Title), Application.Current.FindResource("error").ToString(), false) { Owner = BaseWindow };
-                            errorbox.ShowDialog();
-                            return;
-                        }
-                        Views.MessageWindow messagebox = new Views.MessageWindow(string.Format(Application.Current.FindResource("removetracksmessage").ToString(),track.Title), Application.Current.FindResource("removetracks").ToString(), true) { Owner = BaseWindow };
-                        if (messagebox.ShowDialog() == true)
-                        {
-                            MusicManager.SelectedPlaylist.TrackCollection.Remove(track);
-                        }
-                    });
-                return removeselectedtrack;
-            }
-        }
-
-        private RelayCommand opensettings;
-        public RelayCommand OpenSettings
-        {
-            get
-            {
-                if (opensettings == null)
-                    opensettings = new RelayCommand((object parameter) => { Views.SettingsWindow window = new Views.SettingsWindow() { Owner = BaseWindow }; SettingsViewModel.Instance.MusicManager = this.MusicManager; window.ShowDialog(); });
-                return opensettings;
-            }
-        }
-
-        private RelayCommand removeplaylist;
-        public RelayCommand RemovePlaylist
-        {
-            get
-            {
-                if (removeplaylist == null)
-                    removeplaylist = new RelayCommand((object parameter) => {
-                        if (MusicManager.Playlists.Count == 1)
-                        {
-                            Views.MessageWindow message = new Views.MessageWindow("errorcantdeleteplaylist", "error", false, true);
-                            message.Owner = BaseWindow;
-                            message.ShowDialog();
-                            return;
-                        }
-                        Views.MessageWindow window = new Views.MessageWindow(string.Format(Application.Current.FindResource("reallydeleteplaylist").ToString(), MusicManager.SelectedPlaylist.Name), Application.Current.FindResource("removeplaylist").ToString(), true);
-                        window.Owner = BaseWindow;
-                        if (window.ShowDialog() == true)
-                        {
-                            Music.Playlist PlaylistToDelete = MusicManager.SelectedPlaylist;
-                            Music.Playlist NewPlaylist = MusicManager.Playlists[0];
-                            if (MusicManager.CurrentPlaylist == PlaylistToDelete)
-                                MusicManager.CSCoreEngine.StopPlayback();
-                            MusicManager.CurrentPlaylist = NewPlaylist;
-                            MusicManager.Playlists.Remove(PlaylistToDelete);
-                            MusicManager.SelectedPlaylist = NewPlaylist;
-                        }
-                    });
-                return removeplaylist;
-            }
-        }
-
-        private RelayCommand renameplaylist;
-        public RelayCommand RenamePlaylist
-        {
-            get
-            {
-                if (renameplaylist == null)
-                    renameplaylist = new RelayCommand((object parameter) => {
-                        Views.CreateNewPlaylistWindow window = new Views.CreateNewPlaylistWindow(MusicManager.SelectedPlaylist.Name);
-                        window.Owner = BaseWindow;
-                        if (window.ShowDialog() == true) { MusicManager.SelectedPlaylist.Name = window.PlaylistName; }
-                    });
-                return renameplaylist;
-            }
-        }
-
-        private RelayCommand opentrackinformations;
-        public RelayCommand OpenTrackInformations
-        {
-            get
-            {
-                if (opentrackinformations == null)
-                    opentrackinformations = new RelayCommand((object parameter) => {
-                        Views.TrackInformationWindow window = new Views.TrackInformationWindow(MusicManager.SelectedTrack);
-                        window.Owner = BaseWindow;
-                        window.ShowDialog();
-                    });
-                return opentrackinformations;
-            }
-        }
-
-        private RelayCommand openupdater;
-        public RelayCommand OpenUpdater
-        {
-            get
-            {
-                if (openupdater == null)
-                    openupdater = new RelayCommand((object parameter) =>
-                    {
-                        Views.UpdateWindow window = new Views.UpdateWindow(Updater) { Owner = BaseWindow };
-                        window.ShowDialog();
-                    });
-                return openupdater;
-            }
-        }
-        #endregion
-
         #region Methods
         void ImportFiles(string[] paths)
         {
@@ -438,6 +250,211 @@ namespace Hurricane.ViewModels
                         }
                     });
                 return removeduplicatetracks;
+            }
+        }
+
+        private RelayCommand openqueuemanager;
+        public RelayCommand OpenQueueManager
+        {
+            get
+            {
+                if (openqueuemanager == null)
+                    openqueuemanager = new RelayCommand((object parameter) =>
+                    {
+                        Views.QueueManager window = new Views.QueueManager() { Owner = BaseWindow };
+                        window.ShowDialog();
+                    });
+                return openqueuemanager;
+            }
+        }
+
+        private RelayCommand addfilestoplaylist;
+        public RelayCommand AddFilesToPlaylist
+        {
+            get
+            {
+                if (addfilestoplaylist == null)
+                    addfilestoplaylist = new RelayCommand((object parameter) =>
+                    {
+                        Ookii.Dialogs.Wpf.VistaOpenFileDialog ofd = new Ookii.Dialogs.Wpf.VistaOpenFileDialog();
+                        ofd.CheckFileExists = true;
+                        ofd.Title = System.Windows.Application.Current.FindResource("selectfiles").ToString();
+                        ofd.Filter = CSCore.Codecs.CodecFactory.SupportedFilesFilterEn;
+                        ofd.Multiselect = true;
+                        if (ofd.ShowDialog(BaseWindow) == true)
+                        {
+                            ImportFiles(ofd.FileNames);
+                        }
+                    });
+                return addfilestoplaylist;
+            }
+        }
+
+        private RelayCommand addfoldertoplaylist;
+        public RelayCommand AddFolderToPlaylist
+        {
+            get
+            {
+                if (addfoldertoplaylist == null)
+                    addfoldertoplaylist = new RelayCommand((object parameter) =>
+                    {
+                        Views.FolderImportWindow window = new Views.FolderImportWindow();
+                        window.Owner = BaseWindow;
+                        if (window.ShowDialog() == true)
+                        {
+                            DirectoryInfo di = new DirectoryInfo(window.SelectedPath);
+                            List<string> filestoadd = new List<string>();
+                            foreach (FileInfo fi in di.GetFiles("*.*", window.IncludeSubfolder ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly))
+                            {
+                                if (Music.Track.IsSupported(fi))
+                                {
+                                    filestoadd.Add(fi.FullName);
+                                }
+                            }
+
+                            ImportFiles(filestoadd.ToArray());
+                        }
+                    });
+                return addfoldertoplaylist;
+            }
+        }
+
+        private RelayCommand addnewplaylist;
+        public RelayCommand AddNewPlaylist
+        {
+            get
+            {
+                if (addnewplaylist == null)
+                    addnewplaylist = new RelayCommand((object parameter) =>
+                    {
+                        Views.CreateNewPlaylistWindow window = new Views.CreateNewPlaylistWindow() { Owner = BaseWindow };
+                        if (window.ShowDialog() == true)
+                        {
+                            Music.Playlist newplaylist = new Music.Playlist() { Name = window.PlaylistName };
+                            MusicManager.Playlists.Add(newplaylist);
+                            MusicManager.RegisterPlaylist(newplaylist);
+                            MusicManager.SelectedPlaylist = newplaylist;
+                            MusicManager.SaveToSettings();
+                            MySettings.Save();
+                        }
+                    });
+                return addnewplaylist;
+            }
+        }
+
+        private RelayCommand removeselectedtrack;
+        public RelayCommand RemoveSelectedTrack
+        {
+            get
+            {
+                if (removeselectedtrack == null)
+                    removeselectedtrack = new RelayCommand((object parameter) =>
+                    {
+                        Music.Track track = MusicManager.SelectedTrack;
+                        if (track == null) return;
+                        if (track.IsPlaying)
+                        {
+                            Views.MessageWindow errorbox = new Views.MessageWindow(string.Format(Application.Current.FindResource("trackisplaying").ToString(), track.Title), Application.Current.FindResource("error").ToString(), false) { Owner = BaseWindow };
+                            errorbox.ShowDialog();
+                            return;
+                        }
+                        Views.MessageWindow messagebox = new Views.MessageWindow(string.Format(Application.Current.FindResource("removetracksmessage").ToString(), track.Title), Application.Current.FindResource("removetracks").ToString(), true) { Owner = BaseWindow };
+                        if (messagebox.ShowDialog() == true)
+                        {
+                            MusicManager.SelectedPlaylist.TrackCollection.Remove(track);
+                        }
+                    });
+                return removeselectedtrack;
+            }
+        }
+
+        private RelayCommand opensettings;
+        public RelayCommand OpenSettings
+        {
+            get
+            {
+                if (opensettings == null)
+                    opensettings = new RelayCommand((object parameter) => { Views.SettingsWindow window = new Views.SettingsWindow() { Owner = BaseWindow }; SettingsViewModel.Instance.MusicManager = this.MusicManager; window.ShowDialog(); });
+                return opensettings;
+            }
+        }
+
+        private RelayCommand removeplaylist;
+        public RelayCommand RemovePlaylist
+        {
+            get
+            {
+                if (removeplaylist == null)
+                    removeplaylist = new RelayCommand((object parameter) =>
+                    {
+                        if (MusicManager.Playlists.Count == 1)
+                        {
+                            Views.MessageWindow message = new Views.MessageWindow("errorcantdeleteplaylist", "error", false, true);
+                            message.Owner = BaseWindow;
+                            message.ShowDialog();
+                            return;
+                        }
+                        Views.MessageWindow window = new Views.MessageWindow(string.Format(Application.Current.FindResource("reallydeleteplaylist").ToString(), MusicManager.SelectedPlaylist.Name), Application.Current.FindResource("removeplaylist").ToString(), true);
+                        window.Owner = BaseWindow;
+                        if (window.ShowDialog() == true)
+                        {
+                            Music.Playlist PlaylistToDelete = MusicManager.SelectedPlaylist;
+                            Music.Playlist NewPlaylist = MusicManager.Playlists[0];
+                            if (MusicManager.CurrentPlaylist == PlaylistToDelete)
+                                MusicManager.CSCoreEngine.StopPlayback();
+                            MusicManager.CurrentPlaylist = NewPlaylist;
+                            MusicManager.Playlists.Remove(PlaylistToDelete);
+                            MusicManager.SelectedPlaylist = NewPlaylist;
+                        }
+                    });
+                return removeplaylist;
+            }
+        }
+
+        private RelayCommand renameplaylist;
+        public RelayCommand RenamePlaylist
+        {
+            get
+            {
+                if (renameplaylist == null)
+                    renameplaylist = new RelayCommand((object parameter) =>
+                    {
+                        Views.CreateNewPlaylistWindow window = new Views.CreateNewPlaylistWindow(MusicManager.SelectedPlaylist.Name);
+                        window.Owner = BaseWindow;
+                        if (window.ShowDialog() == true) { MusicManager.SelectedPlaylist.Name = window.PlaylistName; }
+                    });
+                return renameplaylist;
+            }
+        }
+
+        private RelayCommand opentrackinformations;
+        public RelayCommand OpenTrackInformations
+        {
+            get
+            {
+                if (opentrackinformations == null)
+                    opentrackinformations = new RelayCommand((object parameter) =>
+                    {
+                        Views.TrackInformationWindow window = new Views.TrackInformationWindow(MusicManager.SelectedTrack);
+                        window.Owner = BaseWindow;
+                        window.ShowDialog();
+                    });
+                return opentrackinformations;
+            }
+        }
+
+        private RelayCommand openupdater;
+        public RelayCommand OpenUpdater
+        {
+            get
+            {
+                if (openupdater == null)
+                    openupdater = new RelayCommand((object parameter) =>
+                    {
+                        Views.UpdateWindow window = new Views.UpdateWindow(Updater) { Owner = BaseWindow };
+                        window.ShowDialog();
+                    });
+                return openupdater;
             }
         }
         #endregion

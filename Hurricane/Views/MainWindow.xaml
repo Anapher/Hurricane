@@ -310,7 +310,7 @@
                         <KeyBinding Key="Space" Command="{Binding MusicManager.Commands.TogglePlayPause}"/>
                         <KeyBinding Key="Q" Command="{Binding MusicManager.Commands.AddTrackToQueue}"/>
                         <KeyBinding Key="Q" Modifiers="Alt" Command="{Binding MusicManager.Commands.RemoveFromQueue}"/>
-                        <KeyBinding Key="Q" Modifiers="Control" Command="{Binding MusicManager.Commands.OpenQueueManager}"/>
+                        <KeyBinding Key="Q" Modifiers="Control" Command="{Binding OpenQueueManager}"/>
                         <KeyBinding Key="Insert" Command="{Binding AddFilesToPlaylist}"/>
                         <KeyBinding Key="Insert" Modifiers="Control" Command="{Binding AddFolderToPlaylist}"/>
                         <KeyBinding Key="F4" Command="{Binding OpenTrackInformations}"/>
@@ -352,7 +352,7 @@
                                 </MenuItem>
                                 <MenuItem Header="{DynamicResource clearqueue}" Command="{Binding MusicManager.Commands.ClearQueue}" IsEnabled="{Binding MusicManager.Queue.HasTracks}"/>
                                 <Separator />
-                                <MenuItem Header="{DynamicResource queuemanager}" Command="{Binding MusicManager.Command.OpenQueueManager}" InputGestureText="Strg+Q"/>
+                                <MenuItem Header="{DynamicResource queuemanager}" Command="{Binding OpenQueueManager}" InputGestureText="{DynamicResource ctrlq}"/>
                             </MenuItem>
                             <Separator />
                             <MenuItem Header="{DynamicResource fileinfos}" Command="{Binding OpenTrackInformations}" IsEnabled="{Binding MusicManager.SelectedTrack.TrackExists}" InputGestureText="F4">
@@ -360,7 +360,7 @@
                                     <Viewbox Width="16" Height="16" Stretch="Uniform" Child="{StaticResource VectorInfo}"/>
                                 </MenuItem.Icon>
                             </MenuItem>
-                            <MenuItem Header="{DynamicResource filelocation}" Command="{Binding MusicManager.Commands.OpenTrackLocation}" InputGestureText="Alt + O" IsEnabled="{Binding MusicManager.SelectedTrack.TrackExists}">
+                            <MenuItem Header="{DynamicResource filelocation}" Command="{Binding MusicManager.Commands.OpenTrackLocation}" InputGestureText="Alt+O" IsEnabled="{Binding MusicManager.SelectedTrack.TrackExists}">
                                 <MenuItem.Icon>
                                     <Viewbox Stretch="Uniform" Width="16" Height="16">
                                         <Grid>

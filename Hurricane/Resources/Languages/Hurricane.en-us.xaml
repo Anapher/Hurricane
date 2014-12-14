@@ -141,4 +141,20 @@
     <system:String x:Key="ExceptionNote">To help us diagnose the cause of this error, please describe what you were doing when this error occurred: (optional)</system:String>
     <system:String x:Key="Exception">Exception</system:String>
     <system:String x:Key="SendExceptionAndClose">Send error report and close</system:String>
+
+    <system:String x:Key="queue">Queue</system:String>
+    <system:String x:Key="addtoqueue">Add to queue</system:String>
+    <system:String x:Key="removefromqueue">Remove from queue</system:String>
+    <system:String x:Key="clearqueue">Clear queue</system:String>
+    <system:String x:Key="queuemanager">Queue manager</system:String>
+
+    <system:String x:Key="strgins">Ctrl+Ins</system:String>
+    <system:String x:Key="ins">Ins</system:String>
+    <system:String x:Key="ctrlq">Ctrl+Q</system:String>
+    <system:String x:Key="number">Number</system:String>
+    <system:String x:Key="playlist">Playlist</system:String>
+    <system:String x:Key="totaltime">Total time</system:String>
+    <system:String x:Key="removeselectedfiles">Remove selected files</system:String>
+    <system:String x:Key="moveup">Move up</system:String>
+    <system:String x:Key="movedown">Move down</system:String>
 </ResourceDictionary>

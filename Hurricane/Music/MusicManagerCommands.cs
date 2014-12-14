@@ -129,16 +129,5 @@ namespace Hurricane.Music
                 return clearqueue;
             }
         }
-
-        private RelayCommand openqueuemanager;
-        public RelayCommand OpenQueueManager
-        {
-            get
-            {
-                if (openqueuemanager == null)
-                    openqueuemanager = new RelayCommand((object parameter) => { musicmanager.OnPropertyChanged("Queue"); });
-                return openqueuemanager;
-            }
-        }
     }
 }

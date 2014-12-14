@@ -118,7 +118,7 @@ namespace Hurricane.Music
             //the tag of the trackbar contains the index of the filter
             //EqualizerFilter filter = MusicEqualizer.SampleFilters[number];
             //filter.AverageGainDB = newvalue;
-            //MusicEqualizer.SampleFilters[number].SetGain(newvalue);
+            MusicEqualizer.SampleFilters[number].SetGain(newvalue);
         }
 
         protected void SetAllEqualizerSettings()

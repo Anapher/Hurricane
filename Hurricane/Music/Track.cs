@@ -57,7 +57,7 @@ namespace Hurricane.Music
         {
             get
             {
-                return TimeSpan.Parse(Duration);
+                return TimeSpan.ParseExact(Duration, @"mm\:ss", null);
             }
         }
 
