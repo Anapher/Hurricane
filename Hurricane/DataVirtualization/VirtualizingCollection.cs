@@ -120,11 +120,7 @@ namespace Hurricane.DataVirtualization
         {
             get
             {
-                if (_count == -1)
-                {
-                    LoadCount();
-                }
-                return _count;
+                return ItemsProvider.FetchCount();
             }
             protected set
             {
@@ -280,16 +276,19 @@ namespace Hurricane.DataVirtualization
 
         public void Move(int oldIndex, int newIndex)
         {
+            if (newIndex == oldIndex || oldIndex == -1 || newIndex == -1) return;
             //this.ItemsProvider.BaseList.Move(oldindex, newindex);
             var item = ItemsProvider.BaseList[oldIndex];
 
             ItemsProvider.BaseList.RemoveAt(oldIndex);
-
+            
             if (newIndex > oldIndex) newIndex--;
             // the actual index could have shifted due to the removal
 
             ItemsProvider.BaseList.Insert(newIndex, item);
-            RefreshView(newIndex, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Move, item, newIndex, oldIndex));
+            _pages.Clear();
+            _pageTouchTimes.Clear();
+            OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
         }
         #endregion
 
@@ -465,14 +464,6 @@ namespace Hurricane.DataVirtualization
         #region Load methods
 
         /// <summary>
-        /// Loads the count of items.
-        /// </summary>
-        protected virtual void LoadCount()
-        {
-            Count = FetchCount();
-        }
-
-        /// <summary>
         /// Loads the page of items.
         /// </summary>
         /// <param name="pageIndex">Index of the page.</param>
@@ -493,15 +484,6 @@ namespace Hurricane.DataVirtualization
         protected IList<T> FetchPage(int pageIndex)
         {
             return ItemsProvider.FetchRange(pageIndex * PageSize, PageSize);
-        }
-
-        /// <summary>
-        /// Fetches the count of itmes from the IItemsProvider.
-        /// </summary>
-        /// <returns></returns>
-        protected int FetchCount()
-        {
-            return ItemsProvider.FetchCount();
         }
 
         #endregion

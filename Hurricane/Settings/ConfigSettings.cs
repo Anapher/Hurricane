@@ -118,6 +118,7 @@ namespace Hurricane.Settings
             }
             result.LoadLanguage();
             result.Theme.LoadTheme();
+            if (result.SelectedPlaylist == -1) result.SelectedPlaylist = 0;
             return result;
         }
 

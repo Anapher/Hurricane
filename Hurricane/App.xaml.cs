@@ -28,6 +28,7 @@ namespace Hurricane
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
+
             var openfile = false;
             if (Environment.GetCommandLineArgs().Length > 1)
             {

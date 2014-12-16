@@ -89,12 +89,13 @@ namespace Hurricane.ViewModels
         #endregion
 
         #region Methods
-        void ImportFiles(string[] paths)
+        void ImportFiles(string[] paths, EventHandler finished = null)
         {
             Views.ProgressWindow progresswindow = new Views.ProgressWindow(Application.Current.FindResource("filesgetimported").ToString(), false) { Owner = BaseWindow };
             System.Threading.Thread t = new System.Threading.Thread(() =>
             {
                 MusicManager.SelectedPlaylist.AddFiles((s, e) => { Application.Current.Dispatcher.Invoke(() => progresswindow.SetProgress(e.Percentage)); progresswindow.SetText(e.CurrentFile); progresswindow.SetTitle(string.Format(Application.Current.FindResource("filesgetimported").ToString(), e.FilesImported, e.TotalFiles)); }, true, paths); MusicManager.SaveToSettings(); MySettings.Save(); Application.Current.Dispatcher.Invoke(() => progresswindow.Close());
+                if (finished != null) Application.Current.Dispatcher.Invoke(() => finished(this, EventArgs.Empty));
             });
             t.IsBackground = true;
             t.Start();
@@ -129,7 +130,6 @@ namespace Hurricane.ViewModels
 
         public void OpenFile(FileInfo file)
         {
-            var found = false;
             foreach (var playlist in MusicManager.Playlists)
             {
                 foreach (var track in playlist.Tracks)
@@ -137,11 +137,15 @@ namespace Hurricane.ViewModels
                     if (track.Path == file.FullName)
                     {
                         MusicManager.PlayTrack(track, playlist);
-                        found = true;
-                        break;
+                        return;
                     }
                 }
-                if (found) break;
+            }
+
+            Views.TrackImportWindow window = new Views.TrackImportWindow(musicmanager.Playlists, musicmanager.SelectedPlaylist, file.Name) { Owner = BaseWindow };
+            if (window.ShowDialog() == true)
+            {
+                ImportFiles(new string[] { file.FullName }, (s, e) => OpenFile(file));
             }
         }
 

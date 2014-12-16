@@ -158,4 +158,7 @@
     <system:String x:Key="removeselectedfiles">Entferne ausgewählte Dateien</system:String>
     <system:String x:Key="moveup">Nach oben</system:String>
     <system:String x:Key="movedown">Nach unten</system:String>
+
+    <system:String x:Key="trackname">Trackname</system:String>
+    <system:String x:Key="importtrack">Track importieren</system:String>
 </ResourceDictionary>

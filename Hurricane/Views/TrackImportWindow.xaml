@@ -1,0 +1,40 @@
+﻿<controls:MetroWindow x:Class="Hurricane.Views.TrackImportWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
+        xmlns:extensions="clr-namespace:Hurricane.Extensions"
+        Title="{StaticResource importtrack}" SizeToContent="Height" Width="400" GlowBrush="{StaticResource AccentColorBrush}" ShowInTaskbar="False" ResizeMode="NoResize" x:Name="window" WindowStartupLocation="CenterOwner">
+    <StackPanel Orientation="Vertical" Margin="10">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="100"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="{StaticResource trackname}"/>
+                <TextBlock Text=":"/>
+            </StackPanel>
+            <TextBlock Text="{Binding ElementName=window,Path=Trackname}" Grid.Column="1"/>
+        </Grid>
+        <Grid Margin="0,10,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="100"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                <TextBlock Text="{StaticResource playlist}"/>
+                <TextBlock Text=":"/>
+            </StackPanel>
+            <ComboBox Grid.Column="1" ItemsSource="{Binding ElementName=window,Path=Playlists}" SelectedItem="{Binding ElementName=window,Path=SelectedPlaylist}" DisplayMemberPath="Name"/>
+        </Grid>
+        <Grid Grid.IsSharedSizeScope="True" Margin="0,15,0,0" HorizontalAlignment="Right">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition SharedSizeGroup="Buttons"/>
+                <ColumnDefinition Width="10"/>
+                <ColumnDefinition SharedSizeGroup="Buttons"/>
+            </Grid.ColumnDefinitions>
+            <Button Grid.Column="0" Content="{StaticResource cancel}" extensions:ButtonHelper.DialogResult="False"/>
+            <Button Grid.Column="2" Content="{StaticResource add}" extensions:ButtonHelper.DialogResult="True"/>
+        </Grid>
+    </StackPanel>
+</controls:MetroWindow>

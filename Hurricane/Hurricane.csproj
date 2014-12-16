@@ -202,6 +202,9 @@
     <Compile Include="Views\Test\TestWindow.xaml.cs">
       <DependentUpon>TestWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\TrackImportWindow.xaml.cs">
+      <DependentUpon>TrackImportWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\TrackInformationWindow.xaml.cs">
       <DependentUpon>TrackInformationWindow.xaml</DependentUpon>
     </Compile>
@@ -425,6 +428,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Test\TestWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\TrackImportWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
