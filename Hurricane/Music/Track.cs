@@ -94,13 +94,13 @@ namespace Hurricane.Music
             try
             {
                 var info = ID3v2.FromFile(Path).QuickInfo;
-                if (!string.IsNullOrWhiteSpace(info.Artist))
+                if (!string.IsNullOrWhiteSpace(info.LeadPerformers))
                 {
-                    this.Artist = RemoveInvalidXMLChars(info.Artist);
+                    this.Artist = RemoveInvalidXMLChars(info.LeadPerformers);
                 }
                 else
                 {
-                    this.Artist = RemoveInvalidXMLChars(info.LeadPerformers);
+                    this.Artist = RemoveInvalidXMLChars(info.Artist);
                 }
                 if (!string.IsNullOrWhiteSpace(info.Title))
                 {

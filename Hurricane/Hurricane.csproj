@@ -58,16 +58,19 @@
   <ItemGroup>
     <Reference Include="CSCore, Version=1.0.0.2, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\CSCore.1.0.0.0\lib\net35-client\CSCore.dll</HintPath>
+      <HintPath>..\Libraries\CSCore.dll</HintPath>
     </Reference>
-    <Reference Include="Exceptionless">
-      <HintPath>..\packages\Exceptionless.1.5.2092\lib\net45\Exceptionless.dll</HintPath>
+    <Reference Include="Exceptionless, Version=1.5.2121.0, Culture=neutral, PublicKeyToken=fc181f0a46f65747, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Exceptionless.1.5.2121\lib\net45\Exceptionless.dll</HintPath>
     </Reference>
-    <Reference Include="Exceptionless.Models">
-      <HintPath>..\packages\Exceptionless.1.5.2092\lib\net45\Exceptionless.Models.dll</HintPath>
+    <Reference Include="Exceptionless.Models, Version=1.5.2121.0, Culture=neutral, PublicKeyToken=fc181f0a46f65747, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Exceptionless.1.5.2121\lib\net45\Exceptionless.Models.dll</HintPath>
     </Reference>
-    <Reference Include="Exceptionless.Wpf">
-      <HintPath>..\packages\Exceptionless.Wpf.1.5.2092\lib\net45\Exceptionless.Wpf.dll</HintPath>
+    <Reference Include="Exceptionless.Wpf, Version=1.5.2121.0, Culture=neutral, PublicKeyToken=fc181f0a46f65747, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Exceptionless.Wpf.1.5.2121\lib\net45\Exceptionless.Wpf.dll</HintPath>
     </Reference>
     <Reference Include="MahApps.Metro, Version=0.14.0.0, Culture=neutral, PublicKeyToken=f4fb5a3c4d1e5b4f, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -114,9 +117,12 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Extensions\Converter\BitmapToBitmapImageConverter.cs" />
     <Compile Include="Extensions\Converter\CollapsedOnNullValue.cs" />
     <Compile Include="Extensions\Converter\FalseOnNullValue.cs" />
+    <Compile Include="Extensions\Converter\FormatTimespan.cs" />
     <Compile Include="Extensions\Converter\TimespanToMinutesSecounds.cs" />
+    <Compile Include="Extensions\Converter\WidthToBarCount.cs" />
     <Compile Include="Extensions\ItemsControlExtensions.cs" />
     <Compile Include="Extensions\VisibilityAnimation.cs" />
     <Compile Include="MagicArrow\DockManager\DockingApplicationState.cs" />
@@ -184,6 +190,18 @@
     <Compile Include="Views\FolderImportWindow.xaml.cs">
       <DependentUpon>FolderImportWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\MainWindow.xaml.cs">
+      <DependentUpon>MainWindow.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Views\WindowSkins\IWindowSkin.cs" />
+    <Compile Include="Views\WindowSkins\WindowAdvancedView.xaml.cs">
+      <DependentUpon>WindowAdvancedView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\WindowSkins\WindowSkinConfiguration.cs" />
+    <Compile Include="Views\WindowSkins\WindowSmartView.xaml.cs">
+      <DependentUpon>WindowSmartView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\MessageWindow.xaml.cs">
       <DependentUpon>MessageWindow.xaml</DependentUpon>
     </Compile>
@@ -239,7 +257,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Resources\Styles\AdvancedTimelineSlider.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Resources\Styles\MetroWindowStyle.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Resources\Styles\RoundButtons.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -363,10 +389,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\MainWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -403,10 +425,18 @@
     <Compile Include="Views\CreateNewPlaylistWindow.xaml.cs">
       <DependentUpon>CreateNewPlaylistWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\MainWindow.xaml.cs">
-      <DependentUpon>MainWindow.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
+    <Page Include="Views\MainWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\WindowSkins\WindowAdvancedView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\WindowSkins\WindowSmartView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\MessageWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -542,6 +572,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\GUI\error.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\GUI\music.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

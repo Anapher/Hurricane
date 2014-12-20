@@ -25,6 +25,7 @@
     <system:String x:Key="removeplaylist">Remove playlist</system:String>
     <system:String x:Key="removetrack">Remove track</system:String>
     <system:String x:Key="removeduplicates">Remove duplicates</system:String>
+    <system:String x:Key="noartist">no artist</system:String>
 
     <system:String x:Key="presets">Presets</system:String>
     <system:String x:Key="bass">Bass</system:String>
@@ -160,4 +161,12 @@
     
     <system:String x:Key="trackname">Trackname</system:String>
     <system:String x:Key="importtrack">Import track</system:String>
+    <system:String x:Key="playlists">Playlists</system:String>
+    <system:String x:Key="removealltracks">Remove all tracks</system:String>
+    <system:String x:Key="sureremovealltracks">Are you sure that you want to remove all tracks from '{0}'?</system:String>
+    <system:String x:Key="behaviour">Behaviour</system:String>
+    <system:String x:Key="advancedview">Advanced view</system:String>
+    <system:String x:Key="enableadvancedview">Enable advanced view</system:String>
+    <system:String x:Key="test">Test</system:String>
+    <system:String x:Key="showtime">Show time:</system:String>
 </ResourceDictionary>

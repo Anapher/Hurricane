@@ -40,9 +40,13 @@ namespace Hurricane.Settings
 
         //General
         public string Language { get; set; }
+        public ApplicationThemeManager Theme { get; set; }
+        public bool EnableAdvancedView { get; set; }
+
+        //Notifications
         public Notification.NotificationType Notification { get; set; }
         public bool DisableNotificationInGame { get; set; }
-        public ApplicationThemeManager Theme { get; set; }
+        public int NotificationShowTime { get; set; }
 
         private List<LanguageInfo> languages;
         [XmlIgnore]
@@ -82,6 +86,13 @@ namespace Hurricane.Settings
             ApplicationState = null;
             Theme = new ApplicationThemeManager();
             Theme.LoadStandard();
+            EnableAdvancedView = true;
+            NotificationShowTime = 5000;
+        }
+
+        public ConfigSettings()
+        {
+            SetStandardValues();
         }
 
         private ResourceDictionary lastLanguage;
@@ -114,7 +125,6 @@ namespace Hurricane.Settings
             else
             {
                 result = new ConfigSettings();
-                result.SetStandardValues();
             }
             result.LoadLanguage();
             result.Theme.LoadTheme();
@@ -132,7 +142,9 @@ namespace Hurricane.Settings
                 CompareTwoValues(this.Language, other.Language) &&
                 CompareTwoValues(this.Notification, other.Notification) &&
                 CompareTwoValues(this.DisableNotificationInGame, other.DisableNotificationInGame) &&
-                CompareTwoValues(this.Theme, other.Theme));
+                CompareTwoValues(this.Theme, other.Theme) &&
+                CompareTwoValues(this.EnableAdvancedView, other.EnableAdvancedView) &&
+                CompareTwoValues(this.NotificationShowTime, other.NotificationShowTime));
         }
 
         protected bool CompareTwoValues(object v1, object v2)

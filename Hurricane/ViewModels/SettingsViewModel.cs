@@ -28,10 +28,8 @@ namespace Hurricane.ViewModels
         {
         }
 
-        private MahApps.Metro.Controls.MetroWindow BaseWindow;
-        public void Load(MahApps.Metro.Controls.MetroWindow window)
+        public void Load()
         {
-            this.BaseWindow = window;
             Config = Utilities.ObjectCopier.Clone<Settings.ConfigSettings>(Settings.HurricaneSettings.Instance.Config);
             AudioDevices = Music.CSCoreEngine.GetAudioDevices();
             SelectedAudioDevice = AudioDevices.Where((x) => x.ID == Config.SoundOutDeviceID).FirstOrDefault();
@@ -61,6 +59,7 @@ namespace Hurricane.ViewModels
                         Settings.HurricaneSettings.Instance.Config = Config;
                         if (Config.SoundOutDeviceID != original.SoundOutDeviceID) { MusicManager.CSCoreEngine.UpdateSoundOut(); }
                         if (original.Language != Config.Language) { Config.LoadLanguage(); }
+                        if (Config.Theme.UseCustomSpectrumAnalyzerColor && string.IsNullOrEmpty(Config.Theme.SpectrumAnalyzerHexColor)) Config.Theme.SpectrumAnalyzerColor = System.Windows.Media.Colors.Black;
                         if (original.Theme != Config.Theme) { Config.Theme.LoadTheme(); }
                         Config = Utilities.ObjectCopier.Clone<Settings.ConfigSettings>(Settings.HurricaneSettings.Instance.Config);
                         OnPropertyChanged("CanApply");
@@ -98,17 +97,6 @@ namespace Hurricane.ViewModels
             }
         }
 
-        private RelayCommand close;
-        public RelayCommand Close
-        {
-            get
-            {
-                if (close == null)
-                    close = new RelayCommand((object parameter) => { BaseWindow.Close(); });
-                return close;
-            }
-        }
-        
         private List<Music.AudioDevice> audiodevices;
         public List<Music.AudioDevice> AudioDevices
         {
@@ -157,6 +145,17 @@ namespace Hurricane.ViewModels
                 if (showlanguages == null)
                     showlanguages = new RelayCommand((object parameter) => { SelectedTab = 2; });
                 return showlanguages;
+            }
+        }
+
+        private RelayCommand testnotification;
+        public RelayCommand TestNotification
+        {
+            get
+            {
+                if (testnotification == null)
+                    testnotification = new RelayCommand((object parameter) => { MusicManager.Notification.Test(Config.Notification); });
+                return testnotification;
             }
         }
     }

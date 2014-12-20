@@ -461,6 +461,22 @@ namespace Hurricane.ViewModels
                 return openupdater;
             }
         }
+
+        private RelayCommand clearselectedplaylist;
+        public RelayCommand ClearSelectedPlaylist
+        {
+            get
+            {
+                if (clearselectedplaylist == null)
+                    clearselectedplaylist = new RelayCommand((object parameter) =>
+                    {
+                        Views.MessageWindow window = new Views.MessageWindow(string.Format(Application.Current.FindResource("sureremovealltracks").ToString(), MusicManager.SelectedPlaylist.Name), Application.Current.FindResource("removealltracks").ToString(), true) { Owner = BaseWindow };
+                        if (window.ShowDialog() == true)
+                            MusicManager.SelectedPlaylist.TrackCollection.Clear();
+                    });
+                return clearselectedplaylist;
+            }
+        }
         #endregion
 
         #region Properties
@@ -483,6 +499,8 @@ namespace Hurricane.ViewModels
                 SetProperty(value, ref updater);
             }
         }
+
+        public SettingsViewModel SettingsViewModel { get { return Hurricane.ViewModels.SettingsViewModel.Instance; } }
         #endregion
     }
 }

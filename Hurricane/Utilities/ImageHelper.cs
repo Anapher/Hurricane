@@ -75,20 +75,5 @@ namespace Hurricane.Utilities
         {
             return new System.Drawing.Icon(System.Windows.Application.GetResourceStream(new Uri(string.Format("pack://application:,,,/Hurricane;component/{0}", Path))).Stream);
         }
-
-        public static System.Windows.Media.Imaging.BitmapImage BitmapToBitmapImage(Bitmap bitmap)
-        {
-            using (MemoryStream memory = new MemoryStream())
-            {
-                bitmap.Save(memory, ImageFormat.Png);
-                memory.Position = 0;
-                System.Windows.Media.Imaging.BitmapImage bitmapImage = new System.Windows.Media.Imaging.BitmapImage();
-                bitmapImage.BeginInit();
-                bitmapImage.StreamSource = memory;
-                bitmapImage.CacheOption = System.Windows.Media.Imaging.BitmapCacheOption.OnLoad;
-                bitmapImage.EndInit();
-                return bitmapImage;
-            }
-        }
     }
 }

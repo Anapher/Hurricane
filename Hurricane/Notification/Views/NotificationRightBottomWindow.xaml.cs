@@ -29,7 +29,7 @@ namespace Hurricane.Notification.Views
             this.Left = System.Windows.SystemParameters.WorkArea.Width - this.Width;
             this.Closing += NotificationRightBottomWindow_Closing;
             this.MouseMove += NotificationRightBottomWindow_MouseMove;
-            if (track.Image == null) imgAlbum.Visibility = System.Windows.Visibility.Collapsed;
+            if (track.Image != null) { imgAlbum.Visibility = System.Windows.Visibility.Visible; imgPlaceholder.Visibility = System.Windows.Visibility.Collapsed; }
             System.Threading.Thread t = new System.Threading.Thread(() => { System.Threading.Thread.Sleep(timestayopened); if (!IsClosing) Application.Current.Dispatcher.Invoke(() => MoveOut()); });
             t.IsBackground = true;
             t.Start();
@@ -40,7 +40,7 @@ namespace Hurricane.Notification.Views
             get
             {
                 if (CurrentTrack.Image == null) return null;
-                return Utilities.ImageHelper.BitmapToBitmapImage(new System.Drawing.Bitmap(CurrentTrack.Image));
+                return Extensions.Converter.BitmapToBitmapImageConverter.BitmapToBitmapImage(new System.Drawing.Bitmap(CurrentTrack.Image));
             }
         }
 

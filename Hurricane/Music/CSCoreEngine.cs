@@ -48,6 +48,7 @@ namespace Hurricane.Music
             {
                 if (SoundSource != null)
                     SoundSource.Position = value;
+                OnPropertyChanged("CurrentTrackPosition");
             }
         }
 
@@ -79,6 +80,22 @@ namespace Hurricane.Music
             get
             {
                 if (soundOut == null) { return PlaybackState.Stopped; } else { return soundOut.PlaybackState; }
+            }
+        }
+
+        public TimeSpan CurrentTrackPosition
+        {
+            get
+            {
+                return SoundSource != null ? SoundSource.GetPosition() : TimeSpan.Zero;
+            }
+        }
+
+        public TimeSpan CurrentTrackLength
+        {
+            get
+            {
+                return SoundSource != null ? SoundSource.GetLength() : TimeSpan.Zero;
             }
         }
 
@@ -116,9 +133,8 @@ namespace Hurricane.Music
             var newvalue = (float)(perc * MaxDB);
 
             //the tag of the trackbar contains the index of the filter
-            //EqualizerFilter filter = MusicEqualizer.SampleFilters[number];
+            EqualizerFilter filter = MusicEqualizer.SampleFilters[number];
             //filter.AverageGainDB = newvalue;
-            MusicEqualizer.SampleFilters[number].SetGain(newvalue);
         }
 
         protected void SetAllEqualizerSettings()
@@ -166,6 +182,7 @@ namespace Hurricane.Music
             track.Load();
             CurrentTrack = track;
             OnPropertyChanged("TrackLength");
+            OnPropertyChanged("CurrentTrackLength");
             CurrentStateChanged();
             soundOut.Volume = Volume;
 
@@ -221,8 +238,8 @@ namespace Hurricane.Music
         void notifysource_BlockRead(object sender, EventArgs e)
         {
             OnPropertyChanged("Position");
+            OnPropertyChanged("CurrentTrackPosition");
         }
-
         #endregion
 
         #region Constructor

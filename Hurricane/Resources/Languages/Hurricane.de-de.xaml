@@ -25,6 +25,7 @@
     <system:String x:Key="removeplaylist">Wiedergabeliste entfernen</system:String>
     <system:String x:Key="removetrack">Track entfernen</system:String>
     <system:String x:Key="removeduplicates">Doppelte Tracks entfernen</system:String>
+    <system:String x:Key="noartist">Kein Künstler</system:String>
 
     <system:String x:Key="presets">Vorlagen</system:String>
     <system:String x:Key="bass">Bass</system:String>
@@ -161,4 +162,12 @@
 
     <system:String x:Key="trackname">Trackname</system:String>
     <system:String x:Key="importtrack">Track importieren</system:String>
+    <system:String x:Key="playlists">Wiedergabelisten</system:String>
+    <system:String x:Key="removealltracks">Alle Tracks entfernen</system:String>
+    <system:String x:Key="sureremovealltracks">Sind Sie sicher, dass Sie alle Tracks aus '{0}' entfernen wollen?</system:String>
+    <system:String x:Key="behaviour">Verhalten</system:String>
+    <system:String x:Key="advancedview">Erweiterte Ansicht</system:String>
+    <system:String x:Key="enableadvancedview">Erweiterte Ansicht aktivieren</system:String>
+    <system:String x:Key="test">Testen</system:String>
+    <system:String x:Key="showtime">Anzeigedauer:</system:String>
 </ResourceDictionary>

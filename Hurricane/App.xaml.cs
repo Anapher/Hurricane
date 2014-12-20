@@ -63,9 +63,9 @@ namespace Hurricane
 #if !DEBUG
                         EnableExteptionless();
 #endif
-
+            Settings.HurricaneSettings.Instance.Load();
             Hurricane.MainWindow window = new MainWindow();
-
+            
             Notification.WindowMessages.WindowMessanger messanger = new Notification.WindowMessages.WindowMessanger(window);
             window.Show();
             if (openfile)

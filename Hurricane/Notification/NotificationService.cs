@@ -19,25 +19,52 @@ namespace Hurricane.Notification
         }
 
         private System.Windows.Window lastwindow;
+        protected Music.Track lasttrack;
+
         void TrackChanged(Music.Track newtrack)
+        {
+            Settings.ConfigSettings config = Settings.HurricaneSettings.Instance.Config;
+            if (config.DisableNotificationInGame && Utilities.WindowHelper.WindowIsFullscreen(Utilities.Native.UnsafeNativeMethods.GetForegroundWindow())) return;
+            ShowNotification(newtrack, config.Notification);
+
+            lasttrack = newtrack;
+        }
+
+        protected void ShowNotification(Music.Track track, NotificationType type)
         {
             Settings.ConfigSettings config = Settings.HurricaneSettings.Instance.Config;
             if (config.Notification == NotificationType.None) return;
             if (lastwindow != null && lastwindow.Visibility == System.Windows.Visibility.Visible) lastwindow.Close();
-            if (config.DisableNotificationInGame && Utilities.WindowHelper.WindowIsFullscreen(Utilities.Native.UnsafeNativeMethods.GetForegroundWindow())) return;
-            TimeSpan timetostayopen = TimeSpan.FromMilliseconds(5000);
+            TimeSpan timetostayopen = TimeSpan.FromMilliseconds(config.NotificationShowTime);
+
             System.Windows.Window messagewindow = null;
             switch (config.Notification)
             {
                 case NotificationType.Top:
-                    messagewindow = new Views.NotificationTopWindow(newtrack, timetostayopen);
+                    messagewindow = new Views.NotificationTopWindow(track, timetostayopen);
                     break;
                 case NotificationType.RightBottom:
-                    messagewindow = new Views.NotificationRightBottomWindow(newtrack, timetostayopen);
+                    messagewindow = new Views.NotificationRightBottomWindow(track, timetostayopen);
                     break;
             }
             messagewindow.Show();
             lastwindow = messagewindow;
+        }
+
+        public void Test(NotificationType type)
+        {
+            Music.Track track2use = lasttrack;
+            if (track2use == null)
+            {
+                track2use = new Music.Track();
+                track2use.Artist = "Alkalinee";
+                track2use.Title = "Sample Track";
+                track2use.Duration = "03:26";
+                track2use.kHz = 44;
+                track2use.Path = System.Reflection.Assembly.GetExecutingAssembly().Location;
+                track2use.Extension = "MP3";
+            }
+            ShowNotification(track2use, type);
         }
     }
 

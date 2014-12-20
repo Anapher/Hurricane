@@ -19,6 +19,7 @@ using System.Runtime.InteropServices;
 using Hurricane.Extensions;
 using System.Windows.Threading;
 using System.Windows.Media.Animation;
+using Hurricane.Views.WindowSkins;
 
 namespace Hurricane
 {
@@ -28,7 +29,14 @@ namespace Hurricane
     public partial class MainWindow : MahApps.Metro.Controls.MetroWindow
     {
         public MagicArrow.MagicArrow MagicArrow { get; set; }
-        private Hurricane.Resources.Styles.DragDropListView.ServiceProviders.UI.ListViewDragDropManager<Music.Track> dragMgr;
+        public bool IsInSmartMode { get; set; }
+        public IWindowSkin HostedWindow { get; set; }
+
+        protected IWindowSkin smartwindowskin;
+        public IWindowSkin SmartWindowSkin { get { if (smartwindowskin == null) smartwindowskin = new WindowSmartView(); return smartwindowskin; } }
+
+        protected IWindowSkin advancedwindowskin;
+        public IWindowSkin AdvancedWindowSkin { get { if (advancedwindowskin == null) advancedwindowskin = new WindowAdvancedView(); return advancedwindowskin; } }
 
         public MainWindow()
         {
@@ -37,30 +45,52 @@ namespace Hurricane
 
             MagicArrow = new MagicArrow.MagicArrow();
             MagicArrow.Register(this);
-            MagicArrow.MoveOut += (s, e) => { ViewModels.MainViewModel.Instance.MoveOut(); SpectrumAnalyzer.RefreshInterval = 2000; };
-            MagicArrow.MoveIn += (s, e) => { SpectrumAnalyzer.RefreshInterval = 25; };
+            MagicArrow.MoveOut += (s, e) => { ViewModels.MainViewModel.Instance.MoveOut(); HostedWindow.DisableWindow(); };
+            MagicArrow.MoveIn += (s, e) => { HostedWindow.EnableWindow(); };
             MagicArrow.FilesDropped += (s, e) => { ViewModels.MainViewModel.Instance.DragDropFiles((string[])e.Data.GetData(DataFormats.FileDrop)); };
 
             this.Closing += MainWindow_Closing;
             this.Loaded += MainWindow_Loaded;
-            dragMgr = new Resources.Styles.DragDropListView.ServiceProviders.UI.ListViewDragDropManager<Music.Track>(this.listview);
-            dragMgr.ShowDragAdorner = true;
 
-            this.MaxHeight = Utilities.WpfScreen.MaxHeight;
+            MagicArrow.DockManager.Docked += (s, e) => { ApplyHostWindow(SmartWindowSkin); };
+            MagicArrow.DockManager.Undocked += (s, e) => { if(Hurricane.Settings.HurricaneSettings.Instance.Config.EnableAdvancedView) ApplyHostWindow(AdvancedWindowSkin); };
+            var appsettings = Hurricane.Settings.HurricaneSettings.Instance.Config;
+            if (appsettings.ApplicationState != null)
+            {
+                if (appsettings.ApplicationState.CurrentSide == Hurricane.MagicArrow.DockManager.DockingSide.None)
+                {
+                    this.Height = appsettings.ApplicationState.Height;
+                    this.Width = appsettings.ApplicationState.Width;
+                    this.Left = appsettings.ApplicationState.Left;
+                    this.Top = appsettings.ApplicationState.Top;
+                }
+                else { MagicArrow.DockManager.CurrentSide = appsettings.ApplicationState.CurrentSide; }
+            }
         }
 
         void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
             try
             {
-                Settings.HurricaneSettings.Instance.Load();
-                MagicArrow.DockManager.InitializeWindow();
+                MagicArrow.DockManager.ApplyCurrentSide();
+                if (MagicArrow.DockManager.CurrentSide == Hurricane.MagicArrow.DockManager.DockingSide.None && Hurricane.Settings.HurricaneSettings.Instance.Config.EnableAdvancedView)
+                {
+                    ApplyHostWindow(AdvancedWindowSkin, false);
+                }
+                else
+                {
+                    ApplyHostWindow(SmartWindowSkin, false);
+                    this.Height = Utilities.WpfScreen.GetScreenFrom(new System.Windows.Point(this.Left, 0)).WorkingArea.Height;
+                }
+                System.Diagnostics.Debug.Print("ThisHeight: {0}", this.Height.ToString());
                 ViewModels.MainViewModel viewmodel = ViewModels.MainViewModel.Instance;
                 LoadCustomPreview();
                 viewmodel.StartVisualization += CSCoreEngine_StartVisualization;
                 viewmodel.TrackChanged += CSCoreEngine_TrackChanged;
                 viewmodel.Loaded(this);
                 viewmodel.MusicManager.CSCoreEngine.PlayStateChanged += (s, ec) => { thumbnailButtonPlayPause.Icon = viewmodel.MusicManager.CSCoreEngine.CurrentState == CSCore.SoundOut.PlaybackState.Playing ? Utilities.ImageHelper.GetIconFromResource("/Resources/MediaIcons/ThumbButtons/pause.ico") : Utilities.ImageHelper.GetIconFromResource("/Resources/MediaIcons/ThumbButtons/play.ico"); };
+                AdvancedWindowSkin.MusicManagerEnabled(viewmodel.MusicManager);
+                SmartWindowSkin.MusicManagerEnabled(viewmodel.MusicManager);
             }
             catch (Exception ex)
             {
@@ -71,6 +101,85 @@ namespace Hurricane
                 MessageBox.Show(ex.ToString());
 #endif
             }
+        }
+
+        protected void ApplyHostWindow(IWindowSkin skin, bool saveinformations = true)
+        {
+            if (skin == HostedWindow) return;
+            if (HostedWindow != null)
+            {
+                HostedWindow.DragMoveStart -= skin_DragMoveStart;
+                HostedWindow.DragMoveStop -= skin_DragMoveStop;
+                HostedWindow.ToggleWindowState -= skin_ToggleWindowState;
+                HostedWindow.DisableWindow();
+            }
+
+            skin.CloseRequest += (s, e) => this.Close();
+            skin.DragMoveStart += skin_DragMoveStart;
+            skin.DragMoveStop += skin_DragMoveStop;
+            skin.ToggleWindowState += skin_ToggleWindowState;
+
+            var appstate = Hurricane.Settings.HurricaneSettings.Instance.Config.ApplicationState;
+            if (skin != AdvancedWindowSkin && saveinformations)
+            {
+                appstate.Height = this.Height;
+                appstate.Width = this.Width;
+                System.Diagnostics.Debug.Print("Saved: {0}, {1}", this.ActualHeight, this.Width);
+            }
+
+            this.MaxHeight = skin.Configuration.MaxHeight;
+            this.MinHeight = skin.Configuration.MinHeight;
+            this.MaxWidth = skin.Configuration.MaxWidth;
+            this.MinWidth = skin.Configuration.MinWidth;
+            this.ShowTitleBar = skin.Configuration.ShowTitleBar;
+            this.ShowSystemMenuOnRightClick = skin.Configuration.ShowSystemMenuOnRightClick;
+
+            if (skin == AdvancedWindowSkin && saveinformations)
+            {
+                System.Diagnostics.Debug.Print("Loaded: {0}, {1} : {2}, {3}", appstate.Height.ToString(), appstate.Width, this.MaxHeight, this.MaxWidth);
+                this.Width = appstate.Width;
+                this.Height = appstate.Height;
+                if (this.Width != appstate.Width) System.Diagnostics.Debug.Print("fuck");
+            }
+
+            if (skin == SmartWindowSkin) { this.Width = 300; this.Height = MagicArrow.DockManager.WindowHeight; }
+
+            this.ShowMinButton = skin.Configuration.ShowWindowControls;
+            this.ShowMaxRestoreButton = skin.Configuration.ShowWindowControls;
+            this.ShowCloseButton = skin.Configuration.ShowWindowControls;
+
+            this.Content = skin;
+            this.HostedWindow = skin;
+            if (ViewModels.MainViewModel.Instance.MusicManager != null) skin.RegisterSoundPlayer(ViewModels.MainViewModel.Instance.MusicManager.CSCoreEngine);
+            HostedWindow.EnableWindow();
+        }
+
+        void skin_ToggleWindowState(object sender, EventArgs e)
+        {
+            if (this.WindowState == System.Windows.WindowState.Normal) { this.WindowState = WindowState.Maximized; } else { this.WindowState = System.Windows.WindowState.Normal; }
+        }
+
+        protected override void TitleBarMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            MagicArrow.DockManager.DragStart();
+            base.TitleBarMouseDown(sender, e);
+        }
+
+        protected override void TitleBarMouseUp(object sender, MouseButtonEventArgs e)
+        {
+            MagicArrow.DockManager.DragStop();
+            base.TitleBarMouseUp(sender, e);
+        }
+
+        void skin_DragMoveStart(object sender, EventArgs e)
+        {
+            MagicArrow.DockManager.DragStart();
+            if (HostedWindow.Configuration.NeedMovingHelp) DragMove();
+        }
+
+        void skin_DragMoveStop(object sender, EventArgs e)
+        {
+            MagicArrow.DockManager.DragStop();
         }
 
         #region Thumbnail
@@ -130,100 +239,24 @@ namespace Hurricane
         #region Controllogic
         void CSCoreEngine_StartVisualization(object sender, EventArgs e)
         {
-            SpectrumAnalyzer.RegisterSoundPlayer(ViewModels.MainViewModel.Instance.MusicManager.CSCoreEngine);
+            HostedWindow.RegisterSoundPlayer(ViewModels.MainViewModel.Instance.MusicManager.CSCoreEngine);
         }
 
         void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
+            if (MagicArrow.DockManager.CurrentSide == Hurricane.MagicArrow.DockManager.DockingSide.None)
+            {
+                var appstate = Hurricane.Settings.HurricaneSettings.Instance.Config.ApplicationState;
+                appstate.Height = this.Height;
+                appstate.Width = this.Width;
+                appstate.Left = this.Left;
+                appstate.Top = this.Top;
+            }
             if (Settings.HurricaneSettings.Instance.Loaded)
                 MagicArrow.DockManager.Save();
             ViewModels.MainViewModel.Instance.Closing();
             MagicArrow.Dispose();
             App.Current.Shutdown();
-        }
-
-        private void ListView_Drop(object sender, DragEventArgs e)
-        {
-            if (e.Effects == DragDropEffects.None)
-                return;
-            if (e.Data.GetDataPresent(DataFormats.FileDrop))
-            {
-                ViewModels.MainViewModel.Instance.DragDropFiles((string[])e.Data.GetData(DataFormats.FileDrop));
-            }
-        }
-
-        private void ListView_DragEnter(object sender, DragEventArgs e)
-        {
-            e.Effects = DragDropEffects.Move; //Always move because if we would check if it's a file or not, the drag & drop function for the items wouldn't work
-        }
-        
-        #endregion
-
-        #region Windowlogic
-        private void PART_TITLEBAR_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            MagicArrow.DockManager.DragStart();
-            DragMove();
-        }
-
-        private void PART_CLOSE_Click(object sender, RoutedEventArgs e)
-        {
-            this.Close();
-        }
-
-        private void PART_TITLEBAR_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
-        {
-            MagicArrow.DockManager.DragStop();
-        }
-
-        private void buttonplus_Click(object sender, RoutedEventArgs e)
-        {
-            ContextMenu menu = ((Button)sender).ContextMenu;
-            menu.PlacementTarget = (UIElement)sender;
-            menu.Placement = System.Windows.Controls.Primitives.PlacementMode.Bottom;
-            menu.IsOpen = true;
-        }
-
-        private void listview_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            listview.ScrollIntoView(listview.SelectedItem);
-        }
-        #endregion
-
-        #region Animations
-        private void GridCurrentTrack_MouseEnter(object sender, MouseEventArgs e)
-        {
-            Grid grid = sender as Grid;
-            if (grid == null) return;
-            CurrentTrackAnimation(grid, txtCurrentTrack, polyplay, true);
-        }
-
-        private void GridCurrentTrack_MouseLeave(object sender, MouseEventArgs e)
-        {
-            Grid grid = sender as Grid;
-            if (grid == null) return;
-            CurrentTrackAnimation(grid, txtCurrentTrack, polyplay, false);
-        }
-
-        private void CurrentTrackAnimation(Grid grid, TextBlock txt, Polygon poly, bool InAnimate)
-        {
-            Storyboard story = new Storyboard();
-            ColorAnimation coloranimation = new ColorAnimation(InAnimate ? (Color)Application.Current.FindResource("AccentColor") : Colors.Transparent, TimeSpan.FromMilliseconds(500));
-            Storyboard.SetTarget(coloranimation, grid);
-            Storyboard.SetTargetProperty(coloranimation, new PropertyPath("Background.Color"));
-
-            ColorAnimation coloranimation2 = new ColorAnimation(InAnimate ? ((SolidColorBrush)Application.Current.FindResource("DarkColorBrush")).Color : Colors.Black, TimeSpan.FromMilliseconds(250));
-            Storyboard.SetTarget(coloranimation2, txtCurrentTrack);
-            Storyboard.SetTargetProperty(coloranimation2, new PropertyPath("Foreground.Color"));
-
-            ThicknessAnimation thicknessanimation = new ThicknessAnimation(InAnimate ? new Thickness(3, 2, -3, 0) : new Thickness(0,2,0,0), TimeSpan.FromMilliseconds(250));
-            Storyboard.SetTarget(thicknessanimation, poly);
-            Storyboard.SetTargetProperty(thicknessanimation, new PropertyPath(Polygon.MarginProperty));
-
-            //story.Children.Add(coloranimation);
-            story.Children.Add(coloranimation2);
-            story.Children.Add(thicknessanimation);
-            story.Begin(this);
         }
         #endregion
     }

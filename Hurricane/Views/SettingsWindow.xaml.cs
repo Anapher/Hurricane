@@ -27,7 +27,7 @@ namespace Hurricane.Views
 
         void SettingsWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            ViewModels.SettingsViewModel.Instance.Load(this);
+            ViewModels.SettingsViewModel.Instance.Load();
         }
 
         void SomethingChanged(object sender, RoutedEventArgs e)
@@ -40,6 +40,11 @@ namespace Hurricane.Views
             Views.AboutWindow window = new AboutWindow();
             window.Owner = this;
             window.ShowDialog();
+        }
+
+        private void CloseButton_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
         }
     }
 }
