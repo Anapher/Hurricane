@@ -27,14 +27,18 @@
             </StackPanel>
             <ComboBox Grid.Column="1" ItemsSource="{Binding ElementName=window,Path=Playlists}" SelectedItem="{Binding ElementName=window,Path=SelectedPlaylist}" DisplayMemberPath="Name"/>
         </Grid>
-        <Grid Grid.IsSharedSizeScope="True" Margin="0,15,0,0" HorizontalAlignment="Right">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition SharedSizeGroup="Buttons"/>
-                <ColumnDefinition Width="10"/>
-                <ColumnDefinition SharedSizeGroup="Buttons"/>
-            </Grid.ColumnDefinitions>
-            <Button Grid.Column="0" Content="{StaticResource cancel}" extensions:ButtonHelper.DialogResult="False"/>
-            <Button Grid.Column="2" Content="{StaticResource add}" extensions:ButtonHelper.DialogResult="True"/>
-        </Grid>
+        <DockPanel Margin="0,15,0,0">
+            <CheckBox Content="{StaticResource remember}" IsChecked="{Binding ElementName=window,Path=RememberChoice}" x:Name="chkremember"/>
+            <CheckBox Content="{StaticResource alsoafterrestart}" Margin="5,0,0,0" IsChecked="{Binding ElementName=window,Path=RememberAlsoAfterRestart}" IsEnabled="{Binding ElementName=chkremember,Path=IsChecked}" ToolTip="{StaticResource canberesetedinsettings}"/>
+            <Grid Grid.IsSharedSizeScope="True" HorizontalAlignment="Right">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition SharedSizeGroup="Buttons"/>
+                    <ColumnDefinition Width="10"/>
+                    <ColumnDefinition SharedSizeGroup="Buttons"/>
+                </Grid.ColumnDefinitions>
+                <Button Grid.Column="0" Content="{StaticResource cancel}" extensions:ButtonHelper.DialogResult="False"/>
+                <Button Grid.Column="2" Content="{StaticResource add}" extensions:ButtonHelper.DialogResult="True"/>
+            </Grid>
+        </DockPanel>
     </StackPanel>
 </controls:MetroWindow>

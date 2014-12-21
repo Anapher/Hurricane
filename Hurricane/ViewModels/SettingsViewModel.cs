@@ -26,6 +26,7 @@ namespace Hurricane.ViewModels
 
         private SettingsViewModel()
         {
+            RegistryManager = new Settings.RegistryManager.RegistryManager();
         }
 
         public void Load()
@@ -39,7 +40,7 @@ namespace Hurricane.ViewModels
             OnPropertyChanged("CanApply");
         }
 
-        public Music.MusicManager MusicManager { get; set; }
+        public Music.MusicManager MusicManager { get { return ViewModels.MainViewModel.Instance.MusicManager; } }
 
         public void StateChanged()
         {
@@ -158,5 +159,29 @@ namespace Hurricane.ViewModels
                 return testnotification;
             }
         }
+
+        private RelayCommand resettrackimport;
+        public RelayCommand ResetTrackImport
+        {
+            get
+            {
+                if (resettrackimport == null)
+                    resettrackimport = new RelayCommand((object parameter) => { Config.RememberTrackImportPlaylist = false; Config.PlaylistToImportTrack = null; OnPropertyChanged("Config"); StateChanged(); });
+                return resettrackimport;
+            }
+        }
+
+        private RelayCommand totalreset;
+        public RelayCommand TotalReset
+        {
+            get
+            {
+                if (totalreset == null)
+                    totalreset = new RelayCommand((object parameter) => { Config.SetStandardValues(); SelectedAudioDevice = AudioDevices[0]; OnPropertyChanged("Config"); StateChanged(); });
+                return totalreset;
+            }
+        }
+
+        public Settings.RegistryManager.RegistryManager RegistryManager { get; set; }
     }
 }

@@ -121,8 +121,10 @@
     <Compile Include="Extensions\Converter\CollapsedOnNullValue.cs" />
     <Compile Include="Extensions\Converter\FalseOnNullValue.cs" />
     <Compile Include="Extensions\Converter\FormatTimespan.cs" />
+    <Compile Include="Extensions\Converter\TextWithHyperlinkParametersConverter.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Extensions\Converter\TimespanToMinutesSecounds.cs" />
-    <Compile Include="Extensions\Converter\WidthToBarCount.cs" />
     <Compile Include="Extensions\ItemsControlExtensions.cs" />
     <Compile Include="Extensions\VisibilityAnimation.cs" />
     <Compile Include="MagicArrow\DockManager\DockingApplicationState.cs" />
@@ -141,6 +143,8 @@
     <Compile Include="Music\Equalizer\EqualizerBand.cs" />
     <Compile Include="Music\EventArgs\EqualizerChangedEventArgs.cs" />
     <Compile Include="Music\Equalizer\EqualizerSettings.cs" />
+    <Compile Include="Music\EventArgs\PlaybackStateChangedEventArgs.cs" />
+    <Compile Include="Music\EventArgs\PositionChangedEventArgs.cs" />
     <Compile Include="Music\EventArgs\TrackImportProgressChanged.cs" />
     <Compile Include="Music\MusicManagerCommands.cs" />
     <Compile Include="Music\QueueManager.cs" />
@@ -161,6 +165,9 @@
     <Compile Include="Settings\Converter\SampleRateToIndexConverter.cs" />
     <Compile Include="Settings\LanguageInfo.cs" />
     <Compile Include="Settings\PlaylistSettings.cs" />
+    <Compile Include="Settings\RegistryManager\RegistryContextMenuItem.cs" />
+    <Compile Include="Settings\RegistryManager\RegistryManager.cs" />
+    <Compile Include="Settings\RegistryManager\RegistryRegister.cs" />
     <Compile Include="Settings\SettingsBase.cs" />
     <Compile Include="Settings\Themes\AccentColorTheme.cs" />
     <Compile Include="Settings\Themes\ApplicationThemeManager.cs" />
@@ -181,8 +188,8 @@
     <Compile Include="DataVirtualization\IItemsProvider.cs" />
     <Compile Include="DataVirtualization\TrackProvider.cs" />
     <Compile Include="DataVirtualization\VirtualizingCollection.cs" />
-    <Compile Include="Views\AboutWindow.xaml.cs">
-      <DependentUpon>AboutWindow.xaml</DependentUpon>
+    <Compile Include="Views\AboutView.xaml.cs">
+      <DependentUpon>AboutView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\EqualizerWindow.xaml.cs">
       <DependentUpon>EqualizerWindow.xaml</DependentUpon>
@@ -266,6 +273,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Resources\Styles\RoundButtons.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Resources\Styles\TextBlockStyles.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -373,7 +384,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\AboutWindow.xaml">
+    <Page Include="Views\AboutView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -557,9 +568,6 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\GUI\rename.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\App\About.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Languages\Icons\de.png" />

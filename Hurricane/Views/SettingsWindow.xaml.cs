@@ -37,9 +37,7 @@ namespace Hurricane.Views
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            Views.AboutWindow window = new AboutWindow();
-            window.Owner = this;
-            window.ShowDialog();
+            if (tabroot.SelectedIndex == 0) { tabroot.SelectedIndex = 1; } else { tabroot.SelectedIndex = 0; }
         }
 
         private void CloseButton_Click(object sender, RoutedEventArgs e)

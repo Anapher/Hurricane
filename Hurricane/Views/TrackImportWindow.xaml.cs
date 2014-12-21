@@ -31,5 +31,7 @@ namespace Hurricane.Views
         public Music.Playlist SelectedPlaylist { get; set; }
         public ObservableCollection<Music.Playlist> Playlists { get; set; }
         public string Trackname { get; set; }
+        public bool RememberChoice { get; set; }
+        public bool RememberAlsoAfterRestart { get; set; }
     }
 }

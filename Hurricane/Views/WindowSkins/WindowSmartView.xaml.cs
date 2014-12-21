@@ -113,7 +113,11 @@ namespace Hurricane.Views.WindowSkins
 
         public event EventHandler CloseRequest;
 
-        public event EventHandler ToggleWindowState;
+        public event EventHandler ToggleWindowState
+        {
+            add { }
+            remove { }
+        }
 
         public void EnableWindow()
         {

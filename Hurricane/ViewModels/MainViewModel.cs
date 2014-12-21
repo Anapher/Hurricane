@@ -34,13 +34,13 @@ namespace Hurricane.ViewModels
 
         public void Loaded(Window window)
         {
-            System.Diagnostics.Stopwatch sw = System.Diagnostics.Stopwatch.StartNew();
             this.BaseWindow = window;
             MySettings = Settings.HurricaneSettings.Instance;
 
             MusicManager = new Music.MusicManager();
             MusicManager.CSCoreEngine.StartVisualization += CSCoreEngine_StartVisualization;
             MusicManager.CSCoreEngine.TrackChanged += CSCoreEngine_TrackChanged;
+            MusicManager.CSCoreEngine.PositionChanged += CSCoreEngine_PositionChanged;
             MusicManager.LoadFromSettings();
             BaseWindow.LocationChanged += (s, e) => {
                 if (EqualizerIsOpen) {
@@ -50,15 +50,12 @@ namespace Hurricane.ViewModels
             };
             KListener = new Utilities.KeyboardListener();
             KListener.KeyDown += KListener_KeyDown;
-            System.Diagnostics.Debug.Print("MainViewModel: {0}", sw.ElapsedMilliseconds.ToString());
-            sw.Stop();
             Updater = new Settings.UpdateService(MySettings.Config.Language == "de" ? Settings.UpdateService.Language.German : Settings.UpdateService.Language.English);
             Updater.CheckForUpdates(BaseWindow);
         }
         #endregion
 
         #region Events
-
         public event EventHandler StartVisualization; //This is ok so, trust me ;)
         void CSCoreEngine_StartVisualization(object sender, EventArgs e)
         {
@@ -69,6 +66,12 @@ namespace Hurricane.ViewModels
         void CSCoreEngine_TrackChanged(object sender, Music.TrackChangedEventArgs e)
         {
             if (TrackChanged != null) TrackChanged(sender, e);
+        }
+
+        public event EventHandler<Music.PositionChangedEventArgs> PositionChanged;
+        void CSCoreEngine_PositionChanged(object sender, Music.PositionChangedEventArgs e)
+        {
+            if (PositionChanged != null) PositionChanged(sender, e);
         }
 
         void KListener_KeyDown(object sender, Utilities.RawKeyEventArgs args)
@@ -89,12 +92,12 @@ namespace Hurricane.ViewModels
         #endregion
 
         #region Methods
-        void ImportFiles(string[] paths, EventHandler finished = null)
+        void ImportFiles(string[] paths, Music.Playlist playlist, EventHandler finished = null)
         {
             Views.ProgressWindow progresswindow = new Views.ProgressWindow(Application.Current.FindResource("filesgetimported").ToString(), false) { Owner = BaseWindow };
             System.Threading.Thread t = new System.Threading.Thread(() =>
             {
-                MusicManager.SelectedPlaylist.AddFiles((s, e) => { Application.Current.Dispatcher.Invoke(() => progresswindow.SetProgress(e.Percentage)); progresswindow.SetText(e.CurrentFile); progresswindow.SetTitle(string.Format(Application.Current.FindResource("filesgetimported").ToString(), e.FilesImported, e.TotalFiles)); }, true, paths); MusicManager.SaveToSettings(); MySettings.Save(); Application.Current.Dispatcher.Invoke(() => progresswindow.Close());
+                playlist.AddFiles((s, e) => { Application.Current.Dispatcher.Invoke(() => progresswindow.SetProgress(e.Percentage)); progresswindow.SetText(e.CurrentFile); progresswindow.SetTitle(string.Format(Application.Current.FindResource("filesgetimported").ToString(), e.FilesImported, e.TotalFiles)); }, true, paths); MusicManager.SaveToSettings(); MySettings.Save(); Application.Current.Dispatcher.Invoke(() => progresswindow.Close());
                 if (finished != null) Application.Current.Dispatcher.Invoke(() => finished(this, EventArgs.Empty));
             });
             t.IsBackground = true;
@@ -112,7 +115,7 @@ namespace Hurricane.ViewModels
                     paths.Add(file);
                 }
             }
-            ImportFiles(paths.ToArray());
+            ImportFiles(paths.ToArray(), MusicManager.SelectedPlaylist);
         }
 
         public void Closing()
@@ -128,6 +131,9 @@ namespace Hurricane.ViewModels
                 KListener.Dispose();
         }
 
+        private bool remember = false;
+        private Music.Playlist rememberedplaylist;
+
         public void OpenFile(FileInfo file)
         {
             foreach (var playlist in MusicManager.Playlists)
@@ -142,11 +148,44 @@ namespace Hurricane.ViewModels
                 }
             }
 
-            Views.TrackImportWindow window = new Views.TrackImportWindow(musicmanager.Playlists, musicmanager.SelectedPlaylist, file.Name) { Owner = BaseWindow };
-            if (window.ShowDialog() == true)
+            Music.Playlist selectedplaylist = null;
+            var config = Hurricane.Settings.HurricaneSettings.Instance.Config;
+
+            if (config.RememberTrackImportPlaylist)
             {
-                ImportFiles(new string[] { file.FullName }, (s, e) => OpenFile(file));
+                var items = MusicManager.Playlists.Where((x) => x.Name == config.PlaylistToImportTrack);
+                if (items.Any())
+                {
+                    selectedplaylist = items.First();
+                }
+                else { config.RememberTrackImportPlaylist = false; config.PlaylistToImportTrack = null; }
             }
+
+            if (selectedplaylist == null)
+            {
+                if (remember && MusicManager.Playlists.Contains(rememberedplaylist))
+                {
+                    selectedplaylist = rememberedplaylist;
+                }
+                else
+                {
+                    Views.TrackImportWindow window = new Views.TrackImportWindow(musicmanager.Playlists, musicmanager.SelectedPlaylist, file.Name) { Owner = BaseWindow };
+                    if (window.ShowDialog() == false) return;
+                    selectedplaylist = window.SelectedPlaylist;
+                    if (window.RememberChoice)
+                    {
+                        remember = true;
+                        rememberedplaylist = window.SelectedPlaylist;
+                        if (window.RememberAlsoAfterRestart)
+                        {
+                            config.RememberTrackImportPlaylist = true;
+                            config.PlaylistToImportTrack = selectedplaylist.Name;
+                        }
+                    }
+                }
+            }
+
+            ImportFiles(new string[] { file.FullName }, selectedplaylist, (s, e) => OpenFile(file));
         }
 
         public void MoveOut()
@@ -287,7 +326,7 @@ namespace Hurricane.ViewModels
                         ofd.Multiselect = true;
                         if (ofd.ShowDialog(BaseWindow) == true)
                         {
-                            ImportFiles(ofd.FileNames);
+                            ImportFiles(ofd.FileNames, MusicManager.SelectedPlaylist);
                         }
                     });
                 return addfilestoplaylist;
@@ -316,7 +355,7 @@ namespace Hurricane.ViewModels
                                 }
                             }
 
-                            ImportFiles(filestoadd.ToArray());
+                            ImportFiles(filestoadd.ToArray(), MusicManager.SelectedPlaylist);
                         }
                     });
                 return addfoldertoplaylist;
@@ -378,7 +417,7 @@ namespace Hurricane.ViewModels
             get
             {
                 if (opensettings == null)
-                    opensettings = new RelayCommand((object parameter) => { Views.SettingsWindow window = new Views.SettingsWindow() { Owner = BaseWindow }; SettingsViewModel.Instance.MusicManager = this.MusicManager; window.ShowDialog(); });
+                    opensettings = new RelayCommand((object parameter) => { Views.SettingsWindow window = new Views.SettingsWindow() { Owner = BaseWindow }; window.ShowDialog(); });
                 return opensettings;
             }
         }
@@ -499,8 +538,6 @@ namespace Hurricane.ViewModels
                 SetProperty(value, ref updater);
             }
         }
-
-        public SettingsViewModel SettingsViewModel { get { return Hurricane.ViewModels.SettingsViewModel.Instance; } }
         #endregion
     }
 }

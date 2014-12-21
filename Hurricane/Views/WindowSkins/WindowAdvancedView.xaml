@@ -8,6 +8,8 @@
              xmlns:converter="clr-namespace:Hurricane.Extensions.Converter"
              xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
              xmlns:wpfsvl="clr-namespace:WPFSoundVisualizationLib;assembly=WPFSoundVisualizationLib"
+             xmlns:views="clr-namespace:Hurricane.Views"
+             xmlns:jas="clr-namespace:Hurricane.Resources.Styles.DragDropListView.ServiceProviders.UI"
              mc:Ignorable="d" 
              d:DesignHeight="500" d:DesignWidth="850" DataContext="{x:Static viewmodels:MainViewModel.Instance}">
     <UserControl.Resources>
@@ -15,12 +17,12 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/Resources/Styles/AdvancedTimelineSlider.xaml"/>
                 <ResourceDictionary Source="/Resources/Styles/RoundButtons.xaml"/>
+                <ResourceDictionary Source="/Resources/Styles/TextBlockStyles.xaml"/>
             </ResourceDictionary.MergedDictionaries>
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
             <converter:FormatTimespan x:Key="FormatTimespan"/>
             <converter:BitmapToBitmapImageConverter x:Key="BitmapToBitmapImageConverter"/>
             <converter:FalseOnEmptyString x:Key="FalseOnEmptyString"/>
-            <converter:WidthToBarCount x:Key="WidthToBarCount"/>
             <converter:CollapsedOnNullValue x:Key="CollapsedOnNullValue"/>
             <Style TargetType="TextBlock" x:Key="AristTextBlock">
                 <Style.Triggers>
@@ -64,7 +66,7 @@
                                 <Separator />
                                 <MenuItem Header="{DynamicResource newplaylist}" Command="{Binding AddNewPlaylist}"/>
                             </MenuItem>
-                            <MenuItem Header="Tracks">
+                            <MenuItem Header="{DynamicResource tracks}">
                                 <MenuItem Header="{DynamicResource addfiles}" Command="{Binding AddFilesToPlaylist}"/>
                                 <MenuItem Header="{DynamicResource adddirectories}" Command="{Binding AddFolderToPlaylist}"/>
                                 <Separator />
@@ -77,71 +79,24 @@
                                 </MenuItem>
                             </MenuItem>
                         </Menu>
-                        <TextBox VerticalAlignment="Center" controls:TextBoxHelper.ClearTextButton="True" HorizontalAlignment="Right" Width="200" controls:TextBoxHelper.Watermark="{StaticResource search}" Text="{Binding MusicManager.SearchText,UpdateSourceTrigger=PropertyChanged}"/>
+                        <TextBox x:Name="txtSearch" VerticalAlignment="Center" controls:TextBoxHelper.ClearTextButton="True" HorizontalAlignment="Right" Width="200" controls:TextBoxHelper.Watermark="{StaticResource search}" Text="{Binding MusicManager.SearchText,UpdateSourceTrigger=PropertyChanged}"/>
                     </Grid>
-
-                    <Grid Grid.Row="1">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="auto"/>
-                            <RowDefinition Height="*"/>
-                        </Grid.RowDefinitions>
-                        <StackPanel>
-                            <Button Command="{Binding AddNewPlaylist}">
-                                <Button.Template>
-                                    <ControlTemplate>
-                                        <StackPanel Orientation="Horizontal">
-                                            <Viewbox Width="16" Height="16">
-                                                <Grid x:Name="plus">
-                                                    <Path Fill="Gray" x:Name="path1" Data="F1 M 253.000,485.755 C 124.662,485.755 20.240,381.338 20.240,253.000 C 20.240,124.661 124.662,20.240 253.000,20.240 C 381.338,20.240 485.760,124.661 485.760,253.000 C 485.760,381.338 381.338,485.755 253.000,485.755 Z M 253.000,0.000 C 113.257,0.000 0.000,113.257 0.000,253.000 C 0.000,392.743 113.257,505.995 253.000,505.995 C 392.743,505.995 506.000,392.743 506.000,253.000 C 506.000,113.257 392.744,0.000 253.000,0.000 Z"/>
-                                                    <Path Fill="Black" x:Name="path2" Data="F1 M 263.120,101.200 L 242.880,101.200 L 242.880,242.880 L 101.872,242.880 L 101.872,263.120 L 242.880,263.120 L 242.880,404.128 L 263.120,404.128 L 263.120,263.120 L 404.800,263.120 L 404.800,242.880 L 263.120,242.880 L 263.120,101.200 Z"/>
-                                                </Grid>
-                                            </Viewbox>
-
-                                            <TextBlock Text="{DynamicResource newplaylist}" Margin="5,0,0,0" VerticalAlignment="Center" FontWeight="Normal" Foreground="Gray" x:Name="button"/>
-                                        </StackPanel>
-                                        <ControlTemplate.Triggers>
-                                            <Trigger Property="IsMouseOver" Value="True">
-                                                <Trigger.EnterActions>
-                                                    <BeginStoryboard>
-                                                        <Storyboard>
-                                                            <ColorAnimation To="Black" Duration="0:0:0.2" Storyboard.TargetName="path1" Storyboard.TargetProperty="(Path.Fill).(SolidColorBrush.Color)"/>
-                                                            <!--<ColorAnimation To="Gray" Duration="0:0:0.2" Storyboard.TargetName="path2" Storyboard.TargetProperty="(Path.Fill).(SolidColorBrush.Color)"/> -->
-                                                            <ColorAnimation To="Black" Duration="0:0:0.2" Storyboard.TargetName="button" Storyboard.TargetProperty="(TextBlock.Foreground).(SolidColorBrush.Color)"/>
-                                                        </Storyboard>
-                                                    </BeginStoryboard>
-                                                </Trigger.EnterActions>
-                                                <Trigger.ExitActions>
-                                                    <BeginStoryboard>
-                                                        <Storyboard>
-                                                            <ColorAnimation To="Gray" Duration="0:0:0.2" Storyboard.TargetName="path1" Storyboard.TargetProperty="(Path.Fill).(SolidColorBrush.Color)"/>
-                                                            <!--<ColorAnimation To="Gray" Duration="0:0:0.2" Storyboard.TargetName="path2" Storyboard.TargetProperty="(Path.Fill).(SolidColorBrush.Color)"/> -->
-                                                            <ColorAnimation To="Gray" Duration="0:0:0.2" Storyboard.TargetName="button" Storyboard.TargetProperty="(TextBlock.Foreground).(SolidColorBrush.Color)"/>
-                                                        </Storyboard>
-                                                    </BeginStoryboard>
-                                                </Trigger.ExitActions>
-                                            </Trigger>
-                                        </ControlTemplate.Triggers>
-                                    </ControlTemplate>
-                                </Button.Template>
-                            </Button>
-                        </StackPanel>
-                        <ListBox Grid.Row="1" ItemsSource="{Binding MusicManager.Playlists}" DisplayMemberPath="Name" SelectedItem="{Binding MusicManager.SelectedPlaylist}" Margin="5" SelectionChanged="ListBox_SelectionChanged">
-                            <ListBox.InputBindings>
-                                <KeyBinding Key="Delete" Command="{Binding RemovePlaylist}"/>
-                            </ListBox.InputBindings>
-                            <ListBox.Resources>
-                                <ContextMenu x:Key="contexmenu">
-                                    <MenuItem Header="{DynamicResource removeplaylist}" Command="{Binding RelativeSource={RelativeSource AncestorType=ListBox},Path=DataContext.RemovePlaylist}"/>
-                                    <MenuItem Header="{DynamicResource renameplaylist}" Command="{Binding RelativeSource={RelativeSource AncestorType=ListBox},Path=DataContext.RenamePlaylist}"/>
-                                </ContextMenu>
-                            </ListBox.Resources>
-                            <ListBox.ItemContainerStyle>
-                                <Style TargetType="ListBoxItem" BasedOn="{StaticResource MetroListBoxItem}">
-                                    <Setter Property="ContextMenu" Value="{StaticResource contexmenu}"/>
-                                </Style>
-                            </ListBox.ItemContainerStyle>
-                        </ListBox>
-                    </Grid>
+                    <ListBox Grid.Row="1" ItemsSource="{Binding MusicManager.Playlists}" DisplayMemberPath="Name" SelectedItem="{Binding MusicManager.SelectedPlaylist}" Margin="5" SelectionChanged="ListBox_SelectionChanged">
+                        <ListBox.InputBindings>
+                            <KeyBinding Key="Delete" Command="{Binding RemovePlaylist}"/>
+                        </ListBox.InputBindings>
+                        <ListBox.Resources>
+                            <ContextMenu x:Key="contexmenu">
+                                <MenuItem Header="{DynamicResource removeplaylist}" Command="{Binding RelativeSource={RelativeSource AncestorType=ListBox},Path=DataContext.RemovePlaylist}"/>
+                                <MenuItem Header="{DynamicResource renameplaylist}" Command="{Binding RelativeSource={RelativeSource AncestorType=ListBox},Path=DataContext.RenamePlaylist}"/>
+                            </ContextMenu>
+                        </ListBox.Resources>
+                        <ListBox.ItemContainerStyle>
+                            <Style TargetType="ListBoxItem" BasedOn="{StaticResource MetroListBoxItem}">
+                                <Setter Property="ContextMenu" Value="{StaticResource contexmenu}"/>
+                            </Style>
+                        </ListBox.ItemContainerStyle>
+                    </ListBox>
                     <Rectangle Grid.Column="1" Width="1" Fill="Gray" Grid.Row="1"/>
                     <Grid Grid.Column="2" Margin="5" x:Name="gridplaylist" Grid.Row="1">
                         <Grid.RowDefinitions>
@@ -149,10 +104,34 @@
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
                         <StackPanel Orientation="Horizontal" Margin="10,5,5,5">
-                            <TextBlock Text="{Binding MusicManager.SelectedPlaylist.Tracks.Count}"/>
-                            <TextBlock Text=" Tracks" />
+                            <TextBlock Text="{Binding MusicManager.SelectedPlaylist.Tracks.Count}" FontWeight="Bold"/>
+                            <TextBlock Text="{DynamicResource tracks}"  FontWeight="Bold" Margin="5,0,0,0"/>
                         </StackPanel>
-                        <ListView Grid.Row="1" ItemsSource="{Binding MusicManager.SelectedPlaylist.ViewSource}" SelectedItem="{Binding MusicManager.SelectedTrack}" BorderThickness="0" Margin="5,0,5,0" SelectionChanged="ListView_SelectionChanged">
+                        <ListView Grid.Row="1" ItemsSource="{Binding MusicManager.SelectedPlaylist.ViewSource}" SelectedItem="{Binding MusicManager.SelectedTrack}" BorderThickness="0" Margin="5,0,5,0" SelectionChanged="ListView_SelectionChanged"
+                                  DragEnter="ListView_DragEnter" Drop="ListView_Drop" x:Name="listview">
+                            <ListView.Resources>
+                                <ContextMenu x:Key="ItemContextMenu" DataContext="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}, Path=DataContext}">
+                                    <MenuItem Header="{DynamicResource play}" Command="{Binding MusicManager.Commands.PlaySelectedTrack}" IsEnabled="{Binding MusicManager.SelectedTrack.TrackExists}" InputGestureText="Enter"/>
+                                    <Separator />
+                                    <MenuItem Header="{DynamicResource addtracks}">
+                                        <MenuItem Header="{DynamicResource addfiles}" Command="{Binding AddFilesToPlaylist}" InputGestureText="{DynamicResource ins}"/>
+                                        <MenuItem Header="{DynamicResource adddirectories}" Command="{Binding AddFolderToPlaylist}" InputGestureText="{DynamicResource strgins}"/>
+                                    </MenuItem>
+                                    <Separator />
+                                    <MenuItem Header="{DynamicResource queue}">
+                                        <MenuItem Header="{DynamicResource addtoqueue}" Command="{Binding MusicManager.Commands.AddTrackToQueue}" InputGestureText="Q"/>
+                                        <MenuItem Header="{DynamicResource removefromqueue}" Command="{Binding MusicManager.Commands.RemoveFromQueue}" InputGestureText="Alt+Q"/>
+                                        <MenuItem Header="{DynamicResource clearqueue}" Command="{Binding MusicManager.Commands.ClearQueue}" IsEnabled="{Binding MusicManager.Queue.HasTracks}"/>
+                                        <Separator />
+                                        <MenuItem Header="{DynamicResource queuemanager}" Command="{Binding OpenQueueManager}" InputGestureText="{DynamicResource ctrlq}"/>
+                                    </MenuItem>
+                                    <Separator />
+                                    <MenuItem Header="{DynamicResource fileinfos}" Command="{Binding OpenTrackInformations}" IsEnabled="{Binding MusicManager.SelectedTrack.TrackExists}" InputGestureText="F4"/>
+                                    <MenuItem Header="{DynamicResource filelocation}" Command="{Binding MusicManager.Commands.OpenTrackLocation}" InputGestureText="Alt+O" IsEnabled="{Binding MusicManager.SelectedTrack.TrackExists}"/>
+                                    <Separator />
+                                    <MenuItem Header="{DynamicResource remove}" Command="{Binding RemoveSelectedTrack}" InputGestureText="{DynamicResource del}"/>
+                                </ContextMenu>
+                            </ListView.Resources>
                             <ListView.InputBindings>
                                 <KeyBinding Key="Delete" Command="{Binding RemoveSelectedTrack}"/>
                                 <KeyBinding Key="Enter" Command="{Binding MusicManager.Commands.PlaySelectedTrack}"/>
@@ -171,6 +150,40 @@
                                     <Setter Property="VirtualizingStackPanel.VirtualizationMode" Value="Recycling"/>
                                 </Style>
                             </ListView.Style>
+                            <ListView.ItemContainerStyle>
+                                <Style TargetType="ListViewItem" BasedOn="{StaticResource MetroListViewItem}">
+                                    <Style.Resources>
+                                        <LinearGradientBrush x:Key="MouseOverBrush" StartPoint="0.5, 0" EndPoint="0.5, 1">
+                                            <GradientStop Color="#22000000" Offset="0" />
+                                            <GradientStop Color="#44000000" Offset="0.4" />
+                                            <GradientStop Color="#55000000" Offset="0.6" />
+                                            <GradientStop Color="#33000000" Offset="0.9" />
+                                            <GradientStop Color="#22000000" Offset="1" />
+                                        </LinearGradientBrush>
+                                    </Style.Resources>
+                                    <Setter Property="Padding" Value="0,4" />
+                                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                                    <Setter Property="Border.BorderThickness" Value="0,0,0,0.5" />
+                                    <Setter Property="Border.BorderBrush" Value="LightGray" />
+                                    <Setter Property="ContextMenu" Value="{StaticResource ItemContextMenu}"/>
+                                    <Setter Property="LayoutTransform">
+                                        <Setter.Value>
+                                            <ScaleTransform x:Name="transform" />
+                                        </Setter.Value>
+                                    </Setter>
+                                    <Style.Triggers>
+                                        <Trigger Property="jas:ListViewItemDragState.IsBeingDragged" Value="True">
+                                            <Setter Property="FontWeight" Value="DemiBold" />
+                                        </Trigger>
+                                        <Trigger Property="jas:ListViewItemDragState.IsUnderDragCursor" Value="True">
+                                            <Setter Property="Background" Value="{StaticResource MouseOverBrush}" />
+                                        </Trigger>
+                                        <DataTrigger Binding="{Binding TrackExists}" Value="False">
+                                            <Setter Property="Background" Value="#FFF2F2F2"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </ListView.ItemContainerStyle>
                             <ListView.ItemTemplate>
                                 <DataTemplate>
                                     <Grid>
@@ -304,14 +317,27 @@
                             </Border>
                             <StackPanel Orientation="Vertical" Margin="10,10,0,0">
                                 <TextBlock Text="{Binding MusicManager.CSCoreEngine.CurrentTrack.Title}" Foreground="{DynamicResource NormalColorBrush}" TextWrapping="Wrap" x:Name="txt1"/>
-                                <TextBlock FontSize="22" FontFamily="Segoe UI Light" Style="{StaticResource AristTextBlock}" x:Name="txt2"/>
+                                <TextBlock FontSize="22" FontFamily="Segoe UI Light" Style="{StaticResource AristTextBlock}" x:Name="txt2" TextWrapping="Wrap"/>
+                                <StackPanel Orientation="Horizontal" Margin="0,30,0,0" x:Name="stack1">
+                                    <TextBlock Text="{DynamicResource bitrate}"/>
+                                    <TextBlock Text="{Binding MusicManager.CSCoreEngine.CurrentTrack.kbps}" Foreground="{DynamicResource NormalColorBrush}" Margin="5,0,0,0"/>
+                                    <TextBlock Text=" kbps" Foreground="{DynamicResource NormalColorBrush}"/>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal" Margin="0,5,0,0" x:Name="stack2">
+                                    <TextBlock Text="{DynamicResource samplerate}"/>
+                                    <TextBlock Text="{Binding MusicManager.CSCoreEngine.CurrentTrack.kHz}" Foreground="{DynamicResource NormalColorBrush}" Margin="5,0,0,0"/>
+                                    <TextBlock Text=" kHz" Foreground="{DynamicResource NormalColorBrush}"/>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal" Margin="0,5,0,0" x:Name="stack3">
+                                    <TextBlock Text="{DynamicResource format}"/>
+                                    <TextBlock Text="{Binding MusicManager.CSCoreEngine.CurrentTrack.Extension}" Foreground="{DynamicResource NormalColorBrush}" Margin="5,0,0,0"/>
+                                </StackPanel>
                             </StackPanel>
-
                         </StackPanel>
                     </Grid>
                 </Grid>
             </TabItem>
-            <TabItem Header="Aktuelle Wiedergabe">
+            <TabItem Header="{DynamicResource nowplaying}">
                 <Grid VerticalAlignment="Center" HorizontalAlignment="Center">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="auto"/>
@@ -404,17 +430,28 @@
                 </Grid>
             </TabItem>
             <TabItem Header="{DynamicResource settings}" xmlns:settingsconverter="clr-namespace:Hurricane.Settings.Converter" xmlns:tkt="http://schemas.xceed.com/wpf/xaml/toolkit">
-                <Grid DataContext="{Binding SettingsViewModel}">
+                <Grid DataContext="{x:Static viewmodels:SettingsViewModel.Instance}">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="200"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
-                    <ListBox x:Name="lst" SelectedIndex="{Binding SelectedTab}">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="25"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Grid Grid.ColumnSpan="2">
+                        <Button Content="{DynamicResource apply}" HorizontalAlignment="Right" Margin="0,0,10,0" Command="{Binding ApplyChanges}" IsEnabled="{Binding CanApply}"/>
+                    </Grid>
+                    <ListBox x:Name="lst" SelectedIndex="{Binding SelectedTab}" Grid.Row="1">
                         <ListBoxItem Content="{DynamicResource playback}"/>
                         <ListBoxItem Content="{DynamicResource appearance}"/>
+                        <ListBoxItem Content="{DynamicResource behaviour}"/>
                         <ListBoxItem Content="{DynamicResource language}"/>
+                        <ListBoxItem Content="{DynamicResource reset}"/>
+                        <ListBoxItem Content="{DynamicResource registry}"/>
+                        <ListBoxItem Content="{DynamicResource about}"/>
                     </ListBox>
-                    <TabControl Grid.Column="1" SelectedIndex="{Binding SelectedTab}">
+                    <TabControl Grid.Column="1" Grid.Row="1" SelectedIndex="{Binding SelectedTab}">
                         <TabControl.Resources>
                             <Style TargetType="TabItem">
                                 <Setter Property="Visibility" Value="Collapsed"/>
@@ -473,29 +510,8 @@
                         </TabItem>
                         <TabItem Header="Visual">
                             <StackPanel Orientation="Vertical" Margin="10">
-                                <TextBlock Text="Magic Arrow"/>
-                                <Separator />
-                                <CheckBox Content="{DynamicResource showmagicarrowbelowcursor}" IsChecked="{Binding Config.ShowMagicArrowBelowCursor}" Margin="0,10,0,0" Checked="SettingChanged" Unchecked="SettingChanged"/>
-                                <TextBlock Text="{DynamicResource notifications}" Margin="0,20,0,0"/>
-                                <Separator />
-                                <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
-                                    <StackPanel.Resources>
-                                        <settingsconverter:NotificationTypeConverter x:Key="NotificationTypeConverter"/>
-                                    </StackPanel.Resources>
-                                    <TextBlock Text="{DynamicResource trackinformations}" VerticalAlignment="Center"/>
-                                    <TextBlock Text=":" Margin="0,0,10,0" VerticalAlignment="Center"/>
-                                    <ComboBox Width="150" SelectedIndex="{Binding Config.Notification,Converter={StaticResource NotificationTypeConverter}}" SelectionChanged="SettingChanged">
-                                        <ComboBoxItem Content="{DynamicResource disabled}"/>
-                                        <ComboBoxItem Content="{DynamicResource top}"/>
-                                        <ComboBoxItem Content="{DynamicResource rightbottom}"/>
-                                    </ComboBox>
-                                </StackPanel>
-                                <CheckBox IsChecked="{Binding Config.DisableNotificationInGame}" Margin="0,10,0,0" Checked="SettingChanged" Unchecked="SettingChanged">
-                                    <TextBlock Text="{DynamicResource disablenotificationsingame}" TextWrapping="Wrap"/>
-                                </CheckBox>
-                                <TextBlock Text="{DynamicResource theme}" Margin="0,20,0,0"/>
-                                <Separator />
-                                <ComboBox Margin="0,5,0,0" ItemsSource="{Binding Config.Theme.Themes}" SelectedItem="{Binding Config.Theme.SelectedColorTheme}" SelectionChanged="SettingChanged">
+                                <TextBlock Text="{DynamicResource theme}" Style="{StaticResource TextBlockHeader}"/>
+                                <ComboBox Margin="0,10,0,0" ItemsSource="{Binding Config.Theme.Themes}" SelectedItem="{Binding Config.Theme.SelectedColorTheme}" SelectionChanged="SettingChanged" Width="300" HorizontalAlignment="Left">
                                     <ComboBox.ItemTemplate>
                                         <DataTemplate>
                                             <DockPanel>
@@ -507,8 +523,47 @@
                                 </ComboBox>
                                 <DockPanel Margin="0,5,0,0" >
                                     <CheckBox Content="{DynamicResource SpectrumAnalyzerColor}" VerticalAlignment="Center" IsChecked="{Binding Config.Theme.UseCustomSpectrumAnalyzerColor}" Checked="SettingChanged" Unchecked="SettingChanged"/>
-                                    <tkt:ColorPicker Margin="10,0,0,0" IsEnabled="{Binding Config.Theme.UseCustomSpectrumAnalyzerColor}" SelectedColor="{Binding Config.Theme.SpectrumAnalyzerColor}" SelectedColorChanged="SettingChanged"/>
+                                    <tkt:ColorPicker Margin="10,0,0,0" IsEnabled="{Binding Config.Theme.UseCustomSpectrumAnalyzerColor}" SelectedColor="{Binding Config.Theme.SpectrumAnalyzerColor}" SelectedColorChanged="SettingChanged" Width="200" HorizontalAlignment="Left"/>
                                 </DockPanel>
+                            </StackPanel>
+                        </TabItem>
+                        <TabItem Header="Behaviour">
+                            <StackPanel Orientation="Vertical" Margin="10">
+                                <TextBlock Text="Magic Arrow" Style="{StaticResource TextBlockHeader}"/>
+                                <CheckBox Content="{DynamicResource showmagicarrowbelowcursor}" IsChecked="{Binding Config.ShowMagicArrowBelowCursor}" Margin="0,10,0,0" Checked="SettingChanged" Unchecked="SettingChanged"/>
+                                <TextBlock Text="{DynamicResource notifications}" Margin="0,20,0,0" Style="{StaticResource TextBlockHeader}"/>
+                                <Grid Margin="0,5,0,0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="125"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.Resources>
+                                        <settingsconverter:NotificationTypeConverter x:Key="NotificationTypeConverter"/>
+                                    </Grid.Resources>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="{DynamicResource trackinformations}" VerticalAlignment="Center"/>
+                                        <TextBlock Text=":" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal" Grid.Column="1">
+                                        <ComboBox Width="150" SelectedIndex="{Binding Config.Notification,Converter={StaticResource NotificationTypeConverter}}" SelectionChanged="SettingChanged">
+                                            <ComboBoxItem Content="{DynamicResource disabled}"/>
+                                            <ComboBoxItem Content="{DynamicResource top}"/>
+                                            <ComboBoxItem Content="{DynamicResource rightbottom}"/>
+                                        </ComboBox>
+                                        <Button Content="{DynamicResource test}" Margin="5,0,0,0" Width="70" Command="{Binding TestNotification}"/>
+                                    </StackPanel>
+                                </Grid>
+                                <Grid Margin="0,10,0,0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="125"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="{DynamicResource showtime}" VerticalAlignment="Center"/>
+                                    <controls:NumericUpDown Interval="100" Width="125" Grid.Column="1" HorizontalAlignment="Left" Value="{Binding Config.NotificationShowTime}" ValueChanged="SettingChanged" StringFormat="{}{0} ms"/>
+                                </Grid>
+                                <CheckBox IsChecked="{Binding Config.DisableNotificationInGame}" Margin="0,10,0,0" Checked="SettingChanged" Unchecked="SettingChanged">
+                                    <TextBlock Text="{DynamicResource disablenotificationsingame}" TextWrapping="Wrap"/>
+                                </CheckBox>
                             </StackPanel>
                         </TabItem>
                         <TabItem Header="Language">
@@ -529,6 +584,34 @@
                                     </DataTemplate>
                                 </ListBox.ItemTemplate>
                             </ListBox>
+                        </TabItem>
+                        <TabItem Header="Reset">
+                            <StackPanel Orientation="Vertical">
+                                <TextBlock Text="{DynamicResource importtrack}" Style="{StaticResource TextBlockHeader}"/>
+                                <Button Margin="0,10,0,0" Content="{DynamicResource reset}" HorizontalAlignment="Left" Width="200" IsEnabled="{Binding Config.RememberTrackImportPlaylist}" Command="{Binding ResetTrackImport}"/>
+                                <TextBlock Text="Hurricane" Style="{StaticResource TextBlockHeader}" Margin="0,20,0,0"/>
+                                <Button Margin="0,10,0,0" Content="{DynamicResource totalreset}" Foreground="#FFCF0606" Command="{Binding TotalReset}" HorizontalAlignment="Left" Width="200"/>
+                            </StackPanel>
+                        </TabItem>
+                        <TabItem Header="Registry">
+                            <ScrollViewer>
+                                <StackPanel Orientation="Vertical">
+                                    <TextBlock Style="{StaticResource TextBlockHeader}" Text="{DynamicResource contextmenuitemforextensions}"/>
+                                    <ItemsControl ItemsSource="{Binding RegistryManager.ContextMenuItems}" Margin="0,10,0,0">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <StackPanel Orientation="Horizontal">
+                                                    <controls:ToggleSwitchButton IsChecked="{Binding IsRegistered}"/>
+                                                    <TextBlock Text="{Binding Extension}" VerticalAlignment="Center"/>
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </StackPanel>
+                            </ScrollViewer>
+                        </TabItem>
+                        <TabItem Header="About">
+                            <views:AboutView />
                         </TabItem>
                     </TabControl>
                 </Grid>

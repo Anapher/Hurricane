@@ -87,8 +87,10 @@ namespace Hurricane
                 LoadCustomPreview();
                 viewmodel.StartVisualization += CSCoreEngine_StartVisualization;
                 viewmodel.TrackChanged += CSCoreEngine_TrackChanged;
+                viewmodel.PositionChanged += viewmodel_PositionChanged;
                 viewmodel.Loaded(this);
-                viewmodel.MusicManager.CSCoreEngine.PlayStateChanged += (s, ec) => { thumbnailButtonPlayPause.Icon = viewmodel.MusicManager.CSCoreEngine.CurrentState == CSCore.SoundOut.PlaybackState.Playing ? Utilities.ImageHelper.GetIconFromResource("/Resources/MediaIcons/ThumbButtons/pause.ico") : Utilities.ImageHelper.GetIconFromResource("/Resources/MediaIcons/ThumbButtons/play.ico"); };
+                viewmodel.MusicManager.CSCoreEngine.PlaybackStateChanged += CSCoreEngine_PlaybackStateChanged;
+                
                 AdvancedWindowSkin.MusicManagerEnabled(viewmodel.MusicManager);
                 SmartWindowSkin.MusicManagerEnabled(viewmodel.MusicManager);
             }
@@ -182,7 +184,7 @@ namespace Hurricane
             MagicArrow.DockManager.DragStop();
         }
 
-        #region Thumbnail
+        #region Taskbar
         TabbedThumbnail customPreview;
         ThumbnailToolBarButton thumbnailButtonPlayPause;
         protected void LoadCustomPreview()
@@ -191,7 +193,6 @@ namespace Hurricane
             customPreview = new TabbedThumbnail(handle, handle);
             TaskbarManager.Instance.TabbedThumbnail.AddThumbnailPreview(customPreview);
             customPreview.Title = "Hurricane";
-
             customPreview.SetWindowIcon(Utilities.ImageHelper.GetIconFromResource("Resources/App/icon.ico"));
             customPreview.DisplayFrameAroundBitmap = true;
             customPreview.TabbedThumbnailBitmapRequested += (s, ec) =>
@@ -226,6 +227,26 @@ namespace Hurricane
             TaskbarManager.Instance.ThumbnailToolBars.AddButtons(handle, thumbnailButtonBack, thumbnailButtonPlayPause, thumbnailButtonNext);
         }
 
+        void viewmodel_PositionChanged(object sender, Music.PositionChangedEventArgs e)
+        {
+            double progress = e.NewPosition / (double)e.TrackLength;
+            if (taskbarinfo.ProgressValue != progress) this.taskbarinfo.ProgressValue = progress;
+        }
+
+        void CSCoreEngine_PlaybackStateChanged(object sender, Music.PlayStateChangedEventArgs e)
+        {
+            if (e.NewPlaybackState == CSCore.SoundOut.PlaybackState.Playing)
+            {
+                this.taskbarinfo.ProgressState = System.Windows.Shell.TaskbarItemProgressState.Normal;
+                thumbnailButtonPlayPause.Icon = Utilities.ImageHelper.GetIconFromResource("/Resources/MediaIcons/ThumbButtons/pause.ico");
+            }
+            else
+            {
+                this.taskbarinfo.ProgressState = System.Windows.Shell.TaskbarItemProgressState.Paused;
+                thumbnailButtonPlayPause.Icon = Utilities.ImageHelper.GetIconFromResource("/Resources/MediaIcons/ThumbButtons/play.ico");
+            }
+        }
+
         void CSCoreEngine_TrackChanged(object sender, Music.TrackChangedEventArgs e)
         {
             if (e.NewTrack != null)
@@ -246,6 +267,7 @@ namespace Hurricane
         {
             if (MagicArrow.DockManager.CurrentSide == Hurricane.MagicArrow.DockManager.DockingSide.None)
             {
+                if (Hurricane.Settings.HurricaneSettings.Instance.Config.ApplicationState == null) Hurricane.Settings.HurricaneSettings.Instance.Config.ApplicationState = new Hurricane.MagicArrow.DockManager.DockingApplicationState();
                 var appstate = Hurricane.Settings.HurricaneSettings.Instance.Config.ApplicationState;
                 appstate.Height = this.Height;
                 appstate.Width = this.Width;

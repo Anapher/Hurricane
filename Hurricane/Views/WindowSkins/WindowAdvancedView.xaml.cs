@@ -21,9 +21,12 @@ namespace Hurricane.Views.WindowSkins
     /// </summary>
     public partial class WindowAdvancedView : UserControl, IWindowSkin
     {
+        private Hurricane.Resources.Styles.DragDropListView.ServiceProviders.UI.ListViewDragDropManager<Music.Track> dragMgr;
         public WindowAdvancedView()
         {
             InitializeComponent();
+            dragMgr = new Resources.Styles.DragDropListView.ServiceProviders.UI.ListViewDragDropManager<Music.Track>(this.listview);
+            dragMgr.ShowDragAdorner = true;
             this.Configuration = new WindowSkinConfiguration() { MaxHeight = double.PositiveInfinity, MaxWidth = double.PositiveInfinity, MinHeight = 500, MinWidth = 850, ShowSystemMenuOnRightClick = true, ShowTitleBar = false, ShowWindowControls = true, NeedMovingHelp = true };
             ViewModels.SettingsViewModel.Instance.Load();
         }
@@ -32,7 +35,11 @@ namespace Hurricane.Views.WindowSkins
 
         public event EventHandler DragMoveStop;
 
-        public event EventHandler CloseRequest;
+        public event EventHandler CloseRequest
+        {
+            add { }
+            remove { }
+        }
 
         public event EventHandler ToggleWindowState;
 
@@ -82,24 +89,37 @@ namespace Hurricane.Views.WindowSkins
             storyb.Begin(this);
         }
 
-        private void FadeInAnimation(TimeSpan BeginTime, FrameworkElement control)
+        private Storyboard FadeInAnimation(int interval, params FrameworkElement[] controls)
         {
-            control.BeginAnimation(FrameworkElement.OpacityProperty, null);
-            control.Opacity = 0;
             Storyboard story = new Storyboard();
-            DoubleAnimation da = new DoubleAnimation(0, 1, TimeSpan.FromMilliseconds(300));
-            ThicknessAnimation ta = new ThicknessAnimation(new Thickness(-10, 0, 10, 0), new Thickness(0), TimeSpan.FromMilliseconds(400));
-            Storyboard.SetTarget(da, control);
-            Storyboard.SetTarget(ta, control);
-            Storyboard.SetTargetProperty(da, new PropertyPath(FrameworkElement.OpacityProperty));
-            Storyboard.SetTargetProperty(ta, new PropertyPath(FrameworkElement.MarginProperty));
+            int counter = 0;
+            foreach (var control in controls)
+            {
+                control.BeginAnimation(FrameworkElement.OpacityProperty, null);
+                control.BeginAnimation(FrameworkElement.MarginProperty, null);
+                control.Opacity = 0;
+                control.Margin = new Thickness(0, control.Margin.Top, 0, 0);
+                DoubleAnimation da = new DoubleAnimation(0, 1, TimeSpan.FromMilliseconds(300));
+                ThicknessAnimation ta = new ThicknessAnimation(new Thickness(-10, control.Margin.Top, 10, 0), new Thickness(0, control.Margin.Top, 0, 0), TimeSpan.FromMilliseconds(400));
+                Storyboard.SetTarget(da, control);
+                Storyboard.SetTarget(ta, control);
+                Storyboard.SetTargetProperty(da, new PropertyPath(FrameworkElement.OpacityProperty));
+                Storyboard.SetTargetProperty(ta, new PropertyPath(FrameworkElement.MarginProperty));
+                story.Children.Add(da);
+                story.Children.Add(ta);
+                da.BeginTime = TimeSpan.FromMilliseconds(counter * interval);
+                ta.BeginTime = TimeSpan.FromMilliseconds(counter * interval);
+                counter++;
+            }
 
-            story.Children.Add(da);
-            story.Children.Add(ta);
-            da.BeginTime = BeginTime;
-            ta.BeginTime = BeginTime;
-            story.Completed += (s, e) => { control.Opacity = 1; };
-            story.Begin(this);
+            story.Completed += (s, e) =>
+            {
+                foreach (var c in controls)
+                {
+                    c.Opacity = 1;
+                } 
+            };
+            return story;
         }
         #endregion
 
@@ -114,14 +134,16 @@ namespace Hurricane.Views.WindowSkins
             if (DragMoveStop != null) DragMoveStop(this, EventArgs.Empty);
         }
 
+        protected Storyboard story1;
+        protected Storyboard story2;
         void CSCoreEngine_TrackChanged(object sender, Music.TrackChangedEventArgs e)
         {
-            FadeInAnimation(TimeSpan.Zero, txt1);
-            FadeInAnimation(TimeSpan.FromMilliseconds(300), txt2);
-
-            FadeInAnimation(TimeSpan.Zero, full1);
-            FadeInAnimation(TimeSpan.FromMilliseconds(300), full2);
-            FadeInAnimation(TimeSpan.FromMilliseconds(600), full3);
+            if (story1 != null) { story1.Stop(this); }
+            if (story2 != null) { story2.Stop(this);  }
+            story1 = FadeInAnimation(300, txt1, txt2, stack1, stack2, stack3);
+            story2 = FadeInAnimation(300, full1, full2, full3);
+            story1.Begin(this, true);
+            story2.Begin(this, true);
         }
 
         private Music.MusicManager manager;
@@ -140,6 +162,29 @@ namespace Hurricane.Views.WindowSkins
         private void SettingChanged(object sender, RoutedEventArgs e)
         {
             ViewModels.SettingsViewModel.Instance.StateChanged();
+        }
+
+        private void UserControl_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key.ToString().Length == 1 && char.IsLetterOrDigit(Convert.ToChar(e.Key.ToString())) && !Keyboard.IsKeyDown(Key.LeftShift) && !Keyboard.IsKeyDown(Key.LeftCtrl) && !Keyboard.IsKeyDown(Key.LeftAlt))
+            {
+                txtSearch.Focus();
+            }
+        }
+
+        private void ListView_DragEnter(object sender, DragEventArgs e)
+        {
+            e.Effects = DragDropEffects.Move;
+        }
+
+        private void ListView_Drop(object sender, DragEventArgs e)
+        {
+            if (e.Effects == DragDropEffects.None)
+                return;
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                ViewModels.MainViewModel.Instance.DragDropFiles((string[])e.Data.GetData(DataFormats.FileDrop));
+            }
         }
     }
 }

@@ -12,17 +12,9 @@
         DataContext="{x:Static viewmodels:MainViewModel.Instance}"
         Title="Hurricane" SizeToContent="Manual" x:Name="window" Icon="/Resources/App/icon.ico"
         IsWindowDraggable="False" GlowBrush="{DynamicResource AccentColorBrush}" ex:WindowCustomizer.CanMaximize="false" ShowIconOnTitleBar="False" Height="400" Width="500">
-    <Window.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/Resources/Styles/TimelineSlider.xaml"/>
-                <ResourceDictionary Source="/Resources/Styles/VolumeSlider.xaml"/>
-                <ResourceDictionary Source="/Resources/Styles/MetroWindowStyle.xaml"/>
-            </ResourceDictionary.MergedDictionaries>
-            <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
-            <converter:FalseOnEmptyString x:Key="FalseOnEmptyString"/>
-        </ResourceDictionary>
-    </Window.Resources>
+    <Window.TaskbarItemInfo>
+        <TaskbarItemInfo x:Name="taskbarinfo"/>
+    </Window.TaskbarItemInfo>
     <Window.InputBindings>
         <KeyBinding Key="Space" Command="{Binding MusicManager.Commands.TogglePlayPause}"/>
     </Window.InputBindings>

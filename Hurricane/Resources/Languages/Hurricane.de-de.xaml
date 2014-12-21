@@ -26,6 +26,7 @@
     <system:String x:Key="removetrack">Track entfernen</system:String>
     <system:String x:Key="removeduplicates">Doppelte Tracks entfernen</system:String>
     <system:String x:Key="noartist">Kein Künstler</system:String>
+    <system:String x:Key="nowplaying"> Aktuelle Wiedergabe </system:String>
 
     <system:String x:Key="presets">Vorlagen</system:String>
     <system:String x:Key="bass">Bass</system:String>
@@ -80,11 +81,16 @@
     <system:String x:Key="played">Abgespielt</system:String>
     <system:String x:Key="never">Nie</system:String>
 
-    <system:String x:Key="about1">Copyright © 2014 Alkaline. Alle Rechte vorbehalten.</system:String>
-    <system:String x:Key="about2">Hurricane wird durch das Open-Source-Projekt</system:String>
-    <system:String x:Key="about3">und den folgenden</system:String>
-    <system:String x:Key="about4">Bibilotheken ermöglicht:</system:String>
-    <system:String x:Key="about5">Danke an die Ersteller der Bilder, die in diesem Programm verwendet werden:</system:String>
+    <system:String x:Key="aboutcopyright">Copyright © 2014 Alkaline. Alle Rechte vorbehalten.</system:String>
+    <system:String x:Key="aboutthanks1">An alle talentierten Ersteller der Bilder und Bibilotheken, die oben gennant werden.</system:String>
+    <system:String x:Key="aboutthanks2">An ein hübsches Mädchen aus meiner Schulklasse, die mir die Inspiration für den Namen gab (Sie weiß es nicht).</system:String>
+    <system:String x:Key="aboutthanks3">An {0} und {1} (welcher auch CSCore entwickelt hat) für die hilfreiche Unterstüztung.</system:String>
+    <system:String x:Key="aboutthanks4">An die {0} Community für ihr Testen, Fehler melden und ihre guten Ideen.</system:String>
+    <system:String x:Key="website">Website</system:String>
+    <system:String x:Key="licence">Lizenz</system:String>
+    <system:String x:Key="libraries">BIBLIOTHEKEN</system:String>
+    <system:String x:Key="images">GRAFIKEN</system:String>
+    <system:String x:Key="thanks">DANKE</system:String>
     
     <system:String x:Key="notifications">Benachrichtigungen</system:String>
     <system:String x:Key="appearance">Aussehen</system:String>
@@ -170,4 +176,13 @@
     <system:String x:Key="enableadvancedview">Erweiterte Ansicht aktivieren</system:String>
     <system:String x:Key="test">Testen</system:String>
     <system:String x:Key="showtime">Anzeigedauer:</system:String>
+    <system:String x:Key="tracks">Tracks</system:String>
+    <system:String x:Key="bitrate">Bitrate</system:String>
+    <system:String x:Key="remember">Merken</system:String>
+    <system:String x:Key="alsoafterrestart">Auch nach Neustart</system:String>
+    <system:String x:Key="canberesetedinsettings">Kann in den Einstellungen zurückgesetzt werden</system:String>
+    <system:String x:Key="totalreset">Alles zurücksetzten</system:String>
+    <system:String x:Key="PlayWithHurricane">Mit Hurricane abspielen</system:String>
+    <system:String x:Key="registry">Registrierung</system:String>
+    <system:String x:Key="contextmenuitemforextensions">Kontextmenü Eintrag für Dateiendungen</system:String>
 </ResourceDictionary>

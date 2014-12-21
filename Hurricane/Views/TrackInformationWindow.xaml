@@ -7,6 +7,7 @@
     <Window.Resources>
         <converter:RoundSizeConverter x:Key="RoundSizeConverter"/>
         <converter:NeverIfDateIsNull x:Key="NeverIfDateIsNull"/>
+        <converter:FalseOnEmptyString x:Key="FalseOnEmptyString"/>
     </Window.Resources>
     <Grid>
         <StackPanel Orientation="Vertical" Margin="10">
@@ -64,7 +65,18 @@
                     <TextBlock Text="{StaticResource album}"/>
                     <TextBlock Text=":"/>
                 </StackPanel>
-                <TextBlock Text="{Binding ElementName=window,Path=CurrentTrack.TagInfo.Album,TargetNullValue=-}" Grid.Column="1"/>
+                <TextBlock Grid.Column="1">
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="Text" Value="{Binding ElementName=window,Path=CurrentTrack.TagInfo.Album}"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding ElementName=window,Path=CurrentTrack.TagInfo.Album,Converter={StaticResource FalseOnEmptyString}}" Value="False">
+                                    <Setter Property="Text" Value="-"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
             </Grid>
             <Grid Margin="0,5,0,0">
                 <Grid.ColumnDefinitions>

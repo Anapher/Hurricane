@@ -76,11 +76,10 @@ namespace Hurricane.Music
                     playselectedtrack = new RelayCommand((object parameter) =>
                     {
                         var selectedtrack = musicmanager.SelectedTrack;
+                        if (selectedtrack == musicmanager.CSCoreEngine.CurrentTrack) { musicmanager.CSCoreEngine.Position = 0; }
                         selectedtrack.RefreshTrackExists();
-                        if (selectedtrack != musicmanager.CSCoreEngine.CurrentTrack && selectedtrack.TrackExists)
-                        {
+                        if (selectedtrack.TrackExists)
                             musicmanager.PlayTrack(selectedtrack, musicmanager.SelectedPlaylist);
-                        }
                     });
                 return playselectedtrack;
             }

@@ -26,6 +26,7 @@
     <system:String x:Key="removetrack">Remove track</system:String>
     <system:String x:Key="removeduplicates">Remove duplicates</system:String>
     <system:String x:Key="noartist">no artist</system:String>
+    <system:String x:Key="nowplaying"> Now Playing </system:String>
 
     <system:String x:Key="presets">Presets</system:String>
     <system:String x:Key="bass">Bass</system:String>
@@ -80,11 +81,16 @@
     <system:String x:Key="played">Played</system:String>
     <system:String x:Key="never">Never</system:String>
 
-    <system:String x:Key="about1">Copyright © 2014 Alkaline. All Rights Reserved.</system:String>
-    <system:String x:Key="about2">Hurricane is made possible by the</system:String>
-    <system:String x:Key="about3">open source project and the</system:String>
-    <system:String x:Key="about4">following libraries:</system:String>
-    <system:String x:Key="about5">Thanks to all the creators of the images used in this application:</system:String>
+    <system:String x:Key="aboutcopyright">Copyright © 2014 Alkaline. All Rights Reserved.</system:String>
+    <system:String x:Key="aboutthanks1">To all the talented creators of the images and libraries mentioned above.</system:String>
+    <system:String x:Key="aboutthanks2">To a really beautiful girl from my school class who gave me the inspiration for the name (she doesn't know that).</system:String>
+    <system:String x:Key="aboutthanks3">To {0} and {1} (who also developed CSCore) for supporting me.</system:String>
+    <system:String x:Key="aboutthanks4">To the {0} community for their testing, bug reports and ideas.</system:String>
+    <system:String x:Key="website">Website</system:String>
+    <system:String x:Key="licence">Licence</system:String>
+    <system:String x:Key="libries">LIBRARIES</system:String>
+    <system:String x:Key="images">IMAGES</system:String>
+    <system:String x:Key="thanks">THANKS</system:String>
 
     <system:String x:Key="notifications">Notifications</system:String>
     <system:String x:Key="appearance">Appearance</system:String>
@@ -169,4 +175,12 @@
     <system:String x:Key="enableadvancedview">Enable advanced view</system:String>
     <system:String x:Key="test">Test</system:String>
     <system:String x:Key="showtime">Show time:</system:String>
+    <system:String x:Key="tracks">Tracks</system:String>
+    <system:String x:Key="bitrate">Bitrate</system:String>
+    <system:String x:Key="remember">Remember</system:String>
+    <system:String x:Key="alsoafterrestart">Also after restart</system:String>
+    <system:String x:Key="totalreset">Total reset</system:String>
+    <system:String x:Key="PlayWithHurricane">Play with Hurricane</system:String>
+    <system:String x:Key="registry">Registry</system:String>
+    <system:String x:Key="contextmenuitemforextensions">Context menu item for extensions</system:String>
 </ResourceDictionary>

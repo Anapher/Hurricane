@@ -24,7 +24,8 @@ namespace Hurricane.Music
         public event EventHandler StartVisualization;
         public event EventHandler TrackFinished;
         public event EventHandler<TrackChangedEventArgs> TrackChanged;
-        public event EventHandler PlayStateChanged;
+        public event EventHandler<PlayStateChangedEventArgs> PlaybackStateChanged;
+        public event EventHandler<PositionChangedEventArgs> PositionChanged;
 
         #endregion
 
@@ -49,6 +50,7 @@ namespace Hurricane.Music
                 if (SoundSource != null)
                     SoundSource.Position = value;
                 OnPropertyChanged("CurrentTrackPosition");
+                if (PositionChanged != null) PositionChanged(this, new PositionChangedEventArgs((int)this.CurrentTrackPosition.TotalSeconds, (int)this.CurrentTrackLength.TotalSeconds));
             }
         }
 
@@ -134,7 +136,6 @@ namespace Hurricane.Music
 
             //the tag of the trackbar contains the index of the filter
             EqualizerFilter filter = MusicEqualizer.SampleFilters[number];
-            //filter.AverageGainDB = newvalue;
         }
 
         protected void SetAllEqualizerSettings()
@@ -148,6 +149,7 @@ namespace Hurricane.Music
         #endregion
 
         #region Public Methods
+        protected LinearFadeStrategy linearFadeStrategy;
         public void OpenTrack(Track track)
         {
             if (CurrentTrack != null) { CurrentTrack.IsPlaying = false; CurrentTrack.Unload(); }
@@ -164,6 +166,7 @@ namespace Hurricane.Music
             Equalizer equalizer;
             SimpleNotificationSource simpleNotificationSource;
             SingleBlockNotificationStream singleBlockNotificationStream;
+
             SoundSource = SoundSource
     .AppendSource(Equalizer.Create10BandEqualizer, out equalizer)
     .AppendSource(x => new SimpleNotificationSource(x) { Interval = 100 }, out simpleNotificationSource)
@@ -195,15 +198,14 @@ namespace Hurricane.Music
             if (soundOut.PlaybackState == PlaybackState.Playing || soundOut.PlaybackState == PlaybackState.Paused)
             {
                 manualstop = true;
-                soundOut.Stop();
+               soundOut.Stop();
             }
         }
 
         public async void TogglePlayPause()
         {
             if (CurrentTrack == null) return;
-            if (fader != null && fader.IsFading) { fader.CancelFading(); await Task.Delay(20); } //To be sure that it canceled
-            fader = new VolumeFading();
+            if (fader != null && fader.IsFading) { fader.CancelFading(); }
             if (soundOut.PlaybackState == PlaybackState.Playing)
             {
                 isfadingout = true;
@@ -226,7 +228,7 @@ namespace Hurricane.Music
         {
             OnPropertyChanged("IsPlaying");
             OnPropertyChanged("CurrentState");
-            if (PlayStateChanged != null) PlayStateChanged(this, EventArgs.Empty);
+            if (PlaybackStateChanged != null) PlaybackStateChanged(this, new PlayStateChangedEventArgs(this.CurrentState));
         }
 
         void notificationSource_SingleBlockRead(object sender, SingleBlockReadEventArgs e)
@@ -239,6 +241,7 @@ namespace Hurricane.Music
         {
             OnPropertyChanged("Position");
             OnPropertyChanged("CurrentTrackPosition");
+            if (PositionChanged != null) System.Windows.Application.Current.Dispatcher.Invoke(() => PositionChanged(this, new PositionChangedEventArgs((int)this.CurrentTrackPosition.TotalSeconds, (int)this.CurrentTrackLength.TotalSeconds)));
         }
         #endregion
 
@@ -248,6 +251,7 @@ namespace Hurricane.Music
             client = new MMNotificationClient();
             RefreshSoundOut();
             client.DefaultDeviceChanged += client_DefaultDeviceChanged;
+            fader = new VolumeFading();
         }
 
         #endregion
@@ -347,7 +351,12 @@ namespace Hurricane.Music
         #region IDisposable Support
         public void Dispose()
         {
-            if (soundOut != null) { StopPlayback(); soundOut.Dispose(); }
+            if (soundOut != null)
+            {
+                if (fader.IsFading) { fader.CancelFading(); fader.WaitForCancel(); }
+                StopPlayback();
+                soundOut.Dispose();
+            }
             if (SoundSource != null) SoundSource.Dispose();
             if (client != null) client.Dispose();
         }

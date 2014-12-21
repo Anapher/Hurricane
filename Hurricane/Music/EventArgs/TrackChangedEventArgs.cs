@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Hurricane.Music
 {
-  public  class TrackChangedEventArgs : EventArgs
+    public class TrackChangedEventArgs : EventArgs
     {
         private Track newtrack;
         public Track NewTrack
@@ -14,7 +14,7 @@ namespace Hurricane.Music
             get { return newtrack; }
             protected set { newtrack = value; }
         }
-        
+
         public TrackChangedEventArgs(Track newtrack)
         {
             this.NewTrack = newtrack;

@@ -42,6 +42,8 @@ namespace Hurricane.Settings
         public string Language { get; set; }
         public ApplicationThemeManager Theme { get; set; }
         public bool EnableAdvancedView { get; set; }
+        public bool RememberTrackImportPlaylist { get; set; }
+        public string PlaylistToImportTrack { get; set; }
 
         //Notifications
         public Notification.NotificationType Notification { get; set; }
@@ -88,6 +90,8 @@ namespace Hurricane.Settings
             Theme.LoadStandard();
             EnableAdvancedView = true;
             NotificationShowTime = 5000;
+            RememberTrackImportPlaylist = false;
+            PlaylistToImportTrack = null;
         }
 
         public ConfigSettings()
@@ -144,7 +148,8 @@ namespace Hurricane.Settings
                 CompareTwoValues(this.DisableNotificationInGame, other.DisableNotificationInGame) &&
                 CompareTwoValues(this.Theme, other.Theme) &&
                 CompareTwoValues(this.EnableAdvancedView, other.EnableAdvancedView) &&
-                CompareTwoValues(this.NotificationShowTime, other.NotificationShowTime));
+                CompareTwoValues(this.NotificationShowTime, other.NotificationShowTime) &&
+                CompareTwoValues(this.RememberTrackImportPlaylist, other.RememberTrackImportPlaylist));
         }
 
         protected bool CompareTwoValues(object v1, object v2)
