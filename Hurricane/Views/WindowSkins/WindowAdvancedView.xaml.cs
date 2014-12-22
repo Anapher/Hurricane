@@ -141,7 +141,7 @@ namespace Hurricane.Views.WindowSkins
             if (story1 != null) { story1.Stop(this); }
             if (story2 != null) { story2.Stop(this);  }
             story1 = FadeInAnimation(300, txt1, txt2, stack1, stack2, stack3);
-            story2 = FadeInAnimation(300, full1, full2, full3);
+            story2 = FadeInAnimation(300, full1, full2);
             story1.Begin(this, true);
             story2.Begin(this, true);
         }

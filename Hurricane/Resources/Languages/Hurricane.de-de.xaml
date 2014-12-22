@@ -184,5 +184,10 @@
     <system:String x:Key="totalreset">Alles zurücksetzten</system:String>
     <system:String x:Key="PlayWithHurricane">Mit Hurricane abspielen</system:String>
     <system:String x:Key="registry">Registrierung</system:String>
-    <system:String x:Key="contextmenuitemforextensions">Kontextmenü Eintrag für Dateiendungen</system:String>
+    <system:String x:Key="contextmenuitemforextensions">Kontextmenüeintrag für Dateiendungen</system:String>
+
+    <system:String x:Key="themeupper">DESIGN</system:String>
+    <system:String x:Key="notificationsupper">BENACHRICHTIGUNGEN</system:String>
+    <system:String x:Key="importtrackupper">TRACK IMPORTIEREN</system:String>
+    <system:String x:Key="contextmenuitemforextensionsupper">KONTEXTMENÜEINTRAG FÜR DATEIENDUNGEN</system:String>
 </ResourceDictionary>

@@ -45,7 +45,7 @@ namespace Hurricane.Music
         {
             if (IsFading)
             {
-                cancelledwaiter.WaitOne();
+                cancelledwaiter.WaitOne(50);
             }
         }
 

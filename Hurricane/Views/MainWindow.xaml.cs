@@ -53,19 +53,31 @@ namespace Hurricane
             this.Loaded += MainWindow_Loaded;
 
             MagicArrow.DockManager.Docked += (s, e) => { ApplyHostWindow(SmartWindowSkin); };
-            MagicArrow.DockManager.Undocked += (s, e) => { if(Hurricane.Settings.HurricaneSettings.Instance.Config.EnableAdvancedView) ApplyHostWindow(AdvancedWindowSkin); };
+            MagicArrow.DockManager.Undocked += (s, e) => { 
+                if(Hurricane.Settings.HurricaneSettings.Instance.Config.EnableAdvancedView) ApplyHostWindow(AdvancedWindowSkin);
+            };
+
             var appsettings = Hurricane.Settings.HurricaneSettings.Instance.Config;
-            if (appsettings.ApplicationState != null)
+            if (appsettings.ApplicationState == null)
             {
-                if (appsettings.ApplicationState.CurrentSide == Hurricane.MagicArrow.DockManager.DockingSide.None)
-                {
-                    this.Height = appsettings.ApplicationState.Height;
-                    this.Width = appsettings.ApplicationState.Width;
-                    this.Left = appsettings.ApplicationState.Left;
-                    this.Top = appsettings.ApplicationState.Top;
-                }
-                else { MagicArrow.DockManager.CurrentSide = appsettings.ApplicationState.CurrentSide; }
+                appsettings.ApplicationState = new MagicArrow.DockManager.DockingApplicationState();
+                appsettings.ApplicationState.CurrentSide = Hurricane.MagicArrow.DockManager.DockingSide.None;
+                appsettings.ApplicationState.Height = 600;
+                appsettings.ApplicationState.Width = 1000;
+                this.WindowStartupLocation = System.Windows.WindowStartupLocation.CenterScreen;
+                appsettings.ApplicationState.Left = this.Left;
+                appsettings.ApplicationState.Top = this.Top;
             }
+
+            if (appsettings.ApplicationState.CurrentSide == Hurricane.MagicArrow.DockManager.DockingSide.None)
+            {
+                this.Height = appsettings.ApplicationState.Height;
+                this.Width = appsettings.ApplicationState.Width;
+                this.Left = appsettings.ApplicationState.Left;
+                this.Top = appsettings.ApplicationState.Top;
+            }
+
+            MagicArrow.DockManager.CurrentSide = appsettings.ApplicationState.CurrentSide; 
         }
 
         void MainWindow_Loaded(object sender, RoutedEventArgs e)
@@ -107,6 +119,7 @@ namespace Hurricane
 
         protected void ApplyHostWindow(IWindowSkin skin, bool saveinformations = true)
         {
+            System.Diagnostics.Debug.Print("hallo: "+ (skin == AdvancedWindowSkin).ToString());
             if (skin == HostedWindow) return;
             if (HostedWindow != null)
             {

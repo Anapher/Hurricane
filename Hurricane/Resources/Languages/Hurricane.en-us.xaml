@@ -183,4 +183,9 @@
     <system:String x:Key="PlayWithHurricane">Play with Hurricane</system:String>
     <system:String x:Key="registry">Registry</system:String>
     <system:String x:Key="contextmenuitemforextensions">Context menu item for extensions</system:String>
+
+    <system:String x:Key="themeupper">DESIGN</system:String>
+    <system:String x:Key="notificationsupper">NOTIFICATIONS</system:String>
+    <system:String x:Key="importtrackupper">IMPORT TRACK</system:String>
+    <system:String x:Key="contextmenuitemforextensionsupper">CONTEXT MENU ITEM FOR EXTENSIONS</system:String>
 </ResourceDictionary>

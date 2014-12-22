@@ -120,6 +120,7 @@ namespace Hurricane.ViewModels
 
         public void Closing()
         {
+            MusicManager.CSCoreEngine.StopPlayback();
             if (EqualizerIsOpen) equalizerwindow.Close();
             if (MusicManager != null)
             {

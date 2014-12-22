@@ -149,7 +149,6 @@ namespace Hurricane.Music
         #endregion
 
         #region Public Methods
-        protected LinearFadeStrategy linearFadeStrategy;
         public void OpenTrack(Track track)
         {
             if (CurrentTrack != null) { CurrentTrack.IsPlaying = false; CurrentTrack.Unload(); }
@@ -198,20 +197,20 @@ namespace Hurricane.Music
             if (soundOut.PlaybackState == PlaybackState.Playing || soundOut.PlaybackState == PlaybackState.Paused)
             {
                 manualstop = true;
-               soundOut.Stop();
+                soundOut.Stop();
             }
         }
 
         public async void TogglePlayPause()
         {
             if (CurrentTrack == null) return;
-            if (fader != null && fader.IsFading) { fader.CancelFading(); }
+            if (fader != null && fader.IsFading) { fader.CancelFading(); fader.WaitForCancel(); }
             if (soundOut.PlaybackState == PlaybackState.Playing)
             {
                 isfadingout = true;
-                CurrentStateChanged();
                 await fader.FadeOut(soundOut, this.Volume);
                 soundOut.Pause();
+                CurrentStateChanged();
                 isfadingout = false;
             }
             else
@@ -319,6 +318,7 @@ namespace Hurricane.Music
 
         void soundOut_Stopped(object sender, PlaybackStoppedEventArgs e)
         {
+            if (isdisposing) return;
             if (manualstop) { manualstop = false; return; }
             TrackFinished(this, EventArgs.Empty);
             CurrentStateChanged();
@@ -349,13 +349,15 @@ namespace Hurricane.Music
         #endregion
 
         #region IDisposable Support
+        protected bool isdisposing;
         public void Dispose()
         {
+            isdisposing = true;
             if (soundOut != null)
             {
                 if (fader.IsFading) { fader.CancelFading(); fader.WaitForCancel(); }
-                StopPlayback();
                 soundOut.Dispose();
+                fader.Dispose();
             }
             if (SoundSource != null) SoundSource.Dispose();
             if (client != null) client.Dispose();
