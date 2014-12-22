@@ -9,7 +9,9 @@ The goal is that you don't get annoyed by Hurricane so it's only visible if you 
 
 ![Magic Arrow](http://www.vincentgri.de/hurricane/images/GitHub/MagicArrow.png)
 
-If you click on it, Hurricane appears.
+If you click on it, Hurricane appears. But when you don't dock Hurricane to the left or right side, it displays an advanced window:
+![Playlists](http://www.vincentgri.de/hurricane/images/GitHub/AdvancedWindowPlaylists.png)
+![NowPlaying](http://www.vincentgri.de/hurricane/images/GitHub/AdvancedWindowNowPlaying.png)
 
 ##What Hurricane isn't
 A standard music player. Hurricane is a music player for listen music while you do something.
