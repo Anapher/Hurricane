@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Hurricane.Views.WindowSkins
+namespace Hurricane.AppMainWindow.WindowSkins
 {
     public interface IWindowSkin
     {

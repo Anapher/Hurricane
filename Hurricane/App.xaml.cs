@@ -65,23 +65,27 @@ namespace Hurricane
 #endif
             Settings.HurricaneSettings.Instance.Load();
             Hurricane.MainWindow window = new MainWindow();
-            
+
             Notification.WindowMessages.WindowMessanger messanger = new Notification.WindowMessages.WindowMessanger(window);
             window.Show();
             if (openfile)
             {
                 try
                 {
-                    FileInfo fi = new FileInfo(Environment.GetCommandLineArgs()[1]);
-                    if (fi.Exists)
+                    foreach (var path in Environment.GetCommandLineArgs().Skip(1))
                     {
-                        ViewModels.MainViewModel.Instance.OpenFile(fi);
+                        FileInfo fi = new FileInfo(path);
+                        if (fi.Exists)
+                        {
+                            ViewModels.MainViewModel.Instance.OpenFile(fi, Environment.GetCommandLineArgs().Skip(1).Last() == path);
+                        }
                     }
                 }
                 catch (IOException) { }
             }
 
-            messanger.BringWindowToFront += (s, ev) => {
+            messanger.BringWindowToFront += (s, ev) =>
+            {
                 window.MagicArrow.BringToFront();
             };
 
@@ -90,7 +94,7 @@ namespace Hurricane
                 FileInfo fi = new FileInfo(ev.Filename);
                 if (fi.Exists)
                 {
-                    ViewModels.MainViewModel.Instance.OpenFile(fi);
+                    ViewModels.MainViewModel.Instance.OpenFile(fi, true);
                 }
             };
         }

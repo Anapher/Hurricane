@@ -9,6 +9,7 @@ using CSCore;
 using CSCore.Codecs;
 using CSCore.Codecs.MP3;
 using System.Xml.Serialization;
+using System.Windows.Media.Imaging;
 
 namespace Hurricane.Music
 {
@@ -23,14 +24,20 @@ namespace Hurricane.Music
         public string Path { get; set; }
         public string Artist { get; set; }
         public string Extension { get; set; }
+        public string Genres { get; set; }
+        public uint Year { get; set; }
         public DateTime TimeAdded { get; set; }
         public DateTime LastTimePlayed { get; set; }
-
-        [XmlIgnore]
-        public System.Drawing.Image Image { get; set; }
-
-        [XmlIgnore]
-        public ID3v2QuickInfo TagInfo { get; set; }
+        
+        private String album;
+        public String Album
+        {
+            get { return album; }
+            set
+            {
+                SetProperty(value, ref album);
+            }
+        }
 
         private String queueid;
         [XmlIgnore]
@@ -50,6 +57,29 @@ namespace Hurricane.Music
             set
             {
                 SetProperty(value, ref isplaying);
+            }
+        }
+
+        
+        private BitmapImage image;
+        [XmlIgnore]
+        public BitmapImage Image
+        {
+            get { return image; }
+            set
+            {
+                SetProperty(value, ref image);
+            }
+        }
+
+        private bool isloadingimage;
+        [XmlIgnore]
+        public bool IsLoadingImage
+        {
+            get { return isloadingimage; }
+            set
+            {
+                SetProperty(value, ref isloadingimage);
             }
         }
 
@@ -91,47 +121,11 @@ namespace Hurricane.Music
         {
             trackinformations = null; //to refresh the fileinfo
             FileInfo file = TrackInformations;
-            try
-            {
-                var info = ID3v2.FromFile(Path).QuickInfo;
-                if (!string.IsNullOrWhiteSpace(info.LeadPerformers))
-                {
-                    this.Artist = RemoveInvalidXMLChars(info.LeadPerformers);
-                }
-                else
-                {
-                    this.Artist = RemoveInvalidXMLChars(info.Artist);
-                }
-                if (!string.IsNullOrWhiteSpace(info.Title))
-                {
-                    this.Title = RemoveInvalidXMLChars(info.Title);
-                }
-                else
-                {
-                    this.Title = System.IO.Path.GetFileNameWithoutExtension(file.FullName);
-                }
-                this.TagInfo = info;
-            }
-            catch (NullReferenceException)
-            {
-                this.Title = System.IO.Path.GetFileNameWithoutExtension(file.FullName);
-                this.TagInfo = null;
-            }
-            using (FileStream sr = new FileStream(Path, FileMode.Open, FileAccess.Read))
-            {
-                Mp3Frame frame = Mp3Frame.FromStream(sr);
-                if (frame != null) { this.kbps = frame.BitRate / 1000; }
-                else
-                {
-                    System.Diagnostics.Debug.Print("Fehler: {0}", file.FullName);
-                }
-            }
-            this.Extension = file.Extension.ToUpper().Replace(".", string.Empty);
-            try
+
+            try //We just try to open the file to test if it works with CSCore
             {
                 using (IWaveSource SoundSource = CodecFactory.Instance.GetCodec(Path))
                 {
-                    this.kHz = SoundSource.WaveFormat.SampleRate / 1000;
                     TimeSpan duration = SoundSource.GetLength();
 
                     if (duration.Hours == 0)
@@ -148,6 +142,38 @@ namespace Hurricane.Music
             {
                 return false;
             }
+
+            try
+            {
+                using (TagLib.File info = TagLib.File.Create(file.FullName))
+                {
+                    if (!string.IsNullOrWhiteSpace(info.Tag.FirstPerformer))
+                    {
+                        this.Artist = RemoveInvalidXMLChars(info.Tag.FirstPerformer);
+                    }
+                    else
+                    {
+                        this.Artist = RemoveInvalidXMLChars(info.Tag.FirstAlbumArtist);
+                    }
+                    if (!string.IsNullOrWhiteSpace(info.Tag.Title))
+                    {
+                        this.Title = RemoveInvalidXMLChars(info.Tag.Title);
+                    }
+                    else
+                    {
+                        this.Title = System.IO.Path.GetFileNameWithoutExtension(file.FullName);
+                    }
+                    this.Genres = info.Tag.JoinedGenres;
+                    this.kbps = info.Properties.AudioBitrate;
+                    this.kHz = info.Properties.AudioSampleRate / 1000;
+                    this.Extension = file.Extension.ToUpper().Replace(".", string.Empty);
+                    this.Year = info.Tag.Year;
+                }
+            }
+            catch (NullReferenceException)
+            {
+                this.Title = System.IO.Path.GetFileNameWithoutExtension(file.FullName);
+            }
             return true;
         }
 
@@ -155,7 +181,6 @@ namespace Hurricane.Music
         {
             if (!string.IsNullOrEmpty(Artist))
                 return string.Format("{0} - {1}", this.Artist, this.Title);
-
             return Title;
         }
         #endregion
@@ -170,17 +195,41 @@ namespace Hurricane.Music
         /// <summary>
         /// Make ready for playing
         /// </summary>
-        public void Load()
+        public async void Load()
         {
+            this.IsLoadingImage = true;
             try
             {
-                var info = ID3v2.FromFile(Path).QuickInfo;
-                this.Image = info.Image;
+                using (TagLib.File file = TagLib.File.Create(Path))
+                {
+                    if (file.Tag.Pictures != null && file.Tag.Pictures.Any())
+                    {
+                        this.Image = Utilities.GeneralHelper.ByteArrayToBitmapImage(file.Tag.Pictures.First().Data.ToArray());
+                    }
+                }
             }
             catch (Exception)
             {
                 this.Image = null;
             }
+
+            if (this.Image == null)
+            {
+                DirectoryInfo diAlbumCover = new DirectoryInfo("AlbumCover");
+                this.Image = MusicDatabase.MusicCoverManager.GetImage(this, diAlbumCover);
+                if (this.Image == null && Settings.HurricaneSettings.Instance.Config.LoadAlbumCoverFromInternet && Utilities.GeneralHelper.CheckForInternetConnection())
+                {
+                    try
+                    {
+                        this.Image = await MusicDatabase.MusicCoverManager.LoadCoverFromWeb(this, diAlbumCover).ConfigureAwait(false);
+                    }
+                    catch (System.Net.WebException)
+                    {
+                        //Happens, doesn't matter
+                    }
+                }
+            }
+            this.IsLoadingImage = false;
         }
 
         /// <summary>
@@ -190,7 +239,7 @@ namespace Hurricane.Music
         {
             if (this.Image != null)
             {
-                this.Image.Dispose();
+                if (this.Image.StreamSource != null) this.Image.StreamSource.Dispose();
                 this.Image = null;
             }
         }
@@ -206,6 +255,7 @@ namespace Hurricane.Music
 
         protected string RemoveInvalidXMLChars(string content)
         {
+            if (string.IsNullOrEmpty(content)) return string.Empty;
             try
             {
                 System.Xml.XmlConvert.VerifyXmlChars(content);

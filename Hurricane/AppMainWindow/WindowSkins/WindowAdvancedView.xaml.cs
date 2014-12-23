@@ -14,10 +14,10 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Hurricane.Views.WindowSkins
+namespace Hurricane.AppMainWindow.WindowSkins
 {
     /// <summary>
-    /// Interaktionslogik für WindowAdvancedView.xaml
+    /// Interaction logic for WindowAdvancedView.xaml
     /// </summary>
     public partial class WindowAdvancedView : UserControl, IWindowSkin
     {
@@ -141,7 +141,7 @@ namespace Hurricane.Views.WindowSkins
             if (story1 != null) { story1.Stop(this); }
             if (story2 != null) { story2.Stop(this);  }
             story1 = FadeInAnimation(300, txt1, txt2, stack1, stack2, stack3);
-            story2 = FadeInAnimation(300, full1, full2);
+            story2 = FadeInAnimation(300, full1, full2, full3);
             story1.Begin(this, true);
             story2.Begin(this, true);
         }

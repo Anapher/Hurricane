@@ -76,16 +76,11 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Libraries\MahApps.Metro.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.WindowsAPICodePack, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\WindowsAPICodePack-Core.1.1.1\lib\Microsoft.WindowsAPICodePack.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.WindowsAPICodePack.Shell, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\WindowsAPICodePack-Shell.1.1.1\lib\Microsoft.WindowsAPICodePack.Shell.dll</HintPath>
-    </Reference>
     <Reference Include="Ookii.Dialogs.Wpf">
       <HintPath>..\packages\Ookii.Dialogs.1.0\lib\net35\Ookii.Dialogs.Wpf.dll</HintPath>
+    </Reference>
+    <Reference Include="policy.2.0.taglib-sharp">
+      <HintPath>..\packages\taglib.2.1.0.0\lib\policy.2.0.taglib-sharp.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -98,6 +93,9 @@
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="taglib-sharp">
+      <HintPath>..\packages\taglib.2.1.0.0\lib\taglib-sharp.dll</HintPath>
     </Reference>
     <Reference Include="updateSystemDotNet.Controller">
       <HintPath>..\Libraries\updateSystemDotNet.Controller.dll</HintPath>
@@ -117,7 +115,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Extensions\Converter\BitmapToBitmapImageConverter.cs" />
     <Compile Include="Extensions\Converter\CollapsedOnNullValue.cs" />
     <Compile Include="Extensions\Converter\FalseOnNullValue.cs" />
     <Compile Include="Extensions\Converter\FormatTimespan.cs" />
@@ -141,11 +138,16 @@
     </Compile>
     <Compile Include="Music\AudioDevice.cs" />
     <Compile Include="Music\Equalizer\EqualizerBand.cs" />
-    <Compile Include="Music\EventArgs\EqualizerChangedEventArgs.cs" />
+    <Compile Include="Music\MusicDatabase\EventArgs\EqualizerChangedEventArgs.cs" />
     <Compile Include="Music\Equalizer\EqualizerSettings.cs" />
-    <Compile Include="Music\EventArgs\PlaybackStateChangedEventArgs.cs" />
-    <Compile Include="Music\EventArgs\PositionChangedEventArgs.cs" />
-    <Compile Include="Music\EventArgs\TrackImportProgressChanged.cs" />
+    <Compile Include="Music\MusicDatabase\EventArgs\PlaybackStateChangedEventArgs.cs" />
+    <Compile Include="Music\MusicDatabase\EventArgs\PositionChangedEventArgs.cs" />
+    <Compile Include="Music\MusicDatabase\EventArgs\TrackImportProgressChanged.cs" />
+    <Compile Include="Music\MusicDatabase\artist.cs" />
+    <Compile Include="Music\MusicDatabase\LastfmAPI.cs" />
+    <Compile Include="Music\MusicDatabase\lfm.cs" />
+    <Compile Include="Music\MusicDatabase\MusicCoverManager.cs" />
+    <Compile Include="Music\MusicDatabase\track.cs" />
     <Compile Include="Music\MusicManagerCommands.cs" />
     <Compile Include="Music\QueueManager.cs" />
     <Compile Include="Music\TrackComparer.cs" />
@@ -162,12 +164,14 @@
     <Compile Include="Settings\ConfigSettings.cs" />
     <Compile Include="Settings\Converter\BitrateToIndexConverter.cs" />
     <Compile Include="Settings\Converter\NotificationTypeConverter.cs" />
+    <Compile Include="Settings\Converter\QualityToIndexConverter.cs" />
     <Compile Include="Settings\Converter\SampleRateToIndexConverter.cs" />
     <Compile Include="Settings\LanguageInfo.cs" />
     <Compile Include="Settings\PlaylistSettings.cs" />
     <Compile Include="Settings\RegistryManager\RegistryContextMenuItem.cs" />
     <Compile Include="Settings\RegistryManager\RegistryManager.cs" />
     <Compile Include="Settings\RegistryManager\RegistryRegister.cs" />
+    <Compile Include="Settings\SensitiveInformations.cs" />
     <Compile Include="Settings\SettingsBase.cs" />
     <Compile Include="Settings\Themes\AccentColorTheme.cs" />
     <Compile Include="Settings\Themes\ApplicationThemeManager.cs" />
@@ -197,16 +201,16 @@
     <Compile Include="Views\FolderImportWindow.xaml.cs">
       <DependentUpon>FolderImportWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\MainWindow.xaml.cs">
+    <Compile Include="AppMainWindow\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Views\WindowSkins\IWindowSkin.cs" />
-    <Compile Include="Views\WindowSkins\WindowAdvancedView.xaml.cs">
+    <Compile Include="AppMainWindow\WindowSkins\IWindowSkin.cs" />
+    <Compile Include="AppMainWindow\WindowSkins\WindowAdvancedView.xaml.cs">
       <DependentUpon>WindowAdvancedView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\WindowSkins\WindowSkinConfiguration.cs" />
-    <Compile Include="Views\WindowSkins\WindowSmartView.xaml.cs">
+    <Compile Include="AppMainWindow\WindowSkins\WindowSkinConfiguration.cs" />
+    <Compile Include="AppMainWindow\WindowSkins\WindowSmartView.xaml.cs">
       <DependentUpon>WindowSmartView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\MessageWindow.xaml.cs">
@@ -421,7 +425,7 @@
     <Compile Include="Utilities\HookManager\HookManager.Windows.cs" />
     <Compile Include="Utilities\HookManager\MouseEventExtArgs.cs" />
     <Compile Include="Music\CSCoreEngine.cs" />
-    <Compile Include="Music\EventArgs\TrackChangedEventArgs.cs" />
+    <Compile Include="Music\MusicDatabase\EventArgs\TrackChangedEventArgs.cs" />
     <Compile Include="Music\MusicManager.cs" />
     <Compile Include="Music\Playlist.cs" />
     <Compile Include="Music\Track.cs" />
@@ -436,15 +440,15 @@
     <Compile Include="Views\CreateNewPlaylistWindow.xaml.cs">
       <DependentUpon>CreateNewPlaylistWindow.xaml</DependentUpon>
     </Compile>
-    <Page Include="Views\MainWindow.xaml">
+    <Page Include="AppMainWindow\MainWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\WindowSkins\WindowAdvancedView.xaml">
+    <Page Include="AppMainWindow\WindowSkins\WindowAdvancedView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\WindowSkins\WindowSmartView.xaml">
+    <Page Include="AppMainWindow\WindowSkins\WindowSmartView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -549,21 +553,6 @@
     <Resource Include="Resources\MediaIcons\ThumbButtons\play.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\MediaIcons\ThumbButtons\backward.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\MediaIcons\ThumbButtons\forward.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\MediaIcons\ThumbButtons\play.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\MediaIcons\ThumbButtons\pause.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\MediaIcons\Thumbnail\StandardThumbnail.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Resources\App\icon.ico" />
   </ItemGroup>
   <ItemGroup>
@@ -583,6 +572,12 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\GUI\music.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\App\title.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\App\christmastitle.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

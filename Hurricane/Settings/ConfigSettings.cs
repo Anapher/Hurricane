@@ -50,6 +50,12 @@ namespace Hurricane.Settings
         public bool DisableNotificationInGame { get; set; }
         public int NotificationShowTime { get; set; }
 
+        //Album Cover
+        public bool LoadAlbumCoverFromInternet { get; set; }
+        public ImageQuality DownloadAlbumCoverQuality { get; set; }
+        public bool SaveCoverLocal { get; set; }
+        public bool TrimTrackname { get; set; }
+
         private List<LanguageInfo> languages;
         [XmlIgnore]
         public List<LanguageInfo> Languages
@@ -92,6 +98,10 @@ namespace Hurricane.Settings
             NotificationShowTime = 5000;
             RememberTrackImportPlaylist = false;
             PlaylistToImportTrack = null;
+            LoadAlbumCoverFromInternet = true;
+            DownloadAlbumCoverQuality = ImageQuality.maximum;
+            SaveCoverLocal = false;
+            TrimTrackname = true;
         }
 
         public ConfigSettings()
@@ -149,7 +159,11 @@ namespace Hurricane.Settings
                 CompareTwoValues(this.Theme, other.Theme) &&
                 CompareTwoValues(this.EnableAdvancedView, other.EnableAdvancedView) &&
                 CompareTwoValues(this.NotificationShowTime, other.NotificationShowTime) &&
-                CompareTwoValues(this.RememberTrackImportPlaylist, other.RememberTrackImportPlaylist));
+                CompareTwoValues(this.RememberTrackImportPlaylist, other.RememberTrackImportPlaylist) &&
+                CompareTwoValues(this.DownloadAlbumCoverQuality, other.DownloadAlbumCoverQuality) &&
+                CompareTwoValues(this.LoadAlbumCoverFromInternet, other.LoadAlbumCoverFromInternet) &&
+                CompareTwoValues(this.SaveCoverLocal, other.SaveCoverLocal) &&
+                CompareTwoValues(this.TrimTrackname, other.TrimTrackname));
         }
 
         protected bool CompareTwoValues(object v1, object v2)
@@ -157,5 +171,10 @@ namespace Hurricane.Settings
             if (v1 == null || v2 == null) return false;
             return v1.Equals(v2);
         }
+    }
+
+    public enum ImageQuality
+    {
+        small, medium, large, maximum
     }
 }

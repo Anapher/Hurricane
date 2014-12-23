@@ -144,7 +144,7 @@ namespace Hurricane.Music
             this.RandomTrack = config.RandomTrack;
             foreach (Playlist lst in Playlists)
             {
-                lst.RefreshList(Predicate);
+                lst.RefreshList();
             }
             if (config.Queue != null) { this.Queue = config.Queue; this.Queue.Initialize(Playlists.ToList()); }
         }
@@ -178,18 +178,12 @@ namespace Hurricane.Music
         protected Random random;
         protected List<TrackPlaylistPair> lasttracks;
 
-        protected bool Predicate(object item)
-        {
-            Track track = (Track)item;
-            if (string.IsNullOrWhiteSpace(SearchText)) { return true; } else { return (track.Title.ToUpper().Contains(SearchText.ToUpper()) || (!string.IsNullOrEmpty(track.Artist) && track.Artist.ToUpper().StartsWith(SearchText.ToUpper()))); }
-        }
-
         #endregion
 
         #region Public Methods
         public void RegisterPlaylist(Playlist playlist)
         {
-            playlist.RefreshList(Predicate);
+            playlist.RefreshList();
         }
 
         public void PlayTrack(Track track, Playlist playlist)

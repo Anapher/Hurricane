@@ -21,7 +21,7 @@ namespace Hurricane.Settings.RegistryManager
             
             foreach (var s in fileextension)
             {
-                ContextMenuItems.Add(new RegistryContextMenuItem(s, standardname, System.Windows.Application.Current.FindResource("PlayWithHurricane").ToString(), apppath, iconpath));
+                //#regdisable ContextMenuItems.Add(new RegistryContextMenuItem(s, standardname, System.Windows.Application.Current.FindResource("PlayWithHurricane").ToString(), apppath, iconpath));
             }
         }
     }

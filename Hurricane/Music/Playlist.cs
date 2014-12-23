@@ -35,9 +35,22 @@ namespace Hurricane.Music
         [XmlIgnore]
         public DataVirtualization.VirtualizingCollection<Track> TrackCollection { get; set; }
 
-        private CollectionView viewsource;
+        
+        private string searchtext;
         [XmlIgnore]
-        public CollectionView ViewSource
+        public string SearchText
+        {
+            get { return searchtext; }
+            set
+            {
+                if (SetProperty(value, ref searchtext))
+                    ViewSource.Refresh();
+            }
+        }
+
+        private ICollectionView viewsource;
+        [XmlIgnore]
+        public ICollectionView ViewSource
         {
             get
             {
@@ -49,14 +62,17 @@ namespace Hurricane.Music
             }
         }
 
-        public void RefreshList(Predicate<object> filter)
+        public void RefreshList()
         {
             if (Tracks != null)
             {
                 DataVirtualization.TrackProvider loader = new DataVirtualization.TrackProvider(Tracks);
                 TrackCollection = new DataVirtualization.VirtualizingCollection<Track>(loader, 200);
-                ViewSource = (CollectionView)CollectionViewSource.GetDefaultView(TrackCollection);
-                ViewSource.Filter = filter;
+                ViewSource = CollectionViewSource.GetDefaultView(TrackCollection);
+                ViewSource.Filter = (item) =>
+                {
+                    if (string.IsNullOrWhiteSpace(SearchText)) { return true; } else { return item.ToString().ToUpper().Contains(SearchText.ToUpper()); }
+                };
             }
         }
 
@@ -75,9 +91,6 @@ namespace Hurricane.Music
                     if (FromAnotherThread) { System.Windows.Application.Current.Dispatcher.Invoke(() => this.TrackCollection.Add(t)); } else {this.TrackCollection.Add(t); }
                 }
             }
-
-            //if(FromAnotherThread) {System.Windows.Application.Current.Dispatcher.Invoke(() =>this.ViewSource.Refresh()); } else {this.ViewSource.SourceCollection}
-            
         }
 
         public void AddFiles(bool FromAnotherThread, params string[] paths)
@@ -129,7 +142,7 @@ namespace Hurricane.Music
             IEnumerable<Track> noduplicates = this.Tracks.Distinct(new TrackComparer());
             if (noduplicates.Any() && noduplicates.Count() != this.Tracks.Count)
             {
-                if (FromAnotherThread) { System.Windows.Application.Current.Dispatcher.Invoke(() => { this.Tracks = new List<Track>(noduplicates); RefreshList(ViewSource.Filter); }); } else { this.Tracks = new List<Track>(noduplicates); RefreshList(ViewSource.Filter); };
+                if (FromAnotherThread) { System.Windows.Application.Current.Dispatcher.Invoke(() => { this.Tracks = new List<Track>(noduplicates); RefreshList(); }); } else { this.Tracks = new List<Track>(noduplicates); RefreshList(); };
             }
             return counter - noduplicates.Count();
         }

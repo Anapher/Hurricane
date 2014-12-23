@@ -144,7 +144,7 @@ namespace Hurricane.ViewModels
             get
             {
                 if (showlanguages == null)
-                    showlanguages = new RelayCommand((object parameter) => { SelectedTab = 2; });
+                    showlanguages = new RelayCommand((object parameter) => { SelectedTab = 5; });
                 return showlanguages;
             }
         }

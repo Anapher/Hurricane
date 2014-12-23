@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Win32;
+using System.Security.Permissions;
 
 namespace Hurricane.Settings.RegistryManager
 {
@@ -18,21 +19,12 @@ namespace Hurricane.Settings.RegistryManager
         /// <param name="applicationpath">The path with paramters</param>
         /// <param name="iconpath">The path of the icon</param>
         /// <returns>False if the user doesn't have access</returns>
+        [PrincipalPermission(SecurityAction.Demand, Role = @"BUILTIN\Administrators")]
         public static bool RegisterExtension(string extension, string header, string name, string applicationpath, string iconpath)
         {
-            RegistryKey skms;
-            if (Environment.Is64BitOperatingSystem)
-            {
-                skms = RegistryKey.OpenBaseKey(Microsoft.Win32.RegistryHive.ClassesRoot, RegistryView.Registry64);
-            }
-            else
-            {
-                skms = RegistryKey.OpenBaseKey(Microsoft.Win32.RegistryHive.ClassesRoot, RegistryView.Registry32);
-            }
-
             try
             {
-                using (RegistryKey extensionkey = skms.OpenSubKey(extension))
+                using (RegistryKey extensionkey = GetClassesRoot().OpenSubKey(extension))
                 {
                     string keytoadd = extensionkey.GetValue("", string.Empty).ToString();
 
@@ -64,21 +56,12 @@ namespace Hurricane.Settings.RegistryManager
         /// <param name="extension">The file extension (like .mp3)</param>
         /// <param name="name">The name of the subkey</param>
         /// <returns>False if the user doesn't have access</returns>
+        [PrincipalPermission(SecurityAction.Demand, Role = @"BUILTIN\Administrators")]
         public static bool UnregisterExtension(string extension, string name)
         {
-            RegistryKey skms;
-            if (Environment.Is64BitOperatingSystem)
-            {
-                skms = RegistryKey.OpenBaseKey(Microsoft.Win32.RegistryHive.ClassesRoot, RegistryView.Registry64);
-            }
-            else
-            {
-                skms = RegistryKey.OpenBaseKey(Microsoft.Win32.RegistryHive.ClassesRoot, RegistryView.Registry32);
-            }
-
             try
             {
-                using (RegistryKey extensionkey = skms.OpenSubKey(extension))
+                using (RegistryKey extensionkey = GetClassesRoot().OpenSubKey(extension))
                 {
                     string keytoadd = extensionkey.GetValue("", string.Empty).ToString();
 
@@ -98,29 +81,31 @@ namespace Hurricane.Settings.RegistryManager
             return true;
         }
 
-
-        public static bool CheckIfExtensionExists(string extension, string name)
+        protected static RegistryKey GetClassesRoot()
         {
-            RegistryKey skms;
             if (Environment.Is64BitOperatingSystem)
             {
-                skms = RegistryKey.OpenBaseKey(Microsoft.Win32.RegistryHive.ClassesRoot, RegistryView.Registry64);
+               return RegistryKey.OpenBaseKey(Microsoft.Win32.RegistryHive.ClassesRoot, RegistryView.Registry64);
             }
             else
             {
-                skms = RegistryKey.OpenBaseKey(Microsoft.Win32.RegistryHive.ClassesRoot, RegistryView.Registry32);
+                return RegistryKey.OpenBaseKey(Microsoft.Win32.RegistryHive.ClassesRoot, RegistryView.Registry32);
             }
+        }
 
-            using (RegistryKey extensionkey = skms.OpenSubKey(extension))
+
+        public static bool CheckIfExtensionExists(string extension, string name)
+        {
+            using (RegistryKey extensionkey = GetClassesRoot().OpenSubKey(extension, RegistryKeyPermissionCheck.Default, System.Security.AccessControl.RegistryRights.ReadKey))
             {
                 if (extensionkey == null) return false;
                 string keytoadd = extensionkey.GetValue("", string.Empty).ToString();
 
-                using (RegistryKey rootkey = Registry.ClassesRoot.OpenSubKey(keytoadd))
+                using (RegistryKey rootkey = Registry.ClassesRoot.OpenSubKey(keytoadd, RegistryKeyPermissionCheck.Default, System.Security.AccessControl.RegistryRights.ReadKey))
                 {
-                    using (RegistryKey shellkey = rootkey.OpenSubKey("shell", true))
+                    using (RegistryKey shellkey = rootkey.OpenSubKey("shell", RegistryKeyPermissionCheck.Default, System.Security.AccessControl.RegistryRights.ReadKey))
                     {
-                        var key = shellkey.OpenSubKey(name);
+                        var key = shellkey.OpenSubKey(name, RegistryKeyPermissionCheck.Default, System.Security.AccessControl.RegistryRights.ReadKey);
                         return key != null;
                     }
                 }

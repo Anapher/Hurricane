@@ -68,9 +68,9 @@
                 <TextBlock Grid.Column="1">
                     <TextBlock.Style>
                         <Style TargetType="TextBlock">
-                            <Setter Property="Text" Value="{Binding ElementName=window,Path=CurrentTrack.TagInfo.Album}"/>
+                            <Setter Property="Text" Value="{Binding ElementName=window,Path=CurrentTrack.Album}"/>
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding ElementName=window,Path=CurrentTrack.TagInfo.Album,Converter={StaticResource FalseOnEmptyString}}" Value="False">
+                                <DataTrigger Binding="{Binding ElementName=window,Path=CurrentTrack.Album,Converter={StaticResource FalseOnEmptyString}}" Value="False">
                                     <Setter Property="Text" Value="-"/>
                                 </DataTrigger>
                             </Style.Triggers>
@@ -87,7 +87,7 @@
                     <TextBlock Text="{StaticResource genre}"/>
                     <TextBlock Text=":"/>
                 </StackPanel>
-                <TextBlock Text="{Binding ElementName=window,Path=CurrentTrack.TagInfo.Genre,TargetNullValue=-}" Grid.Column="1"/>
+                <TextBlock Text="{Binding ElementName=window,Path=CurrentTrack.Genres,TargetNullValue=-}" Grid.Column="1"/>
             </Grid>
             <Grid Margin="0,5,0,0">
                 <Grid.ColumnDefinitions>
@@ -98,7 +98,7 @@
                     <TextBlock Text="{StaticResource year}"/>
                     <TextBlock Text=":"/>
                 </StackPanel>
-                <TextBlock Text="{Binding ElementName=window,Path=CurrentTrack.TagInfo.Year,TargetNullValue=-}" Grid.Column="1"/>
+                <TextBlock Text="{Binding ElementName=window,Path=CurrentTrack.Year,TargetNullValue=-}" Grid.Column="1"/>
             </Grid>
             <Separator Margin="0,10,0,10"/>
             <Grid>

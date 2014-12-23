@@ -16,6 +16,7 @@
     <system:String x:Key="reset">Reset</system:String>
     <system:String x:Key="addtracks">Add tracks</system:String>
     <system:String x:Key="play">Play</system:String>
+    <system:String x:Key="pause">Pause</system:String>
     <system:String x:Key="fileinfos">File infos</system:String>
     <system:String x:Key="filelocation">File location</system:String>
     <system:String x:Key="remove">Remove</system:String>
@@ -84,7 +85,7 @@
     <system:String x:Key="aboutcopyright">Copyright © 2014 Alkaline. All Rights Reserved.</system:String>
     <system:String x:Key="aboutthanks1">To all the talented creators of the images and libraries mentioned above.</system:String>
     <system:String x:Key="aboutthanks2">To a really beautiful girl from my school class who gave me the inspiration for the name (she doesn't know that).</system:String>
-    <system:String x:Key="aboutthanks3">To {0} and {1} (who also developed CSCore) for supporting me.</system:String>
+    <system:String x:Key="aboutthanks3">To {0}, {1} and {2} (who also developed CSCore) for supporting me.</system:String>
     <system:String x:Key="aboutthanks4">To the {0} community for their testing, bug reports and ideas.</system:String>
     <system:String x:Key="website">Website</system:String>
     <system:String x:Key="licence">Licence</system:String>
@@ -183,9 +184,19 @@
     <system:String x:Key="PlayWithHurricane">Play with Hurricane</system:String>
     <system:String x:Key="registry">Registry</system:String>
     <system:String x:Key="contextmenuitemforextensions">Context menu item for extensions</system:String>
+    <system:String x:Key="coverart">Cover Art</system:String>
+    <system:String x:Key="loadalbumcoverfrominternet">Download missing cover art from internet</system:String>
+    <system:String x:Key="coverquality">Cover art quality</system:String>
+    <system:String x:Key="savealbumcoverlocal">Save cover art local</system:String>
+    
+    <system:String x:Key="small">Small</system:String>
+    <system:String x:Key="medium">Medium</system:String>
+    <system:String x:Key="large">Large</system:String>
+    <system:String x:Key="maximum">Maximum</system:String>
 
     <system:String x:Key="themeupper">DESIGN</system:String>
     <system:String x:Key="notificationsupper">NOTIFICATIONS</system:String>
     <system:String x:Key="importtrackupper">IMPORT TRACK</system:String>
     <system:String x:Key="contextmenuitemforextensionsupper">CONTEXT MENU ITEM FOR EXTENSIONS</system:String>
+    <system:String x:Key="coverartupper">COVER ART</system:String>
 </ResourceDictionary>

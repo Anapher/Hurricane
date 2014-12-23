@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="Hurricane.Views.WindowSkins.WindowSmartView"
+﻿<UserControl x:Class="Hurricane.AppMainWindow.WindowSkins.WindowSmartView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -59,9 +59,10 @@
                             </Button.Style>
                         </Button>
                     </StackPanel>
-                    <TextBlock Margin="10,10,0,10" VerticalAlignment="Center" 
+                <!--    <TextBlock Margin="10,10,0,10" VerticalAlignment="Center" 
                                                        Foreground="#FFAAAAAA" TextWrapping="NoWrap" 
-                                                       Text="Hurricane" FontSize="16" HorizontalAlignment="Center" Grid.ColumnSpan="2"/>
+                                                       Text="Hurricane" FontSize="16" HorizontalAlignment="Center" Grid.ColumnSpan="2"/> -->
+                    <Image Source="/Resources/App/christmastitle.png" Margin="0,5,0,0" Height="20" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.ColumnSpan="2" RenderOptions.BitmapScalingMode="HighQuality"/>
                     <Button x:Name="btnClose" Grid.Column="1"
                                                     VerticalAlignment="Center" Margin="5,0,10,0"
                                                     Height="20" Width="20" 
@@ -467,7 +468,7 @@
                 </ListView>
 
                 <StackPanel Orientation="Vertical" Grid.Row="2" Margin="5,5,5,5">
-                    <TextBox controls:TextBoxHelper.Watermark="{StaticResource search}" Text="{Binding MusicManager.SearchText,UpdateSourceTrigger=PropertyChanged}"/>
+                    <TextBox controls:TextBoxHelper.Watermark="{StaticResource search}" Text="{Binding MusicManager.SelectedPlaylist.SearchText,UpdateSourceTrigger=PropertyChanged}"/>
                 </StackPanel>
             </Grid>
         </Grid>

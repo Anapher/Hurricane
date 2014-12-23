@@ -1,0 +1,32 @@
+﻿<controls:MetroWindow
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:metro="http://schemas.codeplex.com/elysium" 
+        xmlns:params="http://schemas.codeplex.com/elysium/params" x:Class="Hurricane.MainWindow" 
+        xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
+        xmlns:converter="clr-namespace:Hurricane.Extensions.Converter"
+        xmlns:ex="clr-namespace:Hurricane.Extensions"
+        xmlns:wpfsvl="clr-namespace:WPFSoundVisualizationLib;assembly=WPFSoundVisualizationLib"
+        xmlns:viewmodels="clr-namespace:Hurricane.ViewModels"
+        xmlns:jas="clr-namespace:Hurricane.Resources.Styles.DragDropListView.ServiceProviders.UI"
+        DataContext="{x:Static viewmodels:MainViewModel.Instance}"
+        Title="Hurricane" SizeToContent="Manual" x:Name="window" Icon="/Resources/App/icon.ico"
+        IsWindowDraggable="False" GlowBrush="{DynamicResource AccentColorBrush}" ex:WindowCustomizer.CanMaximize="false" ShowIconOnTitleBar="False" Height="400" Width="500">
+    <Window.Resources>
+        <converter:TrueFalseValueConverter x:Key="PlayPauseConverter" TrueValue="pack://application:,,,/Hurricane;component/Resources/MediaIcons/ThumbButtons/pause.png" FalseValue="pack://application:,,,/Hurricane;component/Resources/MediaIcons/ThumbButtons/play.png"/>
+    </Window.Resources>
+    <Window.TaskbarItemInfo>
+        <TaskbarItemInfo x:Name="taskbarinfo" Description="{Binding MusicManager.CSCoreEngine.CurrentTrack}">
+            <TaskbarItemInfo.ThumbButtonInfos>
+                <ThumbButtonInfoCollection>
+                    <ThumbButtonInfo Description="{DynamicResource previoustrack}" ImageSource="pack://application:,,,/Hurricane;component/Resources/MediaIcons/ThumbButtons/backward.png" Command="{Binding MusicManager.Commands.GoBackward}"/>
+                    <ThumbButtonInfo Description="Play / Pause" ImageSource="{Binding MusicManager.CSCoreEngine.IsPlaying,Converter={StaticResource PlayPauseConverter}}" Command="{Binding MusicManager.Commands.TogglePlayPause}"/>
+                    <ThumbButtonInfo Description="{DynamicResource nexttrack}" ImageSource="pack://application:,,,/Hurricane;component/Resources/MediaIcons/ThumbButtons/forward.png" Command="{Binding MusicManager.Commands.GoForward}"/>
+                </ThumbButtonInfoCollection>
+            </TaskbarItemInfo.ThumbButtonInfos>
+        </TaskbarItemInfo>
+    </Window.TaskbarItemInfo>
+    <Window.InputBindings>
+        <KeyBinding Key="Space" Command="{Binding MusicManager.Commands.TogglePlayPause}"/>
+    </Window.InputBindings>
+</controls:MetroWindow>

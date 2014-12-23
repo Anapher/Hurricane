@@ -12,14 +12,14 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using Microsoft.WindowsAPICodePack.Taskbar;
 using System.Windows.Interop;
 using System.IO;
 using System.Runtime.InteropServices;
 using Hurricane.Extensions;
 using System.Windows.Threading;
 using System.Windows.Media.Animation;
-using Hurricane.Views.WindowSkins;
+using Hurricane.AppMainWindow.WindowSkins;
+using Hurricane.AppMainWindow;
 
 namespace Hurricane
 {
@@ -77,7 +77,7 @@ namespace Hurricane
                 this.Top = appsettings.ApplicationState.Top;
             }
 
-            MagicArrow.DockManager.CurrentSide = appsettings.ApplicationState.CurrentSide; 
+            MagicArrow.DockManager.CurrentSide = appsettings.ApplicationState.CurrentSide;
         }
 
         void MainWindow_Loaded(object sender, RoutedEventArgs e)
@@ -96,9 +96,7 @@ namespace Hurricane
                 }
                 System.Diagnostics.Debug.Print("ThisHeight: {0}", this.Height.ToString());
                 ViewModels.MainViewModel viewmodel = ViewModels.MainViewModel.Instance;
-                LoadCustomPreview();
                 viewmodel.StartVisualization += CSCoreEngine_StartVisualization;
-                viewmodel.TrackChanged += CSCoreEngine_TrackChanged;
                 viewmodel.PositionChanged += viewmodel_PositionChanged;
                 viewmodel.Loaded(this);
                 viewmodel.MusicManager.CSCoreEngine.PlaybackStateChanged += CSCoreEngine_PlaybackStateChanged;
@@ -198,47 +196,6 @@ namespace Hurricane
         }
 
         #region Taskbar
-        TabbedThumbnail customPreview;
-        ThumbnailToolBarButton thumbnailButtonPlayPause;
-        protected void LoadCustomPreview()
-        {
-            IntPtr handle = new WindowInteropHelper(this).Handle;
-            customPreview = new TabbedThumbnail(handle, handle);
-            TaskbarManager.Instance.TabbedThumbnail.AddThumbnailPreview(customPreview);
-            customPreview.Title = "Hurricane";
-            customPreview.SetWindowIcon(Utilities.ImageHelper.GetIconFromResource("Resources/App/icon.ico"));
-            customPreview.DisplayFrameAroundBitmap = true;
-            customPreview.TabbedThumbnailBitmapRequested += (s, ec) =>
-            {
-                Music.CSCoreEngine cscore = ViewModels.MainViewModel.Instance.MusicManager.CSCoreEngine;
-                if (cscore.CurrentTrack != null && cscore.CurrentTrack.Image != null)
-                {
-                    var img = cscore.CurrentTrack.Image;
-                    int maxwidth = 220;
-                    int maxheight = 141;
-
-                    System.Drawing.Size newsize = Utilities.ImageHelper.GetMinimumSize(img.Size, maxwidth, maxheight);
-                    System.Drawing.Bitmap bit = Utilities.ImageHelper.ResizeImage(new System.Drawing.Bitmap(img), newsize);
-                    System.Drawing.Bitmap bittodisplay = bit.Clone(new System.Drawing.RectangleF(0, 0, maxwidth, maxheight), img.PixelFormat);
-                    bit.Dispose();
-
-                    customPreview.SetImage(bittodisplay);
-                }
-                else
-                { customPreview.SetImage(new System.Drawing.Bitmap(Application.GetResourceStream(new Uri("pack://application:,,,/Hurricane;component/Resources/MediaIcons/Thumbnail/StandardThumbnail.png")).Stream)); }
-            };
-
-            ThumbnailToolBarButton thumbnailButtonBack = new ThumbnailToolBarButton(Utilities.ImageHelper.GetIconFromResource("/Resources/MediaIcons/ThumbButtons/backward.ico"), Application.Current.FindResource("previoustrack").ToString());
-            thumbnailButtonBack.Click += (s, e) => { ViewModels.MainViewModel.Instance.MusicManager.GoBackward(); };
-
-            thumbnailButtonPlayPause = new ThumbnailToolBarButton(Utilities.ImageHelper.GetIconFromResource("/Resources/MediaIcons/ThumbButtons/play.ico"), "Play / Pause");
-            thumbnailButtonPlayPause.Click += (s, e) => { ViewModels.MainViewModel.Instance.MusicManager.CSCoreEngine.TogglePlayPause(); };
-
-            ThumbnailToolBarButton thumbnailButtonNext = new ThumbnailToolBarButton(Utilities.ImageHelper.GetIconFromResource("/Resources/MediaIcons/ThumbButtons/forward.ico"), Application.Current.FindResource("nexttrack").ToString());
-            thumbnailButtonNext.Click += (s, e) => { ViewModels.MainViewModel.Instance.MusicManager.GoForward(); };
-
-            TaskbarManager.Instance.ThumbnailToolBars.AddButtons(handle, thumbnailButtonBack, thumbnailButtonPlayPause, thumbnailButtonNext);
-        }
 
         void viewmodel_PositionChanged(object sender, Music.PositionChangedEventArgs e)
         {
@@ -251,21 +208,10 @@ namespace Hurricane
             if (e.NewPlaybackState == CSCore.SoundOut.PlaybackState.Playing)
             {
                 this.taskbarinfo.ProgressState = System.Windows.Shell.TaskbarItemProgressState.Normal;
-                thumbnailButtonPlayPause.Icon = Utilities.ImageHelper.GetIconFromResource("/Resources/MediaIcons/ThumbButtons/pause.ico");
             }
             else
             {
                 this.taskbarinfo.ProgressState = System.Windows.Shell.TaskbarItemProgressState.Paused;
-                thumbnailButtonPlayPause.Icon = Utilities.ImageHelper.GetIconFromResource("/Resources/MediaIcons/ThumbButtons/play.ico");
-            }
-        }
-
-        void CSCoreEngine_TrackChanged(object sender, Music.TrackChangedEventArgs e)
-        {
-            if (e.NewTrack != null)
-            {
-                customPreview.Title = e.NewTrack.ToString();
-                customPreview.InvalidatePreview();
             }
         }
         #endregion
@@ -291,6 +237,7 @@ namespace Hurricane
                 MagicArrow.DockManager.Save();
             ViewModels.MainViewModel.Instance.Closing();
             MagicArrow.Dispose();
+            //CustomTaskbarManager.Dispose();
             App.Current.Shutdown();
         }
         #endregion

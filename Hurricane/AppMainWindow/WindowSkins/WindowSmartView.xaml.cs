@@ -14,10 +14,10 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Hurricane.Views.WindowSkins
+namespace Hurricane.AppMainWindow.WindowSkins
 {
     /// <summary>
-    /// Interaktionslogik für WindowSmartView.xaml
+    /// Interaction logic for WindowSmartView.xaml
     /// </summary>
     public partial class WindowSmartView : UserControl, IWindowSkin
     {

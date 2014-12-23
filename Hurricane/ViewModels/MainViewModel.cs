@@ -135,7 +135,7 @@ namespace Hurricane.ViewModels
         private bool remember = false;
         private Music.Playlist rememberedplaylist;
 
-        public void OpenFile(FileInfo file)
+        public void OpenFile(FileInfo file, bool play)
         {
             foreach (var playlist in MusicManager.Playlists)
             {
@@ -143,7 +143,7 @@ namespace Hurricane.ViewModels
                 {
                     if (track.Path == file.FullName)
                     {
-                        MusicManager.PlayTrack(track, playlist);
+                        if (play) MusicManager.PlayTrack(track, playlist);
                         return;
                     }
                 }
@@ -186,7 +186,7 @@ namespace Hurricane.ViewModels
                 }
             }
 
-            ImportFiles(new string[] { file.FullName }, selectedplaylist, (s, e) => OpenFile(file));
+            ImportFiles(new string[] { file.FullName }, selectedplaylist, (s, e) => OpenFile(file, play));
         }
 
         public void MoveOut()

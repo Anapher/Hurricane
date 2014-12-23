@@ -40,7 +40,7 @@ namespace Hurricane.Notification.Views
             get
             {
                 if (CurrentTrack.Image == null) return null;
-                return Extensions.Converter.BitmapToBitmapImageConverter.BitmapToBitmapImage(new System.Drawing.Bitmap(CurrentTrack.Image));
+                return CurrentTrack.Image;
             }
         }
 

@@ -172,6 +172,7 @@
                         <MultiBinding Converter="{StaticResource TextWithHyperlinkParametersConverter}">
                             <Binding Source="{StaticResource aboutthanks3}" />
                             <Binding Source="ConnyKarras$https://www.vb-paradise.de/index.php/User/16654/"/>
+                            <Binding Source="GimpTutWorks$https://www.vb-paradise.de/index.php/User/10535/"/>
                             <Binding Source="filoe$https://www.vb-paradise.de/index.php/User/8712/"/>
                         </MultiBinding>
                     </Label.Content>

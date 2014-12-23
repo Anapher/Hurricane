@@ -89,7 +89,14 @@ namespace Hurricane.Music
         {
             get
             {
-                return SoundSource != null ? SoundSource.GetPosition() : TimeSpan.Zero;
+                try
+                {
+                    return SoundSource != null ? SoundSource.GetPosition() : TimeSpan.Zero;
+                }
+                catch (Exception)
+                {
+                    return TimeSpan.Zero; //Sometimes it crashes
+                }
             }
         }
 
@@ -97,7 +104,14 @@ namespace Hurricane.Music
         {
             get
             {
-                return SoundSource != null ? SoundSource.GetLength() : TimeSpan.Zero;
+                try
+                {
+                    return SoundSource != null ? SoundSource.GetLength() : TimeSpan.Zero;
+                }
+                catch (Exception)
+                {
+                    return TimeSpan.Zero;
+                }
             }
         }
 
@@ -181,7 +195,6 @@ namespace Hurricane.Music
             analyser.Initialize(SoundSource.WaveFormat);
             soundOut.Initialize(SoundSource);
 
-            track.Load();
             CurrentTrack = track;
             OnPropertyChanged("TrackLength");
             OnPropertyChanged("CurrentTrackLength");
@@ -190,6 +203,7 @@ namespace Hurricane.Music
 
             if (StartVisualization != null) StartVisualization(this, EventArgs.Empty);
             track.LastTimePlayed = DateTime.Now;
+            track.Load();
         }
 
         public void StopPlayback()
@@ -298,7 +312,7 @@ namespace Hurricane.Music
             }
             soundOut = new WasapiOut();
             soundOut.Device = device;
-            soundOut.Latency = 50;
+            soundOut.Latency = 100;
             soundOut.Stopped += soundOut_Stopped;
         }
 
