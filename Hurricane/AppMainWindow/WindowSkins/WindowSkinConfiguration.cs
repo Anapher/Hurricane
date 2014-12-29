@@ -17,5 +17,6 @@ namespace Hurricane.AppMainWindow.WindowSkins
 
         public bool ShowWindowControls { get; set; }
         public bool NeedMovingHelp { get; set; }
+        public bool ShowFullscreenDialogs { get; set; }
     }
 }

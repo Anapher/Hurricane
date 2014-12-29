@@ -41,6 +41,7 @@ namespace Hurricane.ViewModels
         }
 
         public Music.MusicManager MusicManager { get { return ViewModels.MainViewModel.Instance.MusicManager; } }
+        public Music.API.TcpServer ApiServer { get { return MusicManager != null ? MusicManager.ApiServer : null; } }
 
         public void StateChanged()
         {
@@ -62,9 +63,11 @@ namespace Hurricane.ViewModels
                         if (original.Language != Config.Language) { Config.LoadLanguage(); }
                         if (Config.Theme.UseCustomSpectrumAnalyzerColor && string.IsNullOrEmpty(Config.Theme.SpectrumAnalyzerHexColor)) Config.Theme.SpectrumAnalyzerColor = System.Windows.Media.Colors.Black;
                         if (original.Theme != Config.Theme) { Config.Theme.LoadTheme(); }
+                        if (original.ApiIsEnabled != Config.ApiIsEnabled) { if (Config.ApiIsEnabled) { ApiServer.StartListening(); } else { ApiServer.StopListening(); } }
                         Config = Utilities.ObjectCopier.Clone<Settings.ConfigSettings>(Settings.HurricaneSettings.Instance.Config);
                         OnPropertyChanged("CanApply");
                         CurrentLanguage = Config.Languages.First((x) => x.Code == Config.Language);
+                        OnPropertyChanged("ApiState");
                     });
                 return applychanges;
             }
@@ -95,6 +98,7 @@ namespace Hurricane.ViewModels
             set
             {
                 SetProperty(value, ref selectedtab);
+                if (value == 3) OnPropertyChanged("ApiState");
             }
         }
 
@@ -179,6 +183,19 @@ namespace Hurricane.ViewModels
                 if (totalreset == null)
                     totalreset = new RelayCommand((object parameter) => { Config.SetStandardValues(); SelectedAudioDevice = AudioDevices[0]; OnPropertyChanged("Config"); StateChanged(); });
                 return totalreset;
+            }
+        }
+
+        public string ApiState
+        {
+            get
+            {
+                if (ApiServer == null) return System.Windows.Application.Current.FindResource("deactivated").ToString();
+                if (ApiServer.IsRunning) { return System.Windows.Application.Current.FindResource("activated").ToString(); }
+                else
+                {
+                    if (ApiServer.GotProblems) { return System.Windows.Application.Current.FindResource("failedtobindtoport").ToString(); } else { return System.Windows.Application.Current.FindResource("deactivated").ToString(); }
+                }
             }
         }
 

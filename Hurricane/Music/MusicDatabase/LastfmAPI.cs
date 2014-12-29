@@ -18,9 +18,7 @@ namespace Hurricane.Music.MusicDatabase
         public async static Task<BitmapImage> GetImage(string tracktitle, string artist, Settings.ImageQuality imagequality, bool saveimage, DirectoryInfo directory, Track t, bool trimtrackname)
         {
             string apikey = string.Empty;
-            #if !DEBUG
             apikey = Settings.SensitiveInformations.LastfmAPIKey;
-            #endif
 
             if (trimtrackname) tracktitle = TrimTrackTitle(tracktitle);
 

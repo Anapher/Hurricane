@@ -1,0 +1,20 @@
+﻿<Dialogs:BaseMetroDialog xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                         xmlns:Dialogs="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
+                         xmlns:HurricaneDialogs="clr-namespace:Hurricane.AppMainWindow.MahAppsExtensions.Dialogs"
+                         xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
+                         x:Class="Hurricane.AppMainWindow.MahAppsExtensions.Dialogs.TrackInformationsDialog" Title="{StaticResource fileinfos}">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="20"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid Background="White">
+            <Grid.Resources>
+                <ResourceDictionary Source="/Resources/Styles/MetroWindowStyle.xaml"/>
+            </Grid.Resources>
+            <Button HorizontalAlignment="Right" Style="{StaticResource WindowButtonStyle}" VerticalAlignment="Center" Height="20" Width="20" x:Name="closebutton"/>
+        </Grid>
+        <Grid x:Name="gridContent" Grid.Row="1"/>
+    </Grid>
+</Dialogs:BaseMetroDialog>

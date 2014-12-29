@@ -3,14 +3,16 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Runtime.InteropServices;
 using System.Security.Cryptography;
+using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 
 namespace Hurricane.Utilities
 {
-    class GeneralHelper
+    static class GeneralHelper
     {
         /// <summary>
         /// Function to get file impression in form of string from a file location.
@@ -28,12 +30,12 @@ namespace Hurricane.Utilities
             }
         }
 
-        public static bool CheckForInternetConnection()
+        public async static Task<bool> CheckForInternetConnection()
         {
             try
             {
-                using (var client = new WebClient() { Proxy = null})
-                using (var stream = client.OpenRead("http://www.google.com"))
+                using (var client = new WebClient() { Proxy = null })
+                using (var stream = await client.OpenReadTaskAsync("http://www.google.com"))
                 {
                     return true;
                 }
@@ -42,6 +44,13 @@ namespace Hurricane.Utilities
             {
                 return false;
             }
+        }
+
+        public static bool IsRunningWithAdministratorRights()
+        {
+            var localAdminGroupSid = new SecurityIdentifier(WellKnownSidType.BuiltinAdministratorsSid, null);
+            WindowsIdentity windowsIdentity = WindowsIdentity.GetCurrent();
+            return windowsIdentity.Groups.Select(g => (SecurityIdentifier)g.Translate(typeof(SecurityIdentifier))).Any(s => s == localAdminGroupSid);
         }
 
         public static string EscapeFilename(string filenametoescape)
@@ -62,7 +71,7 @@ namespace Hurricane.Utilities
             return RemoveChars(title, illegalchars);
         }
 
-        protected static string RemoveChars(string content, char[] illegalchars)
+        private static string RemoveChars(string content, char[] illegalchars)
         {
             if (string.IsNullOrEmpty(content)) return string.Empty;
             string result = content;
@@ -83,6 +92,30 @@ namespace Hurricane.Utilities
             image.StreamSource = ms;
             image.EndInit();
             return image;
+        }
+
+        public static void CreateShortcut(string path, string targetpath, string iconlocation)
+        {
+            Type t = Type.GetTypeFromCLSID(new Guid("72C24DD5-D70A-438B-8A42-98424B88AFB8")); //Windows Script Host Shell Object
+            dynamic shell = Activator.CreateInstance(t);
+            try
+            {
+                var lnk = shell.CreateShortcut(path);
+                try
+                {
+                    lnk.TargetPath = targetpath;
+                    lnk.IconLocation = iconlocation;
+                    lnk.Save();
+                }
+                finally
+                {
+                    Marshal.FinalReleaseComObject(lnk);
+                }
+            }
+            finally
+            {
+                Marshal.FinalReleaseComObject(shell);
+            }
         }
     }
 }

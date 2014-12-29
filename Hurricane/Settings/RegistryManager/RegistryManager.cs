@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -21,7 +23,29 @@ namespace Hurricane.Settings.RegistryManager
             
             foreach (var s in fileextension)
             {
-                //#regdisable ContextMenuItems.Add(new RegistryContextMenuItem(s, standardname, System.Windows.Application.Current.FindResource("PlayWithHurricane").ToString(), apppath, iconpath));
+                ContextMenuItems.Add(new RegistryContextMenuItem(s, standardname, System.Windows.Application.Current.FindResource("PlayWithHurricane").ToString(), apppath, iconpath));
+            }
+        }
+
+        protected readonly FileInfo shortcutpath = new FileInfo(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Microsoft", "Windows", "SendTo", "Hurricane.lnk"));
+        public bool SendToShortcut
+        {
+            get
+            {
+                shortcutpath.Refresh();
+                return shortcutpath.Exists;
+            }
+            set
+            {
+                if (value)
+                {
+                    string apppath = System.Reflection.Assembly.GetExecutingAssembly().Location;
+                    Utilities.GeneralHelper.CreateShortcut(shortcutpath.FullName, apppath, apppath);
+                }
+                else
+                {
+                    if (shortcutpath.Exists) shortcutpath.Delete();
+                }
             }
         }
     }

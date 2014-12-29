@@ -39,6 +39,17 @@ namespace Hurricane.Music
             }
         }
 
+        
+        private bool isfavorite;
+        public bool IsFavorite
+        {
+            get { return isfavorite; }
+            set
+            {
+                SetProperty(value, ref isfavorite);
+            }
+        }
+
         private String queueid;
         [XmlIgnore]
         public String QueueID //I know that the id should be an int, but it wouldn't make sense because what would be the id for non queued track? We would need a converter -> less performance -> string is wurf
@@ -59,7 +70,6 @@ namespace Hurricane.Music
                 SetProperty(value, ref isplaying);
             }
         }
-
         
         private BitmapImage image;
         [XmlIgnore]
@@ -117,25 +127,28 @@ namespace Hurricane.Music
             }
         }
 
-        public bool LoadInformations()
+        public async Task<bool> LoadInformations()
         {
             trackinformations = null; //to refresh the fileinfo
             FileInfo file = TrackInformations;
 
             try //We just try to open the file to test if it works with CSCore
             {
-                using (IWaveSource SoundSource = CodecFactory.Instance.GetCodec(Path))
+                TimeSpan duration = TimeSpan.Zero;
+                await Task.Run(() =>
                 {
-                    TimeSpan duration = SoundSource.GetLength();
-
-                    if (duration.Hours == 0)
+                    using (IWaveSource SoundSource = CodecFactory.Instance.GetCodec(Path))
                     {
-                        this.Duration = duration.ToString(@"mm\:ss");
+                        duration = SoundSource.GetLength();
                     }
-                    else
-                    {
-                        this.Duration = duration.ToString(@"hh\:mm\:ss");
-                    }
+                });
+                if (duration.Hours == 0)
+                {
+                    this.Duration = duration.ToString(@"mm\:ss");
+                }
+                else
+                {
+                    this.Duration = duration.ToString(@"hh\:mm\:ss");
                 }
             }
             catch (Exception)
@@ -145,7 +158,9 @@ namespace Hurricane.Music
 
             try
             {
-                using (TagLib.File info = TagLib.File.Create(file.FullName))
+                TagLib.File info = null;
+                await Task.Run(() => info = TagLib.File.Create(file.FullName));
+                using (info)
                 {
                     if (!string.IsNullOrWhiteSpace(info.Tag.FirstPerformer))
                     {
@@ -217,7 +232,7 @@ namespace Hurricane.Music
             {
                 DirectoryInfo diAlbumCover = new DirectoryInfo("AlbumCover");
                 this.Image = MusicDatabase.MusicCoverManager.GetImage(this, diAlbumCover);
-                if (this.Image == null && Settings.HurricaneSettings.Instance.Config.LoadAlbumCoverFromInternet && Utilities.GeneralHelper.CheckForInternetConnection())
+                if (this.Image == null && Settings.HurricaneSettings.Instance.Config.LoadAlbumCoverFromInternet)
                 {
                     try
                     {
@@ -261,10 +276,7 @@ namespace Hurricane.Music
                 System.Xml.XmlConvert.VerifyXmlChars(content);
                 return content;
             }
-            catch
-            {
-                return new string(content.Where(ch => System.Xml.XmlConvert.IsXmlChar(ch)).ToArray());
-            }
+            catch { return new string(content.Where(ch => System.Xml.XmlConvert.IsXmlChar(ch)).ToArray()); }
         }
         #endregion
 
@@ -272,6 +284,42 @@ namespace Hurricane.Music
         public static bool IsSupported(FileInfo fi)
         {
             return CodecFactory.Instance.GetSupportedFileExtensions().Contains(fi.Extension.ToLower().Replace(".", string.Empty));
+        }
+
+        #endregion
+
+        #region Animations
+        private bool isremoving = false;
+        [XmlIgnore]
+        public bool IsRemoving
+        {
+            get { return isremoving; }
+            set
+            {
+                SetProperty(value, ref isremoving);
+            }
+        }
+
+        private bool isadded = false;
+        [XmlIgnore]
+        public bool IsAdded
+        {
+            get { return isadded; }
+            set
+            {
+                SetProperty(value, ref isadded);
+            }
+        }
+
+        private bool isselected;
+        [XmlIgnore]
+        public bool IsSelected
+        {
+            get { return isselected; }
+            set
+            {
+                SetProperty(value, ref isselected);
+            }
         }
 
         #endregion

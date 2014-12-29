@@ -28,17 +28,17 @@ namespace Hurricane.Views
 
         public void SetText(string text)
         {
-           this.Dispatcher.Invoke(() => this.txtinfo.Text = text );
+          this.txtinfo.Text = text;
         }
 
         public void SetProgress(double progress)
         {
-            this.Dispatcher.Invoke(() => prg.Value = progress);
+            prg.Value = progress;
         }
 
         public void SetTitle(string title)
         {
-            this.Dispatcher.Invoke(() => this.Title = title);
+            this.Title = title;
         }
     }
 }

@@ -19,12 +19,19 @@ namespace Hurricane.Views
     /// </summary>
     public partial class TrackInformationWindow : MahApps.Metro.Controls.MetroWindow
     {
+        TrackInformationsView content;
         public TrackInformationWindow(Music.Track track)
         {
-            this.CurrentTrack = track;
+            content = new TrackInformationsView(track);
+            this.Content = content;
+            content.CloseRequest += (s, e) => this.Close();
             InitializeComponent();
         }
 
-        public Music.Track CurrentTrack { get; set; }
+        protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
+        {
+            base.OnClosing(e);
+            content.Dispose();
+        }
     }
 }

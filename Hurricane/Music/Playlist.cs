@@ -13,11 +13,11 @@ using System.Xml.Serialization;
 namespace Hurricane.Music
 {
     [Serializable]
-   public class Playlist : ViewModelBase.PropertyChangedBase
+    public class Playlist : ViewModelBase.PropertyChangedBase
     {
         public Playlist()
         {
-            Tracks = new List<Track>();
+            Tracks = new ObservableCollection<Track>();
         }
 
         private String name;
@@ -30,12 +30,8 @@ namespace Hurricane.Music
             }
         }
 
-        public List<Track> Tracks { get; protected set; }
+        public ObservableCollection<Track> Tracks { get; protected set; }
 
-        [XmlIgnore]
-        public DataVirtualization.VirtualizingCollection<Track> TrackCollection { get; set; }
-
-        
         private string searchtext;
         [XmlIgnore]
         public string SearchText
@@ -62,13 +58,11 @@ namespace Hurricane.Music
             }
         }
 
-        public void RefreshList()
+        public void LoadList()
         {
             if (Tracks != null)
             {
-                DataVirtualization.TrackProvider loader = new DataVirtualization.TrackProvider(Tracks);
-                TrackCollection = new DataVirtualization.VirtualizingCollection<Track>(loader, 200);
-                ViewSource = CollectionViewSource.GetDefaultView(TrackCollection);
+                ViewSource = CollectionViewSource.GetDefaultView(Tracks);
                 ViewSource.Filter = (item) =>
                 {
                     if (string.IsNullOrWhiteSpace(SearchText)) { return true; } else { return item.ToString().ToUpper().Contains(SearchText.ToUpper()); }
@@ -76,7 +70,7 @@ namespace Hurricane.Music
             }
         }
 
-        public void AddFiles(EventHandler<TrackImportProgressChangedEventArgs> progresschanged, bool FromAnotherThread, params string[] paths)
+        public async Task AddFiles(EventHandler<TrackImportProgressChangedEventArgs> progresschanged, params string[] paths)
         {
             for (int i = 0; i < paths.Length; i++)
             {
@@ -86,26 +80,26 @@ namespace Hurricane.Music
                     if (progresschanged != null) progresschanged(this, new TrackImportProgressChangedEventArgs(i, paths.Length, fi.Name));
                     Track t = new Track();
                     t.Path = fi.FullName;
-                    if (!t.LoadInformations()) continue;
+                    if (!await t.LoadInformations()) continue;
                     t.TimeAdded = DateTime.Now;
-                    if (FromAnotherThread) { System.Windows.Application.Current.Dispatcher.Invoke(() => this.TrackCollection.Add(t)); } else {this.TrackCollection.Add(t); }
+                    this.AddTrackWithAnimation(t);
                 }
             }
         }
 
-        public void AddFiles(bool FromAnotherThread, params string[] paths)
+        public async Task AddFiles(params string[] paths)
         {
-            this.AddFiles(null,FromAnotherThread, paths);
+            await this.AddFiles(null, paths);
         }
 
-        public void ReloadTrackInformations(EventHandler<TrackImportProgressChangedEventArgs> progresschanged, bool FromAnotherThread)
+        public async Task ReloadTrackInformations(EventHandler<TrackImportProgressChangedEventArgs> progresschanged, bool FromAnotherThread)
         {
             foreach (Track t in this.Tracks)
             {
                 if (progresschanged != null) progresschanged(this, new TrackImportProgressChangedEventArgs(this.Tracks.IndexOf(t), Tracks.Count, t.ToString()));
                 if (t.TrackExists)
                 {
-                    t.LoadInformations();
+                    await t.LoadInformations();
                 }
             }
         }
@@ -124,25 +118,46 @@ namespace Hurricane.Music
 
         public void RemoveMissingTracks()
         {
-            for (int i = Tracks.Count -1; i > -1; i--)
+            for (int i = Tracks.Count - 1; i > -1; i--)
             {
                 Track t = Tracks[i];
-                if (!t.TrackExists) this.TrackCollection.Remove(t);
+                if (!t.TrackExists) this.RemoveTrackWithAnimation(t);
             }
             OnPropertyChanged("ContainsMissingTracks");
+        }
+
+        public void RemoveTrackWithAnimation(Track track)
+        {
+            track.IsRemoving = true;
+            System.Windows.Threading.DispatcherTimer tmr = new System.Windows.Threading.DispatcherTimer();
+            tmr.Interval = TimeSpan.FromMilliseconds(500);
+            tmr.Tick += (s, e) => { this.Tracks.Remove(track); tmr.Stop(); };
+            tmr.Start();
+        }
+
+        public void AddTrackWithAnimation(Track track)
+        {
+            track.IsAdded = true;
+            this.Tracks.Add(track);
+            System.Windows.Threading.DispatcherTimer tmr = new System.Windows.Threading.DispatcherTimer();
+            tmr.Interval = TimeSpan.FromMilliseconds(500);
+            tmr.Tick += (s, e) => { track.IsAdded = false; tmr.Stop(); };
+            tmr.Start();
         }
 
         /// <summary>
         /// Removes all duplicated tracks
         /// </summary>
         /// <returns>Returns the number of the removed tracks</returns>
-        public int RemoveDuplicates(bool FromAnotherThread = false)
+        public async Task<int> RemoveDuplicates()
         {
             int counter = this.Tracks.Count;
-            IEnumerable<Track> noduplicates = this.Tracks.Distinct(new TrackComparer());
+            IEnumerable<Track> noduplicates = null;
+            await Task.Run(() => noduplicates = this.Tracks.Distinct(new TrackComparer()));
             if (noduplicates.Any() && noduplicates.Count() != this.Tracks.Count)
             {
-                if (FromAnotherThread) { System.Windows.Application.Current.Dispatcher.Invoke(() => { this.Tracks = new List<Track>(noduplicates); RefreshList(); }); } else { this.Tracks = new List<Track>(noduplicates); RefreshList(); };
+                this.Tracks = new ObservableCollection<Track>(noduplicates);
+                LoadList();
             }
             return counter - noduplicates.Count();
         }

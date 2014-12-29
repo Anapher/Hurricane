@@ -45,6 +45,9 @@ namespace Hurricane.Settings
         public bool RememberTrackImportPlaylist { get; set; }
         public string PlaylistToImportTrack { get; set; }
 
+        public bool ApiIsEnabled { get; set; }
+        public int ApiPort { get; set; }
+
         //Notifications
         public Notification.NotificationType Notification { get; set; }
         public bool DisableNotificationInGame { get; set; }
@@ -102,6 +105,8 @@ namespace Hurricane.Settings
             DownloadAlbumCoverQuality = ImageQuality.maximum;
             SaveCoverLocal = false;
             TrimTrackname = true;
+            ApiIsEnabled = false;
+            ApiPort = 10898; //10.08.1998
         }
 
         public ConfigSettings()
@@ -163,7 +168,9 @@ namespace Hurricane.Settings
                 CompareTwoValues(this.DownloadAlbumCoverQuality, other.DownloadAlbumCoverQuality) &&
                 CompareTwoValues(this.LoadAlbumCoverFromInternet, other.LoadAlbumCoverFromInternet) &&
                 CompareTwoValues(this.SaveCoverLocal, other.SaveCoverLocal) &&
-                CompareTwoValues(this.TrimTrackname, other.TrimTrackname));
+                CompareTwoValues(this.TrimTrackname, other.TrimTrackname) &&
+                CompareTwoValues(this.ApiIsEnabled, other.ApiIsEnabled) &&
+                CompareTwoValues(this.ApiPort, other.ApiPort));
         }
 
         protected bool CompareTwoValues(object v1, object v2)

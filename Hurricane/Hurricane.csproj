@@ -76,6 +76,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Libraries\MahApps.Metro.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Newtonsoft.Json.6.0.7\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="Ookii.Dialogs.Wpf">
       <HintPath>..\packages\Ookii.Dialogs.1.0\lib\net35\Ookii.Dialogs.Wpf.dll</HintPath>
     </Reference>
@@ -115,14 +119,26 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="AppMainWindow\MahAppsExtensions\Dialogs\TrackInformationsDialog.xaml.cs">
+      <DependentUpon>TrackInformationsDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="AppMainWindow\MahAppsExtensions\Dialogs\AdvancedInputDialog.xaml.cs">
+      <DependentUpon>AdvancedInputDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="AppMainWindow\Messages\MessageDialog.cs" />
+    <Compile Include="AppMainWindow\Messages\MessageManager.cs" />
+    <Compile Include="AppMainWindow\Messages\ProgressDialog.cs" />
     <Compile Include="Extensions\Converter\CollapsedOnNullValue.cs" />
     <Compile Include="Extensions\Converter\FalseOnNullValue.cs" />
     <Compile Include="Extensions\Converter\FormatTimespan.cs" />
+    <Compile Include="Extensions\Converter\PlaceholderConverter.cs" />
+    <Compile Include="Extensions\Converter\StringArrayToStringConverter.cs" />
     <Compile Include="Extensions\Converter\TextWithHyperlinkParametersConverter.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Extensions\Converter\TimespanToMinutesSecounds.cs" />
     <Compile Include="Extensions\ItemsControlExtensions.cs" />
+    <Compile Include="Extensions\TextBlockHelper.cs" />
     <Compile Include="Extensions\VisibilityAnimation.cs" />
     <Compile Include="MagicArrow\DockManager\DockingApplicationState.cs" />
     <Compile Include="MagicArrow\DockManager\DockManager.cs" />
@@ -161,6 +177,13 @@
       <DependentUpon>NotificationTopWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Notification\WindowMessages\WindowMessanger.cs" />
+    <Compile Include="Music\API\Command.cs" />
+    <Compile Include="Music\API\CommandBase.cs" />
+    <Compile Include="Music\API\Commander.cs" />
+    <Compile Include="Music\API\CommandFunction.cs" />
+    <Compile Include="Music\API\CommandAction.cs" />
+    <Compile Include="Music\API\TcpConnection.cs" />
+    <Compile Include="Music\API\TcpServer.cs" />
     <Compile Include="Settings\ConfigSettings.cs" />
     <Compile Include="Settings\Converter\BitrateToIndexConverter.cs" />
     <Compile Include="Settings\Converter\NotificationTypeConverter.cs" />
@@ -186,12 +209,10 @@
     <Compile Include="Utilities\Native\WINDOWPLACEMENT.cs" />
     <Compile Include="Utilities\ObjectCopier.cs" />
     <Compile Include="Utilities\Native\UnsafeNativeMethods.cs" />
+    <Compile Include="Utilities\RegistryExtensions.cs" />
     <Compile Include="Utilities\WindowHelper.cs" />
     <Compile Include="Utilities\WpfScreen.cs" />
     <Compile Include="ViewModels\SettingsViewModel.cs" />
-    <Compile Include="DataVirtualization\IItemsProvider.cs" />
-    <Compile Include="DataVirtualization\TrackProvider.cs" />
-    <Compile Include="DataVirtualization\VirtualizingCollection.cs" />
     <Compile Include="Views\AboutView.xaml.cs">
       <DependentUpon>AboutView.xaml</DependentUpon>
     </Compile>
@@ -234,15 +255,22 @@
     <Compile Include="Views\TrackImportWindow.xaml.cs">
       <DependentUpon>TrackImportWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\TrackInformationsView.xaml.cs">
+      <DependentUpon>TrackInformationsView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\TrackInformationWindow.xaml.cs">
       <DependentUpon>TrackInformationWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\UpdateWindow.xaml.cs">
       <DependentUpon>UpdateWindow.xaml</DependentUpon>
     </Compile>
-    <Page Include="MagicArrow\Blue.xaml">
+    <Page Include="AppMainWindow\MahAppsExtensions\Dialogs\TrackInformationsDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="AppMainWindow\MahAppsExtensions\Dialogs\AdvancedInputDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="MagicArrow\DockManager\DockRangeWindow.xaml">
       <SubType>Designer</SubType>
@@ -269,6 +297,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Resources\Styles\AdvancedTimelineSlider.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Resources\Styles\FavoriteToggleButton.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -392,7 +424,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\CreateNewPlaylistWindow.xaml">
+    <Page Include="Views\InputDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -437,8 +469,8 @@
     <Compile Include="ViewModelBase\PropertyChangedBase.cs" />
     <Compile Include="ViewModelBase\RelayCommand.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
-    <Compile Include="Views\CreateNewPlaylistWindow.xaml.cs">
-      <DependentUpon>CreateNewPlaylistWindow.xaml</DependentUpon>
+    <Compile Include="Views\InputDialog.xaml.cs">
+      <DependentUpon>InputDialog.xaml</DependentUpon>
     </Compile>
     <Page Include="AppMainWindow\MainWindow.xaml">
       <SubType>Designer</SubType>
@@ -477,6 +509,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\TrackImportWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\TrackInformationsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

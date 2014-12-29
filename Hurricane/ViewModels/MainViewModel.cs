@@ -28,11 +28,11 @@ namespace Hurricane.ViewModels
 
         }
 
-        private Window BaseWindow;
+        private MainWindow BaseWindow;
         public Settings.HurricaneSettings MySettings { get; protected set; }
         private Utilities.KeyboardListener KListener;
-
-        public void Loaded(Window window)
+        
+        public void Loaded(MainWindow window)
         {
             this.BaseWindow = window;
             MySettings = Settings.HurricaneSettings.Instance;
@@ -92,20 +92,24 @@ namespace Hurricane.ViewModels
         #endregion
 
         #region Methods
-        void ImportFiles(string[] paths, Music.Playlist playlist, EventHandler finished = null)
+        async Task ImportFiles(string[] paths, Music.Playlist playlist, EventHandler finished = null)
         {
-            Views.ProgressWindow progresswindow = new Views.ProgressWindow(Application.Current.FindResource("filesgetimported").ToString(), false) { Owner = BaseWindow };
-            System.Threading.Thread t = new System.Threading.Thread(() =>
+            var controller = BaseWindow.Messages.CreateProgressDialog(string.Empty, false);
+
+            await playlist.AddFiles((s, e) =>
             {
-                playlist.AddFiles((s, e) => { Application.Current.Dispatcher.Invoke(() => progresswindow.SetProgress(e.Percentage)); progresswindow.SetText(e.CurrentFile); progresswindow.SetTitle(string.Format(Application.Current.FindResource("filesgetimported").ToString(), e.FilesImported, e.TotalFiles)); }, true, paths); MusicManager.SaveToSettings(); MySettings.Save(); Application.Current.Dispatcher.Invoke(() => progresswindow.Close());
-                if (finished != null) Application.Current.Dispatcher.Invoke(() => finished(this, EventArgs.Empty));
-            });
-            t.IsBackground = true;
-            t.Start();
-            progresswindow.ShowDialog();
+                controller.SetProgress(e.Percentage);
+                controller.SetMessage(e.CurrentFile);
+                controller.SetTitle(string.Format(Application.Current.FindResource("filesgetimported").ToString(), e.FilesImported, e.TotalFiles));
+            }, paths);
+
+            MusicManager.SaveToSettings();
+            MySettings.Save();
+            await controller.Close();
+            if (finished != null) Application.Current.Dispatcher.Invoke(() => finished(this, EventArgs.Empty));
         }
 
-        public void DragDropFiles(string[] files)
+        public async void DragDropFiles(string[] files)
         {
             List<string> paths = new List<string>();
             foreach (string file in files)
@@ -115,7 +119,7 @@ namespace Hurricane.ViewModels
                     paths.Add(file);
                 }
             }
-            ImportFiles(paths.ToArray(), MusicManager.SelectedPlaylist);
+            await ImportFiles(paths.ToArray(), MusicManager.SelectedPlaylist);
         }
 
         public void Closing()
@@ -135,7 +139,7 @@ namespace Hurricane.ViewModels
         private bool remember = false;
         private Music.Playlist rememberedplaylist;
 
-        public void OpenFile(FileInfo file, bool play)
+        public async void OpenFile(FileInfo file, bool play)
         {
             foreach (var playlist in MusicManager.Playlists)
             {
@@ -186,7 +190,7 @@ namespace Hurricane.ViewModels
                 }
             }
 
-            ImportFiles(new string[] { file.FullName }, selectedplaylist, (s, e) => OpenFile(file, play));
+            await ImportFiles(new string[] { file.FullName }, selectedplaylist, (s, e) => OpenFile(file, play));
         }
 
         public void MoveOut()
@@ -231,16 +235,17 @@ namespace Hurricane.ViewModels
             get
             {
                 if (reloadtrackinformations == null)
-                    reloadtrackinformations = new RelayCommand((object parameter) => {
+                    reloadtrackinformations = new RelayCommand(async(object parameter) => {
+                        var controller = BaseWindow.Messages.CreateProgressDialog(string.Empty, false);
 
-                        Views.ProgressWindow progresswindow = new Views.ProgressWindow(Application.Current.FindResource("loadtrackinformation").ToString(), false) { Owner = BaseWindow };
-                        System.Threading.Thread t = new System.Threading.Thread(() =>
+                        await MusicManager.SelectedPlaylist.ReloadTrackInformations((s, e) =>
                         {
-                            MusicManager.SelectedPlaylist.ReloadTrackInformations((s, e) => { Application.Current.Dispatcher.Invoke(() => progresswindow.SetProgress(e.Percentage)); progresswindow.SetText(e.CurrentFile); progresswindow.SetTitle(string.Format(Application.Current.FindResource("loadtrackinformation").ToString(), e.FilesImported, e.TotalFiles)); }, true); MusicManager.SaveToSettings(); MySettings.Save(); Application.Current.Dispatcher.Invoke(() => progresswindow.Close());
-                        });
-                        t.IsBackground = true;
-                        t.Start();
-                        progresswindow.ShowDialog();
+                            controller.SetProgress(e.Percentage);
+                            controller.SetMessage(e.CurrentFile);
+                            controller.SetTitle(string.Format(Application.Current.FindResource("loadtrackinformation").ToString(), e.FilesImported, e.TotalFiles));
+                        }, true);
+
+                        MusicManager.SaveToSettings(); MySettings.Save(); await controller.Close();
                     });
                 return reloadtrackinformations;
             }
@@ -252,14 +257,13 @@ namespace Hurricane.ViewModels
             get
             {
                 if (removemissingtracks == null)
-                    removemissingtracks = new RelayCommand((object parameter) => {
-                        Views.MessageWindow message = new Views.MessageWindow("suredeleteallmissingtracks", "removemissingtracks", true, true) { Owner = BaseWindow};
-                        if (message.ShowDialog() == true)
+                    removemissingtracks = new RelayCommand(async(object parameter) => {
+                        if (await BaseWindow.ShowMessage(Application.Current.FindResource("suredeleteallmissingtracks").ToString(), Application.Current.FindResource("removemissingtracks").ToString(), true))
                         {
                             MusicManager.SelectedPlaylist.RemoveMissingTracks();
+                            MusicManager.SaveToSettings();
+                            MySettings.Save();
                         }
-                        MusicManager.SaveToSettings();
-                        MySettings.Save();
                     });
                 return removemissingtracks;
             }
@@ -271,26 +275,15 @@ namespace Hurricane.ViewModels
             get
             {
                 if (removeduplicatetracks == null)
-                    removeduplicatetracks = new RelayCommand((object parameter) => {
-                        Views.MessageWindow message = new Views.MessageWindow("removeduplicatetracksmessage", "removeduplicates", true, true);
-                        message.Owner = this.BaseWindow;
-                        if (message.ShowDialog() == true)
+                    removeduplicatetracks = new RelayCommand(async(object parameter) => {
+                        if (await BaseWindow.ShowMessage(Application.Current.FindResource("removeduplicatetracksmessage").ToString(), Application.Current.FindResource("removeduplicates").ToString(), true))
                         {
-                            Views.ProgressWindow progresswindow = new Views.ProgressWindow(Application.Current.FindResource("removeduplicates").ToString(), true) { Owner = BaseWindow};
-                            progresswindow.SetText(Application.Current.FindResource("searchingforduplicates").ToString());
-                            
-                            System.Threading.Thread t = new System.Threading.Thread(() => {
-                                var counter = MusicManager.SelectedPlaylist.RemoveDuplicates(true);
-                                Application.Current.Dispatcher.Invoke(() =>
-                                {
-                                    progresswindow.Close();
-                                    Views.MessageWindow successmessage = new Views.MessageWindow(counter == 0 ? Application.Current.FindResource("noduplicatesmessage").ToString() : string.Format(Application.Current.FindResource("tracksremoved").ToString(), counter), Application.Current.FindResource("removeduplicates").ToString(), false) { Owner = BaseWindow };
-                                    successmessage.ShowDialog();
-                                });
-                            });
-                            t.IsBackground = true;
-                            t.Start();
-                            progresswindow.Show();
+                            var controller = BaseWindow.Messages.CreateProgressDialog(Application.Current.FindResource("removeduplicates").ToString(), true);
+                            controller.SetMessage(Application.Current.FindResource("searchingforduplicates").ToString());
+
+                            var counter = await MusicManager.SelectedPlaylist.RemoveDuplicates();
+                            await controller.Close();
+                            await BaseWindow.ShowMessage(counter == 0 ? Application.Current.FindResource("noduplicatesmessage").ToString() : string.Format(Application.Current.FindResource("tracksremoved").ToString(), counter), Application.Current.FindResource("removeduplicates").ToString(), false);
                         }
                     });
                 return removeduplicatetracks;
@@ -318,7 +311,7 @@ namespace Hurricane.ViewModels
             get
             {
                 if (addfilestoplaylist == null)
-                    addfilestoplaylist = new RelayCommand((object parameter) =>
+                    addfilestoplaylist = new RelayCommand(async(object parameter) =>
                     {
                         Ookii.Dialogs.Wpf.VistaOpenFileDialog ofd = new Ookii.Dialogs.Wpf.VistaOpenFileDialog();
                         ofd.CheckFileExists = true;
@@ -327,7 +320,7 @@ namespace Hurricane.ViewModels
                         ofd.Multiselect = true;
                         if (ofd.ShowDialog(BaseWindow) == true)
                         {
-                            ImportFiles(ofd.FileNames, MusicManager.SelectedPlaylist);
+                            await ImportFiles(ofd.FileNames, MusicManager.SelectedPlaylist);
                         }
                     });
                 return addfilestoplaylist;
@@ -340,7 +333,7 @@ namespace Hurricane.ViewModels
             get
             {
                 if (addfoldertoplaylist == null)
-                    addfoldertoplaylist = new RelayCommand((object parameter) =>
+                    addfoldertoplaylist = new RelayCommand(async(object parameter) =>
                     {
                         Views.FolderImportWindow window = new Views.FolderImportWindow();
                         window.Owner = BaseWindow;
@@ -356,7 +349,7 @@ namespace Hurricane.ViewModels
                                 }
                             }
 
-                            ImportFiles(filestoadd.ToArray(), MusicManager.SelectedPlaylist);
+                            await ImportFiles(filestoadd.ToArray(), MusicManager.SelectedPlaylist);
                         }
                     });
                 return addfoldertoplaylist;
@@ -369,12 +362,12 @@ namespace Hurricane.ViewModels
             get
             {
                 if (addnewplaylist == null)
-                    addnewplaylist = new RelayCommand((object parameter) =>
+                    addnewplaylist = new RelayCommand(async(object parameter) =>
                     {
-                        Views.CreateNewPlaylistWindow window = new Views.CreateNewPlaylistWindow() { Owner = BaseWindow };
-                        if (window.ShowDialog() == true)
+                        string result = await BaseWindow.ShowInputDialog(Application.Current.FindResource("newplaylist").ToString(), Application.Current.FindResource("nameofplaylist").ToString(), Application.Current.FindResource("create").ToString(), string.Empty);
+                        if (!string.IsNullOrEmpty(result))
                         {
-                            Music.Playlist newplaylist = new Music.Playlist() { Name = window.PlaylistName };
+                            Music.Playlist newplaylist = new Music.Playlist() { Name = result };
                             MusicManager.Playlists.Add(newplaylist);
                             MusicManager.RegisterPlaylist(newplaylist);
                             MusicManager.SelectedPlaylist = newplaylist;
@@ -386,29 +379,38 @@ namespace Hurricane.ViewModels
             }
         }
 
-        private RelayCommand removeselectedtrack;
-        public RelayCommand RemoveSelectedTrack
+        private RelayCommand removeselectedtracks;
+        public RelayCommand RemoveSelectedTracks
         {
             get
             {
-                if (removeselectedtrack == null)
-                    removeselectedtrack = new RelayCommand((object parameter) =>
+                if (removeselectedtracks == null)
+                    removeselectedtracks = new RelayCommand(async(object parameter) =>
                     {
                         Music.Track track = MusicManager.SelectedTrack;
                         if (track == null) return;
-                        if (track.IsPlaying)
+
+                        List<Music.Track> tracksToRemove = new List<Music.Track>();
+                        foreach (var t in MusicManager.SelectedPlaylist.Tracks)
                         {
-                            Views.MessageWindow errorbox = new Views.MessageWindow(string.Format(Application.Current.FindResource("trackisplaying").ToString(), track.Title), Application.Current.FindResource("error").ToString(), false) { Owner = BaseWindow };
-                            errorbox.ShowDialog();
-                            return;
+                            if (t.IsSelected)
+                                tracksToRemove.Add(t);
                         }
-                        Views.MessageWindow messagebox = new Views.MessageWindow(string.Format(Application.Current.FindResource("removetracksmessage").ToString(), track.Title), Application.Current.FindResource("removetracks").ToString(), true) { Owner = BaseWindow };
-                        if (messagebox.ShowDialog() == true)
+
+                        if (await BaseWindow.ShowMessage(string.Format(Application.Current.FindResource("removetracksmessage").ToString(), tracksToRemove.Count > 0 ? string.Format("{0} {1}", tracksToRemove.Count, Application.Current.FindResource("tracks").ToString()) : string.Format("\"{0}\"", track.Title)), Application.Current.FindResource("removetracks").ToString(), true))
                         {
-                            MusicManager.SelectedPlaylist.TrackCollection.Remove(track);
+                            foreach (var t in tracksToRemove)
+                            {
+                                if (t.IsPlaying)
+                                {
+                                    MusicManager.CSCoreEngine.StopPlayback();
+                                    MusicManager.CSCoreEngine.KickTrack();
+                                }
+                                MusicManager.SelectedPlaylist.RemoveTrackWithAnimation(t);
+                            }
                         }
                     });
-                return removeselectedtrack;
+                return removeselectedtracks;
             }
         }
 
@@ -429,24 +431,21 @@ namespace Hurricane.ViewModels
             get
             {
                 if (removeplaylist == null)
-                    removeplaylist = new RelayCommand((object parameter) =>
+                    removeplaylist = new RelayCommand(async(object parameter) =>
                     {
                         if (MusicManager.Playlists.Count == 1)
                         {
-                            Views.MessageWindow message = new Views.MessageWindow("errorcantdeleteplaylist", "error", false, true);
-                            message.Owner = BaseWindow;
-                            message.ShowDialog();
+                            await BaseWindow.ShowMessage(Application.Current.FindResource("errorcantdeleteplaylist").ToString(), Application.Current.FindResource("error").ToString(), false);
                             return;
                         }
-                        Views.MessageWindow window = new Views.MessageWindow(string.Format(Application.Current.FindResource("reallydeleteplaylist").ToString(), MusicManager.SelectedPlaylist.Name), Application.Current.FindResource("removeplaylist").ToString(), true);
-                        window.Owner = BaseWindow;
-                        if (window.ShowDialog() == true)
+                        if (await BaseWindow.ShowMessage(string.Format(Application.Current.FindResource("reallydeleteplaylist").ToString(), MusicManager.SelectedPlaylist.Name), Application.Current.FindResource("removeplaylist").ToString(), true))
                         {
                             Music.Playlist PlaylistToDelete = MusicManager.SelectedPlaylist;
                             Music.Playlist NewPlaylist = MusicManager.Playlists[0];
-                            if (MusicManager.CurrentPlaylist == PlaylistToDelete)
-                                MusicManager.CSCoreEngine.StopPlayback();
+                            bool nexttrack = MusicManager.CurrentPlaylist == PlaylistToDelete;
                             MusicManager.CurrentPlaylist = NewPlaylist;
+                            if (nexttrack)
+                            { MusicManager.CSCoreEngine.StopPlayback(); MusicManager.CSCoreEngine.KickTrack(); MusicManager.GoForward(); }
                             MusicManager.Playlists.Remove(PlaylistToDelete);
                             MusicManager.SelectedPlaylist = NewPlaylist;
                         }
@@ -461,11 +460,10 @@ namespace Hurricane.ViewModels
             get
             {
                 if (renameplaylist == null)
-                    renameplaylist = new RelayCommand((object parameter) =>
+                    renameplaylist = new RelayCommand(async(object parameter) =>
                     {
-                        Views.CreateNewPlaylistWindow window = new Views.CreateNewPlaylistWindow(MusicManager.SelectedPlaylist.Name);
-                        window.Owner = BaseWindow;
-                        if (window.ShowDialog() == true) { MusicManager.SelectedPlaylist.Name = window.PlaylistName; }
+                        string result = await BaseWindow.ShowInputDialog(Application.Current.FindResource("renameplaylist").ToString(), Application.Current.FindResource("nameofplaylist").ToString(), Application.Current.FindResource("rename").ToString(), MusicManager.SelectedPlaylist.Name);
+                        if (!string.IsNullOrEmpty(result)) { MusicManager.SelectedPlaylist.Name = result; }
                     });
                 return renameplaylist;
             }
@@ -477,11 +475,9 @@ namespace Hurricane.ViewModels
             get
             {
                 if (opentrackinformations == null)
-                    opentrackinformations = new RelayCommand((object parameter) =>
+                    opentrackinformations = new RelayCommand(async(object parameter) =>
                     {
-                        Views.TrackInformationWindow window = new Views.TrackInformationWindow(MusicManager.SelectedTrack);
-                        window.Owner = BaseWindow;
-                        window.ShowDialog();
+                        await BaseWindow.ShowTrackInformations(MusicManager.SelectedTrack);
                     });
                 return opentrackinformations;
             }
@@ -508,11 +504,12 @@ namespace Hurricane.ViewModels
             get
             {
                 if (clearselectedplaylist == null)
-                    clearselectedplaylist = new RelayCommand((object parameter) =>
+                    clearselectedplaylist = new RelayCommand(async(object parameter) =>
                     {
-                        Views.MessageWindow window = new Views.MessageWindow(string.Format(Application.Current.FindResource("sureremovealltracks").ToString(), MusicManager.SelectedPlaylist.Name), Application.Current.FindResource("removealltracks").ToString(), true) { Owner = BaseWindow };
-                        if (window.ShowDialog() == true)
-                            MusicManager.SelectedPlaylist.TrackCollection.Clear();
+                        if (await BaseWindow.ShowMessage(string.Format(Application.Current.FindResource("sureremovealltracks").ToString(), MusicManager.SelectedPlaylist.Name), Application.Current.FindResource("removealltracks").ToString(), true))
+                        {
+                            MusicManager.SelectedPlaylist.Tracks.Clear();
+                        }
                     });
                 return clearselectedplaylist;
             }
@@ -539,6 +536,8 @@ namespace Hurricane.ViewModels
                 SetProperty(value, ref updater);
             }
         }
+
         #endregion
+
     }
 }

@@ -19,35 +19,26 @@ namespace Hurricane.Settings.RegistryManager
         /// <param name="applicationpath">The path with paramters</param>
         /// <param name="iconpath">The path of the icon</param>
         /// <returns>False if the user doesn't have access</returns>
-        [PrincipalPermission(SecurityAction.Demand, Role = @"BUILTIN\Administrators")]
-        public static bool RegisterExtension(string extension, string header, string name, string applicationpath, string iconpath)
+        public static void RegisterExtension(string extension, string header, string name, string applicationpath, string iconpath)
         {
-            try
+            using (RegistryKey extensionkey = GetClassesRoot().OpenSubKey(extension))
             {
-                using (RegistryKey extensionkey = GetClassesRoot().OpenSubKey(extension))
-                {
-                    string keytoadd = extensionkey.GetValue("", string.Empty).ToString();
+                string keytoadd = extensionkey.GetValue("", string.Empty).ToString();
 
-                    using (RegistryKey rootkey = Registry.ClassesRoot.OpenSubKey(keytoadd))
+                using (RegistryKey rootkey = Registry.ClassesRoot.OpenSubKey(keytoadd))
+                {
+                    using (RegistryKey shellkey = rootkey.OpenSubKey("shell", true))
                     {
-                        using (RegistryKey shellkey = rootkey.OpenSubKey("shell", true))
+                        using (RegistryKey subkey = shellkey.CreateSubKey(name))
                         {
-                            using (RegistryKey subkey = shellkey.CreateSubKey(name))
-                            {
-                                subkey.SetValue("", header);
-                                subkey.SetValue("Icon", iconpath);
-                                var commandkey = subkey.CreateSubKey("command");
-                                commandkey.SetValue("", applicationpath); //@"D:\\Dokumente\\Visual Studio 2013\\Projects\\Hurricane\\Source\\Hurricane\\bin\\Release\\Hurricane.exe %1"
-                            }
+                            subkey.SetValue("", header);
+                            subkey.SetValue("Icon", iconpath);
+                            var commandkey = subkey.CreateSubKey("command");
+                            commandkey.SetValue("", applicationpath);
                         }
                     }
                 }
             }
-            catch (UnauthorizedAccessException)
-            {
-                return false;
-            }
-            return true;
         }
 
         /// <summary>
@@ -56,29 +47,20 @@ namespace Hurricane.Settings.RegistryManager
         /// <param name="extension">The file extension (like .mp3)</param>
         /// <param name="name">The name of the subkey</param>
         /// <returns>False if the user doesn't have access</returns>
-        [PrincipalPermission(SecurityAction.Demand, Role = @"BUILTIN\Administrators")]
-        public static bool UnregisterExtension(string extension, string name)
+        public static void UnregisterExtension(string extension, string name)
         {
-            try
+            using (RegistryKey extensionkey = GetClassesRoot().OpenSubKey(extension))
             {
-                using (RegistryKey extensionkey = GetClassesRoot().OpenSubKey(extension))
-                {
-                    string keytoadd = extensionkey.GetValue("", string.Empty).ToString();
+                string keytoadd = extensionkey.GetValue("", string.Empty).ToString();
 
-                    using (RegistryKey rootkey = Registry.ClassesRoot.OpenSubKey(keytoadd))
+                using (RegistryKey rootkey = Registry.ClassesRoot.OpenSubKey(keytoadd))
+                {
+                    using (RegistryKey shellkey = rootkey.OpenSubKey("shell", true))
                     {
-                        using (RegistryKey shellkey = rootkey.OpenSubKey("shell", true))
-                        {
-                            shellkey.DeleteSubKeyTree(name, false);
-                        }
+                        shellkey.DeleteSubKeyTree(name, false);
                     }
                 }
             }
-            catch (UnauthorizedAccessException)
-            {
-                return false;
-            }
-            return true;
         }
 
         protected static RegistryKey GetClassesRoot()

@@ -20,6 +20,9 @@ using System.Windows.Threading;
 using System.Windows.Media.Animation;
 using Hurricane.AppMainWindow.WindowSkins;
 using Hurricane.AppMainWindow;
+using MahApps.Metro.Controls.Dialogs;
+using Hurricane.AppMainWindow.Messages;
+using Hurricane.AppMainWindow.MahAppsExtensions.Dialogs;
 
 namespace Hurricane
 {
@@ -38,6 +41,9 @@ namespace Hurricane
         protected IWindowSkin advancedwindowskin;
         public IWindowSkin AdvancedWindowSkin { get { if (advancedwindowskin == null) advancedwindowskin = new WindowAdvancedView(); return advancedwindowskin; } }
 
+
+        #region Constructor & Load
+
         public MainWindow()
         {
             InitializeComponent();
@@ -53,8 +59,9 @@ namespace Hurricane
             this.Loaded += MainWindow_Loaded;
 
             MagicArrow.DockManager.Docked += (s, e) => { ApplyHostWindow(SmartWindowSkin); };
-            MagicArrow.DockManager.Undocked += (s, e) => { 
-                if(Hurricane.Settings.HurricaneSettings.Instance.Config.EnableAdvancedView) ApplyHostWindow(AdvancedWindowSkin);
+            MagicArrow.DockManager.Undocked += (s, e) =>
+            {
+                if (Hurricane.Settings.HurricaneSettings.Instance.Config.EnableAdvancedView) ApplyHostWindow(AdvancedWindowSkin);
             };
 
             var appsettings = Hurricane.Settings.HurricaneSettings.Instance.Config;
@@ -78,6 +85,7 @@ namespace Hurricane
             }
 
             MagicArrow.DockManager.CurrentSide = appsettings.ApplicationState.CurrentSide;
+            InitializeMessages();
         }
 
         void MainWindow_Loaded(object sender, RoutedEventArgs e)
@@ -100,7 +108,7 @@ namespace Hurricane
                 viewmodel.PositionChanged += viewmodel_PositionChanged;
                 viewmodel.Loaded(this);
                 viewmodel.MusicManager.CSCoreEngine.PlaybackStateChanged += CSCoreEngine_PlaybackStateChanged;
-                
+
                 AdvancedWindowSkin.MusicManagerEnabled(viewmodel.MusicManager);
                 SmartWindowSkin.MusicManagerEnabled(viewmodel.MusicManager);
             }
@@ -115,9 +123,13 @@ namespace Hurricane
             }
         }
 
+        #endregion
+
+        #region ApplyHostWindow
+
         protected void ApplyHostWindow(IWindowSkin skin, bool saveinformations = true)
         {
-            System.Diagnostics.Debug.Print("hallo: "+ (skin == AdvancedWindowSkin).ToString());
+            System.Diagnostics.Debug.Print("hallo: " + (skin == AdvancedWindowSkin).ToString());
             if (skin == HostedWindow) return;
             if (HostedWindow != null)
             {
@@ -167,6 +179,10 @@ namespace Hurricane
             HostedWindow.EnableWindow();
         }
 
+        #endregion
+   
+        #region Events / Closing
+
         void skin_ToggleWindowState(object sender, EventArgs e)
         {
             if (this.WindowState == System.Windows.WindowState.Normal) { this.WindowState = WindowState.Maximized; } else { this.WindowState = System.Windows.WindowState.Normal; }
@@ -195,6 +211,31 @@ namespace Hurricane
             MagicArrow.DockManager.DragStop();
         }
 
+        void CSCoreEngine_StartVisualization(object sender, EventArgs e)
+        {
+            HostedWindow.RegisterSoundPlayer(ViewModels.MainViewModel.Instance.MusicManager.CSCoreEngine);
+        }
+
+        void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if (MagicArrow.DockManager.CurrentSide == Hurricane.MagicArrow.DockManager.DockingSide.None)
+            {
+                if (Hurricane.Settings.HurricaneSettings.Instance.Config.ApplicationState == null) Hurricane.Settings.HurricaneSettings.Instance.Config.ApplicationState = new Hurricane.MagicArrow.DockManager.DockingApplicationState();
+                var appstate = Hurricane.Settings.HurricaneSettings.Instance.Config.ApplicationState;
+                appstate.Height = this.Height;
+                appstate.Width = this.Width;
+                appstate.Left = this.Left;
+                appstate.Top = this.Top;
+            }
+            if (Settings.HurricaneSettings.Instance.Loaded)
+                MagicArrow.DockManager.Save();
+            ViewModels.MainViewModel.Instance.Closing();
+            MagicArrow.Dispose();
+            App.Current.Shutdown();
+        }
+
+        #endregion
+
         #region Taskbar
 
         void viewmodel_PositionChanged(object sender, Music.PositionChangedEventArgs e)
@@ -216,30 +257,97 @@ namespace Hurricane
         }
         #endregion
 
-        #region Controllogic
-        void CSCoreEngine_StartVisualization(object sender, EventArgs e)
+        #region Messages
+
+        public MessageManager Messages { get; set; }
+
+        protected void InitializeMessages()
         {
-            HostedWindow.RegisterSoundPlayer(ViewModels.MainViewModel.Instance.MusicManager.CSCoreEngine);
+            Messages = new MessageManager();
+            Messages.ProgressDialogStart = (e) => Messages_ProgressDialogStart(e);
         }
 
-        void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        public async Task<bool> ShowMessage(string message, string title, bool cancancel)
         {
-            if (MagicArrow.DockManager.CurrentSide == Hurricane.MagicArrow.DockManager.DockingSide.None)
+            if (this.HostedWindow.Configuration.ShowFullscreenDialogs)
             {
-                if (Hurricane.Settings.HurricaneSettings.Instance.Config.ApplicationState == null) Hurricane.Settings.HurricaneSettings.Instance.Config.ApplicationState = new Hurricane.MagicArrow.DockManager.DockingApplicationState();
-                var appstate = Hurricane.Settings.HurricaneSettings.Instance.Config.ApplicationState;
-                appstate.Height = this.Height;
-                appstate.Width = this.Width;
-                appstate.Left = this.Left;
-                appstate.Top = this.Top;
+                MessageDialogResult result = await this.ShowMessageAsync(title, message, cancancel ? MessageDialogStyle.AffirmativeAndNegative : MessageDialogStyle.Affirmative, new MetroDialogSettings() { AffirmativeButtonText = "OK", NegativeButtonText = Application.Current.FindResource("cancel").ToString(), AnimateHide = false });
+                return result == MessageDialogResult.Affirmative;
             }
-            if (Settings.HurricaneSettings.Instance.Loaded)
-                MagicArrow.DockManager.Save();
-            ViewModels.MainViewModel.Instance.Closing();
-            MagicArrow.Dispose();
-            //CustomTaskbarManager.Dispose();
-            App.Current.Shutdown();
+            else
+            {
+                Views.MessageWindow window = new Views.MessageWindow(message, title, cancancel) { Owner = this };
+                bool result = false;
+                await Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => result = window.ShowDialog() == true));
+                return result;
+            }
         }
+
+        public async Task<string> ShowInputDialog(string title, string message, string buttonok, string defaulttext)
+        {
+            if (this.HostedWindow.Configuration.ShowFullscreenDialogs)
+            {
+                var dialog = new AdvancedInputDialog(this, new MetroDialogSettings() { AffirmativeButtonText = buttonok, DefaultText = defaulttext, NegativeButtonText = Application.Current.FindResource("cancel").ToString()});
+                dialog.Title = title;
+                dialog.Message = message;
+                await this.ShowMetroDialogAsync(dialog);
+                string result = await dialog.WaitForButtonPressAsync();
+                await dialog._WaitForCloseAsync();
+                var asd = this.HideMetroDialogAsync(dialog);
+                return result;
+            }
+            else
+            {
+                Views.InputDialog inputdialog = new Views.InputDialog(title, message, buttonok, defaulttext) { Owner = this };
+                await Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => inputdialog.ShowDialog()));
+                return inputdialog.ResultText;
+            }
+        }
+
+        public async Task ShowTrackInformations(Music.Track track)
+        {
+            if (this.HostedWindow.Configuration.ShowFullscreenDialogs)
+            {
+                var dialog = new TrackInformationsDialog(this, track, null);
+                await this.ShowMetroDialogAsync(dialog);
+                await dialog.WaitForCloseAsync();
+                await this.HideMetroDialogAsync(dialog);
+            }
+            else
+            {
+                Views.TrackInformationWindow window = new Views.TrackInformationWindow(track) { Owner = this };
+                window.ShowDialog();
+            }
+        }
+
+        async void Messages_ProgressDialogStart(AppMainWindow.Messages.ProgressDialogStartEventArgs e)
+        {
+            if (this.HostedWindow.Configuration.ShowFullscreenDialogs)
+            {
+                var progresscontroller = await this.ShowProgressAsync(e.Title, string.Empty, false);
+                progresscontroller.SetIndeterminate();
+                e.Instance.MessageChanged = (ev) =>
+                    progresscontroller.SetMessage(ev);
+                e.Instance.TitleChanged = (ev) =>
+                    progresscontroller.SetTitle(ev);
+                e.Instance.ProgressChanged = (ev) =>
+                    progresscontroller.SetProgress(ev);
+                e.Instance.CloseRequest = () =>
+                 progresscontroller.CloseAsync();
+                if (e.Instance.IsClosed) await progresscontroller.CloseAsync();
+            }
+            else
+            {
+                Views.ProgressWindow window = new Views.ProgressWindow(e.Title, e.IsIndeterminate) { Owner = this };
+                e.Instance.MessageChanged = (ev) => window.SetText(ev);
+                e.Instance.TitleChanged = (ev) => window.SetTitle(ev);
+                e.Instance.ProgressChanged = (ev) => window.SetProgress(ev);
+                e.Instance.CloseRequest = () => { window.Close(); return null; };
+                await Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => window.ShowDialog()));
+            }
+        }
+
         #endregion
+
     }
 }

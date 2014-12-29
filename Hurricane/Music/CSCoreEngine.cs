@@ -26,6 +26,7 @@ namespace Hurricane.Music
         public event EventHandler<TrackChangedEventArgs> TrackChanged;
         public event EventHandler<PlayStateChangedEventArgs> PlaybackStateChanged;
         public event EventHandler<PositionChangedEventArgs> PositionChanged;
+        public event EventHandler VolumeChanged;
 
         #endregion
 
@@ -36,9 +37,12 @@ namespace Hurricane.Music
             get { return volume; }
             set
             {
-                SetProperty(value, ref volume);
-                if (soundOut != null && soundOut.WaveSource != null)
-                    soundOut.Volume = value;
+                if (SetProperty(value, ref volume))
+                {
+                    if (soundOut != null && soundOut.WaveSource != null)
+                        soundOut.Volume = value;
+                    if (VolumeChanged != null) VolumeChanged(this, EventArgs.Empty);
+                }
             }
         }
 
@@ -213,6 +217,18 @@ namespace Hurricane.Music
                 manualstop = true;
                 soundOut.Stop();
             }
+        }
+
+        public void KickTrack()
+        {
+            CurrentTrack.Unload();
+            CurrentTrack = null;
+            SoundSource = null;
+            OnPropertyChanged("TrackLength");
+            OnPropertyChanged("CurrentTrackLength");
+            OnPropertyChanged("Position");
+            OnPropertyChanged("CurrentTrackPosition");
+            CurrentStateChanged();
         }
 
         public async void TogglePlayPause()

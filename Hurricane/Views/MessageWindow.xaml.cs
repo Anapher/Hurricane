@@ -19,12 +19,12 @@ namespace Hurricane.Views
     /// </summary>
     public partial class MessageWindow : MahApps.Metro.Controls.MetroWindow
     {
-        public MessageWindow(string message, string title, bool cancancel, bool loadstringsfromresources =false)
+        public MessageWindow(string message, string title, bool cancancel)
         {
             InitializeComponent();
             if (!cancancel) btnCancel.Visibility = System.Windows.Visibility.Collapsed;
-            this.Title = loadstringsfromresources ? Application.Current.FindResource(title).ToString() : title;
-            this.txt.Text = loadstringsfromresources ? Application.Current.FindResource(message).ToString() : message;
+            this.Title = title;
+            this.txt.Text = message;
         }
     }
 }

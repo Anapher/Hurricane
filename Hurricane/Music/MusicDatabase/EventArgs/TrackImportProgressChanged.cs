@@ -17,7 +17,7 @@ namespace Hurricane.Music
         {
             this.TotalFiles = totalfiles;
             this.FilesImported = filesimported;
-            this.Percentage = (double)filesimported * 100 / (double)totalfiles;
+            this.Percentage = (double)filesimported / (double)totalfiles;
             this.CurrentFile = currentfile;
         }
     }

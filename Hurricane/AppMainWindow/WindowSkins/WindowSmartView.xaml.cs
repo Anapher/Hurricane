@@ -27,7 +27,7 @@ namespace Hurricane.AppMainWindow.WindowSkins
             InitializeComponent();
             dragMgr = new Resources.Styles.DragDropListView.ServiceProviders.UI.ListViewDragDropManager<Music.Track>(this.listview);
             dragMgr.ShowDragAdorner = true;
-            this.Configuration = new WindowSkinConfiguration() {  MaxHeight = Utilities.WpfScreen.MaxHeight, MaxWidth = 300, MinHeight = 400, MinWidth  = 300, ShowSystemMenuOnRightClick = false, ShowTitleBar = false, ShowWindowControls = false, NeedMovingHelp = true };
+            this.Configuration = new WindowSkinConfiguration() {  MaxHeight = Utilities.WpfScreen.MaxHeight, MaxWidth = 300, MinHeight = 400, MinWidth  = 300, ShowSystemMenuOnRightClick = false, ShowTitleBar = false, ShowWindowControls = false, NeedMovingHelp = true, ShowFullscreenDialogs = false };
         }
 
         private void buttonplus_Click(object sender, RoutedEventArgs e)

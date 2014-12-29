@@ -11,7 +11,6 @@ using System.Windows.Input;
 using Hurricane.Resources.Styles.DragDropListView.Adorners;
 using Hurricane.Resources.Styles.DragDropListView.Utilities;
 using System.Windows.Data;
-using Hurricane.DataVirtualization;
 
 namespace Hurricane.Resources.Styles.DragDropListView.ServiceProviders.UI
 {
@@ -341,8 +340,7 @@ namespace Hurricane.Resources.Styles.DragDropListView.ServiceProviders.UI
                 throw new Exception(
                     "A ListView managed by ListViewDragManager must have its ItemsSource set to a CollectionView.");
 
-            VirtualizingCollection<ItemType> itemsSource = collectionview.SourceCollection as VirtualizingCollection<ItemType>;
-
+            ObservableCollection<ItemType> itemsSource = collectionview.SourceCollection as ObservableCollection<ItemType>;
 
             int oldIndex = itemsSource.IndexOf(data);
             int newIndex = this.IndexUnderDragCursor;
@@ -784,7 +782,7 @@ namespace Hurricane.Resources.Styles.DragDropListView.ServiceProviders.UI
     {
         #region Data
 
-        VirtualizingCollection<ItemType> itemsSource;
+        ObservableCollection<ItemType> itemsSource;
         ItemType dataItem;
         int oldIndex;
         int newIndex;
@@ -796,7 +794,7 @@ namespace Hurricane.Resources.Styles.DragDropListView.ServiceProviders.UI
         #region Constructor
 
         internal ProcessDropEventArgs(
-            VirtualizingCollection<ItemType> itemsSource,
+            ObservableCollection<ItemType> itemsSource,
             ItemType dataItem,
             int oldIndex,
             int newIndex,
@@ -816,7 +814,7 @@ namespace Hurricane.Resources.Styles.DragDropListView.ServiceProviders.UI
         /// <summary>
         /// The items source of the ListView where the drop occurred.
         /// </summary>
-        public VirtualizingCollection<ItemType> ItemsSource
+        public ObservableCollection<ItemType> ItemsSource
         {
             get { return this.itemsSource; }
         }

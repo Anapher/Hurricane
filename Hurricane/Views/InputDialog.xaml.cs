@@ -17,32 +17,35 @@ namespace Hurricane.Views
     /// <summary>
     /// Interaction logic for CreateNewPlaylistWindow.xaml
     /// </summary>
-    public partial class CreateNewPlaylistWindow : MahApps.Metro.Controls.MetroWindow, System.ComponentModel.INotifyPropertyChanged
+    public partial class InputDialog : MahApps.Metro.Controls.MetroWindow, System.ComponentModel.INotifyPropertyChanged
     {
-        public CreateNewPlaylistWindow()
+        public InputDialog()
         {
             InitializeComponent();
         }
 
-        public CreateNewPlaylistWindow(string CurrentName) : this()
+        public InputDialog(string title, string message, string buttonoktext, string defaulttext)
+            : this()
         {
-            this.PlaylistName = CurrentName;
-            this.Title = Application.Current.FindResource("renameplaylist").ToString();
-            this.btnOK.Content = Application.Current.FindResource("rename").ToString();
+            this.ResultText = defaulttext;
+            this.Title = title;
+            this.txtMessage.Text = message;
+            this.btnOK.Content = buttonoktext;
             this.txt.SelectAll();
         }
 
-        private String playlistname;
-        public String PlaylistName
+        private String resulttext;
+        public String ResultText
         {
-            get { return playlistname; }
+            get { return resulttext; }
             set
             {
-                if(value != playlistname){
-                    playlistname = value;
+                if (value != resulttext)
+                {
+                    resulttext = value;
                     if (PropertyChanged != null)
                     {
-                        PropertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs("PlaylistName"));
+                        PropertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs("ResultText"));
                     }
                 }
             }

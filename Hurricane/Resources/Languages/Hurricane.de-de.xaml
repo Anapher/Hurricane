@@ -17,7 +17,7 @@
     <system:String x:Key="addtracks">Tracks hinzufügen</system:String>
     <system:String x:Key="play">Abspielen</system:String>
     <system:String x:Key="pause">Pause</system:String>
-    <system:String x:Key="fileinfos">Dateiinformationen</system:String>
+    <system:String x:Key="fileinfos">Datei Informationen</system:String>
     <system:String x:Key="filelocation">Dateiort</system:String>
     <system:String x:Key="remove">Entfernen</system:String>
     <system:String x:Key="del">Entf</system:String>
@@ -43,10 +43,10 @@
     <system:String x:Key="softheights">Weiche Höhen</system:String>
     
     <system:String x:Key="removetracks">Tracks entfernen</system:String>
-    <system:String x:Key="removetracksmessage">Sind Sie sicher, dass Sie den Track '{0}' aus der Wiedergabeliste entfernen möchten?</system:String>
+    <system:String x:Key="removetracksmessage">Sind Sie sicher, dass Sie {0} aus der Wiedergabeliste entfernen möchten?</system:String>
+    <system:String x:Key="tracks">Tracks</system:String>
     <system:String x:Key="error">Fehler</system:String>
-    <system:String x:Key="trackisplaying">Ein Fehler ist aufgetreten. Der Track "{0}" kann nicht entfernt werden, weil er momentan abgespielt wird.</system:String>
-    <system:String x:Key="reallydeleteplaylist">Sind Sie sicher, dass sie die Wiedergabeliste '{0}' entfernen wollen?</system:String>
+    <system:String x:Key="reallydeleteplaylist">Sind Sie sicher, dass Sie die Wiedergabeliste '{0}' entfernen wollen?</system:String>
     <system:String x:Key="errorcantdeleteplaylist">Die Wiedergabeliste kann nicht entfernt werde, weil sie die einzige ist</system:String>
     <system:String x:Key="renameplaylist">Wiedergabeliste umbenennen</system:String>
     <system:String x:Key="rename">Umbenennen</system:String>
@@ -83,10 +83,10 @@
     <system:String x:Key="never">Nie</system:String>
 
     <system:String x:Key="aboutcopyright">Copyright © 2014 Alkaline. Alle Rechte vorbehalten.</system:String>
-    <system:String x:Key="aboutthanks1">An alle talentierten Ersteller der Bilder und Bibilotheken, die oben gennant werden.</system:String>
+    <system:String x:Key="aboutthanks1">An alle talentierten Ersteller der Bilder und Bibliotheken, die oben genannt werden.</system:String>
     <system:String x:Key="aboutthanks2">An ein hübsches Mädchen aus meiner Schulklasse, die mir die Inspiration für den Namen gab (Sie weiß es nicht).</system:String>
-    <system:String x:Key="aboutthanks3">An {0}, {1} und {2} (welcher auch CSCore entwickelt hat) für die hilfreiche Unterstüztung.</system:String>
-    <system:String x:Key="aboutthanks4">An die {0} Community für ihr Testen, Fehler melden und ihre guten Ideen.</system:String>
+    <system:String x:Key="aboutthanks3">An {0}, {1} und {2} (welcher auch CSCore entwickelt hat) für die hilfreiche Unterstützung.</system:String>
+    <system:String x:Key="aboutthanks4">An die {0} Community für Ihr Testen, Fehler melden und ihre guten Ideen.</system:String>
     <system:String x:Key="website">Website</system:String>
     <system:String x:Key="licence">Lizenz</system:String>
     <system:String x:Key="libraries">BIBLIOTHEKEN</system:String>
@@ -177,14 +177,13 @@
     <system:String x:Key="enableadvancedview">Erweiterte Ansicht aktivieren</system:String>
     <system:String x:Key="test">Testen</system:String>
     <system:String x:Key="showtime">Anzeigedauer:</system:String>
-    <system:String x:Key="tracks">Tracks</system:String>
     <system:String x:Key="bitrate">Bitrate</system:String>
     <system:String x:Key="remember">Merken</system:String>
     <system:String x:Key="alsoafterrestart">Auch nach Neustart</system:String>
     <system:String x:Key="canberesetedinsettings">Kann in den Einstellungen zurückgesetzt werden</system:String>
     <system:String x:Key="totalreset">Alles zurücksetzten</system:String>
     <system:String x:Key="PlayWithHurricane">Mit Hurricane abspielen</system:String>
-    <system:String x:Key="registry">Registrierung</system:String>
+    <system:String x:Key="system">System</system:String>
     <system:String x:Key="contextmenuitemforextensions">Kontextmenüeintrag für Dateiendungen</system:String>
     <system:String x:Key="coverart">Cover</system:String>
     <system:String x:Key="loadalbumcoverfrominternet">Fehlende Cover aus dem Internet herunterladen</system:String>
@@ -196,9 +195,25 @@
     <system:String x:Key="large">Groß</system:String>
     <system:String x:Key="maximum">Maximal</system:String>
 
-    <system:String x:Key="themeupper">DESIGN</system:String>
-    <system:String x:Key="notificationsupper">BENACHRICHTIGUNGEN</system:String>
-    <system:String x:Key="importtrackupper">TRACK IMPORTIEREN</system:String>
-    <system:String x:Key="contextmenuitemforextensionsupper">KONTEXTMENÜEINTRAG FÜR DATEIENDUNGEN</system:String>
-    <system:String x:Key="coverartupper">COVER</system:String>
+    <system:String x:Key="file">Datei</system:String>
+    <system:String x:Key="open">Öffnen</system:String>
+    <system:String x:Key="saveas">Speichern als</system:String>
+    <system:String x:Key="save">Speichern</system:String>
+    <system:String x:Key="textfile">Text Dateien</system:String>
+    <system:String x:Key="allfiles">Alle Dateien</system:String>
+    <system:String x:Key="composers">Komponisten</system:String>
+    <system:String x:Key="artists">Künstler</system:String>
+    <system:String x:Key="albumartists">Verfasser</system:String>
+    <system:String x:Key="copyright">Copyright</system:String>
+    <system:String x:Key="comment">Kommentar</system:String>
+    <system:String x:Key="track">Track</system:String>
+    <system:String x:Key="disc">Disk</system:String>
+    
+    <system:String x:Key="general">Allgemein</system:String>
+    <system:String x:Key="addtosendto">Zu "Senden an" hinzufügen</system:String>
+    <system:String x:Key="apiisenabled">Api aktivieren</system:String>
+    <system:String x:Key="port">Port</system:String>
+    <system:String x:Key="failedtobindtoport">Fehler beim Setzen des Ports</system:String>
+    <system:String x:Key="activated">Aktiviert</system:String>
+    <system:String x:Key="deactivated">Deaktiviert</system:String>
 </ResourceDictionary>

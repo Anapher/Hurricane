@@ -27,7 +27,7 @@ namespace Hurricane.AppMainWindow.WindowSkins
             InitializeComponent();
             dragMgr = new Resources.Styles.DragDropListView.ServiceProviders.UI.ListViewDragDropManager<Music.Track>(this.listview);
             dragMgr.ShowDragAdorner = true;
-            this.Configuration = new WindowSkinConfiguration() { MaxHeight = double.PositiveInfinity, MaxWidth = double.PositiveInfinity, MinHeight = 500, MinWidth = 850, ShowSystemMenuOnRightClick = true, ShowTitleBar = false, ShowWindowControls = true, NeedMovingHelp = true };
+            this.Configuration = new WindowSkinConfiguration() { MaxHeight = double.PositiveInfinity, MaxWidth = double.PositiveInfinity, MinHeight = 500, MinWidth = 850, ShowSystemMenuOnRightClick = true, ShowTitleBar = false, ShowWindowControls = true, NeedMovingHelp = true, ShowFullscreenDialogs = true };
             ViewModels.SettingsViewModel.Instance.Load();
         }
 
@@ -140,8 +140,8 @@ namespace Hurricane.AppMainWindow.WindowSkins
         {
             if (story1 != null) { story1.Stop(this); }
             if (story2 != null) { story2.Stop(this);  }
-            story1 = FadeInAnimation(300, txt1, txt2, stack1, stack2, stack3);
-            story2 = FadeInAnimation(300, full1, full2, full3);
+            story1 = FadeInAnimation(300, txt1, txt2, fav, stack1, stack2, stack3);
+            story2 = FadeInAnimation(300, full1, full2, full3, fullfav);
             story1.Begin(this, true);
             story2.Begin(this, true);
         }

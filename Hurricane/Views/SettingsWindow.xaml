@@ -32,7 +32,7 @@
                         <ListBoxItem Content="{DynamicResource playback}"/>
                         <ListBoxItem Content="{DynamicResource appearance}"/>
                         <ListBoxItem Content="{DynamicResource behaviour}"/>
-                        <ListBoxItem Content="{DynamicResource registry}" IsEnabled="False"/>
+                        <ListBoxItem Content="{DynamicResource system}"/>
                         <ListBoxItem Content="{DynamicResource reset}"/>
                         <ListBoxItem Content="{DynamicResource language}"/>
                     </ListBox>
@@ -177,10 +177,13 @@
                                 </StackPanel>
                             </ScrollViewer>
                         </TabItem>
-                        <TabItem Header="Registry">
+                        <TabItem Header="System">
                             <ScrollViewer>
                                 <StackPanel Orientation="Vertical" Margin="10">
-                                    <TextBlock Text="{DynamicResource contextmenuitemforextensions}"/>
+                                    <TextBlock Text="{DynamicResource general}"/>
+                                    <Separator />
+                                    <CheckBox Content="{DynamicResource addtosendto}" Margin="0,10,0,0" IsChecked="{Binding RegistryManager.SendToShortcut}"/>
+                                    <TextBlock Text="{DynamicResource contextmenuitemforextensions}" Margin="0,30,0,0"/>
                                     <Separator />
                                     <ItemsControl ItemsSource="{Binding RegistryManager.ContextMenuItems}" Margin="0,10,0,0">
                                         <ItemsControl.ItemTemplate>

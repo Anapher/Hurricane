@@ -38,6 +38,20 @@ namespace Hurricane
                         Views.Test.TestWindow view = new Views.Test.TestWindow();
                         view.Show();
                         return;
+                    case "/registry":
+                        Hurricane.Settings.RegistryManager.RegistryManager manager = new Settings.RegistryManager.RegistryManager();
+                        var item = manager.ContextMenuItems.Where((x) => x.Extension == Environment.GetCommandLineArgs()[2]).First();
+                        try
+                        {
+                            if (item != null) item.ToggleRegister(!item.IsRegistered, false);
+                        }
+                        catch (System.Security.SecurityException)
+                        {
+                            MessageBox.Show("Something went extremly wrong. This application didn't got administrator rights so it can't register anything.");
+                        }
+                        
+                        App.Current.Shutdown();
+                        return;
                     default:
                         openfile = true;
                         break;
@@ -130,7 +144,7 @@ namespace Hurricane
         protected override void OnExit(ExitEventArgs e)
         {
             base.OnExit(e);
-            myMutex.Dispose();
+            if (myMutex != null) myMutex.Dispose();
             ExceptionlessClient.Current.Dispose();
         }
     }

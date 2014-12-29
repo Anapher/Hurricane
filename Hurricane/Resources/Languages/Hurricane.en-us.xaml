@@ -43,9 +43,9 @@
     <system:String x:Key="softheights">Soft heights</system:String>
 
     <system:String x:Key="removetracks">Remove tracks</system:String>
-    <system:String x:Key="removetracksmessage">Are you sure that you want to remove the track '{0}' from the playlist?</system:String>
+    <system:String x:Key="removetracksmessage">Are you sure that you want to remove '{0}' from the playlist?</system:String>
+    <system:String x:Key="tracks">tracks</system:String>
     <system:String x:Key="error">Error</system:String>
-    <system:String x:Key="trackisplaying">An error has occurred. The track {0} can't be removed because it is currently playing.</system:String>
     <system:String x:Key="reallydeleteplaylist">Are you sure that you want to remove the playlist '{0}'?</system:String>
     <system:String x:Key="errorcantdeleteplaylist">The playlist can't be removed because it is the only one</system:String>
     <system:String x:Key="renameplaylist">Rename playlist</system:String>
@@ -176,13 +176,12 @@
     <system:String x:Key="enableadvancedview">Enable advanced view</system:String>
     <system:String x:Key="test">Test</system:String>
     <system:String x:Key="showtime">Show time:</system:String>
-    <system:String x:Key="tracks">Tracks</system:String>
     <system:String x:Key="bitrate">Bitrate</system:String>
     <system:String x:Key="remember">Remember</system:String>
     <system:String x:Key="alsoafterrestart">Also after restart</system:String>
     <system:String x:Key="totalreset">Total reset</system:String>
     <system:String x:Key="PlayWithHurricane">Play with Hurricane</system:String>
-    <system:String x:Key="registry">Registry</system:String>
+    <system:String x:Key="system">System</system:String>
     <system:String x:Key="contextmenuitemforextensions">Context menu item for extensions</system:String>
     <system:String x:Key="coverart">Cover Art</system:String>
     <system:String x:Key="loadalbumcoverfrominternet">Download missing cover art from internet</system:String>
@@ -193,10 +192,21 @@
     <system:String x:Key="medium">Medium</system:String>
     <system:String x:Key="large">Large</system:String>
     <system:String x:Key="maximum">Maximum</system:String>
+    
+    <system:String x:Key="file">File</system:String>
+    <system:String x:Key="open">Open</system:String>
+    <system:String x:Key="saveas">Save as</system:String>
+    <system:String x:Key="save">Save</system:String>
+    <system:String x:Key="textfile">Text files</system:String>
+    <system:String x:Key="allfiles">All files</system:String>
+    <system:String x:Key="composers">Composers</system:String>
+    <system:String x:Key="artists">Artists</system:String>
+    <system:String x:Key="albumartists">Album artists</system:String>
+    <system:String x:Key="copyright">Copyright</system:String>
+    <system:String x:Key="comment">Comment</system:String>
+    <system:String x:Key="track">Track</system:String>
+    <system:String x:Key="disc">Disc</system:String>
 
-    <system:String x:Key="themeupper">DESIGN</system:String>
-    <system:String x:Key="notificationsupper">NOTIFICATIONS</system:String>
-    <system:String x:Key="importtrackupper">IMPORT TRACK</system:String>
-    <system:String x:Key="contextmenuitemforextensionsupper">CONTEXT MENU ITEM FOR EXTENSIONS</system:String>
-    <system:String x:Key="coverartupper">COVER ART</system:String>
+    <system:String x:Key="general">General</system:String>
+    <system:String x:Key="addtosendto">Add to "Send to"</system:String>
 </ResourceDictionary>

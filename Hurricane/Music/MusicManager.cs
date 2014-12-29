@@ -27,7 +27,7 @@ namespace Hurricane.Music
             get { return repeattrack; }
             set
             {
-                SetProperty(value, ref repeattrack);
+                if (SetProperty(value, ref repeattrack) && value) RandomTrack = false;
             }
         }
 
@@ -37,7 +37,7 @@ namespace Hurricane.Music
             get { return randomtrack; }
             set
             {
-                SetProperty(value, ref randomtrack);
+                if (SetProperty(value, ref randomtrack) && value) RepeatTrack = false;
             }
         }
 
@@ -90,6 +90,8 @@ namespace Hurricane.Music
         public MusicManagerCommands Commands { get; protected set; }
 
         public QueueManager Queue { get; set; }
+
+        public API.TcpServer ApiServer { get; set; }
         #endregion
 
         #region Contructor and Loading
@@ -105,6 +107,9 @@ namespace Hurricane.Music
             random = new Random();
             this.lasttracks = new List<TrackPlaylistPair>();
             this.Queue = new QueueManager();
+
+            this.ApiServer = new API.TcpServer(this);
+            if (Settings.HurricaneSettings.Instance.Config.ApiIsEnabled) ApiServer.StartListening();
         }
 
         public void LoadFromSettings()
@@ -144,7 +149,7 @@ namespace Hurricane.Music
             this.RandomTrack = config.RandomTrack;
             foreach (Playlist lst in Playlists)
             {
-                lst.RefreshList();
+                lst.LoadList();
             }
             if (config.Queue != null) { this.Queue = config.Queue; this.Queue.Initialize(Playlists.ToList()); }
         }
@@ -183,7 +188,7 @@ namespace Hurricane.Music
         #region Public Methods
         public void RegisterPlaylist(Playlist playlist)
         {
-            playlist.RefreshList();
+            playlist.LoadList();
         }
 
         public void PlayTrack(Track track, Playlist playlist)
@@ -311,6 +316,7 @@ namespace Hurricane.Music
         public void Dispose()
         {
             CSCoreEngine.Dispose();
+            ApiServer.Dispose();
         }
 
         #endregion

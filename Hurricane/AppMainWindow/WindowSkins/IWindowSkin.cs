@@ -19,6 +19,5 @@ namespace Hurricane.AppMainWindow.WindowSkins
         void MusicManagerEnabled(object manager);
 
         WindowSkinConfiguration Configuration { get; set; }
-
     }
 }
