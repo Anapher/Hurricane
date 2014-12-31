@@ -1,29 +1,26 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Text;
-using System.Threading.Tasks;
-using System.Drawing;
-using System.Xml.Serialization;
-using System.Drawing.Imaging;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
+using System.Xml.Serialization;
+using Hurricane.Settings;
+using Hurricane.Utilities;
 
 namespace Hurricane.Music.MusicDatabase
 {
     class LastfmAPI
     {
-        public async static Task<BitmapImage> GetImage(string tracktitle, string artist, Settings.ImageQuality imagequality, bool saveimage, DirectoryInfo directory, Track t, bool trimtrackname)
+        public async static Task<BitmapImage> GetImage(string tracktitle, string artist, ImageQuality imagequality, bool saveimage, DirectoryInfo directory, Track t, bool trimtrackname)
         {
-            string apikey = string.Empty;
-            apikey = Settings.SensitiveInformations.LastfmAPIKey;
+            string apikey = SensitiveInformations.LastfmAPIKey;
 
             if (trimtrackname) tracktitle = TrimTrackTitle(tracktitle);
 
-            string url = Uri.EscapeUriString(string.Format("http://ws.audioscrobbler.com/2.0/?method=track.search&track={0}{1}&api_key={2}", Utilities.GeneralHelper.EscapeTitleName(tracktitle), !string.IsNullOrEmpty(artist) ? "&artist=" + Utilities.GeneralHelper.EscapeArtistName(artist) : string.Empty, apikey));
-            using (System.Net.WebClient web = new System.Net.WebClient() { Proxy = null })
+            string url = Uri.EscapeUriString(string.Format("http://ws.audioscrobbler.com/2.0/?method=track.search&track={0}{1}&api_key={2}", GeneralHelper.EscapeTitleName(tracktitle), !string.IsNullOrEmpty(artist) ? "&artist=" + GeneralHelper.EscapeArtistName(artist) : string.Empty, apikey));
+            using (WebClient web = new WebClient() { Proxy = null })
             {
                 string result = await web.DownloadStringTaskAsync(new Uri(url));
 
@@ -44,7 +41,7 @@ namespace Hurricane.Music.MusicDatabase
                             {
                                 string imageurl = GetImageLink(trackinfo.track.album.image, imagequality);
 
-                                if (imageurl != null && !imageurl.EndsWith("default_album_medium.png")) //We don't want the default album art
+                                if (imageurl != null && !imageurl.EndsWith("default_album_medium.png") && !imageurl.EndsWith("[unknown].png")) //We don't want the default album art
                                 {
                                     BitmapImage img = await DownloadImage(web,imageurl);
                                     string album;
@@ -65,7 +62,7 @@ namespace Hurricane.Music.MusicDatabase
                             {
                                 foreach (var file in directory.GetFiles("*.png"))
                                 {
-                                    if (Utilities.GeneralHelper.EscapeFilename(t.Artist).ToLower() == System.IO.Path.GetFileNameWithoutExtension(file.FullName).ToLower())
+                                    if (GeneralHelper.EscapeFilename(t.Artist).ToLower() == Path.GetFileNameWithoutExtension(file.FullName).ToLower())
                                     {
                                         return new BitmapImage(new Uri(file.FullName));
                                     }
@@ -93,7 +90,7 @@ namespace Hurricane.Music.MusicDatabase
                                 {
                                     string imageurl = GetImageLink(artistinfo.artist.image, imagequality);
                                     if (imageurl == null) return null;
-                                    if (!imageurl.EndsWith("default_album_medium.png")) //We don't want the default album art
+                                    if (!imageurl.EndsWith("default_album_medium.png") && !imageurl.EndsWith("[unknown].png")) //We don't want the default album art
                                     {
                                         BitmapImage img = await DownloadImage(web, imageurl);
                                         string artistname;
@@ -121,7 +118,7 @@ namespace Hurricane.Music.MusicDatabase
             await Task.Run(() =>
             {
                 PngBitmapEncoder encoder = new PngBitmapEncoder();
-                string path = System.IO.Path.Combine(directory, Utilities.GeneralHelper.EscapeFilename(filename) + ".png");
+                string path = Path.Combine(directory, GeneralHelper.EscapeFilename(filename) + ".png");
                 encoder.Frames.Add(BitmapFrame.Create(img));
                 using (FileStream filestream = new FileStream(path, FileMode.Create))
                     encoder.Save(filestream);
@@ -141,32 +138,32 @@ namespace Hurricane.Music.MusicDatabase
             }
         }
 
-        protected static string GetImageLink(lfmArtistImage[] image,Settings.ImageQuality quality)
+        protected static string GetImageLink(lfmArtistImage[] image,ImageQuality quality)
         {
             if (image.Length == 1) return image[0].Value;
             switch (quality)
             {
-                case Settings.ImageQuality.small:
+                case ImageQuality.Small:
                     return image.First().Value;
-                case Settings.ImageQuality.medium:
-                case Settings.ImageQuality.large:
-                    var items = image.Where((x) => x.size == (quality == Settings.ImageQuality.large ? "large" : "medium"));
+                case ImageQuality.Medium:
+                case ImageQuality.Large:
+                    var items = image.Where((x) => x.size == (quality == ImageQuality.Large ? "large" : "medium"));
                     if (items.Any()) return items.First().Value;
                     break;
             }
             return image.Last().Value;
         }
 
-        protected static string GetImageLink(lfmTrackAlbumImage[] image, Settings.ImageQuality quality)
+        protected static string GetImageLink(lfmTrackAlbumImage[] image, ImageQuality quality)
         {
             if (image.Length == 1) return image[0].Value;
             switch (quality)
             {
-                case Settings.ImageQuality.small:
+                case ImageQuality.Small:
                     return image.First().Value;
-                case Settings.ImageQuality.medium:
-                case Settings.ImageQuality.large:
-                    var items = image.Where((x) => x.size == (quality == Settings.ImageQuality.large ? "large" : "medium"));
+                case ImageQuality.Medium:
+                case ImageQuality.Large:
+                    var items = image.Where((x) => x.size == (quality == ImageQuality.Large ? "large" : "medium"));
                     if (items.Any()) return items.First().Value;
                     break;
             }

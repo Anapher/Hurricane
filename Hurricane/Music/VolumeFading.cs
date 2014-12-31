@@ -1,12 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using CSCore;
-using CSCore.SoundOut;
-using CSCore.Streams;
 using System.Threading;
+using System.Threading.Tasks;
+using CSCore.SoundOut;
 
 namespace Hurricane.Music
 {
@@ -17,7 +12,7 @@ namespace Hurricane.Music
 
         protected AutoResetEvent cancelledwaiter;
 
-        protected async Task Fade(float from, float to, TimeSpan duration, bool GetLouder, ISoundOut soundout)
+        protected async Task Fade(float from, float to, TimeSpan duration, bool getLouder, ISoundOut soundout)
         {
             IsFading = true;
             float different = Math.Abs(to - from);
@@ -28,7 +23,7 @@ namespace Hurricane.Music
             {
                 if (_cancel) { _cancel = false; OnCancelled(); break; }
                 await Task.Delay(20);
-                if (GetLouder) { currentvolume += step; } else { currentvolume -= step; }
+                if (getLouder) { currentvolume += step; } else { currentvolume -= step; }
                 if (currentvolume < 0 || currentvolume > 1) break;
                 soundout.Volume = currentvolume;
             }

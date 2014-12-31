@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Interop;
 using Hurricane.Utilities.Native;
@@ -16,11 +12,11 @@ namespace Hurricane.Utilities
         public static string GetActiveWindowTitle(IntPtr handle)
         {
             const int nChars = 256;
-            StringBuilder Buff = new StringBuilder(nChars);
+            StringBuilder buffer = new StringBuilder(nChars);
 
-            if (UnsafeNativeMethods.GetWindowText(handle, Buff, nChars) > 0)
+            if (UnsafeNativeMethods.GetWindowText(handle, buffer, nChars) > 0)
             {
-                return Buff.ToString();
+                return buffer.ToString();
             }
             return null;
         }
@@ -30,7 +26,7 @@ namespace Hurricane.Utilities
             WINDOWPLACEMENT placement = new WINDOWPLACEMENT();
             placement.length = Marshal.SizeOf(placement);
             UnsafeNativeMethods.GetWindowPlacement(window, ref placement);
-            var workarea = System.Windows.SystemParameters.WorkArea;
+            var workarea = SystemParameters.WorkArea;
             string cname = GetClassName(window);
             return ((placement.showCmd == 1 && placement.minPosition.X == -1 && placement.minPosition.Y == -1 && placement.normalPosition.left == 0 && placement.normalPosition.top == 0 && placement.normalPosition.Width == workarea.Width && !(cname == "Progman" || cname == "WorkerW")));
         }

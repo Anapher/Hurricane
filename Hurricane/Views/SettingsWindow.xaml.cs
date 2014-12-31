@@ -1,23 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+﻿using System.Windows;
+using Hurricane.ViewModels;
+using MahApps.Metro.Controls;
 
 namespace Hurricane.Views
 {
     /// <summary>
     /// Interaction logic for SettingsWindow.xaml
     /// </summary>
-    public partial class SettingsWindow : MahApps.Metro.Controls.MetroWindow
+    public partial class SettingsWindow : MetroWindow
     {
         public SettingsWindow()
         {
@@ -27,17 +17,17 @@ namespace Hurricane.Views
 
         void SettingsWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            ViewModels.SettingsViewModel.Instance.Load();
+            SettingsViewModel.Instance.Load();
         }
 
         void SomethingChanged(object sender, RoutedEventArgs e)
         {
-            ViewModels.SettingsViewModel.Instance.StateChanged();
+            SettingsViewModel.Instance.StateChanged();
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            if (tabroot.SelectedIndex == 0) { tabroot.SelectedIndex = 1; } else { tabroot.SelectedIndex = 0; }
+            tabroot.SelectedIndex = tabroot.SelectedIndex == 0 ? 1 : 0;
         }
 
         private void CloseButton_Click(object sender, RoutedEventArgs e)

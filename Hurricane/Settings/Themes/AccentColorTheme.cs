@@ -1,38 +1,36 @@
-﻿using MahApps.Metro;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using System.Xml.Serialization;
+using MahApps.Metro;
+
 namespace Hurricane.Settings.Themes
 {
     [Serializable]
-    public class AccentColorTheme
+    public class AccentColorTheme : ThemeBase
     {
-        public string Name { get; set; }
+        public override string Name { get; set; }
 
         [XmlIgnore]
         public Brush BorderColorBrush { get; set; }
 
         [XmlIgnore]
-        public Brush ColorBrush
+        public override Brush ColorBrush
         {
             get
             {
-                var item = ThemeManager.Accents.Where((x) => x.Name == this.Name).First();
+                var item = ThemeManager.Accents.First(x => x.Name == this.Name);
                 return item.Resources["AccentColorBrush"] as Brush;
             }
         }
 
         [XmlIgnore]
-        public string TranslatedName
+        public override string TranslatedName
         {
             get
             {
-                return System.Windows.Application.Current.FindResource(Name).ToString();
+                return Application.Current.FindResource(Name).ToString();
             }
         }
 
@@ -48,10 +46,16 @@ namespace Hurricane.Settings.Themes
             return base.GetHashCode();
         }
 
-        public void ApplyTheme()
+        public override void ApplyTheme()
         {
-            var s = string.Format("/Resources/Themes/{0}.xaml", this.Name);
-            Application.Current.Resources.MergedDictionaries.Add(new ResourceDictionary() { Source = new Uri(s, UriKind.Relative) });
+            var resource = new ResourceDictionary() { Source = new Uri(string.Format("/Resources/Themes/{0}.xaml", this.Name), UriKind.Relative) };
+            Application.Current.Resources.MergedDictionaries.Add(resource);
+            ApplicationThemeManager.RegisterTheme(resource);
+        }
+
+        public override bool IsEditable
+        {
+            get { return false; }
         }
     }
 }

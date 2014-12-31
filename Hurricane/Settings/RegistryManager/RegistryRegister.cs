@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Security.AccessControl;
 using Microsoft.Win32;
-using System.Security.Permissions;
 
 namespace Hurricane.Settings.RegistryManager
 {
@@ -67,27 +63,27 @@ namespace Hurricane.Settings.RegistryManager
         {
             if (Environment.Is64BitOperatingSystem)
             {
-               return RegistryKey.OpenBaseKey(Microsoft.Win32.RegistryHive.ClassesRoot, RegistryView.Registry64);
+               return RegistryKey.OpenBaseKey(RegistryHive.ClassesRoot, RegistryView.Registry64);
             }
             else
             {
-                return RegistryKey.OpenBaseKey(Microsoft.Win32.RegistryHive.ClassesRoot, RegistryView.Registry32);
+                return RegistryKey.OpenBaseKey(RegistryHive.ClassesRoot, RegistryView.Registry32);
             }
         }
 
 
         public static bool CheckIfExtensionExists(string extension, string name)
         {
-            using (RegistryKey extensionkey = GetClassesRoot().OpenSubKey(extension, RegistryKeyPermissionCheck.Default, System.Security.AccessControl.RegistryRights.ReadKey))
+            using (RegistryKey extensionkey = GetClassesRoot().OpenSubKey(extension, RegistryKeyPermissionCheck.Default, RegistryRights.ReadKey))
             {
                 if (extensionkey == null) return false;
                 string keytoadd = extensionkey.GetValue("", string.Empty).ToString();
 
-                using (RegistryKey rootkey = Registry.ClassesRoot.OpenSubKey(keytoadd, RegistryKeyPermissionCheck.Default, System.Security.AccessControl.RegistryRights.ReadKey))
+                using (RegistryKey rootkey = Registry.ClassesRoot.OpenSubKey(keytoadd, RegistryKeyPermissionCheck.Default, RegistryRights.ReadKey))
                 {
-                    using (RegistryKey shellkey = rootkey.OpenSubKey("shell", RegistryKeyPermissionCheck.Default, System.Security.AccessControl.RegistryRights.ReadKey))
+                    using (RegistryKey shellkey = rootkey.OpenSubKey("shell", RegistryKeyPermissionCheck.Default, RegistryRights.ReadKey))
                     {
-                        var key = shellkey.OpenSubKey(name, RegistryKeyPermissionCheck.Default, System.Security.AccessControl.RegistryRights.ReadKey);
+                        var key = shellkey.OpenSubKey(name, RegistryKeyPermissionCheck.Default, RegistryRights.ReadKey);
                         return key != null;
                     }
                 }

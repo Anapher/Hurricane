@@ -1,27 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
+﻿using System.Diagnostics;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using Hurricane.Utilities;
-using System.Security.Permissions;
 using System.Security;
+using System.Security.Permissions;
+using Hurricane.ViewModelBase;
 
 namespace Hurricane.Settings.RegistryManager
 {
-    class RegistryContextMenuItem : ViewModelBase.PropertyChangedBase
+    class RegistryContextMenuItem : PropertyChangedBase
     {
         public string Extension { get; set; }
 
         public bool IsRegistered
         {
-            get { return RegistryRegister.CheckIfExtensionExists(Extension, standardname); }
+            get { return RegistryRegister.CheckIfExtensionExists(Extension, _standardname); }
             set
             {
                 ToggleRegister(value, true);
-                OnPropertyChanged("IsRegistered");
+                OnPropertyChanged();
             }
         }
 
@@ -31,11 +26,11 @@ namespace Hurricane.Settings.RegistryManager
             {
                 if (value)
                 {
-                    RegistryRegister.RegisterExtension(Extension, header, standardname, apppath, iconpath);
+                    RegistryRegister.RegisterExtension(Extension, _header, _standardname, _apppath, _iconpath);
                 }
                 else
                 {
-                    RegistryRegister.UnregisterExtension(Extension, standardname);
+                    RegistryRegister.UnregisterExtension(Extension, _standardname);
                 }
             }
             catch (SecurityException)
@@ -59,18 +54,18 @@ namespace Hurricane.Settings.RegistryManager
             }
         }
 
-        protected string standardname;
-        protected string header;
-        protected string apppath;
-        protected string iconpath;
+        protected string _standardname;
+        protected string _header;
+        protected string _apppath;
+        protected string _iconpath;
 
         public RegistryContextMenuItem(string extension, string standardname, string header, string apppath, string iconpath)
         {
             this.Extension = extension;
-            this.standardname = standardname;
-            this.header = header;
-            this.apppath = apppath;
-            this.iconpath = iconpath;
+            this._standardname = standardname;
+            this._header = header;
+            this._apppath = apppath;
+            this._iconpath = iconpath;
         }
 
         protected bool HavePermissionsOnKey(RegistryPermissionAccess accessLevel, string key)

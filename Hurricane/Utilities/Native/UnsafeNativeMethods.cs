@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.InteropServices;
+using System.Security;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Hurricane.Utilities.Native
 {
@@ -110,7 +108,7 @@ namespace Hurricane.Utilities.Native
         /// checks the thread message queue for a posted message, 
         /// and retrieves the message (if any exist).
         /// </summary>
-        [System.Security.SuppressUnmanagedCodeSecurity] // We won't use this maliciously
+        [SuppressUnmanagedCodeSecurity] // We won't use this maliciously
         [DllImport("User32.dll", CharSet = CharSet.Auto)]
         internal static extern bool PeekMessage(out Message msg, IntPtr hWnd, uint messageFilterMin, uint messageFilterMax, uint flags);
     }

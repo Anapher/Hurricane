@@ -59,5 +59,19 @@ namespace Hurricane.Properties {
                 resourceCulture = value;
             }
         }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die &lt;ResourceDictionary xmlns=&quot;http://schemas.microsoft.com/winfx/2006/xaml/presentation&quot;
+        ///                    xmlns:x=&quot;http://schemas.microsoft.com/winfx/2006/xaml&quot; xmlns:system=&quot;clr-namespace:System;assembly=mscorlib&quot; xmlns:options=&quot;http://schemas.microsoft.com/winfx/2006/xaml/presentation/options&quot;&gt;
+        ///
+        ///    &lt;SolidColorBrush x:Key=&quot;LightColorBrush&quot; Color=&quot;{LightColor}&quot; options:Freeze=&quot;True&quot;/&gt;
+        ///    &lt;SolidColorBrush x:Key=&quot;BrightColorBrush&quot; Color=&quot;{BrightColor}&quot; options:Freeze=&quot;True&quot;/&gt;
+        ///    &lt;SolidColorBrush x:Key [Rest der Zeichenfolge wurde abgeschnitten]&quot;; ähnelt.
+        /// </summary>
+        internal static string ColorTheme {
+            get {
+                return ResourceManager.GetString("ColorTheme", resourceCulture);
+            }
+        }
     }
 }

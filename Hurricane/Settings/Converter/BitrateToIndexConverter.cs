@@ -1,22 +1,19 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Globalization;
 using System.Windows.Data;
 
 namespace Hurricane.Settings.Converter
 {
     class BitrateToIndexConverter : IValueConverter
     {
-        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             return BitrateToIndex(int.Parse(value.ToString()));
         }
 
-        public static int BitrateToIndex(int WaveSourceBits)
+        public static int BitrateToIndex(int waveSourceBits)
         {
-            switch (WaveSourceBits)
+            switch (waveSourceBits)
             {
                 case 8:
                     return 0;
@@ -30,9 +27,9 @@ namespace Hurricane.Settings.Converter
             throw new ArgumentException();
         }
 
-        public static int IndexToBitrate(int Index)
+        public static int IndexToBitrate(int index)
         {
-            switch (Index)
+            switch (index)
             {
                 case 0:
                    return 8;
@@ -46,7 +43,7 @@ namespace Hurricane.Settings.Converter
             throw new ArgumentException();
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             return IndexToBitrate(int.Parse(value.ToString()));
         }

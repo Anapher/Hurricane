@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Hurricane.Music
+﻿namespace Hurricane.Music
 {
     public class TrackPlaylistPair
     {
@@ -13,8 +7,8 @@ namespace Hurricane.Music
 
         public TrackPlaylistPair(Track track, Playlist playlist)
         {
-            this.Track = track;
-            this.Playlist = playlist;
+            Track = track;
+            Playlist = playlist;
         }
     }
 }

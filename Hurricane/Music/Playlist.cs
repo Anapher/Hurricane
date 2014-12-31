@@ -1,72 +1,85 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Collections.ObjectModel;
-using System.Windows.Data;
-using System.IO;
-using Hurricane.Utilities;
+using System.Collections.Specialized;
 using System.ComponentModel;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Windows.Data;
+using System.Windows.Threading;
 using System.Xml.Serialization;
+using Hurricane.Music.MusicDatabase.EventArgs;
+using Hurricane.ViewModelBase;
 
 namespace Hurricane.Music
 {
     [Serializable]
-    public class Playlist : ViewModelBase.PropertyChangedBase
+    public class Playlist : PropertyChangedBase
     {
         public Playlist()
         {
             Tracks = new ObservableCollection<Track>();
         }
 
-        private String name;
+        private String _name;
         public String Name
         {
-            get { return name; }
+            get { return _name; }
             set
             {
-                SetProperty(value, ref name);
+                SetProperty(value, ref _name);
             }
         }
 
         public ObservableCollection<Track> Tracks { get; protected set; }
 
-        private string searchtext;
+        private string _searchtext;
         [XmlIgnore]
         public string SearchText
         {
-            get { return searchtext; }
+            get { return _searchtext; }
             set
             {
-                if (SetProperty(value, ref searchtext))
+                if (SetProperty(value, ref _searchtext))
                     ViewSource.Refresh();
             }
         }
 
-        private ICollectionView viewsource;
+        private ICollectionView _viewsource;
         [XmlIgnore]
         public ICollectionView ViewSource
         {
             get
             {
-                return viewsource;
+                return _viewsource;
             }
             set
             {
-                SetProperty(value, ref viewsource);
+                SetProperty(value, ref _viewsource);
             }
         }
+
+        [XmlIgnore]
+        public List<Track> ShuffleList { get; set; }
 
         public void LoadList()
         {
             if (Tracks != null)
             {
-                ViewSource = CollectionViewSource.GetDefaultView(Tracks);
-                ViewSource.Filter = (item) =>
+                Tracks.CollectionChanged += async (s, e) =>
                 {
-                    if (string.IsNullOrWhiteSpace(SearchText)) { return true; } else { return item.ToString().ToUpper().Contains(SearchText.ToUpper()); }
+                    if (e.Action != NotifyCollectionChangedAction.Move || e.NewItems == null || e.NewItems.Count <= 0)
+                        return;
+                    var track = e.NewItems[0] as Track;
+                    if (track == null) return;
+                    track.IsAdded = true;
+                    await Task.Delay(500);
+                    track.IsAdded = false;
                 };
+                ViewSource = CollectionViewSource.GetDefaultView(Tracks);
+                ViewSource.Filter = (item) => string.IsNullOrWhiteSpace(SearchText) || item.ToString().ToUpper().Contains(SearchText.ToUpper());
+                ShuffleList = new List<Track>(Tracks);
             }
         }
 
@@ -78,25 +91,24 @@ namespace Hurricane.Music
                 if (fi.Exists)
                 {
                     if (progresschanged != null) progresschanged(this, new TrackImportProgressChangedEventArgs(i, paths.Length, fi.Name));
-                    Track t = new Track();
-                    t.Path = fi.FullName;
+                    Track t = new Track { Path = fi.FullName };
                     if (!await t.LoadInformations()) continue;
                     t.TimeAdded = DateTime.Now;
-                    this.AddTrackWithAnimation(t);
+                    AddTrackWithAnimation(t);
                 }
             }
         }
 
         public async Task AddFiles(params string[] paths)
         {
-            await this.AddFiles(null, paths);
+            await AddFiles(null, paths);
         }
 
-        public async Task ReloadTrackInformations(EventHandler<TrackImportProgressChangedEventArgs> progresschanged, bool FromAnotherThread)
+        public async Task ReloadTrackInformations(EventHandler<TrackImportProgressChangedEventArgs> progresschanged)
         {
-            foreach (Track t in this.Tracks)
+            foreach (Track t in Tracks)
             {
-                if (progresschanged != null) progresschanged(this, new TrackImportProgressChangedEventArgs(this.Tracks.IndexOf(t), Tracks.Count, t.ToString()));
+                if (progresschanged != null) progresschanged(this, new TrackImportProgressChangedEventArgs(Tracks.IndexOf(t), Tracks.Count, t.ToString()));
                 if (t.TrackExists)
                 {
                     await t.LoadInformations();
@@ -106,14 +118,7 @@ namespace Hurricane.Music
 
         public bool ContainsMissingTracks
         {
-            get
-            {
-                foreach (Track t in this.Tracks)
-                {
-                    if (!t.TrackExists) return true;
-                }
-                return false;
-            }
+            get { return Tracks.Any(t => !t.TrackExists); }
         }
 
         public void RemoveMissingTracks()
@@ -121,27 +126,31 @@ namespace Hurricane.Music
             for (int i = Tracks.Count - 1; i > -1; i--)
             {
                 Track t = Tracks[i];
-                if (!t.TrackExists) this.RemoveTrackWithAnimation(t);
+                if (!t.TrackExists) RemoveTrackWithAnimation(t);
             }
             OnPropertyChanged("ContainsMissingTracks");
         }
 
         public void RemoveTrackWithAnimation(Track track)
         {
+            ShuffleList.Remove(track);
             track.IsRemoving = true;
-            System.Windows.Threading.DispatcherTimer tmr = new System.Windows.Threading.DispatcherTimer();
-            tmr.Interval = TimeSpan.FromMilliseconds(500);
+            DispatcherTimer tmr = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(500) };
             tmr.Tick += (s, e) => { this.Tracks.Remove(track); tmr.Stop(); };
             tmr.Start();
         }
 
         public void AddTrackWithAnimation(Track track)
         {
+            ShuffleList.Add(track);
             track.IsAdded = true;
-            this.Tracks.Add(track);
-            System.Windows.Threading.DispatcherTimer tmr = new System.Windows.Threading.DispatcherTimer();
-            tmr.Interval = TimeSpan.FromMilliseconds(500);
-            tmr.Tick += (s, e) => { track.IsAdded = false; tmr.Stop(); };
+            Tracks.Add(track);
+            DispatcherTimer tmr = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(500) };
+            tmr.Tick += (s, e) =>
+            {
+                track.IsAdded = false;
+                tmr.Stop();
+            };
             tmr.Start();
         }
 
@@ -153,7 +162,7 @@ namespace Hurricane.Music
         {
             int counter = this.Tracks.Count;
             IEnumerable<Track> noduplicates = null;
-            await Task.Run(() => noduplicates = this.Tracks.Distinct(new TrackComparer()));
+            await Task.Run(() => noduplicates = Tracks.Distinct(new TrackComparer()));
             if (noduplicates.Any() && noduplicates.Count() != this.Tracks.Count)
             {
                 this.Tracks = new ObservableCollection<Track>(noduplicates);

@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Drawing;
-using System.IO;
-using System.Drawing.Imaging;
+using System.Drawing.Drawing2D;
+using System.Windows;
+using Size = System.Drawing.Size;
 
 namespace Hurricane.Utilities
 {
@@ -13,19 +10,19 @@ namespace Hurricane.Utilities
     {
         public static Size GetMinimumSize(Size size, int maxwidth, int maxheight)
         {
-            System.Drawing.Size NewSize;
+            Size newSize;
             if (size.Width == size.Height)
             {
-                NewSize = new Size(220, 220);
+                newSize = new Size(220, 220);
             }
             else
             {
-                bool WidthIsHigher = size.Width > size.Height;
-                double ratio = (double)size.Width / (double)size.Height;
+                bool widthIsHigher = size.Width > size.Height;
+                double ratio = size.Width / (double)size.Height;
                 double newwidth;
                 double newheight;
 
-                if (WidthIsHigher)
+                if (widthIsHigher)
                 {
                     newwidth = maxheight * ratio;
                     if (newwidth >= maxwidth)
@@ -51,9 +48,9 @@ namespace Hurricane.Utilities
                         newheight = maxheight;
                     }
                 }
-                NewSize = new System.Drawing.Size((int)Math.Round(newwidth, 0), (int)Math.Round(newheight, 0));
+                newSize = new Size((int)Math.Round(newwidth, 0), (int)Math.Round(newheight, 0));
             }
-            return NewSize;
+            return newSize;
         }
 
         public static Bitmap ResizeImage(Bitmap imgToResize, Size size)
@@ -61,9 +58,9 @@ namespace Hurricane.Utilities
             try
             {
                 Bitmap b = new Bitmap(size.Width, size.Height);
-                using (Graphics g = Graphics.FromImage((Image)b))
+                using (Graphics g = Graphics.FromImage(b))
                 {
-                    g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+                    g.InterpolationMode = InterpolationMode.HighQualityBicubic;
                     g.DrawImage(imgToResize, 0, 0, size.Width, size.Height);
                 }
                 return b;
@@ -71,9 +68,9 @@ namespace Hurricane.Utilities
             catch { return null; }
         }
 
-        public static Icon GetIconFromResource(string Path)
+        public static Icon GetIconFromResource(string path)
         {
-            return new System.Drawing.Icon(System.Windows.Application.GetResourceStream(new Uri(string.Format("pack://application:,,,/Hurricane;component/{0}", Path))).Stream);
+            return new Icon(Application.GetResourceStream(new Uri(string.Format("pack://application:,,,/Hurricane;component/{0}", path))).Stream);
         }
     }
 }

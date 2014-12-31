@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
         xmlns:extensions="clr-namespace:Hurricane.Extensions"
-        Title="{StaticResource importtrack}" SizeToContent="Height" Width="400" GlowBrush="{StaticResource AccentColorBrush}" ShowInTaskbar="False" ResizeMode="NoResize" x:Name="window" WindowStartupLocation="CenterOwner">
+        Title="{StaticResource ImportTrack}" SizeToContent="Height" Width="400" GlowBrush="{StaticResource AccentColorBrush}" ShowInTaskbar="False" ResizeMode="NoResize" x:Name="window" WindowStartupLocation="CenterOwner">
     <StackPanel Orientation="Vertical" Margin="10">
         <Grid>
             <Grid.ColumnDefinitions>
@@ -11,7 +11,7 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <StackPanel Orientation="Horizontal">
-                <TextBlock Text="{StaticResource trackname}"/>
+                <TextBlock Text="{StaticResource TrackName}"/>
                 <TextBlock Text=":"/>
             </StackPanel>
             <TextBlock Text="{Binding ElementName=window,Path=Trackname}" Grid.Column="1"/>
@@ -22,22 +22,22 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                <TextBlock Text="{StaticResource playlist}"/>
+                <TextBlock Text="{StaticResource Playlist}"/>
                 <TextBlock Text=":"/>
             </StackPanel>
             <ComboBox Grid.Column="1" ItemsSource="{Binding ElementName=window,Path=Playlists}" SelectedItem="{Binding ElementName=window,Path=SelectedPlaylist}" DisplayMemberPath="Name"/>
         </Grid>
         <DockPanel Margin="0,15,0,0">
-            <CheckBox Content="{StaticResource remember}" IsChecked="{Binding ElementName=window,Path=RememberChoice}" x:Name="chkremember"/>
-            <CheckBox Content="{StaticResource alsoafterrestart}" Margin="5,0,0,0" IsChecked="{Binding ElementName=window,Path=RememberAlsoAfterRestart}" IsEnabled="{Binding ElementName=chkremember,Path=IsChecked}" ToolTip="{StaticResource canberesetedinsettings}"/>
+            <CheckBox Content="{StaticResource Remember}" IsChecked="{Binding ElementName=window,Path=RememberChoice}" x:Name="chkremember"/>
+            <CheckBox Content="{StaticResource AlsoAfterRestart}" Margin="5,0,0,0" IsChecked="{Binding ElementName=window,Path=RememberAlsoAfterRestart}" IsEnabled="{Binding ElementName=chkremember,Path=IsChecked}" ToolTip="{StaticResource CanBeResetedInSettings}"/>
             <Grid Grid.IsSharedSizeScope="True" HorizontalAlignment="Right">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition SharedSizeGroup="Buttons"/>
                     <ColumnDefinition Width="10"/>
                     <ColumnDefinition SharedSizeGroup="Buttons"/>
                 </Grid.ColumnDefinitions>
-                <Button Grid.Column="0" Content="{StaticResource cancel}" extensions:ButtonHelper.DialogResult="False"/>
-                <Button Grid.Column="2" Content="{StaticResource add}" extensions:ButtonHelper.DialogResult="True"/>
+                <Button Grid.Column="0" Content="{StaticResource Cancel}" extensions:ButtonHelper.DialogResult="False"/>
+                <Button Grid.Column="2" Content="{StaticResource Add}" extensions:ButtonHelper.DialogResult="True"/>
             </Grid>
         </DockPanel>
     </StackPanel>

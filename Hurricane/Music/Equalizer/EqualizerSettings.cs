@@ -1,12 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Collections.ObjectModel;
+using Hurricane.Music.MusicDatabase.EventArgs;
 using Hurricane.ViewModelBase;
-using System.Xml.Serialization;
-using System.Windows.Controls;
 
 namespace Hurricane.Music
 {
@@ -32,163 +28,104 @@ namespace Hurricane.Music
         {
             foreach (EqualizerBand b in Bands)
             {
-                b.EqualizerChanged += (s, e) => { EqualizerChanged(this, new EqualizerChangedEventArgs(Bands.IndexOf(b), b.Value)); };
+                b.EqualizerChanged += (s, e) =>
+                {
+                    if (EqualizerChanged != null)
+                        EqualizerChanged(this, new EqualizerChangedEventArgs(Bands.IndexOf(b), b.Value));
+                };
                 b.Label = bandlabels[Bands.IndexOf(b)];
             }
         }
 
-        private RelayCommand resetequalizer;
+        private RelayCommand _resetequalizer;
         public RelayCommand ResetEqualizer
         {
             get
             {
-                if (resetequalizer == null)
-                    resetequalizer = new RelayCommand((object parameter) =>
+                return _resetequalizer ?? (_resetequalizer = new RelayCommand(parameter =>
+                {
+                    foreach (EqualizerBand band in Bands)
                     {
-                        foreach (EqualizerBand band in Bands)
-                        {
-                            band.Value = 0;
-                        }
-                    });
-                return resetequalizer;
+                        band.Value = 0;
+                    }
+                }));
             }
         }
 
-        private ObservableCollection<EqualizerBand> bands;
+        private ObservableCollection<EqualizerBand> _bands;
         public ObservableCollection<EqualizerBand> Bands
         {
-            get { return bands; }
+            get { return _bands; }
             set
             {
-                SetProperty(value, ref bands);
+                SetProperty(value, ref _bands);
             }
         }
 
-        private RelayCommand loadpresetbass;
+        private RelayCommand _loadpresetbass;
         public RelayCommand LoadPresetBass
         {
-            get
-            {
-                if (loadpresetbass == null)
-                    loadpresetbass = new RelayCommand((object parameter) =>
-                    {
-                        LoadPreset(50, 35, 20, 5, -10, -10, 0, -2, 0, 2);
-                    });
-                return loadpresetbass;
-            }
+            get { return _loadpresetbass ?? (_loadpresetbass = new RelayCommand(parameter => { LoadPreset(50, 35, 20, 5, -10, -10, 0, -2, 0, 2); })); }
         }
 
-        private RelayCommand loadpresetbassexteme;
+        private RelayCommand _loadpresetbassexteme;
         public RelayCommand LoadPresetBassExteme
         {
-            get
-            {
-                if (loadpresetbassexteme == null)
-                    loadpresetbassexteme = new RelayCommand((object parameter) =>
-                    {
-                        LoadPreset(90, 85, 65, 30, 0, -5, -5, 0, 2, 0);
-                    });
-                return loadpresetbassexteme;
-            }
+            get { return _loadpresetbassexteme ?? (_loadpresetbassexteme = new RelayCommand(parameter => { LoadPreset(90, 85, 65, 30, 0, -5, -5, 0, 2, 0); })); }
         }
 
-        private RelayCommand loadpresetbassandheights;
+        private RelayCommand _loadpresetbassandheights;
         public RelayCommand LoadPresetBassAndHeights
         {
-            get
-            {
-                if (loadpresetbassandheights == null)
-                    loadpresetbassandheights = new RelayCommand((object parameter) => { LoadPreset(20, 20, 10, 0, -10, -10, 0, 5, 20, 20); });
-                return loadpresetbassandheights;
-            }
+            get { return _loadpresetbassandheights ?? (_loadpresetbassandheights = new RelayCommand(parameter => { LoadPreset(20, 20, 10, 0, -10, -10, 0, 5, 20, 20); })); }
         }
 
-        private RelayCommand loadpresetheights;
+        private RelayCommand _loadpresetheights;
         public RelayCommand LoadPresetHeights
         {
-            get
-            {
-                if (loadpresetheights == null)
-                    loadpresetheights = new RelayCommand((object parameter) => { LoadPreset(-10, -10, -10, -10, -5, -5, 0, 25, 50, 75); });
-                return loadpresetheights;
-            }
+            get { return _loadpresetheights ?? (_loadpresetheights = new RelayCommand(parameter => { LoadPreset(-10, -10, -10, -10, -5, -5, 0, 25, 50, 75); })); }
         }
 
-        private RelayCommand loadpresetclassic;
+        private RelayCommand _loadpresetclassic;
         public RelayCommand LoadPresetClassic
         {
-            get
-            {
-                if (loadpresetclassic == null)
-                    loadpresetclassic = new RelayCommand((object parameter) => { LoadPreset(0, 0, 0, 0, 0, 0, -10, -10, -10, -20); });
-                return loadpresetclassic;
-            }
+            get { return _loadpresetclassic ?? (_loadpresetclassic = new RelayCommand(parameter => { LoadPreset(0, 0, 0, 0, 0, 0, -10, -10, -10, -20); })); }
         }
 
-        private RelayCommand loadpresetdance;
+        private RelayCommand _loadpresetdance;
         public RelayCommand LoadPresetDance
         {
-            get
-            {
-                if (loadpresetdance == null)
-                    loadpresetdance = new RelayCommand((object parameter) => { LoadPreset(30, 15, 10, 0, 0, -10, -5, -5, 0, 0); });
-                return loadpresetdance;
-            }
+            get { return _loadpresetdance ?? (_loadpresetdance = new RelayCommand(parameter => { LoadPreset(30, 15, 10, 0, 0, -10, -5, -5, 0, 0); })); }
         }
 
-        private RelayCommand loadpresetrock;
+        private RelayCommand _loadpresetrock;
         public RelayCommand LoadPresetRock
         {
-            get
-            {
-                if (loadpresetrock == null)
-                    loadpresetrock = new RelayCommand((object parameter) => { LoadPreset(25, 10, 5, -10, -5, 5, 10, 20, 20, 20); });
-                return loadpresetrock;
-            }
+            get { return _loadpresetrock ?? (_loadpresetrock = new RelayCommand(parameter => { LoadPreset(25, 10, 5, -10, -5, 5, 10, 20, 20, 20); })); }
         }
 
-        private RelayCommand loadpresettechno;
+        private RelayCommand _loadpresettechno;
         public RelayCommand LoadPresetTechno
         {
-            get
-            {
-                if (loadpresettechno == null)
-                    loadpresettechno = new RelayCommand((object parameter) => { LoadPreset(20, 20, 0, -10, -5, 0, 10, 40, 40, 40); });
-                return loadpresettechno;
-            }
+            get { return _loadpresettechno ?? (_loadpresettechno = new RelayCommand(parameter => { LoadPreset(20, 20, 0, -10, -5, 0, 10, 40, 40, 40); })); }
         }
 
-        private RelayCommand loadpresetpop;
+        private RelayCommand _loadpresetpop;
         public RelayCommand LoadPresetPop
         {
-            get
-            {
-                if (loadpresetpop == null)
-                    loadpresetpop = new RelayCommand((object parameter) => { LoadPreset(5, 20, 25, 20, 5, 0, 0, 0, 5, 10); });
-                return loadpresetpop;
-            }
+            get { return _loadpresetpop ?? (_loadpresetpop = new RelayCommand(parameter => { LoadPreset(5, 20, 25, 20, 5, 0, 0, 0, 5, 10); })); }
         }
 
-        private RelayCommand loadpresetsoftbass;
+        private RelayCommand _loadpresetsoftbass;
         public RelayCommand LoadPresetSoftBass
         {
-            get
-            {
-                if (loadpresetsoftbass == null)
-                    loadpresetsoftbass = new RelayCommand((object parameter) => { LoadPreset(10, 10, 10, 0, -10, -10, 0, 0, 0, 0); });
-                return loadpresetsoftbass;
-            }
+            get { return _loadpresetsoftbass ?? (_loadpresetsoftbass = new RelayCommand(parameter => { LoadPreset(10, 10, 10, 0, -10, -10, 0, 0, 0, 0); })); }
         }
 
-        private RelayCommand loadpresetsoftheights;
+        private RelayCommand _loadpresetsoftheights;
         public RelayCommand LoadPresetSoftHeights
         {
-            get
-            {
-                if (loadpresetsoftheights == null)
-                    loadpresetsoftheights = new RelayCommand((object parameter) => { LoadPreset(0, 0, -20, -20, -20, -20, -10, 0, 10, 20); });
-                return loadpresetsoftheights;
-            }
+            get { return _loadpresetsoftheights ?? (_loadpresetsoftheights = new RelayCommand(parameter => { LoadPreset(0, 0, -20, -20, -20, -20, -10, 0, 10, 20); })); }
         }
 
         protected void LoadPreset(double zero, double one, double two, double three, double four, double five, double six, double seven, double eight, double nine)

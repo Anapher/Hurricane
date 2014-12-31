@@ -1,24 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
-using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
+using System.Windows.Forms;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+using Hurricane.Utilities;
 
 namespace Hurricane.Views.Test
 {
     /// <summary>
-    /// Interaktionslogik für TestWindow.xaml
+    /// Interaction logic for TestWindow.xaml
     /// </summary>
     public partial class TestWindow : Window
     {
@@ -45,7 +38,7 @@ namespace Hurricane.Views.Test
             hook.Unhook();
         }
 
-        Utilities.ActiveWindowHook hook = new Utilities.ActiveWindowHook();
+        ActiveWindowHook hook = new ActiveWindowHook();
         void TestWindow_Loaded(object sender, RoutedEventArgs e)
         {
             /*
@@ -85,7 +78,7 @@ namespace Hurricane.Views.Test
             
         }
 
-        void HookManager_MouseMove(object sender, System.Windows.Forms.MouseEventArgs e)
+        void HookManager_MouseMove(object sender, MouseEventArgs e)
         {
             switch (CurrentStep)
             {
@@ -102,7 +95,7 @@ namespace Hurricane.Views.Test
                         this.Left = 0;
                         AddLineToLog("Can move mouse to X=0");
                         CurrentStep = Steps.StepThree;
-                        btnOk.Visibility = System.Windows.Visibility.Visible;
+                        btnOk.Visibility = Visibility.Visible;
                         btnDoesntWork.Content = "No";
                     }
                     break;

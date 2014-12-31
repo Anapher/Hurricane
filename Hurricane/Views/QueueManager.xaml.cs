@@ -1,84 +1,37 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+﻿using Hurricane.Music;
 using Hurricane.ViewModelBase;
-using Hurricane.Music;
+using Hurricane.ViewModels;
+using MahApps.Metro.Controls;
 
 namespace Hurricane.Views
 {
     /// <summary>
-    /// Interaktionslogik für QueueManager.xaml
+    /// Interaction logic for QueueManager.xaml
     /// </summary>
-    public partial class QueueManager : MahApps.Metro.Controls.MetroWindow
+    public partial class QueueManager : MetroWindow
     {
         public QueueManager()
         {
             InitializeComponent();
         }
 
-        private RelayCommand movetracksup;
+        private RelayCommand _movetracksup;
         public RelayCommand MoveTracksUp
         {
             get
             {
-                if (movetracksup == null)
-                    movetracksup = new RelayCommand((object parameter) =>
+                return _movetracksup ?? (_movetracksup = new RelayCommand(parameter =>
+                {
+                    var manager = MainViewModel.Instance.MusicManager;
+                    var selecteditems = lst.SelectedItems;
+                    switch (selecteditems.Count)
                     {
-                        var manager = ViewModels.MainViewModel.Instance.MusicManager;
-                        var selecteditems = lst.SelectedItems;
-                        if (selecteditems.Count == 0) return;
-                        if (selecteditems.Count == 1)
-                        {
+                        case 0:
+                            return;
+                        case 1:
                             manager.Queue.MoveTrackUp(((TrackPlaylistPair)selecteditems[0]).Track);
-                        }
-                        else
-                        {
-                            int startindex = -1;
-                            int endindex = 0;
-
-                            foreach (var item in selecteditems) //we search the highest and lowest index
-                            {
-                                int index =  manager.Queue.IndexOf(((TrackPlaylistPair)item).Track);
-                                if (startindex == -1) startindex = index;
-                                if (index < startindex) { startindex = index; } else if (index > endindex) { endindex = index; }
-                            }
-
-                            if (startindex == 0) return;
-
-                            manager.Queue.MoveTrackDown(manager.Queue[startindex -1].Track, selecteditems.Count);
-                        }
-                    });
-                return movetracksup;
-            }
-        }
-
-        private RelayCommand movetracksdown;
-        public RelayCommand MoveTracksDown
-        {
-            get
-            {
-                if (movetracksdown == null)
-                    movetracksdown = new RelayCommand((object parameter) =>
-                    {
-                        var manager = ViewModels.MainViewModel.Instance.MusicManager;
-                        var selecteditems = lst.SelectedItems;
-                        if (selecteditems.Count == 0) return;
-                        if (selecteditems.Count == 1)
-                        {
-                            manager.Queue.MoveTrackDown(((TrackPlaylistPair)selecteditems[0]).Track);
-                        }
-                        else
-                        {
+                            break;
+                        default:
                             int startindex = -1;
                             int endindex = 0;
 
@@ -89,12 +42,48 @@ namespace Hurricane.Views
                                 if (index < startindex) { startindex = index; } else if (index > endindex) { endindex = index; }
                             }
 
-                            if (endindex == manager.Queue.Count -1) return;
+                            if (startindex == 0) return;
+
+                            manager.Queue.MoveTrackDown(manager.Queue[startindex - 1].Track, selecteditems.Count);
+                            break;
+                    }
+                }));
+            }
+        }
+
+        private RelayCommand _movetracksdown;
+        public RelayCommand MoveTracksDown
+        {
+            get
+            {
+                return _movetracksdown ?? (_movetracksdown = new RelayCommand(parameter =>
+                {
+                    var manager = MainViewModel.Instance.MusicManager;
+                    var selecteditems = lst.SelectedItems;
+                    switch (selecteditems.Count)
+                    {
+                        case 0:
+                            return;
+                        case 1:
+                            manager.Queue.MoveTrackDown(((TrackPlaylistPair)selecteditems[0]).Track);
+                            break;
+                        default:
+                            int startindex = -1;
+                            int endindex = 0;
+
+                            foreach (var item in selecteditems) //we search the highest and lowest index
+                            {
+                                int index = manager.Queue.IndexOf(((TrackPlaylistPair)item).Track);
+                                if (startindex == -1) startindex = index;
+                                if (index < startindex) { startindex = index; } else if (index > endindex) { endindex = index; }
+                            }
+
+                            if (endindex == manager.Queue.Count - 1) return;
 
                             manager.Queue.MoveTrackUp(manager.Queue[endindex + 1].Track, selecteditems.Count);
-                        }
-                    });
-                return movetracksdown;
+                            break;
+                    }
+                }));
             }
         }
     }

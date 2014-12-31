@@ -1,23 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.ComponentModel;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+using MahApps.Metro.Controls;
+using Ookii.Dialogs.Wpf;
 
 namespace Hurricane.Views
 {
     /// <summary>
     /// Interaction logic for FolderImportWindow.xaml
     /// </summary>
-    public partial class FolderImportWindow : MahApps.Metro.Controls.MetroWindow, System.ComponentModel.INotifyPropertyChanged
+    public partial class FolderImportWindow : MetroWindow, INotifyPropertyChanged
     {
         public FolderImportWindow()
         {
@@ -26,33 +18,33 @@ namespace Hurricane.Views
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            Ookii.Dialogs.Wpf.VistaFolderBrowserDialog fbd = new Ookii.Dialogs.Wpf.VistaFolderBrowserDialog();
-            fbd.RootFolder = Environment.SpecialFolder.MyMusic;
-            fbd.ShowNewFolderButton = false;
-            fbd.Description = System.Windows.Application.Current.FindResource("selectfolder").ToString();
-            fbd.UseDescriptionForTitle = true;
-            if (fbd.ShowDialog() == true)
+            VistaFolderBrowserDialog fbd = new VistaFolderBrowserDialog
             {
+                RootFolder = Environment.SpecialFolder.MyMusic,
+                ShowNewFolderButton = false,
+                Description = Application.Current.FindResource("SelectedFolder").ToString(),
+                UseDescriptionForTitle = true
+            };
+            if (fbd.ShowDialog() == true)
                 SelectedPath = fbd.SelectedPath;
-            }
         }
 
-        private string selectedpath;
+        private string _selectedpath;
         public string SelectedPath
         {
-            get { return selectedpath; }
+            get { return _selectedpath; }
             set
             {
-                if (value != selectedpath)
+                if (value != _selectedpath)
                 {
-                    selectedpath = value;
-                    if (PropertyChanged != null) PropertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs("SelectedPath"));
+                    _selectedpath = value;
+                    if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs("SelectedPath"));
                 }
             }
         }
 
         public bool IncludeSubfolder { get; set; }
 
-        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler PropertyChanged;
     }
 }

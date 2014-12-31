@@ -1,12 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Hurricane.ViewModelBase;
-using System.Windows.Controls;
-using System.Collections.ObjectModel;
+using System.Windows;
+using System.Windows.Media;
+using Hurricane.Music;
+using Hurricane.Music.API;
 using Hurricane.Settings;
+using Hurricane.Settings.RegistryManager;
+using Hurricane.Settings.Themes;
+using Hurricane.Utilities;
+using Hurricane.ViewModelBase;
+using Hurricane.Views;
 
 namespace Hurricane.ViewModels
 {
@@ -16,32 +20,26 @@ namespace Hurricane.ViewModels
         private static SettingsViewModel _instance;
         public static SettingsViewModel Instance
         {
-            get
-            {
-                if (_instance == null)
-                    _instance = new SettingsViewModel();
-                return _instance;
-            }
+            get { return _instance ?? (_instance = new SettingsViewModel()); }
         }
 
         private SettingsViewModel()
         {
-            RegistryManager = new Settings.RegistryManager.RegistryManager();
+            RegistryManager = new RegistryManager();
         }
 
         public void Load()
         {
-            Config = Utilities.ObjectCopier.Clone<Settings.ConfigSettings>(Settings.HurricaneSettings.Instance.Config);
-            AudioDevices = Music.CSCoreEngine.GetAudioDevices();
-            SelectedAudioDevice = AudioDevices.Where((x) => x.ID == Config.SoundOutDeviceID).FirstOrDefault();
-            if (SelectedAudioDevice == null) SelectedAudioDevice = AudioDevices.Where((x) => x.IsDefault).First();
+            Config = ObjectCopier.Clone<ConfigSettings>(HurricaneSettings.Instance.Config);
+            AudioDevices = CSCoreEngine.GetAudioDevices();
+            SelectedAudioDevice = AudioDevices.FirstOrDefault(x => x.ID == Config.SoundOutDeviceID) ?? AudioDevices.First(x => x.IsDefault);
             CurrentLanguage = Config.Languages.First((x) => x.Code == Config.Language);
 
             OnPropertyChanged("CanApply");
         }
 
-        public Music.MusicManager MusicManager { get { return ViewModels.MainViewModel.Instance.MusicManager; } }
-        public Music.API.TcpServer ApiServer { get { return MusicManager != null ? MusicManager.ApiServer : null; } }
+        public MusicManager MusicManager { get { return MainViewModel.Instance.MusicManager; } }
+        public TcpServer ApiServer { get { return MusicManager != null ? MusicManager.ApiServer : null; } }
 
         public void StateChanged()
         {
@@ -49,27 +47,25 @@ namespace Hurricane.ViewModels
         }
         #endregion
 
-        private RelayCommand applychanges;
+        private RelayCommand _applychanges;
         public RelayCommand ApplyChanges
         {
             get
             {
-                if (applychanges == null)
-                    applychanges = new RelayCommand((object parameter) =>
-                    {
-                        Settings.ConfigSettings original = Settings.HurricaneSettings.Instance.Config;
-                        Settings.HurricaneSettings.Instance.Config = Config;
-                        if (Config.SoundOutDeviceID != original.SoundOutDeviceID) { MusicManager.CSCoreEngine.UpdateSoundOut(); }
-                        if (original.Language != Config.Language) { Config.LoadLanguage(); }
-                        if (Config.Theme.UseCustomSpectrumAnalyzerColor && string.IsNullOrEmpty(Config.Theme.SpectrumAnalyzerHexColor)) Config.Theme.SpectrumAnalyzerColor = System.Windows.Media.Colors.Black;
-                        if (original.Theme != Config.Theme) { Config.Theme.LoadTheme(); }
-                        if (original.ApiIsEnabled != Config.ApiIsEnabled) { if (Config.ApiIsEnabled) { ApiServer.StartListening(); } else { ApiServer.StopListening(); } }
-                        Config = Utilities.ObjectCopier.Clone<Settings.ConfigSettings>(Settings.HurricaneSettings.Instance.Config);
-                        OnPropertyChanged("CanApply");
-                        CurrentLanguage = Config.Languages.First((x) => x.Code == Config.Language);
-                        OnPropertyChanged("ApiState");
-                    });
-                return applychanges;
+                return _applychanges ?? (_applychanges = new RelayCommand(parameter =>
+                {
+                    ConfigSettings original = HurricaneSettings.Instance.Config;
+                    HurricaneSettings.Instance.Config = Config;
+                    if (Config.SoundOutDeviceID != original.SoundOutDeviceID) { MusicManager.CSCoreEngine.UpdateSoundOut(); }
+                    if (original.Language != Config.Language) { Config.LoadLanguage(); }
+                    if (Config.Theme.UseCustomSpectrumAnalyzerColor && string.IsNullOrEmpty(Config.Theme.SpectrumAnalyzerHexColor)) Config.Theme.SpectrumAnalyzerColor = Colors.Black;
+                    if (original.Theme != Config.Theme) { Config.Theme.LoadTheme(); }
+                    if (original.ApiIsEnabled != Config.ApiIsEnabled) { if (Config.ApiIsEnabled) { ApiServer.StartListening(); } else { ApiServer.StopListening(); } }
+                    Config = ObjectCopier.Clone<ConfigSettings>(HurricaneSettings.Instance.Config);
+                    OnPropertyChanged("CanApply");
+                    CurrentLanguage = Config.Languages.First((x) => x.Code == Config.Language);
+                    OnPropertyChanged("ApiState");
+                }));
             }
         }
 
@@ -77,50 +73,50 @@ namespace Hurricane.ViewModels
         {
             get
             {
-                return !Settings.HurricaneSettings.Instance.Config.Equals(Config); //It can apply if something isnt equal
+                return !HurricaneSettings.Instance.Config.Equals(Config); //It can apply if something isnt equal
             }
         }
-        
-        private Settings.ConfigSettings config;
-        public Settings.ConfigSettings Config
+
+        private ConfigSettings _config;
+        public ConfigSettings Config
         {
-            get { return config; }
+            get { return _config; }
             set
             {
-                SetProperty(value, ref config);
+                SetProperty(value, ref _config);
             }
         }
-        
-        private int selectedtab = 0;
+
+        private int _selectedtab;
         public int SelectedTab
         {
-            get { return selectedtab; }
+            get { return _selectedtab; }
             set
             {
-                SetProperty(value, ref selectedtab);
+                SetProperty(value, ref _selectedtab);
                 if (value == 3) OnPropertyChanged("ApiState");
             }
         }
 
-        private List<Music.AudioDevice> audiodevices;
-        public List<Music.AudioDevice> AudioDevices
+        private List<AudioDevice> _audiodevices;
+        public List<AudioDevice> AudioDevices
         {
-            get { return audiodevices; }
+            get { return _audiodevices; }
             set
             {
-                SetProperty(value, ref audiodevices);
+                SetProperty(value, ref _audiodevices);
                 OnPropertyChanged("CanApply");
             }
         }
 
-        
-        private Music.AudioDevice selectedaudiodevice;
-        public Music.AudioDevice SelectedAudioDevice
+
+        private AudioDevice _selectedaudiodevice;
+        public AudioDevice SelectedAudioDevice
         {
-            get { return selectedaudiodevice; }
+            get { return _selectedaudiodevice; }
             set
             {
-                if (SetProperty(value, ref selectedaudiodevice) && value != null)
+                if (SetProperty(value, ref _selectedaudiodevice) && value != null)
                 {
                     Config.SoundOutDeviceID = value.ID;
                     OnPropertyChanged("CanApply");
@@ -128,13 +124,13 @@ namespace Hurricane.ViewModels
             }
         }
 
-        private LanguageInfo currentlanguage;
+        private LanguageInfo _currentlanguage;
         public LanguageInfo CurrentLanguage
         {
-            get { return currentlanguage; }
+            get { return _currentlanguage; }
             set
             {
-                if (SetProperty(value, ref currentlanguage) && value != null)
+                if (SetProperty(value, ref _currentlanguage) && value != null)
                 {
                     Config.Language = value.Code;
                     OnPropertyChanged("CanApply");
@@ -142,47 +138,88 @@ namespace Hurricane.ViewModels
             }
         }
 
-        private RelayCommand showlanguages;
+        private RelayCommand _showlanguages;
         public RelayCommand ShowLanguages
         {
             get
             {
-                if (showlanguages == null)
-                    showlanguages = new RelayCommand((object parameter) => { SelectedTab = 5; });
-                return showlanguages;
+                return _showlanguages ?? (_showlanguages = new RelayCommand(parameter => { SelectedTab = 5; }));
             }
         }
 
-        private RelayCommand testnotification;
+        private RelayCommand _testnotification;
         public RelayCommand TestNotification
         {
             get
             {
-                if (testnotification == null)
-                    testnotification = new RelayCommand((object parameter) => { MusicManager.Notification.Test(Config.Notification); });
-                return testnotification;
+                return _testnotification ?? (_testnotification = new RelayCommand(parameter => { MusicManager.Notification.Test(Config.Notification); }));
             }
         }
 
-        private RelayCommand resettrackimport;
+        private RelayCommand _resettrackimport;
         public RelayCommand ResetTrackImport
         {
             get
             {
-                if (resettrackimport == null)
-                    resettrackimport = new RelayCommand((object parameter) => { Config.RememberTrackImportPlaylist = false; Config.PlaylistToImportTrack = null; OnPropertyChanged("Config"); StateChanged(); });
-                return resettrackimport;
+                return _resettrackimport ?? (_resettrackimport = new RelayCommand(parameter =>
+                {
+                    Config.RememberTrackImportPlaylist = false;
+                    Config.PlaylistToImportTrack = null;
+                    OnPropertyChanged("Config");
+                    StateChanged();
+                }));
             }
         }
 
-        private RelayCommand totalreset;
+        private RelayCommand _totalreset;
         public RelayCommand TotalReset
         {
             get
             {
-                if (totalreset == null)
-                    totalreset = new RelayCommand((object parameter) => { Config.SetStandardValues(); SelectedAudioDevice = AudioDevices[0]; OnPropertyChanged("Config"); StateChanged(); });
-                return totalreset;
+                return _totalreset ?? (_totalreset = new RelayCommand(parameter =>
+                {
+                    Config.SetStandardValues();
+                    SelectedAudioDevice = AudioDevices[0];
+                    OnPropertyChanged("Config");
+                    StateChanged();
+                }));
+            }
+        }
+
+        private RelayCommand _openthemecreator;
+        public RelayCommand OpenThemeCreator
+        {
+            get
+            {
+                return _openthemecreator ?? (_openthemecreator = new RelayCommand(parameter =>
+                {
+                    ThemeCreatorWindow window = new ThemeCreatorWindow() { Owner = Application.Current.MainWindow };
+                    if (window.ShowDialog() == true)
+                        Config.Theme.RefreshThemes();
+                }));
+            }
+        }
+
+        private RelayCommand _edittheme;
+        public RelayCommand EditTheme
+        {
+            get
+            {
+                return _edittheme ?? (_edittheme = new RelayCommand(parameter =>
+                {
+                    var source = new ThemeSource();
+                    var theme = Config.Theme.SelectedColorTheme as CustomColorTheme;
+                    if (theme == null) return;
+                    source.LoadFromFile(theme.Filename);
+                    source.Name = Path.GetFileNameWithoutExtension(theme.Filename);
+                    ThemeCreatorWindow window = new ThemeCreatorWindow(source) { Owner = Application.Current.MainWindow };
+                    window.ShowDialog();
+                    if (theme.Name == HurricaneSettings.Instance.Config.Theme.SelectedColorTheme.Name)
+                    {
+                        theme.RefreshResource();
+                        theme.ApplyTheme();
+                    }
+                }));
             }
         }
 
@@ -190,15 +227,12 @@ namespace Hurricane.ViewModels
         {
             get
             {
-                if (ApiServer == null) return System.Windows.Application.Current.FindResource("deactivated").ToString();
-                if (ApiServer.IsRunning) { return System.Windows.Application.Current.FindResource("activated").ToString(); }
-                else
-                {
-                    if (ApiServer.GotProblems) { return System.Windows.Application.Current.FindResource("failedtobindtoport").ToString(); } else { return System.Windows.Application.Current.FindResource("deactivated").ToString(); }
-                }
+                if (ApiServer == null) return Application.Current.FindResource("Deactivated").ToString();
+                if (ApiServer.IsRunning) { return Application.Current.FindResource("Activated").ToString(); }
+                return ApiServer.GotProblems ? Application.Current.FindResource("FailedToBindToPort").ToString() : Application.Current.FindResource("Deactivated").ToString();
             }
         }
 
-        public Settings.RegistryManager.RegistryManager RegistryManager { get; set; }
+        public RegistryManager RegistryManager { get; set; }
     }
 }

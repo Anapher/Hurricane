@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Collections.ObjectModel;
-using System.Xml.Serialization;
 using System.ComponentModel;
+using System.Linq;
+using System.Xml.Serialization;
 
 namespace Hurricane.Music
 {
@@ -26,16 +24,16 @@ namespace Hurricane.Music
             {
                 var playlist = item.GetTrack(playlists);
                 TrackPlaylists.Add(new TrackPlaylistPair(item.Track, playlist));
-                item.Track.QueueID = (this.IndexOf(item) + 1).ToString();
+                item.Track.QueueID = (IndexOf(item) + 1).ToString();
             }
             RefreshDuration();
         }
 
         public void AddTrack(Track track, Playlist playlist)
         {
-            this.Add(new TrackRepresenter(track));
+            Add(new TrackRepresenter(track));
             TrackPlaylists.Add(new TrackPlaylistPair(track, playlist));
-            track.QueueID = (this.IndexOf(GetTrackRepresenter(track)) + 1).ToString();
+            track.QueueID = (IndexOf(GetTrackRepresenter(track)) + 1).ToString();
             RefreshDuration();
         }
 
@@ -51,7 +49,7 @@ namespace Hurricane.Music
             var trackrepresentertoremove = GetTrackRepresenter(track);
             if (trackrepresentertoremove == null) return;
             this.Remove(trackrepresentertoremove);
-            TrackPlaylists.Remove(TrackPlaylists.Where((x) => x.Track == track).First());
+            TrackPlaylists.Remove(TrackPlaylists.First(x => x.Track == track));
             track.QueueID = null;
             RefreshQueuePositionIds();
             RefreshDuration();
@@ -60,69 +58,67 @@ namespace Hurricane.Music
         #region TrackMoving
         public void MoveTrackDown(TrackRepresenter t, int count)
         {
-            int trackindex = this.IndexOf(t);
+            int trackindex = IndexOf(t);
             int newindex = trackindex + count;
-            if (newindex > this.Count - 1)
+            if (newindex > Count - 1)
                 newindex = 0;
-            this.Move(trackindex, newindex);
+            Move(trackindex, newindex);
             TrackPlaylists.Move(trackindex, newindex);
             RefreshQueuePositionIds();
         }
 
         public void MoveTrackUp(TrackRepresenter t, int count)
         {
-            int trackindex = this.IndexOf(t);
+            int trackindex = IndexOf(t);
             int newindex = trackindex - count;
-            if (newindex < 0) newindex = this.Count - 1;
-            this.Move(trackindex, newindex);
+            if (newindex < 0) newindex = Count - 1;
+            Move(trackindex, newindex);
             TrackPlaylists.Move(trackindex, newindex);
             RefreshQueuePositionIds();
         }
 
         public void MoveTrackDown(Track t, int count)
         {
-            this.MoveTrackDown(GetTrackRepresenter(t), count);
+            MoveTrackDown(GetTrackRepresenter(t), count);
         }
 
         public void MoveTrackUp(Track t, int count)
         {
-            this.MoveTrackUp(GetTrackRepresenter(t), count);
+            MoveTrackUp(GetTrackRepresenter(t), count);
         }
 
         public void MoveTrackDown(TrackRepresenter t)
         {
-            this.MoveTrackDown(t, 1);
+            MoveTrackDown(t, 1);
         }
 
         public void MoveTrackUp(TrackRepresenter t)
         {
-            this.MoveTrackUp(t, 1);
+            MoveTrackUp(t, 1);
         }
 
         public void MoveTrackDown(Track t)
         {
-            this.MoveTrackDown(GetTrackRepresenter(t), 1);
+            MoveTrackDown(GetTrackRepresenter(t), 1);
         }
 
         public void MoveTrackUp(Track t)
         {
-            this.MoveTrackUp(GetTrackRepresenter(t));
+            MoveTrackUp(GetTrackRepresenter(t));
         }
 
         #endregion
 
         public int IndexOf(Track t)
         {
-            return this.IndexOf(GetTrackRepresenter(t));
+            return IndexOf(GetTrackRepresenter(t));
         }
 
         public void ClearTracks()
         {
             foreach (var item in this)
-            {
                 item.Track.QueueID = null;    
-            }
-            this.Clear();
+            Clear();
             TrackPlaylists.Clear();
             RefreshQueuePositionIds();
             RefreshDuration();
@@ -130,20 +126,13 @@ namespace Hurricane.Music
 
         protected void RefreshDuration()
         {
-            TimeSpan newduration = TimeSpan.Zero;
-            foreach (var item in this)
-            {
-                newduration += item.Track.DurationTimespan;
-            }
-            this.Duration = newduration;
+            Duration = this.Aggregate(TimeSpan.Zero, (current, item) => current + item.Track.DurationTimespan);
         }
 
         public void RefreshQueuePositionIds()
         {
-            for (int i = 0; i < this.Count; i++)
-            {
+            for (int i = 0; i < Count; i++)
                 this[i].Track.QueueID = (i + 1).ToString();
-            }
         }
 
         public Tuple<Track, Playlist> PlayNextTrack()
@@ -151,8 +140,8 @@ namespace Hurricane.Music
             if (!HasTracks) return null;
             Track nexttrack = this.First().Track;
 
-            var result = Tuple.Create(nexttrack, this.TrackPlaylists.Where((x) => x.Track == nexttrack).First().Playlist);
-            this.RemoveTrack(nexttrack);
+            var result = Tuple.Create(nexttrack, TrackPlaylists.First(x => x.Track == nexttrack).Playlist);
+            RemoveTrack(nexttrack);
             return result;
         }
 
@@ -162,15 +151,15 @@ namespace Hurricane.Music
         {
             get
             {
-                return this.Count > 0;
+                return Count > 0;
             }
         }
 
-        private TimeSpan duration;
+        private TimeSpan _duration;
         public TimeSpan Duration
         {
-            get { return duration; }
-            set { duration = value; OnPropertyChanged(new PropertyChangedEventArgs("Duration")); }
+            get { return _duration; }
+            set { _duration = value; OnPropertyChanged(new PropertyChangedEventArgs("Duration")); }
         }
         
         #endregion
@@ -179,12 +168,12 @@ namespace Hurricane.Music
     [Serializable]
     public class TrackRepresenter
     {
-        private Track track;
+        private Track _track;
         [XmlIgnore]
         public Track Track
         {
-            get { return track; }
-            set { track = value; TrackID = value.GenerateHash(); }
+            get { return _track; }
+            set { _track = value; TrackID = value.GenerateHash(); }
         }
 
         public string TrackID { get; set; }
@@ -197,7 +186,7 @@ namespace Hurricane.Music
                 {
                     if (t.GenerateHash() == TrackID)
                     {
-                        this.Track = t;
+                        Track = t;
                         return playlist;
                     }
                 }
@@ -211,7 +200,7 @@ namespace Hurricane.Music
 
         public TrackRepresenter(Track t)
         {
-            this.Track = t;
+            Track = t;
         }
     }
 }

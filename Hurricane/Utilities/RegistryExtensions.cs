@@ -1,5 +1,5 @@
-﻿using System.Security.Permissions;
-using System.Security;
+﻿using System.Security;
+using System.Security.Permissions;
 
 namespace Hurricane.Utilities
 {

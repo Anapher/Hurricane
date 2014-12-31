@@ -1,16 +1,15 @@
 ﻿using System;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using System.Windows.Data;
 using System.Windows.Documents;
-using System.Windows.Media;
 using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Media3D;
 using Hurricane.Resources.Styles.DragDropListView.Adorners;
 using Hurricane.Resources.Styles.DragDropListView.Utilities;
-using System.Windows.Data;
 
 namespace Hurricane.Resources.Styles.DragDropListView.ServiceProviders.UI
 {
@@ -385,6 +384,7 @@ namespace Hurricane.Resources.Styles.DragDropListView.ServiceProviders.UI
                 else
                     itemsSource.Insert(newIndex, data);
 
+                //x.IsAdded = false;
                 // Set the Effects property so that the call to DoDragDrop will return 'Move'.
                 e.Effects = DragDropEffects.Move;
             }
@@ -599,7 +599,7 @@ namespace Hurricane.Resources.Styles.DragDropListView.ServiceProviders.UI
                     // VisualTreeHelper works with objects of type Visual or Visual3D.
                     // If the current object is not derived from Visual or Visual3D,
                     // then use the LogicalTreeHelper to find the parent element.
-                    if (depObj is Visual || depObj is System.Windows.Media.Media3D.Visual3D)
+                    if (depObj is Visual || depObj is Visual3D)
                         depObj = VisualTreeHelper.GetParent(depObj);
                     else
                         depObj = LogicalTreeHelper.GetParent(depObj);

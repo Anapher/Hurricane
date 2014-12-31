@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Serialization;
 using System.IO;
+using System.Threading;
 using System.Windows;
+using System.Xml.Serialization;
+using Hurricane.MagicArrow.DockManager;
+using Hurricane.Music;
+using Hurricane.Notification;
 using Hurricane.Settings.Themes;
 
 namespace Hurricane.Settings
@@ -25,18 +26,18 @@ namespace Hurricane.Settings
         public int LastTrackIndex { get; set; }
         public int SelectedPlaylist { get; set; }
         public int SelectedTrack { get; set; }
-        public Music.QueueManager Queue { get; set; }
+        public QueueManager Queue { get; set; }
 
         //Playback
-        public bool RepeatTrack { get; set; }
-        public bool RandomTrack { get; set; }
-        public Music.EqualizerSettings EqualizerSettings { get; set; }
+        public bool IsLoopEnabled { get; set; }
+        public bool IsShuffleEnabled { get; set; }
+        public EqualizerSettings EqualizerSettings { get; set; }
         public int WaveSourceBits { get; set; }
         public int SampleRate { get; set; }
 
         //Magic Arrow
         public bool ShowMagicArrowBelowCursor { get; set; }
-        public MagicArrow.DockManager.DockingApplicationState ApplicationState { get; set; }
+        public DockingApplicationState ApplicationState { get; set; }
 
         //General
         public string Language { get; set; }
@@ -49,7 +50,7 @@ namespace Hurricane.Settings
         public int ApiPort { get; set; }
 
         //Notifications
-        public Notification.NotificationType Notification { get; set; }
+        public NotificationType Notification { get; set; }
         public bool DisableNotificationInGame { get; set; }
         public int NotificationShowTime { get; set; }
 
@@ -59,23 +60,23 @@ namespace Hurricane.Settings
         public bool SaveCoverLocal { get; set; }
         public bool TrimTrackname { get; set; }
 
-        private List<LanguageInfo> languages;
+        private List<LanguageInfo> _languages;
         [XmlIgnore]
         public List<LanguageInfo> Languages
         {
             get
             {
-                if (languages == null)
+                if (_languages == null)
                 {
-                    languages = new List<LanguageInfo>();
-                    languages.Add(new LanguageInfo("Deutsch", "/Resources/Languages/Hurricane.de-de.xaml", new Uri("/Resources/Languages/Icons/de.png",UriKind.Relative), "Alkaline", "de"));
-                    languages.Add(new LanguageInfo("English", "/Resources/Languages/Hurricane.en-us.xaml", new Uri("/Resources/Languages/Icons/us.png",UriKind.Relative), "Alkaline", "en"));
+                    _languages = new List<LanguageInfo>();
+                    _languages.Add(new LanguageInfo("Deutsch", "/Resources/Languages/Hurricane.de-de.xaml", new Uri("/Resources/Languages/Icons/de.png",UriKind.Relative), "Alkaline", "de"));
+                    _languages.Add(new LanguageInfo("English", "/Resources/Languages/Hurricane.en-us.xaml", new Uri("/Resources/Languages/Icons/us.png",UriKind.Relative), "Alkaline", "en"));
                 }
-                return languages;
+                return _languages;
             }
         }
 
-        public override void SetStandardValues()
+        public override sealed void SetStandardValues()
         {
             SoundOutDeviceID = "-0";
             LastPlaylistIndex = -1;
@@ -84,16 +85,16 @@ namespace Hurricane.Settings
             Volume = 1.0f;
             SelectedPlaylist = 0;
             SelectedTrack = -1;
-            RepeatTrack = false;
-            RandomTrack = false;
-            EqualizerSettings = new Music.EqualizerSettings();
+            IsLoopEnabled = false;
+            IsShuffleEnabled = false;
+            EqualizerSettings = new EqualizerSettings();
             EqualizerSettings.CreateNew();
             DisableNotificationInGame = true;
             ShowMagicArrowBelowCursor = true;
             WaveSourceBits = 16;
             SampleRate = -1;
-            if (System.Threading.Thread.CurrentThread.CurrentCulture.TwoLetterISOLanguageName == "de") { this.Language = "de"; } else { this.Language = "en"; }
-            Notification = Hurricane.Notification.NotificationType.Top;
+            this.Language = Thread.CurrentThread.CurrentCulture.TwoLetterISOLanguageName == "de" ? "de" : "en";
+            Notification = NotificationType.Top;
             ApplicationState = null;
             Theme = new ApplicationThemeManager();
             Theme.LoadStandard();
@@ -102,7 +103,7 @@ namespace Hurricane.Settings
             RememberTrackImportPlaylist = false;
             PlaylistToImportTrack = null;
             LoadAlbumCoverFromInternet = true;
-            DownloadAlbumCoverQuality = ImageQuality.maximum;
+            DownloadAlbumCoverQuality = ImageQuality.Maximum;
             SaveCoverLocal = false;
             TrimTrackname = true;
             ApiIsEnabled = false;
@@ -114,28 +115,28 @@ namespace Hurricane.Settings
             SetStandardValues();
         }
 
-        private ResourceDictionary lastLanguage;
+        private ResourceDictionary _lastLanguage;
         public void LoadLanguage()
         {
-            if (lastLanguage != null) Application.Current.Resources.Remove(lastLanguage);
+            if (_lastLanguage != null) Application.Current.Resources.Remove(_lastLanguage);
             LanguageInfo info = new LanguageInfo(Language);
             info.Load(Languages);
-            lastLanguage = new ResourceDictionary() { Source = new Uri(info.Path, UriKind.Relative) };
-            Application.Current.Resources.MergedDictionaries.Add(lastLanguage);
+            _lastLanguage = new ResourceDictionary() { Source = new Uri(info.Path, UriKind.Relative) };
+            Application.Current.Resources.MergedDictionaries.Add(_lastLanguage);
         }
 
-        public override void Save(string ProgramPath)
+        public override void Save(string programPath)
         {
-            this.Save<ConfigSettings>(Path.Combine(ProgramPath, Filename));
+            this.Save<ConfigSettings>(Path.Combine(programPath, Filename));
         }
 
-        public static ConfigSettings Load(string Programpath)
+        public static ConfigSettings Load(string programpath)
         {
-            FileInfo fi = new FileInfo(Path.Combine(Programpath, Filename));
+            FileInfo fi = new FileInfo(Path.Combine(programpath, Filename));
             ConfigSettings result;
             if (fi.Exists)
             {
-                using (StreamReader reader = new StreamReader(Path.Combine(Programpath, Filename)))
+                using (StreamReader reader = new StreamReader(Path.Combine(programpath, Filename)))
                 {
                     XmlSerializer deserializer = new XmlSerializer(typeof(ConfigSettings));
                     result = (ConfigSettings)deserializer.Deserialize(reader);
@@ -182,6 +183,6 @@ namespace Hurricane.Settings
 
     public enum ImageQuality
     {
-        small, medium, large, maximum
+        Small, Medium, Large, Maximum
     }
 }

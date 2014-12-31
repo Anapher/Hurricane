@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Xml.Serialization;
 
 namespace Hurricane.Music.MusicDatabase
 {
@@ -25,7 +21,7 @@ namespace Hurricane.Music.MusicDatabase
         }
 
         /// <remarks/>
-        [System.Xml.Serialization.XmlAttributeAttribute()]
+        [XmlAttribute()]
         public string status
         {
             get
@@ -40,7 +36,7 @@ namespace Hurricane.Music.MusicDatabase
     }
 
     /// <remarks/>
-    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
+    [XmlType(AnonymousType = true)]
     public partial class lfmResults
     {
 
@@ -57,7 +53,7 @@ namespace Hurricane.Music.MusicDatabase
         private string forField;
 
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Namespace = "http://a9.com/-/spec/opensearch/1.1/")]
+        [XmlElement(Namespace = "http://a9.com/-/spec/opensearch/1.1/")]
         public Query Query
         {
             get
@@ -71,7 +67,7 @@ namespace Hurricane.Music.MusicDatabase
         }
 
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Namespace = "http://a9.com/-/spec/opensearch/1.1/")]
+        [XmlElement(Namespace = "http://a9.com/-/spec/opensearch/1.1/")]
         public ushort totalResults
         {
             get
@@ -85,7 +81,7 @@ namespace Hurricane.Music.MusicDatabase
         }
 
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Namespace = "http://a9.com/-/spec/opensearch/1.1/")]
+        [XmlElement(Namespace = "http://a9.com/-/spec/opensearch/1.1/")]
         public byte startIndex
         {
             get
@@ -99,7 +95,7 @@ namespace Hurricane.Music.MusicDatabase
         }
 
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Namespace = "http://a9.com/-/spec/opensearch/1.1/")]
+        [XmlElement(Namespace = "http://a9.com/-/spec/opensearch/1.1/")]
         public byte itemsPerPage
         {
             get
@@ -113,7 +109,7 @@ namespace Hurricane.Music.MusicDatabase
         }
 
         /// <remarks/>
-        [System.Xml.Serialization.XmlArrayItemAttribute("track", IsNullable = false)]
+        [XmlArrayItem("track", IsNullable = false)]
         public lfmResultsTrack[] trackmatches
         {
             get
@@ -127,7 +123,7 @@ namespace Hurricane.Music.MusicDatabase
         }
 
         /// <remarks/>
-        [System.Xml.Serialization.XmlAttributeAttribute()]
+        [XmlAttribute()]
         public string @for
         {
             get
@@ -142,8 +138,8 @@ namespace Hurricane.Music.MusicDatabase
     }
 
     /// <remarks/>
-    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true, Namespace = "http://a9.com/-/spec/opensearch/1.1/")]
-    [System.Xml.Serialization.XmlRootAttribute(Namespace = "http://a9.com/-/spec/opensearch/1.1/", IsNullable = false)]
+    [XmlType(AnonymousType = true, Namespace = "http://a9.com/-/spec/opensearch/1.1/")]
+    [XmlRoot(Namespace = "http://a9.com/-/spec/opensearch/1.1/", IsNullable = false)]
     public partial class Query
     {
 
@@ -154,7 +150,7 @@ namespace Hurricane.Music.MusicDatabase
         private byte startPageField;
 
         /// <remarks/>
-        [System.Xml.Serialization.XmlAttributeAttribute()]
+        [XmlAttribute()]
         public string role
         {
             get
@@ -168,7 +164,7 @@ namespace Hurricane.Music.MusicDatabase
         }
 
         /// <remarks/>
-        [System.Xml.Serialization.XmlAttributeAttribute()]
+        [XmlAttribute()]
         public string searchTerms
         {
             get
@@ -182,7 +178,7 @@ namespace Hurricane.Music.MusicDatabase
         }
 
         /// <remarks/>
-        [System.Xml.Serialization.XmlAttributeAttribute()]
+        [XmlAttribute()]
         public byte startPage
         {
             get
@@ -197,7 +193,7 @@ namespace Hurricane.Music.MusicDatabase
     }
 
     /// <remarks/>
-    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
+    [XmlType(AnonymousType = true)]
     public partial class lfmResultsTrack
     {
 
@@ -266,7 +262,7 @@ namespace Hurricane.Music.MusicDatabase
         }
 
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute("image")]
+        [XmlElement("image")]
         public lfmResultsTrackImage[] image
         {
             get
@@ -294,7 +290,7 @@ namespace Hurricane.Music.MusicDatabase
     }
 
     /// <remarks/>
-    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
+    [XmlType(AnonymousType = true)]
     public partial class lfmResultsTrackStreamable
     {
 
@@ -303,7 +299,7 @@ namespace Hurricane.Music.MusicDatabase
         private byte valueField;
 
         /// <remarks/>
-        [System.Xml.Serialization.XmlAttributeAttribute()]
+        [XmlAttribute()]
         public byte fulltrack
         {
             get
@@ -317,7 +313,7 @@ namespace Hurricane.Music.MusicDatabase
         }
 
         /// <remarks/>
-        [System.Xml.Serialization.XmlTextAttribute()]
+        [XmlText()]
         public byte Value
         {
             get
@@ -332,7 +328,7 @@ namespace Hurricane.Music.MusicDatabase
     }
 
     /// <remarks/>
-    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
+    [XmlType(AnonymousType = true)]
     public partial class lfmResultsTrackImage
     {
 
@@ -341,7 +337,7 @@ namespace Hurricane.Music.MusicDatabase
         private string valueField;
 
         /// <remarks/>
-        [System.Xml.Serialization.XmlAttributeAttribute()]
+        [XmlAttribute()]
         public string size
         {
             get
@@ -355,7 +351,7 @@ namespace Hurricane.Music.MusicDatabase
         }
 
         /// <remarks/>
-        [System.Xml.Serialization.XmlTextAttribute()]
+        [XmlText()]
         public string Value
         {
             get

@@ -1,11 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Serialization;
-using System.Windows.Media;
 using System.Windows;
+using System.Windows.Media;
+using System.Xml.Serialization;
 using MahApps.Metro;
 
 namespace Hurricane.Settings.Themes
@@ -13,11 +12,11 @@ namespace Hurricane.Settings.Themes
     [Serializable]
     public class ApplicationThemeManager
     {
-        public AccentColorTheme SelectedColorTheme { get; set; }
+        public ThemeBase SelectedColorTheme { get; set; }
         public bool UseCustomSpectrumAnalyzerColor { get; set; }
         public string SpectrumAnalyzerHexColor { get; set; }
 
-    [XmlIgnore]
+        [XmlIgnore]
         public Color SpectrumAnalyzerColor
         {
             get
@@ -31,23 +30,62 @@ namespace Hurricane.Settings.Themes
             }
         }
 
-        private List<AccentColorTheme> themes;
+        private ObservableCollection<ThemeBase> themes;
         [XmlIgnore]
-        public List<AccentColorTheme> Themes
+        public ObservableCollection<ThemeBase> Themes
         {
             get
             {
                 if (themes == null)
                 {
-                    themes = ThemeManager.Accents.Select(a => new AccentColorTheme() { Name = a.Name }).OrderBy((x) => x.TranslatedName).ToList(); ;
+                    RefreshThemes();
                 }
                 return themes;
             }
         }
 
+        public void RefreshThemes()
+        {
+            if (themes == null)
+            {
+                themes = new ObservableCollection<ThemeBase>();
+
+                foreach (var t in ThemeManager.Accents.Select(a => new AccentColorTheme() { Name = a.Name }).OrderBy((x) => x.TranslatedName))
+                {
+                    themes.Add(t);
+                }
+            }
+            else
+            {
+                for (int i = themes.Count -1; i < 0; i++)
+                {
+                    if (themes[i].GetType() == typeof(CustomColorTheme)) themes.Remove(themes[i]);
+                }
+            }
+
+            DirectoryInfo themefolder = new DirectoryInfo("Themes");
+            if (themefolder.Exists)
+            {
+                foreach (var file in themefolder.GetFiles("*.xaml"))
+                {
+                    CustomColorTheme theme = new CustomColorTheme();
+                    if (theme.Load(file.Name)) themes.Add(theme);
+                }
+            }
+        }
+
         public void LoadTheme()
         {
-            SelectedColorTheme.ApplyTheme();
+            try
+            {
+                SelectedColorTheme.ApplyTheme();
+            }
+            catch (Exception)
+            {
+                this.SelectedColorTheme = Themes.First(x => x.Name == "Blue");
+                SelectedColorTheme.ApplyTheme();
+            }
+            
             if (UseCustomSpectrumAnalyzerColor)
             {
                 Application.Current.Resources["SpectrumAnalyzerBrush"] = new SolidColorBrush((Color)ColorConverter.ConvertFromString(SpectrumAnalyzerHexColor));
@@ -60,7 +98,7 @@ namespace Hurricane.Settings.Themes
 
         public void LoadStandard()
         {
-            this.SelectedColorTheme = Themes.Where((x) => x.Name == "Blue").First();
+            this.SelectedColorTheme = Themes.First(x => x.Name == "Blue");
             this.UseCustomSpectrumAnalyzerColor = false;
             this.SpectrumAnalyzerHexColor = null;
         }
@@ -75,6 +113,13 @@ namespace Hurricane.Settings.Themes
         public override int GetHashCode()
         {
             return base.GetHashCode();
+        }
+
+        protected static ResourceDictionary appliedResource;
+        public static void RegisterTheme(ResourceDictionary resource)
+        {
+            if (appliedResource != null) Application.Current.Resources.MergedDictionaries.Remove(appliedResource);
+            appliedResource = resource;
         }
     }
 }

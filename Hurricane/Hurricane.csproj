@@ -128,6 +128,7 @@
     <Compile Include="AppMainWindow\Messages\MessageDialog.cs" />
     <Compile Include="AppMainWindow\Messages\MessageManager.cs" />
     <Compile Include="AppMainWindow\Messages\ProgressDialog.cs" />
+    <Compile Include="Extensions\AnimatedStackPanel.cs" />
     <Compile Include="Extensions\Converter\CollapsedOnNullValue.cs" />
     <Compile Include="Extensions\Converter\FalseOnNullValue.cs" />
     <Compile Include="Extensions\Converter\FormatTimespan.cs" />
@@ -152,6 +153,7 @@
     <Compile Include="MagicArrow\StrokeWindow.xaml.cs">
       <DependentUpon>StrokeWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Music\AsyncTrackLoader.cs" />
     <Compile Include="Music\AudioDevice.cs" />
     <Compile Include="Music\Equalizer\EqualizerBand.cs" />
     <Compile Include="Music\MusicDatabase\EventArgs\EqualizerChangedEventArgs.cs" />
@@ -198,6 +200,9 @@
     <Compile Include="Settings\SettingsBase.cs" />
     <Compile Include="Settings\Themes\AccentColorTheme.cs" />
     <Compile Include="Settings\Themes\ApplicationThemeManager.cs" />
+    <Compile Include="Settings\Themes\CustomColorTheme.cs" />
+    <Compile Include="Settings\Themes\ThemeBase.cs" />
+    <Compile Include="Settings\Themes\ThemeSource.cs" />
     <Compile Include="Settings\UpdateService.cs" />
     <Compile Include="Utilities\ActiveWindowHook.cs" />
     <Compile Include="Utilities\GeneralHelper.cs" />
@@ -251,6 +256,9 @@
     </Compile>
     <Compile Include="Views\Test\TestWindow.xaml.cs">
       <DependentUpon>TestWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ThemeCreatorWindow.xaml.cs">
+      <DependentUpon>ThemeCreatorWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\TrackImportWindow.xaml.cs">
       <DependentUpon>TrackImportWindow.xaml</DependentUpon>
@@ -508,6 +516,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\ThemeCreatorWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\TrackImportWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -542,6 +554,7 @@
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">

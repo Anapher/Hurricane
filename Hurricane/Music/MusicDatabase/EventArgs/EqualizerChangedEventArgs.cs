@@ -1,20 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Hurricane.Music
+﻿namespace Hurricane.Music.MusicDatabase.EventArgs
 {
-   public class EqualizerChangedEventArgs : EventArgs
+   public class EqualizerChangedEventArgs : System.EventArgs
     {
         public int EqualizerNumber { get; protected set; }
         public double EqualizerValue { get; set; }
 
         public EqualizerChangedEventArgs(int equalizernumber, double equalizervalue)
         {
-            this.EqualizerNumber = equalizernumber;
-            this.EqualizerValue = equalizervalue;
+            EqualizerNumber = equalizernumber;
+            EqualizerValue = equalizervalue;
         }
     }
 }

@@ -1,26 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+﻿using System.ComponentModel;
+using Hurricane.Music;
+using MahApps.Metro.Controls;
 
 namespace Hurricane.Views
 {
     /// <summary>
     /// Interaction logic for TrackInformationWindow.xaml
     /// </summary>
-    public partial class TrackInformationWindow : MahApps.Metro.Controls.MetroWindow
+    public partial class TrackInformationWindow : MetroWindow
     {
-        TrackInformationsView content;
-        public TrackInformationWindow(Music.Track track)
+        readonly TrackInformationsView content;
+        public TrackInformationWindow(Track track)
         {
             content = new TrackInformationsView(track);
             this.Content = content;
@@ -28,7 +18,7 @@ namespace Hurricane.Views
             InitializeComponent();
         }
 
-        protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
+        protected override void OnClosing(CancelEventArgs e)
         {
             base.OnClosing(e);
             content.Dispose();

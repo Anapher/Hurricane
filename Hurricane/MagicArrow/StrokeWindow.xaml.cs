@@ -1,21 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
+﻿using System.Windows;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace Hurricane.MagicArrow
 {
     /// <summary>
-    /// Interaktionslogik für StrokeWindow.xaml
+    /// Interaction logic for StrokeWindow.xaml
     /// </summary>
     public partial class StrokeWindow : Window
     {
@@ -38,17 +27,17 @@ namespace Hurricane.MagicArrow
             if (side == Side.Left) { this.Left = left - (20 - StrokeWidth); } else { this.Left = left - StrokeWidth; }
         }
 
-        private double currentleft;
+        private double _currentleft;
         public void MoveInvisible()
         {
-            this.currentleft = this.Left;
+            this._currentleft = this.Left;
             this.Left = -100;
             this.IsInvisible = true;
         }
 
         public void MoveVisible()
         {
-            this.Left = this.currentleft;
+            this.Left = this._currentleft;
             this.IsInvisible = false;
         }
 
@@ -56,14 +45,7 @@ namespace Hurricane.MagicArrow
 
         public static bool PositionIsOk(Side side, double position, double width, double screenwidth)
         {
-            if (side == Side.Left)
-            {
-                return position >= width;
-            }
-            else
-            {
-                return position <= screenwidth - width - 1;
-            }
+            return side == Side.Left ? position >= width : position <= screenwidth - width - 1;
         }
     }
 }

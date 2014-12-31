@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Hurricane.Music
+﻿namespace Hurricane.Music.MusicDatabase.EventArgs
 {
-   public class TrackImportProgressChangedEventArgs : EventArgs
+   public class TrackImportProgressChangedEventArgs : System.EventArgs
     {
         public double Percentage { get;protected set; }
         public int TotalFiles { get; protected set; }
@@ -15,10 +9,10 @@ namespace Hurricane.Music
 
         public TrackImportProgressChangedEventArgs(int filesimported, int totalfiles, string currentfile)
         {
-            this.TotalFiles = totalfiles;
-            this.FilesImported = filesimported;
-            this.Percentage = (double)filesimported / (double)totalfiles;
-            this.CurrentFile = currentfile;
+            TotalFiles = totalfiles;
+            FilesImported = filesimported;
+            Percentage = filesimported / (double)totalfiles;
+            CurrentFile = currentfile;
         }
     }
 }

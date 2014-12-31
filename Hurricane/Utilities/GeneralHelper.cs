@@ -1,12 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Security.Principal;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 
@@ -17,7 +15,7 @@ namespace Hurricane.Utilities
         /// <summary>
         /// Function to get file impression in form of string from a file location.
         /// </summary>
-        /// <param name="_fileName">File Path to get file impression.</param>
+        /// <param name="filename">File Path to get file impression.</param>
         /// <returns>Byte Array</returns>
         public static string FileToMD5Hash(string filename)
         {
@@ -74,13 +72,7 @@ namespace Hurricane.Utilities
         private static string RemoveChars(string content, char[] illegalchars)
         {
             if (string.IsNullOrEmpty(content)) return string.Empty;
-            string result = content;
-            foreach (var item in illegalchars)
-            {
-                result = result.Replace(item.ToString(), string.Empty);
-            }
-
-            return result;
+            return illegalchars.Aggregate(content, (current, item) => current.Replace(item.ToString(), string.Empty));
         }
 
         public static BitmapImage ByteArrayToBitmapImage(byte[] data)

@@ -1,8 +1,7 @@
 ﻿using System.Reflection;
-using System.Resources;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Windows;
+using Exceptionless.Configuration;
 
 // Allgemeine Informationen über eine Assembly werden über die folgenden 
 // Attribute gesteuert. Ändern Sie diese Attributwerte, um die Informationen zu ändern,
@@ -15,7 +14,7 @@ using System.Windows;
 [assembly: AssemblyCopyright("Copyright © Alkaline  2014")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
-[assembly: Exceptionless.Configuration.Exceptionless("3e5cdb4c97c2440884e4514a02821ddb")]
+[assembly: Exceptionless("3e5cdb4c97c2440884e4514a02821ddb")]
 
 // Durch Festlegen von ComVisible auf "false" werden die Typen in dieser Assembly unsichtbar 
 // für COM-Komponenten.  Wenn Sie auf einen Typ in dieser Assembly von 

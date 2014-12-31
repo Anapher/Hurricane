@@ -1,17 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.ComponentModel;
+using System.Threading;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Media.Animation;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+using Hurricane.Music;
 
 namespace Hurricane.Notification.Views
 {
@@ -20,28 +13,21 @@ namespace Hurricane.Notification.Views
     /// </summary>
     public partial class NotificationRightBottomWindow : Window
     {
-        public NotificationRightBottomWindow(Music.Track track, TimeSpan timestayopened)
+        public NotificationRightBottomWindow(Track track, TimeSpan timestayopened)
         {
             this.CurrentTrack = track;
             InitializeComponent();
-            this.Top = System.Windows.SystemParameters.WorkArea.Height - this.Height;
-            this.Width = System.Windows.SystemParameters.WorkArea.Width / 4;
-            this.Left = System.Windows.SystemParameters.WorkArea.Width - this.Width;
+            this.Top = SystemParameters.WorkArea.Height - this.Height;
+            this.Width = SystemParameters.WorkArea.Width / 4;
+            this.Left = SystemParameters.WorkArea.Width - this.Width;
             this.Closing += NotificationRightBottomWindow_Closing;
             this.MouseMove += NotificationRightBottomWindow_MouseMove;
-            if (track.Image != null) { imgAlbum.Visibility = System.Windows.Visibility.Visible; imgPlaceholder.Visibility = System.Windows.Visibility.Collapsed; }
-            System.Threading.Thread t = new System.Threading.Thread(() => { System.Threading.Thread.Sleep(timestayopened); if (!IsClosing) Application.Current.Dispatcher.Invoke(() => MoveOut()); });
-            t.IsBackground = true;
-            t.Start();
-        }
-
-        public BitmapImage TrackImage
-        {
-            get
+            Thread t = new Thread(() =>
             {
-                if (CurrentTrack.Image == null) return null;
-                return CurrentTrack.Image;
-            }
+                Thread.Sleep(timestayopened);
+                if (!IsClosing) Application.Current.Dispatcher.Invoke(MoveOut);
+            }) { IsBackground = true };
+            t.Start();
         }
 
         private bool IsClosing;
@@ -51,7 +37,7 @@ namespace Hurricane.Notification.Views
             if (!IsClosing) MoveOut();
         }
 
-        void NotificationRightBottomWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        void NotificationRightBottomWindow_Closing(object sender, CancelEventArgs e)
         {
             if (!IsClosing) MoveOut();
             e.Cancel = !CanClose;
@@ -65,7 +51,7 @@ namespace Hurricane.Notification.Views
             Storyboard story = new Storyboard();
             story.Children.Add(animation);
             Storyboard.SetTarget(animation, this);
-            Storyboard.SetTargetProperty(animation, new PropertyPath(Window.OpacityProperty));
+            Storyboard.SetTargetProperty(animation, new PropertyPath(OpacityProperty));
             story.Completed += story_Completed;
             story.Begin(this);
         }
@@ -76,6 +62,6 @@ namespace Hurricane.Notification.Views
             this.Close();
         }
 
-        public Music.Track CurrentTrack { get; set; }
+        public Track CurrentTrack { get; set; }
     }
 }

@@ -1,20 +1,18 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Diagnostics;
-using System.Linq;
-using System.Net;
-using System.Net.Sockets;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Interop;
 using System.IO;
+using System.Linq;
+using System.Security;
+using System.Threading;
+using System.Windows;
+using System.Windows.Threading;
 using Exceptionless;
+using Hurricane.Notification.WindowMessages;
+using Hurricane.Settings;
+using Hurricane.Settings.RegistryManager;
 using Hurricane.Utilities.Native;
+using Hurricane.ViewModels;
+using Hurricane.Views;
+using Hurricane.Views.Test;
 
 namespace Hurricane
 {
@@ -24,7 +22,7 @@ namespace Hurricane
     public partial class App : Application
     {
         const int BringTheWindowToFrontMessage = 3532;
-        Mutex myMutex;
+        Mutex _myMutex;
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
@@ -35,22 +33,22 @@ namespace Hurricane
                 switch (Environment.GetCommandLineArgs()[1])
                 {
                     case "/test":
-                        Views.Test.TestWindow view = new Views.Test.TestWindow();
+                        TestWindow view = new TestWindow();
                         view.Show();
                         return;
                     case "/registry":
-                        Hurricane.Settings.RegistryManager.RegistryManager manager = new Settings.RegistryManager.RegistryManager();
-                        var item = manager.ContextMenuItems.Where((x) => x.Extension == Environment.GetCommandLineArgs()[2]).First();
+                        RegistryManager manager = new RegistryManager();
+                        var item = manager.ContextMenuItems.First(x => x.Extension == Environment.GetCommandLineArgs()[2]);
                         try
                         {
                             if (item != null) item.ToggleRegister(!item.IsRegistered, false);
                         }
-                        catch (System.Security.SecurityException)
+                        catch (SecurityException)
                         {
                             MessageBox.Show("Something went extremly wrong. This application didn't got administrator rights so it can't register anything.");
                         }
                         
-                        App.Current.Shutdown();
+                        Current.Shutdown();
                         return;
                     default:
                         openfile = true;
@@ -58,29 +56,29 @@ namespace Hurricane
                 }
             }
 
-            bool aIsNewInstance = false;
-            myMutex = new Mutex(true, "Hurricane", out aIsNewInstance);
+            bool aIsNewInstance;
+            _myMutex = new Mutex(true, "Hurricane", out aIsNewInstance);
             if (!aIsNewInstance)
             {
                 IntPtr hwnd = UnsafeNativeMethods.FindWindow(null, "Hurricane");
                 if (openfile)
                 {
-                    Notification.WindowMessages.WindowMessanger.SendMessageToWindow(hwnd, Notification.WindowMessages.WindowMessanger.WM_OPENMUSICFILE, new FileInfo(Environment.GetCommandLineArgs()[1]).FullName);
+                    WindowMessanger.SendMessageToWindow(hwnd, WindowMessanger.WM_OPENMUSICFILE, new FileInfo(Environment.GetCommandLineArgs()[1]).FullName);
                 }
                 else
                 {
-                    Notification.WindowMessages.WindowMessanger.SendMessageToWindow(hwnd, Notification.WindowMessages.WindowMessanger.WM_BRINGTOFRONT, string.Empty);
+                    WindowMessanger.SendMessageToWindow(hwnd, WindowMessanger.WM_BRINGTOFRONT, string.Empty);
                 }
-                App.Current.Shutdown();
+                Current.Shutdown();
                 return;
             }
 #if !DEBUG
                         EnableExteptionless();
 #endif
-            Settings.HurricaneSettings.Instance.Load();
-            Hurricane.MainWindow window = new MainWindow();
+            HurricaneSettings.Instance.Load();
+            MainWindow window = new MainWindow();
 
-            Notification.WindowMessages.WindowMessanger messanger = new Notification.WindowMessages.WindowMessanger(window);
+            WindowMessanger messanger = new WindowMessanger(window);
             window.Show();
             if (openfile)
             {
@@ -91,7 +89,7 @@ namespace Hurricane
                         FileInfo fi = new FileInfo(path);
                         if (fi.Exists)
                         {
-                            ViewModels.MainViewModel.Instance.OpenFile(fi, Environment.GetCommandLineArgs().Skip(1).Last() == path);
+                            MainViewModel.Instance.OpenFile(fi, Environment.GetCommandLineArgs().Skip(1).Last() == path);
                         }
                     }
                 }
@@ -108,7 +106,7 @@ namespace Hurricane
                 FileInfo fi = new FileInfo(ev.Filename);
                 if (fi.Exists)
                 {
-                    ViewModels.MainViewModel.Instance.OpenFile(fi, true);
+                    MainViewModel.Instance.OpenFile(fi, true);
                 }
             };
         }
@@ -116,10 +114,10 @@ namespace Hurricane
         protected void EnableExteptionless()
         {
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
-            Application.Current.DispatcherUnhandledException += Current_DispatcherUnhandledException;
+            Current.DispatcherUnhandledException += Current_DispatcherUnhandledException;
         }
 
-        private void Current_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
+        private void Current_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
         {
             OnExceptionOccurred(e.Exception);
             e.Handled = true;
@@ -130,13 +128,13 @@ namespace Hurricane
             OnExceptionOccurred((Exception)e.ExceptionObject);
         }
 
-        bool IsHandled = false;
+        bool _isHandled = false;
         protected void OnExceptionOccurred(Exception ex)
         {
-            if (!IsHandled)
+            if (!_isHandled)
             {
-                IsHandled = true;
-                Views.ReportExceptionWindow window = new Views.ReportExceptionWindow(ex);
+                _isHandled = true;
+                ReportExceptionWindow window = new ReportExceptionWindow(ex);
                 window.ShowDialog();
             }
         }
@@ -144,7 +142,7 @@ namespace Hurricane
         protected override void OnExit(ExitEventArgs e)
         {
             base.OnExit(e);
-            if (myMutex != null) myMutex.Dispose();
+            if (_myMutex != null) _myMutex.Dispose();
             ExceptionlessClient.Current.Dispose();
         }
     }

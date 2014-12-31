@@ -1,24 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using Hurricane.Settings;
+using MahApps.Metro.Controls;
 
 namespace Hurricane.Views
 {
     /// <summary>
-    /// Interaktionslogik für UpdateWindow.xaml
+    /// Interaction logic for UpdateWindow.xaml
     /// </summary>
-    public partial class UpdateWindow : MahApps.Metro.Controls.MetroWindow
+    public partial class UpdateWindow : MetroWindow
     {
         public UpdateService UpdateService { get; set; }
 
@@ -31,7 +21,7 @@ namespace Hurricane.Views
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             ((Button)sender).IsEnabled = false;
-            gridState.Visibility = System.Windows.Visibility.Visible;
+            gridState.Visibility = Visibility.Visible;
             UpdateService.Update();
         }
 

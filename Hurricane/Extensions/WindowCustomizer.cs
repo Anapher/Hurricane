@@ -1,22 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Runtime.InteropServices;
+using System.Windows;
+using System.Windows.Interop;
 
 namespace Hurricane.Extensions
 {
-    using System;
-    using System.Runtime.InteropServices;
-    using System.Windows;
-    using System.Windows.Interop;
-
     public static class WindowCustomizer
     {
         #region CanMaximize
-        public static readonly DependencyProperty CanMaximize =
-            DependencyProperty.RegisterAttached("CanMaximize", typeof(bool), typeof(WindowCustomizer),
-                new PropertyMetadata(true, new PropertyChangedCallback(OnCanMaximizeChanged)));
+        public static readonly DependencyProperty CanMaximize = DependencyProperty.RegisterAttached("CanMaximize", typeof(bool), typeof(WindowCustomizer), new PropertyMetadata(true, OnCanMaximizeChanged));
+
         private static void OnCanMaximizeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             Window window = d as Window;
@@ -57,9 +50,8 @@ namespace Hurricane.Extensions
         #endregion CanMaximize
 
         #region CanMinimize
-        public static readonly DependencyProperty CanMinimize =
-            DependencyProperty.RegisterAttached("CanMinimize", typeof(bool), typeof(WindowCustomizer),
-                new PropertyMetadata(true, new PropertyChangedCallback(OnCanMinimizeChanged)));
+        public static readonly DependencyProperty CanMinimize = DependencyProperty.RegisterAttached("CanMinimize", typeof(bool), typeof(WindowCustomizer), new PropertyMetadata(true, OnCanMinimizeChanged));
+
         private static void OnCanMinimizeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             Window window = d as Window;

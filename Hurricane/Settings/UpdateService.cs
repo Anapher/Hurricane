@@ -1,24 +1,26 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
+using Hurricane.ViewModelBase;
+using updateSystemDotNet;
+using updateSystemDotNet.appEventArgs;
 
 namespace Hurricane.Settings
 {
-    public class UpdateService : ViewModelBase.PropertyChangedBase
+    public class UpdateService : PropertyChangedBase, IDisposable
     {
-        updateSystemDotNet.updateController updController;
-        Language language;
+        readonly updateController updController;
+        readonly Language language;
         const string changelogseperator = "------------------------------------";
 
         public UpdateService(Language currentlanguage)
         {
             this.language = currentlanguage;
-            updController = new updateSystemDotNet.updateController();
+            updController = new updateController();
             updController.updateFound += updController_updateFound;
             updController.downloadUpdatesCompleted += updController_downloadUpdatesCompleted;
             updController.downloadUpdatesProgressChanged += updController_downloadUpdatesProgressChanged;
@@ -34,15 +36,15 @@ namespace Hurricane.Settings
             updController.restartApplication = true;
             updController.retrieveHostVersion = true;
             updController.autoCloseHostApplication = true;
-            updController.Language = this.language == Language.English ? updateSystemDotNet.Languages.English : updateSystemDotNet.Languages.Deutsch;
+            updController.Language = this.language == Language.English ? Languages.English : Languages.Deutsch;
         }
 
-        void updController_downloadUpdatesProgressChanged(object sender, updateSystemDotNet.appEventArgs.downloadUpdatesProgressChangedEventArgs e)
+        void updController_downloadUpdatesProgressChanged(object sender, downloadUpdatesProgressChangedEventArgs e)
         {
             ProgressState = e.ProgressPercentage;
         }
 
-        void updController_downloadUpdatesCompleted(object sender, System.ComponentModel.AsyncCompletedEventArgs e)
+        void updController_downloadUpdatesCompleted(object sender, AsyncCompletedEventArgs e)
         {
             if (!e.Cancelled)
                 updController.applyUpdate();
@@ -80,35 +82,34 @@ namespace Hurricane.Settings
         public string Changelog { get; set; }
         public long UpdateSize { get; set; }
         
-        private double progressstate;
+        private double _progressstate;
         public double ProgressState
         {
-            get { return progressstate; }
+            get { return _progressstate; }
             set
             {
-                SetProperty(value, ref progressstate);
+                SetProperty(value, ref _progressstate);
             }
         }
 
-        
-        private bool updatefound;
+        private bool _updatefound;
         public bool UpdateFound
         {
-            get { return updatefound; }
+            get { return _updatefound; }
             set
             {
-                SetProperty(value, ref updatefound);
+                SetProperty(value, ref _updatefound);
             }
         }
 
-        void updController_updateFound(object sender, updateSystemDotNet.appEventArgs.updateFoundEventArgs e)
+        void updController_updateFound(object sender, updateFoundEventArgs e)
         {
             var version = e.Result.newUpdatePackages.Last().releaseInfo.Version;
             NewVersion = version.Substring(0, version.Length - 2); //remove two to get 0.0.0 instead of 0.0.0.0
-            System.Text.StringBuilder sb = new StringBuilder();
+            StringBuilder sb = new StringBuilder();
             foreach (var package in e.Result.newUpdatePackages)
             {
-                sb.AppendLine(string.Format(Application.Current.FindResource("updatechangelogtext").ToString(), package.releaseInfo.Version, DateTime.Parse(package.ReleaseDate).ToString(Application.Current.FindResource("DateFormat").ToString())));
+                sb.AppendLine(string.Format(Application.Current.FindResource("UpdateChangelogText").ToString(), package.releaseInfo.Version, DateTime.Parse(package.ReleaseDate).ToString(Application.Current.FindResource("DateFormat").ToString())));
                 sb.AppendLine(changelogseperator);
                 sb.AppendLine(this.language == Language.English ? updController.currentUpdateResult.Changelogs[package].englishChanges : updController.currentUpdateResult.Changelogs[package].germanChanges);
                 sb.AppendLine();
@@ -119,5 +120,10 @@ namespace Hurricane.Settings
         }
 
         public enum Language { English, German }
+
+        public void Dispose()
+        {
+            updController.Dispose();
+        }
     }
 }

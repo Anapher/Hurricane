@@ -23,7 +23,7 @@
         <TextBox Height="100" AcceptsReturn="True" AcceptsTab="True" x:Name="txtNote"/>
         <DockPanel LastChildFill="False" Margin="10,10,10,5">
             <Button Content="{StaticResource SendExceptionAndClose}" DockPanel.Dock="Right" Click="ButtonSendErrorReport_Click"/>
-            <Button Content="{StaticResource close}" DockPanel.Dock="Left" Click="ButtonClose_Click"/>
+            <Button Content="{StaticResource Close}" DockPanel.Dock="Left" Click="ButtonClose_Click"/>
         </DockPanel>
         <controls:MetroProgressBar x:Name="prg"/>
     </StackPanel>

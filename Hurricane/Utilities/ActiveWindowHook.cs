@@ -1,9 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 using Hurricane.Utilities.Native;
 
 namespace Hurricane.Utilities
@@ -17,7 +12,7 @@ namespace Hurricane.Utilities
         const uint EVENT_SYSTEM_FOREGROUND = 3;
 
         IntPtr m_hhook;
-        private WinEventDelegate _winEventProc;
+        private readonly WinEventDelegate _winEventProc;
 
         public ActiveWindowHook()
         {

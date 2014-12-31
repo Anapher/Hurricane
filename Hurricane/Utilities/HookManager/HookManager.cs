@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Windows.Forms;
 
 namespace Hurricane.Utilities.HookManager.MouseHook
@@ -29,7 +30,6 @@ namespace Hurricane.Utilities.HookManager.MouseHook
             {
                 s_MouseMove -= value;
                 TryUnsubscribeFromGlobalMouseEvents();
-                System.Diagnostics.Debug.Print("MouseHook disabled");
             }
         }
 

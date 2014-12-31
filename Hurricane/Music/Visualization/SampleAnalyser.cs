@@ -1,77 +1,64 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using CSCore;
-using CSCore.Utils;
 using CSCore.DSP;
+using CSCore.Utils;
 
 namespace Hurricane.Music.Visualization
 {
     class SampleAnalyser
     {
-        private bool isInitialized = false;
-        private WaveFormat waveFormat;
-        private readonly Complex[] storedSamples;
-        private int sampleOffset;
+        private bool _isInitialized;
+        private WaveFormat _waveFormat;
+        private readonly Complex[] _storedSamples;
+        private int _sampleOffset;
         private float[,] _peaks;
 
         public SampleAnalyser(int storageSize)
         {
-            storedSamples = new Complex[storageSize];
+            _storedSamples = new Complex[storageSize];
         }
 
         public void Initialize(WaveFormat waveFormat)
         {
-            if (isInitialized)
+            if (_isInitialized)
                 throw new InvalidOperationException("Can't reuse SampleAnalyser.");
 
             if (waveFormat == null)
                 throw new ArgumentNullException("waveFormat");
 
             _peaks = new float[waveFormat.Channels, 2];
-            this.waveFormat = waveFormat;
-            isInitialized = true;
+            _waveFormat = waveFormat;
+            _isInitialized = true;
         }
 
         public void Add(float left, float right)
         {
-            int channels = waveFormat.Channels;
-            float[] arr;
-            if (channels == 1)
-            {
-                arr = new float[] { left };
-            }
-            else
-            {
-                arr = new float[] { left, right };
-            }
-
-            this.Add(arr);
+            int channels = _waveFormat.Channels;
+            var arr = channels == 1 ? new[] { left } : new[] { left, right };
+            Add(arr);
         }
 
         public void Add(float[] samples)
         {
             CheckForInitialzed();
-            if (samples.Length % waveFormat.Channels != 0)
+            if (samples.Length % _waveFormat.Channels != 0)
                 throw new ArgumentException("Length of samples to add has to be multiple of the channelCount.");
 
-            int channels = waveFormat.Channels;
+            int channels = _waveFormat.Channels;
             int i = 0;
             while (i < samples.Length)
             {
                 float s = MergeSamples(samples, i, channels);
-                storedSamples[sampleOffset].Real = s;
-                storedSamples[sampleOffset].Imaginary = 0f;
+                _storedSamples[_sampleOffset].Real = s;
+                _storedSamples[_sampleOffset].Imaginary = 0f;
 
-                sampleOffset += 1;
+                _sampleOffset += 1;
 
                 UpdatePeaks(samples, i, channels);
 
-                if (sampleOffset >= storedSamples.Length)
+                if (_sampleOffset >= _storedSamples.Length)
                 {
-                    sampleOffset = 0;
+                    _sampleOffset = 0;
                 }
                 i += channels;
             }
@@ -79,10 +66,10 @@ namespace Hurricane.Music.Visualization
 
         public void CalculateFFT(float[] resultBuffer)
         {
-            Complex[] input = new Complex[storedSamples.Length];
-            storedSamples.CopyTo(input, 0);
+            Complex[] input = new Complex[_storedSamples.Length];
+            _storedSamples.CopyTo(input, 0);
 
-            FastFourierTransformation.Fft(input, Convert.ToInt32(Math.Truncate(Math.Log(storedSamples.Length, 2))), FftMode.Forward);
+            FastFourierTransformation.Fft(input, Convert.ToInt32(Math.Truncate(Math.Log(_storedSamples.Length, 2))));
             for (int i = 0; i <= input.Length / 2 - 1; i++)
             {
                 var z = input[i];
@@ -92,7 +79,7 @@ namespace Hurricane.Music.Visualization
 
         private void CheckForInitialzed()
         {
-            if (!isInitialized)
+            if (!_isInitialized)
                 throw new InvalidOperationException("SampleAnalyser is not initialized.");
         }
 

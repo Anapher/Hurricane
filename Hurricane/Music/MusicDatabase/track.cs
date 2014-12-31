@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Xml.Serialization;
 
 namespace Hurricane.Music.MusicDatabase
 {
@@ -26,7 +22,7 @@ namespace Hurricane.Music.MusicDatabase
     }
 
     /// <remarks/>
-    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
+    [XmlType(AnonymousType = true)]
     public partial class lfmTrack
     {
 
@@ -170,7 +166,7 @@ namespace Hurricane.Music.MusicDatabase
         }
 
         /// <remarks/>
-        [System.Xml.Serialization.XmlArrayItemAttribute("tag", IsNullable = false)]
+        [XmlArrayItem("tag", IsNullable = false)]
         public lfmTrackTag[] toptags
         {
             get
@@ -198,7 +194,7 @@ namespace Hurricane.Music.MusicDatabase
     }
 
     /// <remarks/>
-    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
+    [XmlType(AnonymousType = true)]
     public partial class lfmTrackStreamable
     {
 
@@ -207,7 +203,7 @@ namespace Hurricane.Music.MusicDatabase
         private byte valueField;
 
         /// <remarks/>
-        [System.Xml.Serialization.XmlAttributeAttribute()]
+        [XmlAttribute()]
         public byte fulltrack
         {
             get
@@ -221,7 +217,7 @@ namespace Hurricane.Music.MusicDatabase
         }
 
         /// <remarks/>
-        [System.Xml.Serialization.XmlTextAttribute()]
+        [XmlText()]
         public byte Value
         {
             get
@@ -236,7 +232,7 @@ namespace Hurricane.Music.MusicDatabase
     }
 
     /// <remarks/>
-    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
+    [XmlType(AnonymousType = true)]
     public partial class lfmTrackArtist
     {
 
@@ -287,7 +283,7 @@ namespace Hurricane.Music.MusicDatabase
     }
 
     /// <remarks/>
-    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
+    [XmlType(AnonymousType = true)]
     public partial class lfmTrackAlbum
     {
 
@@ -356,7 +352,7 @@ namespace Hurricane.Music.MusicDatabase
         }
 
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute("image")]
+        [XmlElement("image")]
         public lfmTrackAlbumImage[] image
         {
             get
@@ -370,7 +366,7 @@ namespace Hurricane.Music.MusicDatabase
         }
 
         /// <remarks/>
-        [System.Xml.Serialization.XmlAttributeAttribute()]
+        [XmlAttribute()]
         public byte position
         {
             get
@@ -385,7 +381,7 @@ namespace Hurricane.Music.MusicDatabase
     }
 
     /// <remarks/>
-    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
+    [XmlType(AnonymousType = true)]
     public partial class lfmTrackAlbumImage
     {
 
@@ -394,7 +390,7 @@ namespace Hurricane.Music.MusicDatabase
         private string valueField;
 
         /// <remarks/>
-        [System.Xml.Serialization.XmlAttributeAttribute()]
+        [XmlAttribute()]
         public string size
         {
             get
@@ -408,7 +404,7 @@ namespace Hurricane.Music.MusicDatabase
         }
 
         /// <remarks/>
-        [System.Xml.Serialization.XmlTextAttribute()]
+        [XmlText()]
         public string Value
         {
             get
@@ -423,7 +419,7 @@ namespace Hurricane.Music.MusicDatabase
     }
 
     /// <remarks/>
-    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
+    [XmlType(AnonymousType = true)]
     public partial class lfmTrackTag
     {
 
@@ -459,7 +455,7 @@ namespace Hurricane.Music.MusicDatabase
     }
 
     /// <remarks/>
-    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
+    [XmlType(AnonymousType = true)]
     public partial class lfmTrackWiki
     {
 

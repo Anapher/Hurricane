@@ -4,7 +4,7 @@
         xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
         xmlns:viewmodels="clr-namespace:Hurricane.ViewModels"
         xmlns:converter="clr-namespace:Hurricane.Extensions.Converter"
-        Title="{StaticResource queuemanager}" SizeToContent="Height" Width="520" GlowBrush="{StaticResource AccentColorBrush}" ResizeMode="NoResize" DataContext="{x:Static viewmodels:MainViewModel.Instance}" x:Name="window" ShowInTaskbar="False">
+        Title="{StaticResource QueueManager}" SizeToContent="Height" Width="520" GlowBrush="{StaticResource AccentColorBrush}" ResizeMode="NoResize" DataContext="{x:Static viewmodels:MainViewModel.Instance}" x:Name="window" ShowInTaskbar="False">
     <Window.Resources>
         <converter:FalseOnNullValue x:Key="FalseOnNullValue"/>
         <converter:TimespanToMinutesSecounds x:Key="TimespanToMinutesSecounds"/>
@@ -22,32 +22,32 @@
             </ListView.InputBindings>
             <ListView.View>
                 <GridView>
-                    <GridViewColumn Header="{StaticResource number}" Width="75" DisplayMemberBinding="{Binding Track.QueueID}"/>
-                    <GridViewColumn Header="{StaticResource filename}" Width="200" DisplayMemberBinding="{Binding Track}"/>
-                    <GridViewColumn Header="{StaticResource playlist}" Width="150" DisplayMemberBinding="{Binding Playlist.Name}"/>
-                    <GridViewColumn Header="{StaticResource duration}" Width="75" DisplayMemberBinding="{Binding Track.Duration}"/>
+                    <GridViewColumn Header="{StaticResource Number}" Width="75" DisplayMemberBinding="{Binding Track.QueueID}"/>
+                    <GridViewColumn Header="{StaticResource Filename}" Width="200" DisplayMemberBinding="{Binding Track}"/>
+                    <GridViewColumn Header="{StaticResource Playlist}" Width="150" DisplayMemberBinding="{Binding Playlist.Name}"/>
+                    <GridViewColumn Header="{StaticResource Duration}" Width="75" DisplayMemberBinding="{Binding Track.Duration}"/>
                 </GridView>
             </ListView.View>
         </ListView>
         <Grid Grid.Row="1" Margin="10,0,10,10">
             <StackPanel Orientation="Vertical">
                 <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="{StaticResource totaltime}"/>
+                    <TextBlock Text="{StaticResource TotalTime}"/>
                     <TextBlock Text=": "/>
                     <TextBlock Text="{Binding MusicManager.Queue.Duration,Converter={StaticResource TimespanToMinutesSecounds}}"/>
                 </StackPanel>
                 
                 <DockPanel LastChildFill="False" Margin="0,10,0,0">
-                    <Button Content="{StaticResource removeselectedfiles}" Margin="0,0,10,0" IsEnabled="{Binding ElementName=lst,Path=SelectedItem,Converter={StaticResource FalseOnNullValue}}"/>
-                    <Button Content="{StaticResource clearqueue}" Command="{Binding MusicManager.Commands.ClearQueue}" IsEnabled="{Binding MusicManager.Queue.HasTracks}"/>
+                    <Button Content="{StaticResource RemoveSelectedFiles}" Margin="0,0,10,0" IsEnabled="{Binding ElementName=lst,Path=SelectedItem,Converter={StaticResource FalseOnNullValue}}"/>
+                    <Button Content="{StaticResource ClearQueue}" Command="{Binding MusicManager.Commands.ClearQueue}" IsEnabled="{Binding MusicManager.Queue.HasTracks}"/>
                     <Grid DockPanel.Dock="Right" Grid.IsSharedSizeScope="True">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition SharedSizeGroup="Buttons"/>
                             <ColumnDefinition Width="5"/>
                             <ColumnDefinition SharedSizeGroup="Buttons"/>
                         </Grid.ColumnDefinitions>
-                        <Button Content="{StaticResource moveup}" Command="{Binding ElementName=window,Path=MoveTracksUp}"/>
-                        <Button Content="{StaticResource movedown}" Command="{Binding ElementName=window,Path=MoveTracksDown}" Grid.Column="2"/>
+                        <Button Content="{StaticResource MoveUp}" Command="{Binding ElementName=window,Path=MoveTracksUp}"/>
+                        <Button Content="{StaticResource MoveDown}" Command="{Binding ElementName=window,Path=MoveTracksDown}" Grid.Column="2"/>
                     </Grid>
                 </DockPanel>
             </StackPanel>

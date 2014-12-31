@@ -1,29 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+﻿using MahApps.Metro.Controls;
 
 namespace Hurricane.Views
 {
     /// <summary>
     /// Interaction logic for ProgressWindow.xaml
     /// </summary>
-    public partial class ProgressWindow : MahApps.Metro.Controls.MetroWindow
+    public partial class ProgressWindow : MetroWindow
     {
-        public ProgressWindow(string title, bool Indeterminate)
+        public ProgressWindow(string title, bool indeterminate)
         {
             InitializeComponent();
             this.Title = title;
-            this.prg.IsIndeterminate = Indeterminate;
+            this.prg.IsIndeterminate = indeterminate;
         }
 
         public void SetText(string text)

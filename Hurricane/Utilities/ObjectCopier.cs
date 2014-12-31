@@ -1,7 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Runtime.Serialization;
-using System.Runtime.Serialization.Formatters.Binary;
 using System.Xml.Serialization;
 
 namespace Hurricane.Utilities
@@ -27,7 +25,7 @@ namespace Hurricane.Utilities
             }
 
             // Don't serialize a null object, simply return the default for that object
-            if (Object.ReferenceEquals(source, null))
+            if (ReferenceEquals(source, null))
             {
                 return default(T);
             }

@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
+using Hurricane.Settings;
+using Hurricane.Utilities;
 
 namespace Hurricane.Music.MusicDatabase
 {
@@ -17,7 +15,7 @@ namespace Hurricane.Music.MusicDatabase
             {
                 foreach (var item in di.GetFiles("*.png"))
                 {
-                    if (Utilities.GeneralHelper.EscapeFilename(track.Album).ToLower() == System.IO.Path.GetFileNameWithoutExtension(item.FullName).ToLower())
+                    if (GeneralHelper.EscapeFilename(track.Album).ToLower() == Path.GetFileNameWithoutExtension(item.FullName).ToLower())
                     {
                         return new BitmapImage(new Uri(item.FullName));
                     }
@@ -29,13 +27,13 @@ namespace Hurricane.Music.MusicDatabase
 
         public static async Task<BitmapImage> LoadCoverFromWeb(Track track, DirectoryInfo di)
         {
-            var config = Settings.HurricaneSettings.Instance.Config;
+            var config = HurricaneSettings.Instance.Config;
             if (config.SaveCoverLocal)
             {
                 if (!di.Exists) di.Create();
             }
 
-            return await MusicDatabase.LastfmAPI.GetImage(track.Title, track.Artist, config.DownloadAlbumCoverQuality, config.SaveCoverLocal, di, track, config.TrimTrackname);
+            return await LastfmAPI.GetImage(track.Title, track.Artist, config.DownloadAlbumCoverQuality, config.SaveCoverLocal, di, track, config.TrimTrackname);
         }
     }
 }

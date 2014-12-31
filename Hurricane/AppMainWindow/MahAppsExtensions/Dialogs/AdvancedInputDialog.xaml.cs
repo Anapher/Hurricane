@@ -1,23 +1,13 @@
-﻿using MahApps.Metro.Controls;
-using MahApps.Metro.Controls.Dialogs;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using MahApps.Metro.Controls;
+using MahApps.Metro.Controls.Dialogs;
 
 namespace Hurricane.AppMainWindow.MahAppsExtensions.Dialogs
 {
-    public partial class AdvancedInputDialog : BaseMetroDialog
+    public partial class AdvancedInputDialog
     {
         internal AdvancedInputDialog(MetroWindow parentWindow)
             : this(parentWindow, null)
@@ -27,9 +17,9 @@ namespace Hurricane.AppMainWindow.MahAppsExtensions.Dialogs
             : base(parentWindow, settings)
         {
             InitializeComponent();
-            this.PART_AffirmativeButton.Content = settings.AffirmativeButtonText;
-            this.PART_NegativeButton.Content = settings.NegativeButtonText;
-            this.Input = settings.DefaultText;
+            PART_AffirmativeButton.Content = settings.AffirmativeButtonText;
+            PART_NegativeButton.Content = settings.NegativeButtonText;
+            Input = settings.DefaultText;
         }
 
         internal Task<string> WaitForButtonPressAsync()
@@ -54,7 +44,7 @@ namespace Hurricane.AppMainWindow.MahAppsExtensions.Dialogs
             {
                 PART_TextBox.KeyDown -= affirmativeKeyHandler;
 
-                this.KeyDown -= escapeKeyHandler;
+                KeyDown -= escapeKeyHandler;
 
                 PART_NegativeButton.Click -= negativeHandler;
                 PART_AffirmativeButton.Click -= affirmativeHandler;
@@ -116,7 +106,7 @@ namespace Hurricane.AppMainWindow.MahAppsExtensions.Dialogs
 
             PART_TextBox.KeyDown += affirmativeKeyHandler;
 
-            this.KeyDown += escapeKeyHandler;
+            KeyDown += escapeKeyHandler;
 
             PART_NegativeButton.Click += negativeHandler;
             PART_AffirmativeButton.Click += affirmativeHandler;
@@ -126,11 +116,11 @@ namespace Hurricane.AppMainWindow.MahAppsExtensions.Dialogs
 
         private void Dialog_Loaded(object sender, RoutedEventArgs e)
         {
-            this.PART_TextBox.SelectAll();
-            switch (this.DialogSettings.ColorScheme)
+            PART_TextBox.SelectAll();
+            switch (DialogSettings.ColorScheme)
             {
                 case MetroDialogColorScheme.Accented:
-                    this.PART_NegativeButton.Style = this.FindResource("HighlightedSquareButtonStyle") as Style;
+                    PART_NegativeButton.Style = FindResource("HighlightedSquareButtonStyle") as Style;
                     PART_TextBox.SetResourceReference(ForegroundProperty, "BlackColorBrush");
                     break;
             }

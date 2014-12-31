@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace Hurricane.Utilities
@@ -49,14 +45,11 @@ namespace Hurricane.Utilities
         /// <summary>
         /// Hook ID
         /// </summary>
-        private IntPtr hookId = IntPtr.Zero;
+        private readonly IntPtr hookId = IntPtr.Zero;
 
         /// <summary>
         /// Asynchronous callback hook.
         /// </summary>
-        /// <param name="nCode"></param>
-        /// <param name="wParam"></param>
-        /// <param name="lParam"></param>
         private delegate void KeyboardCallbackAsync(InterceptKeys.KeyEvent keyEvent, int vkCode);
 
         /// <summary>
@@ -84,12 +77,12 @@ namespace Hurricane.Utilities
         /// <summary>
         /// Event to be invoked asynchronously (BeginInvoke) each time key is pressed.
         /// </summary>
-        private KeyboardCallbackAsync hookedKeyboardCallbackAsync;
+        private readonly KeyboardCallbackAsync hookedKeyboardCallbackAsync;
 
         /// <summary>
         /// Contains the hooked callback in runtime.
         /// </summary>
-        private InterceptKeys.LowLevelKeyboardProc hookedLowLevelKeyboardProc;
+        private readonly InterceptKeys.LowLevelKeyboardProc hookedLowLevelKeyboardProc;
 
         /// <summary>
         /// HookCallbackAsync procedure that calls accordingly the KeyDown or KeyUp events.
@@ -169,7 +162,7 @@ namespace Hurricane.Utilities
         {
             this.VKCode = VKCode;
             this.IsSysKey = isSysKey;
-            this.Key = System.Windows.Input.KeyInterop.KeyFromVirtualKey(VKCode);
+            this.Key = KeyInterop.KeyFromVirtualKey(VKCode);
         }
     }
 

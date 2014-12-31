@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Diagnostics;
 using Hurricane.ViewModelBase;
 
 namespace Hurricane.Music
@@ -11,121 +7,121 @@ namespace Hurricane.Music
     {
         #region "Constructor"
 
-        protected MusicManager musicmanager;
+        protected MusicManager Musicmanager;
         public MusicManagerCommands(MusicManager basedmanager)
         {
-            this.musicmanager = basedmanager;
+            Musicmanager = basedmanager;
         }
 
         #endregion
 
-        private RelayCommand jumptoplayingtrack;
+        private RelayCommand _jumptoplayingtrack;
         public RelayCommand JumpToPlayingTrack
         {
             get
             {
-                if (jumptoplayingtrack == null)
-                    jumptoplayingtrack = new RelayCommand((object parameter) =>
-                    {
-                        musicmanager.SelectedPlaylist = musicmanager.CurrentPlaylist;
-                        musicmanager.SelectedTrack = musicmanager.CSCoreEngine.CurrentTrack;
-                    });
-                return jumptoplayingtrack;
+                return _jumptoplayingtrack ?? (_jumptoplayingtrack = new RelayCommand(parameter =>
+                {
+                    Musicmanager.SelectedPlaylist = Musicmanager.CurrentPlaylist;
+                    Musicmanager.SelectedTrack = Musicmanager.CSCoreEngine.CurrentTrack;
+                }));
             }
         }
 
-        private RelayCommand opentracklocation;
+        private RelayCommand _opentracklocation;
         public RelayCommand OpenTrackLocation
         {
             get
             {
-                if (opentracklocation == null)
-                    opentracklocation = new RelayCommand((object parameter) => { System.Diagnostics.Process.Start("explorer.exe", "/select, \"" + musicmanager.SelectedTrack.Path + "\""); });
-                return opentracklocation;
+                return _opentracklocation ?? (_opentracklocation = new RelayCommand(parameter =>
+                {
+                    Process.Start("explorer.exe", "/select, \"" + Musicmanager.SelectedTrack.Path + "\"");
+                }));
             }
         }
 
-        private RelayCommand gobackward;
+        private RelayCommand _gobackward;
         public RelayCommand GoBackward
         {
             get
             {
-                if (gobackward == null)
-                    gobackward = new RelayCommand((object parameter) => { musicmanager.GoBackward(); });
-                return gobackward;
+                return _gobackward ??
+                       (_gobackward = new RelayCommand(parameter => { Musicmanager.GoBackward(); }));
             }
         }
 
-        private RelayCommand goforward;
+        private RelayCommand _goforward;
         public RelayCommand GoForward
         {
             get
             {
-                if (goforward == null)
-                    goforward = new RelayCommand((object parameter) => { musicmanager.GoForward(); });
-                return goforward;
+                return _goforward ??
+                       (_goforward = new RelayCommand(parameter => { Musicmanager.GoForward(); }));
             }
         }
 
-        private RelayCommand playselectedtrack;
+        private RelayCommand _playselectedtrack;
         public RelayCommand PlaySelectedTrack
         {
             get
             {
-                if (playselectedtrack == null)
-                    playselectedtrack = new RelayCommand((object parameter) =>
-                    {
-                        var selectedtrack = musicmanager.SelectedTrack;
-                        if (selectedtrack == musicmanager.CSCoreEngine.CurrentTrack) { musicmanager.CSCoreEngine.Position = 0; }
-                        selectedtrack.RefreshTrackExists();
-                        if (selectedtrack.TrackExists)
-                            musicmanager.PlayTrack(selectedtrack, musicmanager.SelectedPlaylist);
-                    });
-                return playselectedtrack;
+                return _playselectedtrack ?? (_playselectedtrack = new RelayCommand(parameter =>
+                {
+                    var selectedtrack = Musicmanager.SelectedTrack;
+                    if (selectedtrack == Musicmanager.CSCoreEngine.CurrentTrack)
+                        Musicmanager.CSCoreEngine.Position = 0;
+                    selectedtrack.RefreshTrackExists();
+                    if (selectedtrack.TrackExists)
+                        Musicmanager.PlayTrack(selectedtrack, Musicmanager.SelectedPlaylist);
+                }));
             }
         }
 
-        private RelayCommand toggleplaypause;
+        private RelayCommand _toggleplaypause;
         public RelayCommand TogglePlayPause
         {
             get
             {
-                if (toggleplaypause == null)
-                    toggleplaypause = new RelayCommand((object parameter) => { musicmanager.CSCoreEngine.TogglePlayPause(); });
-                return toggleplaypause;
+                return _toggleplaypause ?? (_toggleplaypause = new RelayCommand(parameter => { Musicmanager.CSCoreEngine.TogglePlayPause(); }));
             }
         }
 
-        private RelayCommand addtracktoqueue;
+        private RelayCommand _addtracktoqueue;
         public RelayCommand AddTrackToQueue
         {
             get
             {
-                if (addtracktoqueue == null)
-                    addtracktoqueue = new RelayCommand((object parameter) => { musicmanager.Queue.AddTrack(musicmanager.SelectedTrack, musicmanager.SelectedPlaylist); musicmanager.OnPropertyChanged("Queue"); });
-                return addtracktoqueue;
+                return _addtracktoqueue ?? (_addtracktoqueue = new RelayCommand(parameter =>
+                {
+                    Musicmanager.Queue.AddTrack(Musicmanager.SelectedTrack, Musicmanager.SelectedPlaylist);
+                    Musicmanager.OnPropertyChanged("Queue");
+                }));
             }
         }
 
-        private RelayCommand removefromqueue;
+        private RelayCommand _removefromqueue;
         public RelayCommand RemoveFromQueue
         {
             get
             {
-                if (removefromqueue == null)
-                    removefromqueue = new RelayCommand((object parameter) => { musicmanager.Queue.RemoveTrack(musicmanager.SelectedTrack); musicmanager.OnPropertyChanged("Queue"); });
-                return removefromqueue;
+                return _removefromqueue ?? (_removefromqueue = new RelayCommand(parameter =>
+                {
+                    Musicmanager.Queue.RemoveTrack(Musicmanager.SelectedTrack);
+                    Musicmanager.OnPropertyChanged("Queue");
+                }));
             }
         }
 
-        private RelayCommand clearqueue;
+        private RelayCommand _clearqueue;
         public RelayCommand ClearQueue
         {
             get
             {
-                if (clearqueue == null)
-                    clearqueue = new RelayCommand((object parameter) => { musicmanager.Queue.ClearTracks(); musicmanager.OnPropertyChanged("Queue"); });
-                return clearqueue;
+                return _clearqueue ?? (_clearqueue = new RelayCommand(parameter =>
+                {
+                    Musicmanager.Queue.ClearTracks();
+                    Musicmanager.OnPropertyChanged("Queue");
+                }));
             }
         }
     }

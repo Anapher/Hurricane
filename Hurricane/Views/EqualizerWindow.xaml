@@ -19,20 +19,20 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <Menu>
-                <MenuItem Header="{DynamicResource presets}">
-                    <MenuItem Header="{DynamicResource bass}" Command="{Binding MusicManager.CSCoreEngine.EqualizerSettings.LoadPresetBass}"/>
-                    <MenuItem Header="{DynamicResource bassexteme}" Command="{Binding MusicManager.CSCoreEngine.EqualizerSettings.LoadPresetBassExteme}"/>
-                    <MenuItem Header="{DynamicResource bassandheights}" Command="{Binding MusicManager.CSCoreEngine.EqualizerSettings.LoadPresetBassAndHeights}"/>
-                    <MenuItem Header="{DynamicResource heights}" Command="{Binding MusicManager.CSCoreEngine.EqualizerSettings.LoadPresetHeights}"/>
-                    <MenuItem Header="{DynamicResource classic}" Command="{Binding MusicManager.CSCoreEngine.EqualizerSettings.LoadPresetClassic}"/>
-                    <MenuItem Header="{DynamicResource dance}" Command="{Binding MusicManager.CSCoreEngine.EqualizerSettings.LoadPresetDance}"/>
-                    <MenuItem Header="{DynamicResource rock}" Command="{Binding MusicManager.CSCoreEngine.EqualizerSettings.LoadPresetRock}"/>
-                    <MenuItem Header="{DynamicResource techno}" Command="{Binding MusicManager.CSCoreEngine.EqualizerSettings.LoadPresetTechno}"/>
-                    <MenuItem Header="{DynamicResource pop}" Command="{Binding MusicManager.CSCoreEngine.EqualizerSettings.LoadPresetPop}"/>
-                    <MenuItem Header="{DynamicResource softbass}" Command="{Binding MusicManager.CSCoreEngine.EqualizerSettings.LoadPresetSoftBass}"/>
-                    <MenuItem Header="{DynamicResource softheights}" Command="{Binding MusicManager.CSCoreEngine.EqualizerSettings.LoadPresetSoftHeights}"/>
+                <MenuItem Header="{DynamicResource Presets}">
+                    <MenuItem Header="{DynamicResource Bass}" Command="{Binding MusicManager.CSCoreEngine.EqualizerSettings.LoadPresetBass}"/>
+                    <MenuItem Header="{DynamicResource BassExteme}" Command="{Binding MusicManager.CSCoreEngine.EqualizerSettings.LoadPresetBassExteme}"/>
+                    <MenuItem Header="{DynamicResource BassAndHeights}" Command="{Binding MusicManager.CSCoreEngine.EqualizerSettings.LoadPresetBassAndHeights}"/>
+                    <MenuItem Header="{DynamicResource Heights}" Command="{Binding MusicManager.CSCoreEngine.EqualizerSettings.LoadPresetHeights}"/>
+                    <MenuItem Header="{DynamicResource Classic}" Command="{Binding MusicManager.CSCoreEngine.EqualizerSettings.LoadPresetClassic}"/>
+                    <MenuItem Header="{DynamicResource Dance}" Command="{Binding MusicManager.CSCoreEngine.EqualizerSettings.LoadPresetDance}"/>
+                    <MenuItem Header="{DynamicResource Rock}" Command="{Binding MusicManager.CSCoreEngine.EqualizerSettings.LoadPresetRock}"/>
+                    <MenuItem Header="{DynamicResource Techno}" Command="{Binding MusicManager.CSCoreEngine.EqualizerSettings.LoadPresetTechno}"/>
+                    <MenuItem Header="{DynamicResource Pop}" Command="{Binding MusicManager.CSCoreEngine.EqualizerSettings.LoadPresetPop}"/>
+                    <MenuItem Header="{DynamicResource SoftBass}" Command="{Binding MusicManager.CSCoreEngine.EqualizerSettings.LoadPresetSoftBass}"/>
+                    <MenuItem Header="{DynamicResource SoftHeights}" Command="{Binding MusicManager.CSCoreEngine.EqualizerSettings.LoadPresetSoftHeights}"/>
                 </MenuItem>
-                <MenuItem Header="{DynamicResource reset}" Command="{Binding MusicManager.CSCoreEngine.EqualizerSettings.ResetEqualizer}"/>
+                <MenuItem Header="{DynamicResource Reset}" Command="{Binding MusicManager.CSCoreEngine.EqualizerSettings.ResetEqualizer}"/>
             </Menu>
             <Button Style="{StaticResource WindowButtonStyle}" Click="PART_CLOSE_Click" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="5" Width="20" Height="20"/>
             <ItemsControl Margin="5,10,5,10" Grid.Row="1" ItemsSource="{Binding MusicManager.CSCoreEngine.EqualizerSettings.Bands}">

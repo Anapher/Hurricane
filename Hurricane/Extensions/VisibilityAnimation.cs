@@ -7,8 +7,6 @@ using System.Windows.Media.Animation;
 
 namespace Hurricane.Extensions
 {
-
-
     /// <summary>
     /// Supplies attached properties that provides visibility of animations
     /// </summary>
@@ -64,7 +62,7 @@ namespace Hurricane.Extensions
             "AnimationType",
             typeof(AnimationType),
             typeof(VisibilityAnimation),
-            new FrameworkPropertyMetadata(AnimationType.None, new PropertyChangedCallback(OnAnimationTypePropertyChanged)));
+            new FrameworkPropertyMetadata(AnimationType.None, OnAnimationTypePropertyChanged));
 
         /// <summary>
         /// AnimationType property changed
@@ -135,7 +133,7 @@ namespace Hurricane.Extensions
         }
 
         protected static double oldheight = -1;
-        protected static int counter = 0;
+        protected static int counter;
         /// <summary>
         /// Coerce visibility
         /// </summary>
@@ -256,7 +254,7 @@ namespace Hurricane.Extensions
         /// <returns>Old value of animation started flag</returns>
         private static bool UpdateAnimationStartedFlag(FrameworkElement frameworkElement)
         {
-            bool animationStarted = (bool)_hookedElements[frameworkElement];
+            bool animationStarted = _hookedElements[frameworkElement];
             _hookedElements[frameworkElement] = !animationStarted;
 
             return animationStarted;

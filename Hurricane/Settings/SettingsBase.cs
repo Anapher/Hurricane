@@ -1,19 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml.Serialization;
+using Hurricane.ViewModelBase;
 
 namespace Hurricane.Settings
 {
     [Serializable]
-    public abstract class SettingsBase : ViewModelBase.PropertyChangedBase
+    public abstract class SettingsBase : PropertyChangedBase
     {
         public abstract void SetStandardValues();
 
-        public abstract void Save(string ProgramPath); 
+        public abstract void Save(string programPath); 
 
         protected void Save<T>(string path)
         {

@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Serialization;
+﻿using System.Collections.ObjectModel;
 using System.IO;
-using System.Collections.ObjectModel;
+using System.Xml.Serialization;
+using Hurricane.Music;
 
 namespace Hurricane.Settings
 {
@@ -14,22 +10,21 @@ namespace Hurricane.Settings
     {
         protected const string Filename = "Playlists.xml";
 
-        public ObservableCollection<Music.Playlist> Playlists { get; set; }
+        public ObservableCollection<Playlist> Playlists { get; set; }
 
         public override void SetStandardValues()
         {
-            Playlists = new ObservableCollection<Music.Playlist>();
-            Playlists.Add(new Music.Playlist() { Name = "Default" });
+            Playlists = new ObservableCollection<Playlist> { new Playlist() { Name = "Default" } };
         }
 
-        public override void Save(string ProgramPath)
+        public override void Save(string programPath)
         {
-            this.Save<PlaylistSettings>(Path.Combine(ProgramPath, Filename));
+            this.Save<PlaylistSettings>(Path.Combine(programPath, Filename));
         }
 
-        public static PlaylistSettings Load(string Programpath)
+        public static PlaylistSettings Load(string programpath)
         {
-            FileInfo fi = new FileInfo(Path.Combine(Programpath, Filename));
+            FileInfo fi = new FileInfo(Path.Combine(programpath, Filename));
             if (fi.Exists)
             {
                 using (StreamReader reader = new StreamReader(fi.FullName))

@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace Hurricane.Music.API
 {
@@ -10,11 +8,11 @@ namespace Hurricane.Music.API
     {
         protected const string AllRightText = "ar";
 
-        public Music.MusicManager MusicManager { get; protected set; }
+        public MusicManager MusicManager { get; protected set; }
         public List<Command> Commands { get; protected set; }
 
 
-        public Commander(Music.MusicManager manager)
+        public Commander(MusicManager manager)
         {
             this.MusicManager = manager;
             InitalizeCommands();
@@ -22,23 +20,57 @@ namespace Hurricane.Music.API
 
         protected void InitalizeCommands()
         {
-            Commands = new List<Command>();
-
-            Commands.Add(new Command("volume", new List<CommandBase> { new CommandFunction("get", (s) => { return MusicManager.CSCoreEngine.Volume.ToString(); }), new CommandAction("set", (s) => { MusicManager.CSCoreEngine.Volume = float.Parse(s); }) }));
-            Commands.Add(new Command("move", new List<CommandBase> { new CommandAction("backward", (s) => MusicManager.GoBackward()), new CommandAction("forward", (s) => MusicManager.GoForward()) }));
-            Commands.Add(new Command("isplaying", new List<CommandBase> { new CommandFunction("get", (s) => { return MusicManager.CSCoreEngine.IsPlaying.ToString().ToLower(); }), new CommandAction("toggle", (s) => MusicManager.CSCoreEngine.TogglePlayPause()) }));
-            Commands.Add(new Command("track", new List<CommandBase> { new CommandFunction("get", (s) => { return TrackToString(MusicManager.CSCoreEngine.CurrentTrack); }) }));
-            Commands.Add(new Command("shuffle", new List<CommandBase> { new CommandFunction("get", (s) => { return MusicManager.RandomTrack.ToString().ToLower(); }), new CommandAction("set", (s) => MusicManager.RandomTrack = bool.Parse(s)) }));
-            Commands.Add(new Command("repeat", new List<CommandBase> { new CommandFunction("get", (s) => { return MusicManager.RepeatTrack.ToString().ToLower(); }), new CommandAction("set", (s) => MusicManager.RepeatTrack = bool.Parse(s)) }));
-            Commands.Add(new Command("position", new List<CommandBase> { new CommandFunction("get", (s) => { return string.Format("{0} {1}", (int)MusicManager.CSCoreEngine.CurrentTrackPosition.TotalSeconds, (int)MusicManager.CSCoreEngine.CurrentTrackLength.TotalSeconds); }) }));
+            Commands = new List<Command>
+            {
+                new Command("volume",
+                    new List<CommandBase>
+                    {
+                        new CommandFunction("get", s => MusicManager.CSCoreEngine.Volume.ToString()),
+                        new CommandAction("set", s => { MusicManager.CSCoreEngine.Volume = float.Parse(s); })
+                    }),
+                new Command("move",
+                    new List<CommandBase>
+                    {
+                        new CommandAction("backward", s => MusicManager.GoBackward()),
+                        new CommandAction("forward", s => MusicManager.GoForward())
+                    }),
+                new Command("isplaying",
+                    new List<CommandBase>
+                    {
+                        new CommandFunction("get", s => MusicManager.CSCoreEngine.IsPlaying.ToString().ToLower()),
+                        new CommandAction("toggle", s => MusicManager.CSCoreEngine.TogglePlayPause())
+                    }),
+                new Command("track",
+                    new List<CommandBase>
+                    {
+                        new CommandFunction("get", s => TrackToString(MusicManager.CSCoreEngine.CurrentTrack))
+                    }),
+                new Command("shuffle",
+                    new List<CommandBase>
+                    {
+                        new CommandFunction("get", s => MusicManager.IsShuffleEnabled.ToString().ToLower()),
+                        new CommandAction("set", s => MusicManager.IsShuffleEnabled = bool.Parse(s))
+                    }),
+                new Command("loop",
+                    new List<CommandBase>
+                    {
+                        new CommandFunction("get", s => MusicManager.IsLoopEnabled.ToString().ToLower()),
+                        new CommandAction("set", s => MusicManager.IsLoopEnabled = bool.Parse(s))
+                    }),
+                new Command("position",
+                    new List<CommandBase>
+                    {
+                        new CommandFunction("get",  s => string.Format("{0} {1}",(int) MusicManager.CSCoreEngine.CurrentTrackPosition.TotalSeconds,(int) MusicManager.CSCoreEngine.CurrentTrackLength.TotalSeconds))
+                    })
+            };
         }
 
-        protected string TrackToString(Music.Track track)
+        protected string TrackToString(Track track)
         {
-            return Newtonsoft.Json.JsonConvert.SerializeObject(new ShortTrack() { Title = track.Title, Artist = track.Artist, Album = track.Album, Duration = track.Duration, kbps = track.kbps.ToString(), kHz = track.kHz.ToString() });
+            return JsonConvert.SerializeObject(new ShortTrack() { Title = track.Title, Artist = track.Artist, Album = track.Album, Duration = track.Duration, kbps = track.kbps.ToString(), kHz = track.kHz.ToString() });
         }
 
-        [Newtonsoft.Json.JsonObject("Track")]
+        [JsonObject("Track")]
         public class ShortTrack
         {
             public string Title { get; set; }
@@ -74,7 +106,7 @@ namespace Hurricane.Music.API
                                 return "Error: " + ex.Message;
                             }
 
-                            return AllRightText;
+                            return string.Empty;
                         }
                     }
                     break;

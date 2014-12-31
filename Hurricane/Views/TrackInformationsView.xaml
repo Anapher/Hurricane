@@ -5,13 +5,11 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
              xmlns:converter="clr-namespace:Hurricane.Extensions.Converter"
-             xmlns:toolkit="http://schemas.xceed.com/wpf/xaml/toolkit"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="600" x:Name="usercontrol">
     <UserControl.Resources>
         <converter:RoundSizeConverter x:Key="RoundSizeConverter"/>
         <converter:NeverIfDateIsNull x:Key="NeverIfDateIsNull"/>
-        <converter:FalseOnEmptyString x:Key="FalseOnEmptyString"/>
         <converter:StringArrayToStringConverter x:Key="StringArrayToStringConverter"/>
         <converter:PlaceholderConverter x:Key="PlaceholderConverter"/>
     </UserControl.Resources>
@@ -29,7 +27,7 @@
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                            <TextBlock Text="{StaticResource filename}"/>
+                            <TextBlock Text="{StaticResource Filename}"/>
                             <TextBlock Text=":"/>
                         </StackPanel>
                         <TextBlock Text="{Binding ElementName=usercontrol,Path=CurrentTrack.TrackInformations.Name}" Grid.Column="1"/>
@@ -40,7 +38,7 @@
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                            <TextBlock Text="{StaticResource folder}"/>
+                            <TextBlock Text="{StaticResource Folder}"/>
                             <TextBlock Text=":"/>
                         </StackPanel>
                         <TextBlock Text="{Binding ElementName=usercontrol,Path=CurrentTrack.TrackInformations.Directory.FullName}" Grid.Column="1"/>
@@ -52,7 +50,7 @@
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                            <TextBlock Text="{StaticResource title}"/>
+                            <TextBlock Text="{StaticResource Title}"/>
                             <TextBlock Text=":"/>
                         </StackPanel>
                         <TextBlock Text="{Binding ElementName=usercontrol,Path=CurrentTrack.Title,TargetNullValue=-}" Grid.Column="1"/>
@@ -63,7 +61,7 @@
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                            <TextBlock Text="{StaticResource artist}"/>
+                            <TextBlock Text="{StaticResource Artist}"/>
                             <TextBlock Text=":"/>
                         </StackPanel>
                         <TextBlock Text="{Binding ElementName=usercontrol,Path=CurrentTrack.Artist,Converter={StaticResource PlaceholderConverter}}" Grid.Column="1"/>
@@ -74,7 +72,7 @@
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                            <TextBlock Text="{StaticResource album}"/>
+                            <TextBlock Text="{StaticResource Album}"/>
                             <TextBlock Text=":"/>
                         </StackPanel>
                         <TextBlock Grid.Column="1" Text="{Binding ElementName=usercontrol,Path=CurrentTrack.Album,Converter={StaticResource PlaceholderConverter}}"/>
@@ -85,7 +83,7 @@
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                            <TextBlock Text="{StaticResource genre}"/>
+                            <TextBlock Text="{StaticResource Genre}"/>
                             <TextBlock Text=":"/>
                         </StackPanel>
                         <TextBlock Text="{Binding ElementName=usercontrol,Path=CurrentTrack.Genres,Converter={StaticResource PlaceholderConverter}}" Grid.Column="1"/>
@@ -96,7 +94,7 @@
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                            <TextBlock Text="{StaticResource year}"/>
+                            <TextBlock Text="{StaticResource Year}"/>
                             <TextBlock Text=":"/>
                         </StackPanel>
                         <TextBlock Text="{Binding ElementName=usercontrol,Path=CurrentTrack.Year,Converter={StaticResource PlaceholderConverter}}" Grid.Column="1"/>
@@ -108,7 +106,7 @@
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                            <TextBlock Text="{StaticResource format}"/>
+                            <TextBlock Text="{StaticResource Format}"/>
                             <TextBlock Text=":"/>
                         </StackPanel>
                         <TextBlock Text="{Binding ElementName=usercontrol,Path=CurrentTrack.Extension}" Grid.Column="1"/>
@@ -119,7 +117,7 @@
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                            <TextBlock Text="{StaticResource duration}"/>
+                            <TextBlock Text="{StaticResource Duration}"/>
                             <TextBlock Text=":"/>
                         </StackPanel>
                         <TextBlock Text="{Binding ElementName=usercontrol,Path=CurrentTrack.Duration}" Grid.Column="1"/>
@@ -130,7 +128,7 @@
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                            <TextBlock Text="{StaticResource quality}"/>
+                            <TextBlock Text="{StaticResource Quality}"/>
                             <TextBlock Text=":"/>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" Grid.Column="1">
@@ -146,7 +144,7 @@
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                            <TextBlock Text="{StaticResource filesize}"/>
+                            <TextBlock Text="{StaticResource FileSize}"/>
                             <TextBlock Text=":"/>
                         </StackPanel>
                         <TextBlock Text="{Binding ElementName=usercontrol,Path=CurrentTrack.TrackInformations.Length,Converter={StaticResource RoundSizeConverter}}" Grid.Column="1"/>
@@ -158,7 +156,7 @@
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                            <TextBlock Text="{StaticResource added}"/>
+                            <TextBlock Text="{StaticResource Added}"/>
                             <TextBlock Text=":"/>
                         </StackPanel>
                         <TextBlock Text="{Binding ElementName=usercontrol,Path=CurrentTrack.TimeAdded,StringFormat={StaticResource DateFormat}}" Grid.Column="1"/>
@@ -169,7 +167,7 @@
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                            <TextBlock Text="{StaticResource played}"/>
+                            <TextBlock Text="{StaticResource Played}"/>
                             <TextBlock Text=":"/>
                         </StackPanel>
                         <TextBlock Text="{Binding ElementName=usercontrol,Path=CurrentTrack.LastTimePlayed,Converter={StaticResource NeverIfDateIsNull}}" Grid.Column="1"/>
@@ -183,11 +181,11 @@
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
                     <Menu>
-                        <MenuItem Header="{StaticResource file}">
-                            <MenuItem Header="{StaticResource open}" Click="MenuItemOpenLyrics_Click"/>
-                            <MenuItem Header="{StaticResource saveas}" Click="MenuItemSaveAs_Click"/>
+                        <MenuItem Header="{StaticResource File}">
+                            <MenuItem Header="{StaticResource Open}" Click="MenuItemOpenLyrics_Click"/>
+                            <MenuItem Header="{StaticResource SaveAs}" Click="MenuItemSaveAs_Click"/>
                         </MenuItem>
-                        <MenuItem Header="{StaticResource remove}" Click="MenuItemRemoveAllText_Click"/>
+                        <MenuItem Header="{StaticResource Remove}" Click="MenuItemRemoveAllText_Click"/>
                     </Menu>
                     <TextBox x:Name="txtLyrics"  Grid.Row="1" AcceptsReturn="True" AcceptsTab="True" Text="{Binding ElementName=usercontrol,Path=TagFile.Tag.Lyrics}"/>
                 </Grid>
@@ -199,7 +197,7 @@
                             <ColumnDefinition Width="100"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <TextBlock Text="{StaticResource title}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,5,0"/>
+                        <TextBlock Text="{StaticResource Title}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,5,0"/>
                         <TextBox Grid.Column="1" Text="{Binding ElementName=usercontrol,Path=TagFile.Tag.Title}"/>
                     </Grid>
                     <Grid Margin="0,5,0,0">
@@ -207,7 +205,7 @@
                             <ColumnDefinition Width="100"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <TextBlock Text="{StaticResource artists}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,5,0"/>
+                        <TextBlock Text="{StaticResource Artists}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,5,0"/>
                         <TextBox Grid.Column="1" Text="{Binding ElementName=usercontrol,Path=TagFile.Tag.Performers,Converter={StaticResource StringArrayToStringConverter}}"/>
                     </Grid>
                     <Grid Margin="0,5,0,0">
@@ -215,7 +213,7 @@
                             <ColumnDefinition Width="100"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <TextBlock Text="{StaticResource album}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,5,0"/>
+                        <TextBlock Text="{StaticResource Album}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,5,0"/>
                         <TextBox Grid.Column="1" Text="{Binding ElementName=usercontrol,Path=TagFile.Tag.Album}"/>
                     </Grid>
                     <DockPanel Margin="0,5,0,0">
@@ -224,10 +222,10 @@
                                 <ColumnDefinition Width="100"/>
                                 <ColumnDefinition Width="100"/>
                             </Grid.ColumnDefinitions>
-                            <TextBlock Text="{StaticResource year}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,5,0"/>
+                            <TextBlock Text="{StaticResource Year}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,5,0"/>
                             <TextBox Text="{Binding ElementName=usercontrol,Path=TagFile.Tag.Year,ValidatesOnDataErrors=True,UpdateSourceTrigger=PropertyChanged,NotifyOnValidationError=True}" Grid.Column="1" VerticalAlignment="Center"/>
                         </Grid>
-                        <Expander Header="{StaticResource genre}" Grid.Column="1" Margin="30,0,0,0">
+                        <Expander Header="{StaticResource Genre}" Margin="30,0,0,0">
                             <ListBox x:Name="lstGenre" Height="200">
                                 <ListBox.ItemTemplate>
                                     <DataTemplate>
@@ -242,7 +240,7 @@
                             <ColumnDefinition Width="100"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <TextBlock Text="{StaticResource composers}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,5,0"/>
+                        <TextBlock Text="{StaticResource Composers}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,5,0"/>
                         <TextBox Grid.Column="1" Text="{Binding ElementName=usercontrol,Path=TagFile.Tag.Composers,Converter={StaticResource StringArrayToStringConverter}}"/>
                     </Grid>
                     <Grid Margin="0,5,0,0">
@@ -250,7 +248,7 @@
                             <ColumnDefinition Width="100"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <TextBlock Text="{StaticResource albumartists}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,5,0"/>
+                        <TextBlock Text="{StaticResource AlbumArtists}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,5,0"/>
                         <TextBox Grid.Column="1" Text="{Binding ElementName=usercontrol,Path=TagFile.Tag.AlbumArtists,Converter={StaticResource StringArrayToStringConverter}}"/>
                     </Grid>
                     <Grid Margin="0,5,0,0">
@@ -258,7 +256,7 @@
                             <ColumnDefinition Width="100"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <TextBlock Text="{StaticResource copyright}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,5,0"/>
+                        <TextBlock Text="{StaticResource Copyright}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,5,0"/>
                         <TextBox Grid.Column="1" Text="{Binding ElementName=usercontrol,Path=TagFile.Tag.Copyright}"/>
                     </Grid>
                     <Grid Margin="0,5,0,0">
@@ -266,7 +264,7 @@
                             <ColumnDefinition Width="100"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <TextBlock Text="{StaticResource comment}" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,0,5,0"/>
+                        <TextBlock Text="{StaticResource Comment}" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,0,5,0"/>
                         <TextBox Grid.Column="1" Text="{Binding ElementName=usercontrol,Path=TagFile.Tag.Comment}" Height="100" AcceptsReturn="True" AcceptsTab="True" ScrollViewer.VerticalScrollBarVisibility="Visible"/>
                     </Grid>
                     <Grid Margin="0,5,0,0">
@@ -275,14 +273,14 @@
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Right"  Margin="0,0,5,0">
-                            <TextBlock Text="{StaticResource track}"/>
+                            <TextBlock Text="{StaticResource Track}"/>
                             <TextBlock Text=" #"/>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" Grid.Column="1">
                             <TextBox Text="{Binding ElementName=usercontrol,Path=TagFile.Tag.Track,ValidatesOnDataErrors=True,UpdateSourceTrigger=PropertyChanged,NotifyOnValidationError=True}" Width="40"/>
                             <TextBlock Text="/" Margin="5,0,5,0" VerticalAlignment="Center"/>
                             <TextBox Text="{Binding ElementName=usercontrol,Path=TagFile.Tag.TrackCount,ValidatesOnDataErrors=True,UpdateSourceTrigger=PropertyChanged,NotifyOnValidationError=True}" Width="40"/>
-                            <TextBlock Text="{StaticResource disc}" Margin="40,0,0,0" VerticalAlignment="Center"/>
+                            <TextBlock Text="{StaticResource Disc}" Margin="40,0,0,0" VerticalAlignment="Center"/>
                             <TextBlock Text=" #" VerticalAlignment="Center"/>
                             <TextBox Text="{Binding ElementName=usercontrol,Path=TagFile.Tag.Disc,ValidatesOnDataErrors=True,UpdateSourceTrigger=PropertyChanged,NotifyOnValidationError=True}" Width="40" Margin="5,0,0,0"/>
                             <TextBlock Text="/" Margin="5,0,5,0" VerticalAlignment="Center"/>
@@ -301,8 +299,8 @@
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition SharedSizeGroup="Button"/>
                 </Grid.ColumnDefinitions>
-                <Button Content="{StaticResource save}" Width="150" Click="ButtonSave_Click"/>
-                <Button Content="{StaticResource close}" Grid.Column="2" Click="ButtonClose_Click"/>
+                <Button Content="{StaticResource Save}" Width="150" Click="ButtonSave_Click"/>
+                <Button Content="{StaticResource Close}" Grid.Column="2" Click="ButtonClose_Click"/>
             </Grid>
         </Grid>
     </Grid>

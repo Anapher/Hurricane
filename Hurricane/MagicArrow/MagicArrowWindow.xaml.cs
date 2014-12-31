@@ -1,17 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.ComponentModel;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace Hurricane.MagicArrow
 {
@@ -23,8 +15,8 @@ namespace Hurricane.MagicArrow
         public event EventHandler MoveVisible;
         public event DragEventHandler FilesDropped;
 
-        private bool CanClose = true;
-        private Side currentside;
+        private bool _canClose = true;
+
         public MagicArrowWindow(double top, double fromleft, double toleft, Side side)
         {
             this.FromLeft = fromleft;
@@ -37,14 +29,12 @@ namespace Hurricane.MagicArrow
                 RotateObject(arrow);
                 RotateObject(arrow2);
             }
-            currentside = side;
         }
 
         private void RotateObject(UIElement element)
         {
             element.RenderTransformOrigin = new Point(0.5, 0.5);
-            ScaleTransform flipTrans = new ScaleTransform();
-            flipTrans.ScaleX = -1;
+            ScaleTransform flipTrans = new ScaleTransform { ScaleX = -1 };
             element.RenderTransform = flipTrans;
         }
 
@@ -55,21 +45,20 @@ namespace Hurricane.MagicArrow
         {
             if (MoveVisible != null)
                 MoveVisible(this, EventArgs.Empty);
-            CanClose = false; //When the user clicks on the arrow, it should go back instant
+            _canClose = false; //When the user clicks on the arrow, it should go back instant
             this.Close();
         }
 
-        protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
+        protected override void OnClosing(CancelEventArgs e)
         {
             base.OnClosing(e);
-            if (CanClose)
-            {
-                DoubleAnimation animation = new DoubleAnimation(FromLeft, TimeSpan.FromMilliseconds(400));
-                animation.Completed += (s, es) => { this.Close(); };
-                this.BeginAnimation(Window.LeftProperty, animation);
-                e.Cancel = true;
-                CanClose = false;
-            }
+            if (!_canClose) return;
+
+            DoubleAnimation animation = new DoubleAnimation(FromLeft, TimeSpan.FromMilliseconds(400));
+            animation.Completed += (s, es) => { this.Close(); };
+            this.BeginAnimation(LeftProperty, animation);
+            e.Cancel = true;
+            _canClose = false;
         }
 
         private void Window_DragEnter(object sender, DragEventArgs e)
@@ -81,9 +70,7 @@ namespace Hurricane.MagicArrow
         private void Window_Drop(object sender, DragEventArgs e)
         {
             if (e.Data.GetDataPresent(DataFormats.FileDrop))
-            {
                 if (FilesDropped != null) FilesDropped(this, e);
-            }
         }
     }
 }

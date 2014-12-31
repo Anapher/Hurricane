@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using Hurricane.Utilities;
 
 namespace Hurricane.Music
 {
@@ -12,13 +9,7 @@ namespace Hurricane.Music
         public bool Equals(Track x, Track y)
         {
             if (x == null || y == null || !x.TrackExists || !y.TrackExists) return false; //would crash if it needs to compute the hash
-            //return (x.TrackInformations.Length == y.TrackInformations.Length && Utilities.GeneralHelper.FileToMD5Hash(x.TrackInformations.FullName) == Utilities.GeneralHelper.FileToMD5Hash(y.TrackInformations.FullName));
-            if (x.TrackInformations.Length == y.TrackInformations.Length)
-            {
-                System.Diagnostics.Debug.Print("Create Hash: {0}", x.ToString());
-                return GetHash(x.TrackInformations.FullName) == GetHash(y.TrackInformations.FullName);
-            }
-            else { return false; }
+            return x.TrackInformations.Length == y.TrackInformations.Length && GetHash(x.TrackInformations.FullName) == GetHash(y.TrackInformations.FullName);
         }
 
         protected string GetHash(string path)
@@ -29,7 +20,7 @@ namespace Hurricane.Music
             }
             else
             {
-                string hash = Utilities.GeneralHelper.FileToMD5Hash(path);
+                string hash = GeneralHelper.FileToMD5Hash(path);
                 FileHashes.Add(path, hash);
                 return hash;
             }
@@ -38,7 +29,7 @@ namespace Hurricane.Music
         public int GetHashCode(Track track)
         {
             //Check whether the object is null 
-            if (Object.ReferenceEquals(track, null)) return 0;
+            if (ReferenceEquals(track, null)) return 0;
 
             //Get hash code for the Title field if it is not null. 
             int hashProductName = track.Title == null ? 0 : track.Title.GetHashCode();

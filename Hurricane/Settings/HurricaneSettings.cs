@@ -1,11 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Collections.ObjectModel;
-using System.IO;
-using System.Xml.Serialization;
 
 namespace Hurricane.Settings
 {
@@ -14,18 +7,13 @@ namespace Hurricane.Settings
         private static HurricaneSettings _instance;
         public static HurricaneSettings Instance
         {
-            get
-            {
-                if (_instance == null)
-                    _instance = new HurricaneSettings();
-                return _instance;
-            }
+            get { return _instance ?? (_instance = new HurricaneSettings()); }
         }
 
-        private string ProgramPath;
+        private readonly string _programPath;
         private HurricaneSettings()
         {
-            ProgramPath = AppDomain.CurrentDomain.BaseDirectory;
+            _programPath = AppDomain.CurrentDomain.BaseDirectory;
         }
 
         public PlaylistSettings Playlists { get; set; }
@@ -35,15 +23,15 @@ namespace Hurricane.Settings
 
         public void Load()
         {
-            Playlists = PlaylistSettings.Load(ProgramPath);
-            Config = ConfigSettings.Load(ProgramPath);
+            Playlists = PlaylistSettings.Load(_programPath);
+            Config = ConfigSettings.Load(_programPath);
             this.Loaded = true;
         }
 
         public void Save()
         {
-            if (Playlists != null) Playlists.Save(ProgramPath);
-            if (Config != null) Config.Save(ProgramPath);
+            if (Playlists != null) Playlists.Save(_programPath);
+            if (Config != null) Config.Save(_programPath);
         }
     }
 }

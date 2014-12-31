@@ -1,31 +1,23 @@
-﻿using MahApps.Metro.Controls;
-using MahApps.Metro.Controls.Dialogs;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using Hurricane.Music;
+using Hurricane.Views;
+using MahApps.Metro.Controls;
+using MahApps.Metro.Controls.Dialogs;
 
 namespace Hurricane.AppMainWindow.MahAppsExtensions.Dialogs
 {
     public partial class TrackInformationsDialog : BaseMetroDialog
     {
 
-        protected Views.TrackInformationsView view;
-        internal TrackInformationsDialog(MetroWindow parentWindow, Music.Track track, MetroDialogSettings settings)
+        protected TrackInformationsView view;
+        internal TrackInformationsDialog(MetroWindow parentWindow, Track track, MetroDialogSettings settings)
             : base(parentWindow, settings)
         {
             InitializeComponent();
-            view = new Views.TrackInformationsView(track);
+            view = new TrackInformationsView(track);
             view.Width = 600;
             view.Height = 500;
             this.gridContent.Children.Add(view);
@@ -40,10 +32,10 @@ namespace Hurricane.AppMainWindow.MahAppsExtensions.Dialogs
 
             Action cleanUpHandlers = () =>
             {
-                this.KeyDown -= escapeKeyHandler;
-                this.closebutton.Click -= closeHandler;
-                this.view.CloseRequest -= viewcloseHandler;
-                this.view.Dispose();
+                KeyDown -= escapeKeyHandler;
+                closebutton.Click -= closeHandler;
+                view.CloseRequest -= viewcloseHandler;
+                view.Dispose();
             };
             
             escapeKeyHandler = (sender, e) =>
@@ -67,9 +59,9 @@ namespace Hurricane.AppMainWindow.MahAppsExtensions.Dialogs
                 tcs.TrySetResult(null);
             };
 
-            this.KeyDown += escapeKeyHandler;
-            this.closebutton.Click += closeHandler;
-            this.view.CloseRequest += viewcloseHandler;
+            KeyDown += escapeKeyHandler;
+            closebutton.Click += closeHandler;
+            view.CloseRequest += viewcloseHandler;
 
             return tcs.Task;
         }

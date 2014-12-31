@@ -1,23 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+using System.ComponentModel;
+using MahApps.Metro.Controls;
 
 namespace Hurricane.Views
 {
     /// <summary>
     /// Interaction logic for CreateNewPlaylistWindow.xaml
     /// </summary>
-    public partial class InputDialog : MahApps.Metro.Controls.MetroWindow, System.ComponentModel.INotifyPropertyChanged
+    public partial class InputDialog : MetroWindow, INotifyPropertyChanged
     {
         public InputDialog()
         {
@@ -34,23 +24,23 @@ namespace Hurricane.Views
             this.txt.SelectAll();
         }
 
-        private String resulttext;
+        private String _resulttext;
         public String ResultText
         {
-            get { return resulttext; }
+            get { return _resulttext; }
             set
             {
-                if (value != resulttext)
+                if (value != _resulttext)
                 {
-                    resulttext = value;
+                    _resulttext = value;
                     if (PropertyChanged != null)
                     {
-                        PropertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs("ResultText"));
+                        PropertyChanged(this, new PropertyChangedEventArgs("ResultText"));
                     }
                 }
             }
         }
 
-        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler PropertyChanged;
     }
 }

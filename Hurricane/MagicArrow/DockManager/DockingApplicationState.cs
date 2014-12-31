@@ -1,12 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Windows;
 
 namespace Hurricane.MagicArrow.DockManager
 {
-   [Serializable] public class DockingApplicationState
+    [Serializable]
+    public class DockingApplicationState
     {
         public double Height { get; set; }
         public double Left { get; set; }
@@ -14,7 +12,13 @@ namespace Hurricane.MagicArrow.DockManager
         public double Width { get; set; }
 
         public DockingSide CurrentSide { get; set; }
+        public WindowState WindowState { get; set; }
+
+        public DockingApplicationState()
+        {
+            this.WindowState = WindowState.Normal;
+        }
     }
 
-   public enum DockingSide { Left, Right, None }
+    public enum DockingSide { Left, Right, None }
 }

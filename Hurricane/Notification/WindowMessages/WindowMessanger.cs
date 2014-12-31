@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Interop;
 using Hurricane.Utilities.Native;
@@ -18,11 +14,11 @@ namespace Hurricane.Notification.WindowMessages
         public event EventHandler BringWindowToFront;
         public event EventHandler<PlayTrackEventArgs> PlayMusicFile;
 
-        public WindowMessanger(Window BaseWindow)
+        public WindowMessanger(Window baseWindow)
         {
-            BaseWindow.SourceInitialized += (s,e) =>
+            baseWindow.SourceInitialized += (s,e) =>
             {
-                HwndSource source = PresentationSource.FromVisual(BaseWindow) as HwndSource;
+                HwndSource source = PresentationSource.FromVisual(baseWindow) as HwndSource;
                 source.AddHook(WndProc);
             };
         }

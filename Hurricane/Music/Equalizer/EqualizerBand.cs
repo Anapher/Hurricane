@@ -1,13 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Xml.Serialization;
+using Hurricane.ViewModelBase;
 
 namespace Hurricane.Music
 {
     [Serializable]
-  public  class EqualizerBand : ViewModelBase.PropertyChangedBase
+  public  class EqualizerBand : PropertyChangedBase
     {
         public event EventHandler EqualizerChanged; //We build the full event in the EqualizerSettings, because the EqualizerBand doesn't know his number
         
@@ -34,7 +32,7 @@ namespace Hurricane.Music
 
         }
 
-        [System.Xml.Serialization.XmlIgnore]
+        [XmlIgnore]
         public string Label { get; set; }
     }
 }

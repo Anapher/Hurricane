@@ -1,22 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Hurricane.ViewModelBase;
+using System.Threading;
+using System.Windows;
 using CSCore;
-using CSCore.SoundOut;
 using CSCore.Codecs;
-using System.IO;
 using CSCore.CoreAudioAPI;
+using CSCore.SoundOut;
 using CSCore.Streams;
+using Hurricane.Music.MusicDatabase.EventArgs;
+using Hurricane.Music.Visualization;
+using Hurricane.Settings;
+using Hurricane.ViewModelBase;
+using WPFSoundVisualizationLib;
+using Equalizer = CSCore.Streams.Equalizer;
 
 namespace Hurricane.Music
 {
-    public class CSCoreEngine : PropertyChangedBase, IDisposable, WPFSoundVisualizationLib.ISpectrumPlayer
+    public class CSCoreEngine : PropertyChangedBase, IDisposable, ISpectrumPlayer
     {
         #region Consts
         const int FFTSize = 4096;
+        const double MaxDB = 20;
 
         #endregion
 
@@ -31,16 +36,16 @@ namespace Hurricane.Music
         #endregion
 
         #region Properties
-        private float volume = 1.0f;
+        private float _volume = 1.0f;
         public float Volume
         {
-            get { return volume; }
+            get { return _volume; }
             set
             {
-                if (SetProperty(value, ref volume))
+                if (SetProperty(value, ref _volume))
                 {
-                    if (soundOut != null && soundOut.WaveSource != null)
-                        soundOut.Volume = value;
+                    if (_soundOut != null && _soundOut.WaveSource != null)
+                        _soundOut.Volume = value;
                     if (VolumeChanged != null) VolumeChanged(this, EventArgs.Empty);
                 }
             }
@@ -58,15 +63,15 @@ namespace Hurricane.Music
             }
         }
 
-        private Track currenttrack;
+        private Track _currenttrack;
         public Track CurrentTrack
         {
-            get { return currenttrack; }
+            get { return _currenttrack; }
             protected set
             {
-                if (SetProperty(value, ref currenttrack))
+                if (SetProperty(value, ref _currenttrack))
                 {
-                    if (TrackChanged != null && currenttrack != null) TrackChanged(this, new TrackChangedEventArgs(value));
+                    if (TrackChanged != null && _currenttrack != null) TrackChanged(this, new TrackChangedEventArgs(value));
                 }
             }
         }
@@ -78,14 +83,14 @@ namespace Hurricane.Music
 
         public bool IsPlaying
         {
-            get { return (soundOut == null ? false : (isfadingout ? false : soundOut.PlaybackState == PlaybackState.Playing)); }
+            get { return (_soundOut != null && (!_isfadingout && _soundOut.PlaybackState == PlaybackState.Playing)); }
         }
 
         public PlaybackState CurrentState
         {
             get
             {
-                if (soundOut == null) { return PlaybackState.Stopped; } else { return soundOut.PlaybackState; }
+                if (_soundOut == null) { return PlaybackState.Stopped; } else { return _soundOut.PlaybackState; }
             }
         }
 
@@ -121,30 +126,29 @@ namespace Hurricane.Music
 
         public IWaveSource SoundSource { get; protected set; }
 
-        public Settings.ConfigSettings Settings { get { return Hurricane.Settings.HurricaneSettings.Instance.Config; } }
+        public ConfigSettings Settings { get { return HurricaneSettings.Instance.Config; } }
         #endregion
 
         #region Members
-        private string CurrentDeviceID;
-        protected WasapiOut soundOut;
-        protected MMNotificationClient client;
-        protected bool manualstop = false;
-        protected VolumeFading fader;
-        protected bool isfadingout = false;
+        private string _currentDeviceId;
+        protected WasapiOut _soundOut;
+        protected MMNotificationClient _client;
+        protected bool _manualstop;
+        protected VolumeFading _fader;
+        protected bool _isfadingout;
 
         #endregion
 
         #region Equalizer
         public Equalizer MusicEqualizer { get; set; }
-        protected EqualizerSettings equalizersettings;
-        public EqualizerSettings EqualizerSettings { get { return equalizersettings; } set { equalizersettings = value; value.EqualizerChanged += value_EqualizerChanged; } }
+
+        protected EqualizerSettings _equalizersettings;
+        public EqualizerSettings EqualizerSettings { get { return _equalizersettings; } set { _equalizersettings = value; value.EqualizerChanged += value_EqualizerChanged; } }
 
         void value_EqualizerChanged(object sender, EqualizerChangedEventArgs e)
         {
             SetEqualizerValue(e.EqualizerValue, e.EqualizerNumber);
         }
-
-        private const double MaxDB = 20;
 
         protected void SetEqualizerValue(double value, int number)
         {
@@ -154,6 +158,7 @@ namespace Hurricane.Music
 
             //the tag of the trackbar contains the index of the filter
             EqualizerFilter filter = MusicEqualizer.SampleFilters[number];
+            filter.AverageGainDB = newvalue;
         }
 
         protected void SetAllEqualizerSettings()
@@ -190,20 +195,20 @@ namespace Hurricane.Music
     .AppendSource(x => new SingleBlockNotificationStream(x), out singleBlockNotificationStream)
     .ToWaveSource(Settings.WaveSourceBits);
 
-            this.MusicEqualizer = equalizer;
+            MusicEqualizer = equalizer;
             SetAllEqualizerSettings();
             simpleNotificationSource.BlockRead += notifysource_BlockRead;
             singleBlockNotificationStream.SingleBlockRead += notificationSource_SingleBlockRead;
 
-            analyser = new Visualization.SampleAnalyser(FFTSize);
-            analyser.Initialize(SoundSource.WaveFormat);
-            soundOut.Initialize(SoundSource);
+            _analyser = new SampleAnalyser(FFTSize);
+            _analyser.Initialize(SoundSource.WaveFormat);
+            _soundOut.Initialize(SoundSource);
 
             CurrentTrack = track;
             OnPropertyChanged("TrackLength");
             OnPropertyChanged("CurrentTrackLength");
             CurrentStateChanged();
-            soundOut.Volume = Volume;
+            _soundOut.Volume = Volume;
 
             if (StartVisualization != null) StartVisualization(this, EventArgs.Empty);
             track.LastTimePlayed = DateTime.Now;
@@ -212,10 +217,10 @@ namespace Hurricane.Music
 
         public void StopPlayback()
         {
-            if (soundOut.PlaybackState == PlaybackState.Playing || soundOut.PlaybackState == PlaybackState.Paused)
+            if (_soundOut.PlaybackState == PlaybackState.Playing || _soundOut.PlaybackState == PlaybackState.Paused)
             {
-                manualstop = true;
-                soundOut.Stop();
+                _manualstop = true;
+                _soundOut.Stop();
             }
         }
 
@@ -234,20 +239,20 @@ namespace Hurricane.Music
         public async void TogglePlayPause()
         {
             if (CurrentTrack == null) return;
-            if (fader != null && fader.IsFading) { fader.CancelFading(); fader.WaitForCancel(); }
-            if (soundOut.PlaybackState == PlaybackState.Playing)
+            if (_fader != null && _fader.IsFading) { _fader.CancelFading(); _fader.WaitForCancel(); }
+            if (_soundOut.PlaybackState == PlaybackState.Playing)
             {
-                isfadingout = true;
-                await fader.FadeOut(soundOut, this.Volume);
-                soundOut.Pause();
+                _isfadingout = true;
+                await _fader.FadeOut(_soundOut, this.Volume);
+                _soundOut.Pause();
                 CurrentStateChanged();
-                isfadingout = false;
+                _isfadingout = false;
             }
             else
             {
-                soundOut.Play();
+                _soundOut.Play();
                 CurrentStateChanged();
-                await fader.FadeIn(soundOut, this.Volume);
+                await _fader.FadeIn(_soundOut, this.Volume);
             }
         }
         #endregion
@@ -262,25 +267,25 @@ namespace Hurricane.Music
 
         void notificationSource_SingleBlockRead(object sender, SingleBlockReadEventArgs e)
         {
-            if (analyser != null)
-                analyser.Add(e.Left, e.Right);
+            if (_analyser != null)
+                _analyser.Add(e.Left, e.Right);
         }
 
         void notifysource_BlockRead(object sender, EventArgs e)
         {
             OnPropertyChanged("Position");
             OnPropertyChanged("CurrentTrackPosition");
-            if (PositionChanged != null) System.Windows.Application.Current.Dispatcher.Invoke(() => PositionChanged(this, new PositionChangedEventArgs((int)this.CurrentTrackPosition.TotalSeconds, (int)this.CurrentTrackLength.TotalSeconds)));
+            if (PositionChanged != null) Application.Current.Dispatcher.Invoke(() => PositionChanged(this, new PositionChangedEventArgs((int)this.CurrentTrackPosition.TotalSeconds, (int)this.CurrentTrackLength.TotalSeconds)));
         }
         #endregion
 
         #region Constructor
         public CSCoreEngine()
         {
-            client = new MMNotificationClient();
+            _client = new MMNotificationClient();
             RefreshSoundOut();
-            client.DefaultDeviceChanged += client_DefaultDeviceChanged;
-            fader = new VolumeFading();
+            _client.DefaultDeviceChanged += client_DefaultDeviceChanged;
+            _fader = new VolumeFading();
         }
 
         #endregion
@@ -288,11 +293,14 @@ namespace Hurricane.Music
         #region SoundOut
         void client_DefaultDeviceChanged(object sender, DefaultDeviceChangedEventArgs e)
         {
-            if (Settings.SoundOutDeviceID == "-0" && e.DeviceID != CurrentDeviceID)
+            if (Settings.SoundOutDeviceID == "-0" && e.DeviceID != _currentDeviceId)
             {
-                CurrentDeviceID = e.DeviceID;
-                System.Threading.Thread t = new System.Threading.Thread(() => { System.Threading.Thread.Sleep(100); System.Windows.Application.Current.Dispatcher.Invoke(() => UpdateSoundOut()); });
-                t.IsBackground = true;
+                _currentDeviceId = e.DeviceID;
+                Thread t = new Thread(() =>
+                {
+                    Thread.Sleep(100);
+                    Application.Current.Dispatcher.Invoke(UpdateSoundOut);
+                }) { IsBackground = true };
                 t.Start();
             }
         }
@@ -308,13 +316,13 @@ namespace Hurricane.Music
                 }
                 else
                 {
-                    using (MMDeviceCollection Devices = enumerator.EnumAudioEndpoints(DataFlow.Render, DeviceState.Active))
+                    using (MMDeviceCollection devices = enumerator.EnumAudioEndpoints(DataFlow.Render, DeviceState.Active))
                     {
-                        foreach (MMDevice CurrentDevice in Devices)
+                        foreach (MMDevice currentDevice in devices)
                         {
-                            if (CurrentDevice.DeviceID == Settings.SoundOutDeviceID)
+                            if (currentDevice.DeviceID == Settings.SoundOutDeviceID)
                             {
-                                device = CurrentDevice;
+                                device = currentDevice;
                             }
                         }
                         if (device == null)
@@ -326,40 +334,38 @@ namespace Hurricane.Music
                     }
                 }
             }
-            soundOut = new WasapiOut();
-            soundOut.Device = device;
-            soundOut.Latency = 100;
-            soundOut.Stopped += soundOut_Stopped;
+            _soundOut = new WasapiOut {Device = device, Latency = 100};
+            _soundOut.Stopped += soundOut_Stopped;
         }
 
         public void UpdateSoundOut()
         {
-            long position = this.Position;
-            bool isplaying = this.IsPlaying;
+            long position = Position;
+            bool isplaying = IsPlaying;
             StopPlayback();
-            if (soundOut != null) soundOut.Dispose();
+            if (_soundOut != null) _soundOut.Dispose();
             RefreshSoundOut();
             Track currenttrack = CurrentTrack;
             CurrentTrack = null;
             if (currenttrack != null) OpenTrack(currenttrack);
-            this.Position = position;
+            Position = position;
             if (isplaying) TogglePlayPause();
         }
 
         void soundOut_Stopped(object sender, PlaybackStoppedEventArgs e)
         {
-            if (isdisposing) return;
-            if (manualstop) { manualstop = false; return; }
-            TrackFinished(this, EventArgs.Empty);
+            if (_isdisposing) return;
+            if (_manualstop) { _manualstop = false; return; }
+            if (TrackFinished != null) TrackFinished(this, EventArgs.Empty);
             CurrentStateChanged();
         }
         #endregion
 
         #region Visualization Support
-        Visualization.SampleAnalyser analyser;
+        SampleAnalyser _analyser;
         public bool GetFFTData(float[] fftDataBuffer)
         {
-            analyser.CalculateFFT(fftDataBuffer);
+            _analyser.CalculateFFT(fftDataBuffer);
             return IsPlaying;
         }
 
@@ -379,18 +385,18 @@ namespace Hurricane.Music
         #endregion
 
         #region IDisposable Support
-        protected bool isdisposing;
+        protected bool _isdisposing;
         public void Dispose()
         {
-            isdisposing = true;
-            if (soundOut != null)
+            _isdisposing = true;
+            if (_soundOut != null)
             {
-                if (fader.IsFading) { fader.CancelFading(); fader.WaitForCancel(); }
-                soundOut.Dispose();
-                fader.Dispose();
+                if (_fader.IsFading) { _fader.CancelFading(); _fader.WaitForCancel(); }
+                _soundOut.Dispose();
+                _fader.Dispose();
             }
             if (SoundSource != null) SoundSource.Dispose();
-            if (client != null) client.Dispose();
+            if (_client != null) _client.Dispose();
         }
         #endregion
 
@@ -401,13 +407,10 @@ namespace Hurricane.Music
             using (MMDeviceEnumerator enumerator = new MMDeviceEnumerator())
             {
                 MMDevice standarddevice = enumerator.GetDefaultAudioEndpoint(DataFlow.Render, Role.Multimedia);
-                using (MMDeviceCollection Devices = enumerator.EnumAudioEndpoints(DataFlow.Render, DeviceState.Active))
+                using (MMDeviceCollection devices = enumerator.EnumAudioEndpoints(DataFlow.Render, DeviceState.Active))
                 {
                     result.Add(new AudioDevice() { ID = "-0", Name = "Windows Default" });
-                    foreach (MMDevice device in Devices)
-                    {
-                        result.Add(new AudioDevice() { ID = device.DeviceID, Name = device.FriendlyName, IsDefault = standarddevice.DeviceID == device.DeviceID });
-                    }
+                    result.AddRange(devices.Select(device => new AudioDevice() {ID = device.DeviceID, Name = device.FriendlyName, IsDefault = standarddevice.DeviceID == device.DeviceID}));
                 }
             }
 

@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Data;
-using System.Windows.Controls;
+using System.Diagnostics;
+using System.Globalization;
 using System.Text.RegularExpressions;
+using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Documents;
 
 namespace Hurricane.Extensions.Converter
@@ -13,7 +11,7 @@ namespace Hurricane.Extensions.Converter
     class TextWithHyperlinkParametersConverter : IMultiValueConverter
     {
 
-        public object Convert(object[] values, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
             TextBlock textblock = new TextBlock();
             string stringtoformat = values[0].ToString();
@@ -30,13 +28,13 @@ namespace Hurricane.Extensions.Converter
                 string url = sSplit[1];
 
                 Hyperlink hyperlink = new Hyperlink(new Run(text)) { NavigateUri = new Uri(url) };
-                hyperlink.RequestNavigate += (s, e) => { System.Diagnostics.Process.Start(e.Uri.AbsoluteUri); };
+                hyperlink.RequestNavigate += (s, e) => { Process.Start(e.Uri.AbsoluteUri); };
                 textblock.Inlines.Add(hyperlink);
             }
             return textblock;
         }
 
-        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, System.Globalization.CultureInfo culture)
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
         {
             throw new NotImplementedException();
         }

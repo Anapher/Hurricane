@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Hurricane.Music;
 
 namespace Hurricane.AppMainWindow.WindowSkins
 {
@@ -15,7 +12,7 @@ namespace Hurricane.AppMainWindow.WindowSkins
 
         void EnableWindow();
         void DisableWindow();
-        void RegisterSoundPlayer(Hurricane.Music.CSCoreEngine engine);
+        void RegisterSoundPlayer(CSCoreEngine engine);
         void MusicManagerEnabled(object manager);
 
         WindowSkinConfiguration Configuration { get; set; }

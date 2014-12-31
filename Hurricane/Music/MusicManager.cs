@@ -1,97 +1,99 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Hurricane.ViewModelBase;
 using System.Collections.ObjectModel;
+using System.Linq;
+using Hurricane.Music.API;
+using Hurricane.Music.MusicDatabase.EventArgs;
+using Hurricane.Notification;
+using Hurricane.Settings;
+using Hurricane.ViewModelBase;
 
 namespace Hurricane.Music
 {
     class MusicManager : PropertyChangedBase, IDisposable
     {
         #region Public Properties
-        private Track selectedtrack;
+        private Track _selectedtrack;
         public Track SelectedTrack
         {
-            get { return selectedtrack; }
+            get { return _selectedtrack; }
             set
             {
-                SetProperty(value, ref selectedtrack);
+                SetProperty(value, ref _selectedtrack);
             }
         }
 
-        private bool repeattrack;
-        public bool RepeatTrack
+        private bool _isloopenabled;
+        public bool IsLoopEnabled
         {
-            get { return repeattrack; }
+            get { return _isloopenabled; }
             set
             {
-                if (SetProperty(value, ref repeattrack) && value) RandomTrack = false;
+                if (SetProperty(value, ref _isloopenabled) && value) IsShuffleEnabled = false;
             }
         }
 
-        private bool randomtrack;
-        public bool RandomTrack
+        private bool _isshuffleenabled;
+        public bool IsShuffleEnabled
         {
-            get { return randomtrack; }
+            get { return _isshuffleenabled; }
             set
             {
-                if (SetProperty(value, ref randomtrack) && value) RepeatTrack = false;
+                if (SetProperty(value, ref _isshuffleenabled) && value) IsLoopEnabled = false;
             }
         }
 
-        private Playlist selectedplaylist;
+        private Playlist _selectedplaylist;
         public Playlist SelectedPlaylist
         {
-            get { return selectedplaylist; }
+            get { return _selectedplaylist; }
             set
             {
-                SetProperty(value, ref selectedplaylist);
+                SetProperty(value, ref _selectedplaylist);
             }
         }
-        
-        private String searchtext;
+
+        private String _searchtext;
         public String SearchText
         {
-            get { return searchtext; }
+            get { return _searchtext; }
             set
             {
-                SetProperty(value, ref searchtext);
+                SetProperty(value, ref _searchtext);
                 if (SelectedPlaylist != null && SelectedPlaylist.ViewSource != null) SelectedPlaylist.ViewSource.Refresh();
             }
         }
 
-        private ObservableCollection<Playlist> playlists;
+        private ObservableCollection<Playlist> _playlists;
         public ObservableCollection<Playlist> Playlists
         {
-            get { return playlists; }
+            get { return _playlists; }
             set
             {
-                SetProperty(value, ref playlists);
+                SetProperty(value, ref _playlists);
             }
         }
 
         //WARNING: The different between the Current- and the SelectedPlaylist is, that the current playlist is the playlist who is played. The selected playlist is the playlist the user sees (can be the same)
-        private Playlist currentplaylist;
+        private Playlist _currentplaylist;
         public Playlist CurrentPlaylist
         {
-            get { return currentplaylist; }
+            get { return _currentplaylist; }
             set
             {
-                SetProperty(value, ref currentplaylist);
+                SetProperty(value, ref _currentplaylist);
             }
         }
 
         public CSCoreEngine CSCoreEngine { get; protected set; }
 
-        public Notification.NotificationService Notification { get; set; }
+        public NotificationService Notification { get; set; }
 
         public MusicManagerCommands Commands { get; protected set; }
 
         public QueueManager Queue { get; set; }
 
-        public API.TcpServer ApiServer { get; set; }
+        public TcpServer ApiServer { get; set; }
         #endregion
 
         #region Contructor and Loading
@@ -101,22 +103,22 @@ namespace Hurricane.Music
             Playlists = new ObservableCollection<Playlist>();
             CSCoreEngine.TrackFinished += CSCoreEngine_TrackFinished;
             CSCoreEngine.TrackChanged += CSCoreEngine_TrackChanged;
-            Notification = new Notification.NotificationService(CSCoreEngine);
-            this.Commands = new MusicManagerCommands(this);
+            Notification = new NotificationService(CSCoreEngine);
+            Commands = new MusicManagerCommands(this);
 
-            random = new Random();
-            this.lasttracks = new List<TrackPlaylistPair>();
-            this.Queue = new QueueManager();
+            Random = new Random();
+            Lasttracks = new List<TrackPlaylistPair>();
+            Queue = new QueueManager();
 
-            this.ApiServer = new API.TcpServer(this);
-            if (Settings.HurricaneSettings.Instance.Config.ApiIsEnabled) ApiServer.StartListening();
+            ApiServer = new TcpServer(this);
+            if (HurricaneSettings.Instance.Config.ApiIsEnabled) ApiServer.StartListening();
         }
 
         public void LoadFromSettings()
         {
-            Settings.HurricaneSettings settings = Settings.HurricaneSettings.Instance;
-            this.Playlists = settings.Playlists.Playlists;
-            Settings.ConfigSettings config = settings.Config;
+            HurricaneSettings settings = HurricaneSettings.Instance;
+            Playlists = settings.Playlists.Playlists;
+            ConfigSettings config = settings.Config;
             CSCoreEngine.EqualizerSettings = config.EqualizerSettings;
             CSCoreEngine.EqualizerSettings.Loaded();
             CSCoreEngine.Volume = config.Volume;
@@ -124,7 +126,7 @@ namespace Hurricane.Music
             {
                 CurrentPlaylist = Playlists[config.LastPlaylistIndex];
             }
-            System.Diagnostics.Stopwatch sw = System.Diagnostics.Stopwatch.StartNew();
+
             if (config.LastTrackIndex > -1)
             {
                 Track t = CurrentPlaylist.Tracks[config.LastTrackIndex];
@@ -135,8 +137,7 @@ namespace Hurricane.Music
                     CSCoreEngine.OnPropertyChanged("Position");
                 }
             }
-            System.Diagnostics.Debug.Print("MainViewModel: {0}", sw.ElapsedMilliseconds.ToString());
-            sw.Stop();
+
             if (config.SelectedPlaylist > -1)
             {
                 SelectedPlaylist = Playlists[config.SelectedPlaylist];
@@ -145,20 +146,20 @@ namespace Hurricane.Music
             {
                 SelectedTrack = SelectedPlaylist.Tracks[config.SelectedTrack];
             }
-            this.RepeatTrack = config.RepeatTrack;
-            this.RandomTrack = config.RandomTrack;
+            IsLoopEnabled = config.IsLoopEnabled;
+            IsShuffleEnabled = config.IsShuffleEnabled;
             foreach (Playlist lst in Playlists)
             {
                 lst.LoadList();
             }
-            if (config.Queue != null) { this.Queue = config.Queue; this.Queue.Initialize(Playlists.ToList()); }
+            if (config.Queue != null) { Queue = config.Queue; Queue.Initialize(Playlists.ToList()); }
         }
         #endregion
 
         #region Event Handler
         void CSCoreEngine_TrackFinished(object sender, EventArgs e)
         {
-            if (RepeatTrack)
+            if (IsLoopEnabled)
             {
                 CSCoreEngine.OpenTrack(CSCoreEngine.CurrentTrack);
                 CSCoreEngine.TogglePlayPause();
@@ -171,17 +172,15 @@ namespace Hurricane.Music
 
         void CSCoreEngine_TrackChanged(object sender, TrackChangedEventArgs e)
         {
-            if (openedtrackwithstandardbackward) { openedtrackwithstandardbackward = false; return; }
-            if (lasttracks.Count == 0 || !(lasttracks.Last().Track == e.NewTrack))
-            {
-                lasttracks.Add(new TrackPlaylistPair(e.NewTrack, this.CurrentPlaylist));
-            }
+            if (_openedTrackWithStandardBackward) { _openedTrackWithStandardBackward = false; return; }
+            if (Lasttracks.Count == 0 || Lasttracks.Last().Track != e.NewTrack)
+                Lasttracks.Add(new TrackPlaylistPair(e.NewTrack, CurrentPlaylist));
         }
         #endregion
 
         #region Protected Members and Methods
-        protected Random random;
-        protected List<TrackPlaylistPair> lasttracks;
+        protected Random Random;
+        protected List<TrackPlaylistPair> Lasttracks;
 
         #endregion
 
@@ -204,11 +203,11 @@ namespace Hurricane.Music
             if (CurrentPlaylist == null || CurrentPlaylist.Tracks.Count == 0) return;
             Track nexttrack;
 
-            if (this.Queue.HasTracks)
+            if (Queue.HasTracks)
             {
                 var tuple = Queue.PlayNextTrack();
                 nexttrack = tuple.Item1;
-                this.CurrentPlaylist = tuple.Item2;
+                CurrentPlaylist = tuple.Item2;
             }
             else
             {
@@ -216,12 +215,28 @@ namespace Hurricane.Music
                 int nexttrackindex = currenttrackindex;
                 if (CheckIfTracksExists(CurrentPlaylist))
                 {
-                    if (RandomTrack)
+                    if (IsShuffleEnabled)
                     {
+                        if (CurrentPlaylist.ShuffleList.Count == 0) CurrentPlaylist.ShuffleList = new List<Track>(CurrentPlaylist.Tracks);
+                        bool hasrefreshed = false;
                         while (true)
                         {
-                            int i = random.Next(0, CurrentPlaylist.Tracks.Count);
-                            if (i != currenttrackindex && CurrentPlaylist.Tracks[i].TrackExists) { nexttrackindex = i; break; }
+                            int i = Random.Next(0, CurrentPlaylist.ShuffleList.Count);
+                            if (i != currenttrackindex && CurrentPlaylist.ShuffleList[i].TrackExists)
+                            {
+                                nexttrackindex = CurrentPlaylist.Tracks.IndexOf(CurrentPlaylist.ShuffleList[i]);
+                                CurrentPlaylist.ShuffleList.RemoveAt(i);
+                                break;
+                            }
+                            else
+                            {
+                                CurrentPlaylist.ShuffleList.RemoveAt(i);
+                                if (CurrentPlaylist.ShuffleList.Count == 0)
+                                {
+                                    if (hasrefreshed) continue;
+                                    CurrentPlaylist.ShuffleList = new List<Track>(CurrentPlaylist.Tracks); hasrefreshed = true;
+                                }
+                            }
                         }
                     }
                     else
@@ -256,16 +271,16 @@ namespace Hurricane.Music
             return result;
         }
 
-        private bool openedtrackwithstandardbackward = false;
+        private bool _openedTrackWithStandardBackward;
         public void GoBackward()
         {
             if (CurrentPlaylist == null || CurrentPlaylist.Tracks.Count == 0) return;
             Track newtrack;
-            if (lasttracks.Count > 1) //Check if there are more than two tracks, because the current track is the last one in the list
+            if (Lasttracks.Count > 1) //Check if there are more than two tracks, because the current track is the last one in the list
             {
-                lasttracks.Remove(lasttracks.Where((x) => x.Track == this.CSCoreEngine.CurrentTrack).Last());
-                newtrack = lasttracks.Last().Track;
-                this.CurrentPlaylist = lasttracks.Last().Playlist;
+                Lasttracks.Remove(Lasttracks.Last(x => x.Track == CSCoreEngine.CurrentTrack));
+                newtrack = Lasttracks.Last().Track;
+                CurrentPlaylist = Lasttracks.Last().Playlist;
             }
             else
             {
@@ -284,7 +299,7 @@ namespace Hurricane.Music
                             break;
                     }
                 }
-                openedtrackwithstandardbackward = true;
+                _openedTrackWithStandardBackward = true;
                 newtrack = CurrentPlaylist.Tracks[nexttrackindex];
             }
 
@@ -298,25 +313,34 @@ namespace Hurricane.Music
         #region Save and Deconstruction
         public void SaveToSettings()
         {
-            Settings.HurricaneSettings settings = Settings.HurricaneSettings.Instance;
+            HurricaneSettings settings = HurricaneSettings.Instance;
             settings.Playlists.Playlists = this.Playlists;
-            Settings.ConfigSettings config = settings.Config;
+            ConfigSettings config = settings.Config;
             config.Volume = CSCoreEngine.Volume;
             config.LastPlaylistIndex = CurrentPlaylist == null ? -1 : Playlists.IndexOf(CurrentPlaylist);
             config.LastTrackIndex = CSCoreEngine.CurrentTrack == null ? -1 : CurrentPlaylist.Tracks.IndexOf(CSCoreEngine.CurrentTrack);
             config.SelectedPlaylist = Playlists.IndexOf(SelectedPlaylist); //Its impossible that no playlist is selected
             config.SelectedTrack = SelectedTrack == null ? -1 : SelectedPlaylist.Tracks.IndexOf(SelectedTrack);
-            config.RepeatTrack = this.RepeatTrack;
-            config.RandomTrack = this.RandomTrack;
+            config.IsLoopEnabled = IsLoopEnabled;
+            config.IsShuffleEnabled = IsShuffleEnabled;
             config.TrackPosition = CSCoreEngine.CurrentTrack == null ? 0 : CSCoreEngine.Position;
             config.EqualizerSettings = CSCoreEngine.EqualizerSettings;
-            config.Queue = this.Queue.Count > 0 ? this.Queue : null;
+            config.Queue = Queue.Count > 0 ? Queue : null;
         }
 
         public void Dispose()
         {
-            CSCoreEngine.Dispose();
-            ApiServer.Dispose();
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        public virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                CSCoreEngine.Dispose();
+                ApiServer.Dispose();
+            }
         }
 
         #endregion

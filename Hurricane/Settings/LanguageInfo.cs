@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 using System.Xml.Serialization;
 
@@ -45,20 +42,20 @@ namespace Hurricane.Settings
         {
         }
 
-        public LanguageInfo(string Code)
+        public LanguageInfo(string code)
         {
-            this.Code = Code;
+            this.Code = code;
         }
 
-        public LanguageInfo(string Name, string Path, BitmapImage Icon, string Translator, string Code)
+        public LanguageInfo(string name, string path, BitmapImage icon, string translator, string code)
         {
-            this.Name = Name;
-            this.Path = Path;
-            this.Icon = Icon;
-            this.Translator = Translator;
-            this.Code = Code;
+            this.Name = name;
+            this.Path = path;
+            this.Icon = icon;
+            this.Translator = translator;
+            this.Code = code;
         }
 
-        public LanguageInfo(string Name, string Path, Uri IconPath, string Translator, string Code) : this(Name, Path, new BitmapImage(IconPath), Translator, Code) { }
+        public LanguageInfo(string name, string path, Uri iconPath, string translator, string code) : this(name, path, new BitmapImage(iconPath), translator, code) { }
     }
 }

@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -24,7 +20,8 @@ namespace Hurricane.Extensions
                       "Can only use ButtonHelper.DialogResult on a Button control");
                 button.Click += (sender, e2) =>
                 {
-                    Window.GetWindow(button).DialogResult = GetDialogResult(button);
+                    var window = Window.GetWindow(button);
+                    if (window != null) window.DialogResult = GetDialogResult(button);
                 };
             }
         });

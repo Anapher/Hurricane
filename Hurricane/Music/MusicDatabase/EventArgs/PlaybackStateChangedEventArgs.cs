@@ -1,19 +1,14 @@
 ﻿using CSCore.SoundOut;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Hurricane.Music
+namespace Hurricane.Music.MusicDatabase.EventArgs
 {
-    public class PlayStateChangedEventArgs : EventArgs
+    public class PlayStateChangedEventArgs : System.EventArgs
     {
         public PlaybackState NewPlaybackState { get; protected set; }
 
         public PlayStateChangedEventArgs(PlaybackState newstate)
         {
-            this.NewPlaybackState = newstate;
+            NewPlaybackState = newstate;
         }
     }
 }

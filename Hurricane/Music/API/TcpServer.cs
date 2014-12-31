@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Net;
-using System.IO;
 using System.Net.Sockets;
-using System.Data;
+using System.Threading;
+using System.Windows;
+using Hurricane.Settings;
 
 namespace Hurricane.Music.API
 {
@@ -14,12 +12,12 @@ namespace Hurricane.Music.API
     {
         protected TcpListener listener;
         public List<TcpConnection> Connections { get; set; }
-        public Music.MusicManager MusicManager { get; set; }
+        public MusicManager MusicManager { get; set; }
         public Commander Commander { get; set; }
         public bool IsRunning { get; set; }
         public bool GotProblems { get; set; }
 
-        public TcpServer(Music.MusicManager manager)
+        public TcpServer(MusicManager manager)
         {
             this.MusicManager = manager;
             Commander = new Commander(MusicManager);
@@ -28,7 +26,7 @@ namespace Hurricane.Music.API
         public bool StartListening()
         {
             this.Connections = new List<TcpConnection>();
-            IPEndPoint ipendpoint = new IPEndPoint(IPAddress.Any, Settings.HurricaneSettings.Instance.Config.ApiPort);
+            IPEndPoint ipendpoint = new IPEndPoint(IPAddress.Any, HurricaneSettings.Instance.Config.ApiPort);
             try
             {
                 listener = new TcpListener(ipendpoint);
@@ -40,8 +38,7 @@ namespace Hurricane.Music.API
                 return false;
             }
             GotProblems = false;
-            System.Threading.Thread t = new System.Threading.Thread(ListenerThread);
-            t.IsBackground = true;
+            Thread t = new Thread(ListenerThread) { IsBackground = true };
             t.Start();
             IsRunning = true;
             return true;
@@ -67,8 +64,8 @@ namespace Hurricane.Music.API
                     break;
                 }
                 TcpConnection connection = new TcpConnection(client, MusicManager);
-                connection.WriteLine("go");
                 string openline = connection.Reader.ReadLine();
+                if (string.IsNullOrEmpty(openline)) continue;
                 string[] parameters = openline.Split('|');
                 if (parameters.Length < 4 || parameters.Length > 4) { connection.WriteLine("Error: Can't read arguments. Please use \"bool|bool|bool|bool\""); connection.Dispose(); break; }
                 bool error = false;
@@ -81,8 +78,7 @@ namespace Hurricane.Music.API
                 SetParameters(parameters, connection);
                 connection.WriteLine("welcome");
                 this.Connections.Add(connection);
-                System.Threading.Thread t = new System.Threading.Thread(ListenToConnetion);
-                t.IsBackground = true;
+                Thread t = new Thread(ListenToConnetion) { IsBackground = true };
                 t.Start(connection);
             }
         }
@@ -106,8 +102,8 @@ namespace Hurricane.Music.API
                     {
                         var command = tcpclient.Reader.ReadLine();
                         string result = string.Empty;
-                        System.Windows.Application.Current.Dispatcher.Invoke(() => result = Commander.ExecuteCommand(command));
-                        tcpclient.WriteLine(result);
+                        Application.Current.Dispatcher.Invoke(() => result = Commander.ExecuteCommand(command));
+                        if (!string.IsNullOrEmpty(result)) tcpclient.WriteLine(result);
                     }
                     catch (Exception)
                     {

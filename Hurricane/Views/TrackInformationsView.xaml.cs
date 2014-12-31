@@ -1,49 +1,42 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using Hurricane.Music;
+using Ookii.Dialogs.Wpf;
 using TagLib;
-using System.ComponentModel;
 
 namespace Hurricane.Views
 {
     /// <summary>
-    /// Interaktionslogik für TrackInformationsView.xaml
+    /// Interaction logic for TrackInformationsView.xaml
     /// </summary>
     public partial class TrackInformationsView : UserControl, INotifyPropertyChanged, IDisposable
     {
         public event EventHandler CloseRequest;
 
-        public TrackInformationsView(Music.Track track)
+        public TrackInformationsView(Track track)
         {
             this.TagFile = File.Create(track.Path);
             this.CurrentTrack = track;
 
-            List<Genre> genres = new List<Genre>();
-            foreach (var item in TagLib.Genres.Audio)
-                genres.Add(new Genre(item, TagFile.Tag.Genres.Contains(item)));
+            List<Genre> genres = Genres.Audio.Select(item => new Genre(item, TagFile.Tag.Genres.Contains(item))).ToList();
             InitializeComponent();
             lstGenre.ItemsSource = genres;
         }
 
-        public Music.Track CurrentTrack { get; set; }
+        public Track CurrentTrack { get; set; }
         public File TagFile { get; set; }
 
         #region Lyrics
         private void MenuItemOpenLyrics_Click(object sender, RoutedEventArgs e)
         {
-            Ookii.Dialogs.Wpf.VistaOpenFileDialog ofd = new Ookii.Dialogs.Wpf.VistaOpenFileDialog();
-            ofd.Filter = string.Format("{0} (*.txt)|*.txt|{1} (*.*)|*.*", Application.Current.FindResource("textfile"), Application.Current.FindResource("allfiles"));
+            VistaOpenFileDialog ofd = new VistaOpenFileDialog
+            {
+                Filter = string.Format("{0} (*.txt)|*.txt|{1} (*.*)|*.*", Application.Current.FindResource("TextFiles"), Application.Current.FindResource("AllFiles"))
+            };
             if (ofd.ShowDialog() == true)
             {
                 TagFile.Tag.Lyrics = System.IO.File.ReadAllText(ofd.FileName);
@@ -53,8 +46,10 @@ namespace Hurricane.Views
 
         private void MenuItemSaveAs_Click(object sender, RoutedEventArgs e)
         {
-            Ookii.Dialogs.Wpf.VistaSaveFileDialog sfd = new Ookii.Dialogs.Wpf.VistaSaveFileDialog();
-            sfd.Filter = string.Format("{0} (*.txt)|*.txt|{1} (*.*)|*.*", Application.Current.FindResource("textfile"), Application.Current.FindResource("allfiles"));
+            VistaSaveFileDialog sfd = new VistaSaveFileDialog
+            {
+                Filter = string.Format("{0} (*.txt)|*.txt|{1} (*.*)|*.*", Application.Current.FindResource("TextFiles"), Application.Current.FindResource("AllFiles"))
+            };
             if (sfd.ShowDialog() == true)
             {
                 System.IO.File.WriteAllText(sfd.FileName, TagFile.Tag.Lyrics);
@@ -78,13 +73,7 @@ namespace Hurricane.Views
 
         private async void ButtonSave_Click(object sender, RoutedEventArgs e)
         {
-            List<string> genres = new List<string>();
-            foreach (var item in (List<Genre>)lstGenre.ItemsSource)
-            {
-                if (item.IsChecked) genres.Add(item.Text);
-            }
-
-            TagFile.Tag.Genres = genres.ToArray();
+            TagFile.Tag.Genres = (from item in (List<Genre>) lstGenre.ItemsSource where item.IsChecked select item.Text).ToArray();
             TagFile.Save();
             await CurrentTrack.LoadInformations();
         }

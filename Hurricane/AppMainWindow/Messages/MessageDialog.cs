@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Hurricane.AppMainWindow.Messages
 {
@@ -10,9 +6,9 @@ namespace Hurricane.AppMainWindow.Messages
     {
         public event EventHandler<bool> Closed;
 
-        public void DialogClosed(bool IsOk)
+        public void DialogClosed(bool isOk)
         {
-            if (Closed != null) Closed(this, IsOk);
+            if (Closed != null) Closed(this, isOk);
         }
     }
 
@@ -25,10 +21,10 @@ namespace Hurricane.AppMainWindow.Messages
 
         public MessageDialogStartEventArgs(MessageDialog instance, string message, string title, bool cancancel)
         {
-            this.Message = message;
-            this.Title = title;
-            this.CanCancel = cancancel;
-            this.Instance = instance;
+            Message = message;
+            Title = title;
+            CanCancel = cancancel;
+            Instance = instance;
         }
     }
 }

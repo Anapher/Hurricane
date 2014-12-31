@@ -1,31 +1,24 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.ComponentModel;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using System.ComponentModel;
 using Exceptionless;
+using Hurricane.Settings;
+using MahApps.Metro.Controls;
 
 namespace Hurricane.Views
 {
     /// <summary>
-    /// Interaktionslogik für ReportExceptionWindow.xaml
+    /// Interaction logic for ReportExceptionWindow.xaml
     /// </summary>
-    public partial class ReportExceptionWindow : MahApps.Metro.Controls.MetroWindow, INotifyPropertyChanged
+    public partial class ReportExceptionWindow : MetroWindow, INotifyPropertyChanged
     {
         public ReportExceptionWindow(Exception error)
         {
             InitializeComponent();
             this.Error = error;
-            if (Hurricane.Settings.HurricaneSettings.Instance.Loaded) Hurricane.Settings.HurricaneSettings.Instance.Save();
+            if (HurricaneSettings.Instance.Loaded) HurricaneSettings.Instance.Save();
         }
 
         private Exception _error;
@@ -44,18 +37,18 @@ namespace Hurricane.Views
             prg.IsIndeterminate = true;
             await Task.Run(() => ExceptionlessClient.Current.ProcessQueue());
             prg.IsIndeterminate = false;
-            App.Current.Shutdown();
+            Application.Current.Shutdown();
         }
 
         private void ButtonClose_Click(object sender, RoutedEventArgs e)
         {
-            App.Current.Shutdown();
+            Application.Current.Shutdown();
         }
 
         #region INotifyPropertyChanged
         protected void OnPropertyChanged(string propertyname)
         {
-            PropertyChanged(this, new PropertyChangedEventArgs(propertyname));
+            if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs(propertyname));
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

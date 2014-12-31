@@ -1,40 +1,36 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
+using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Hurricane.Music;
+using Hurricane.Resources.Styles.DragDropListView.ServiceProviders.UI;
+using Hurricane.Utilities;
+using Hurricane.ViewModels;
+using Track = Hurricane.Music.Track;
 
 namespace Hurricane.AppMainWindow.WindowSkins
 {
     /// <summary>
     /// Interaction logic for WindowSmartView.xaml
     /// </summary>
-    public partial class WindowSmartView : UserControl, IWindowSkin
+    public partial class WindowSmartView : IWindowSkin
     {
-        private Hurricane.Resources.Styles.DragDropListView.ServiceProviders.UI.ListViewDragDropManager<Music.Track> dragMgr;
         public WindowSmartView()
         {
             InitializeComponent();
-            dragMgr = new Resources.Styles.DragDropListView.ServiceProviders.UI.ListViewDragDropManager<Music.Track>(this.listview);
-            dragMgr.ShowDragAdorner = true;
-            this.Configuration = new WindowSkinConfiguration() {  MaxHeight = Utilities.WpfScreen.MaxHeight, MaxWidth = 300, MinHeight = 400, MinWidth  = 300, ShowSystemMenuOnRightClick = false, ShowTitleBar = false, ShowWindowControls = false, NeedMovingHelp = true, ShowFullscreenDialogs = false };
+            new ListViewDragDropManager<Track>(listview) {ShowDragAdorner = true};
+            this.Configuration = new WindowSkinConfiguration() {  MaxHeight = WpfScreen.MaxHeight, MaxWidth = 300, MinHeight = 400, MinWidth  = 300, ShowSystemMenuOnRightClick = false, ShowTitleBar = false, ShowWindowControls = false, NeedMovingHelp = true, ShowFullscreenDialogs = false };
         }
 
         private void buttonplus_Click(object sender, RoutedEventArgs e)
         {
             ContextMenu menu = ((Button)sender).ContextMenu;
             menu.PlacementTarget = (UIElement)sender;
-            menu.Placement = System.Windows.Controls.Primitives.PlacementMode.Bottom;
+            menu.Placement = PlacementMode.Bottom;
             menu.IsOpen = true;
         }
 
@@ -53,17 +49,17 @@ namespace Hurricane.AppMainWindow.WindowSkins
             CurrentTrackAnimation(grid, txtCurrentTrack, polyplay, false);
         }
 
-        private void CurrentTrackAnimation(Grid grid, TextBlock txt, Polygon poly, bool InAnimate)
+        private void CurrentTrackAnimation(Grid grid, TextBlock txt, Polygon poly, bool inAnimate)
         {
             Storyboard story = new Storyboard();
 
-            ColorAnimation coloranimation2 = new ColorAnimation(InAnimate ? ((SolidColorBrush)Application.Current.FindResource("DarkColorBrush")).Color : Colors.Black, TimeSpan.FromMilliseconds(250));
+            ColorAnimation coloranimation2 = new ColorAnimation(inAnimate ? ((SolidColorBrush)Application.Current.FindResource("DarkColorBrush")).Color : Colors.Black, TimeSpan.FromMilliseconds(250));
             Storyboard.SetTarget(coloranimation2, txtCurrentTrack);
             Storyboard.SetTargetProperty(coloranimation2, new PropertyPath("Foreground.Color"));
 
-            ThicknessAnimation thicknessanimation = new ThicknessAnimation(InAnimate ? new Thickness(3, 2, -3, 0) : new Thickness(0, 2, 0, 0), TimeSpan.FromMilliseconds(250));
+            ThicknessAnimation thicknessanimation = new ThicknessAnimation(inAnimate ? new Thickness(3, 2, -3, 0) : new Thickness(0, 2, 0, 0), TimeSpan.FromMilliseconds(250));
             Storyboard.SetTarget(thicknessanimation, poly);
-            Storyboard.SetTargetProperty(thicknessanimation, new PropertyPath(Polygon.MarginProperty));
+            Storyboard.SetTargetProperty(thicknessanimation, new PropertyPath(MarginProperty));
 
             story.Children.Add(coloranimation2);
             story.Children.Add(thicknessanimation);
@@ -83,7 +79,7 @@ namespace Hurricane.AppMainWindow.WindowSkins
                 return;
             if (e.Data.GetDataPresent(DataFormats.FileDrop))
             {
-                ViewModels.MainViewModel.Instance.DragDropFiles((string[])e.Data.GetData(DataFormats.FileDrop));
+                MainViewModel.Instance.DragDropFiles((string[])e.Data.GetData(DataFormats.FileDrop));
             }
         }
 
@@ -129,7 +125,7 @@ namespace Hurricane.AppMainWindow.WindowSkins
             SpectrumAnalyzer.RefreshInterval = int.MaxValue;
         }
 
-        public void RegisterSoundPlayer(Music.CSCoreEngine engine)
+        public void RegisterSoundPlayer(CSCoreEngine engine)
         {
             this.SpectrumAnalyzer.RegisterSoundPlayer(engine);
         }
@@ -147,10 +143,9 @@ namespace Hurricane.AppMainWindow.WindowSkins
             }
         }
 
-        private Music.MusicManager manager;
         public void MusicManagerEnabled(object manager)
         {
-            this.manager = (Music.MusicManager)manager;
+            
         }
     }
 }

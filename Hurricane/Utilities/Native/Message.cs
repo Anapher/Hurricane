@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using System.Runtime.InteropServices;
 
 namespace Hurricane.Utilities.Native
@@ -14,6 +15,6 @@ namespace Hurricane.Utilities.Native
         public IntPtr wParam;
         public IntPtr lParam;
         public uint time;
-        public System.Drawing.Point p;
+        public Point p;
     }
 }

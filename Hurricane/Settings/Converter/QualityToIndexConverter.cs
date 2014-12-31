@@ -1,31 +1,28 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Globalization;
 using System.Windows.Data;
 
 namespace Hurricane.Settings.Converter
 {
     class QualityToIndexConverter : IValueConverter
     {
-        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             switch ((ImageQuality)value)
             {
-                case ImageQuality.small:
+                case ImageQuality.Small:
                     return 0;
-                case ImageQuality.medium :
+                case ImageQuality.Medium :
                     return 1;
-                case ImageQuality.large:
+                case ImageQuality.Large:
                     return 2;
-                case ImageQuality.maximum:
+                case ImageQuality.Maximum:
                     return 3;
             }
             throw new ArgumentException();
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             return (ImageQuality)(int)value;
         }

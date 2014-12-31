@@ -1,23 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Hurricane.Music
+﻿namespace Hurricane.Music.MusicDatabase.EventArgs
 {
-    public class TrackChangedEventArgs : EventArgs
+    public class TrackChangedEventArgs : System.EventArgs
     {
-        private Track newtrack;
-        public Track NewTrack
-        {
-            get { return newtrack; }
-            protected set { newtrack = value; }
-        }
+        public Track NewTrack { get; protected set; }
 
         public TrackChangedEventArgs(Track newtrack)
         {
-            this.NewTrack = newtrack;
+            NewTrack = newtrack;
         }
     }
 }

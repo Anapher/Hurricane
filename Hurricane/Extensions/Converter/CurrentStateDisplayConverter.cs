@@ -1,25 +1,22 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Globalization;
 using System.Windows.Data;
-using System.Windows.Media.Imaging;
+using CSCore.SoundOut;
 
 namespace Hurricane.Extensions.Converter
 {
     class CurrentStateDisplayConverter : IValueConverter
     {
-        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            CSCore.SoundOut.PlaybackState state = (CSCore.SoundOut.PlaybackState)value;
+            PlaybackState state = (PlaybackState)value;
             string imagepath;
             switch (state)
             {
-                case CSCore.SoundOut.PlaybackState.Playing:
+                case PlaybackState.Playing:
                     imagepath = "/Resources/MediaIcons/ThumbButtons/play.png";
                     break;
-                case CSCore.SoundOut.PlaybackState.Paused:
+                case PlaybackState.Paused:
                     imagepath = "/Resources/MediaIcons/ThumbButtons/pause.png";
                     break;
                 default:
@@ -28,7 +25,7 @@ namespace Hurricane.Extensions.Converter
             return imagepath;
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             return Binding.DoNothing;
         }

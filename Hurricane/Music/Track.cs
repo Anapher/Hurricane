@@ -1,20 +1,25 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
-using CSCore.Tags.ID3;
-using System.IO;
+using System.Windows.Media.Imaging;
+using System.Xml;
+using System.Xml.Serialization;
 using CSCore;
 using CSCore.Codecs;
-using CSCore.Codecs.MP3;
-using System.Xml.Serialization;
-using System.Windows.Media.Imaging;
+using Hurricane.Music.MusicDatabase;
+using Hurricane.Settings;
+using Hurricane.Utilities;
+using Hurricane.ViewModelBase;
+using File = TagLib.File;
 
 namespace Hurricane.Music
 {
     [Serializable]
-    public class Track : ViewModelBase.PropertyChangedBase
+    public class Track : PropertyChangedBase
     {
         #region Properties
         public string Duration { get; set; }
@@ -29,67 +34,66 @@ namespace Hurricane.Music
         public DateTime TimeAdded { get; set; }
         public DateTime LastTimePlayed { get; set; }
         
-        private String album;
+        private String _album;
         public String Album
         {
-            get { return album; }
+            get { return _album; }
             set
             {
-                SetProperty(value, ref album);
+                SetProperty(value, ref _album);
             }
         }
 
-        
-        private bool isfavorite;
+        private bool _isfavorite;
         public bool IsFavorite
         {
-            get { return isfavorite; }
+            get { return _isfavorite; }
             set
             {
-                SetProperty(value, ref isfavorite);
+                SetProperty(value, ref _isfavorite);
             }
         }
 
-        private String queueid;
+        private String _queueid;
         [XmlIgnore]
         public String QueueID //I know that the id should be an int, but it wouldn't make sense because what would be the id for non queued track? We would need a converter -> less performance -> string is wurf
         {
-            get { return queueid; }
+            get { return _queueid; }
             set
             {
-                SetProperty(value, ref queueid);
+                SetProperty(value, ref _queueid);
             }
         }
-        private bool isplaying;
+        private bool _isplaying;
         [XmlIgnore]
         public bool IsPlaying
         {
-            get { return isplaying; }
+            get { return _isplaying; }
             set
             {
-                SetProperty(value, ref isplaying);
+                SetProperty(value, ref _isplaying);
             }
         }
         
-        private BitmapImage image;
+        private BitmapImage _image;
         [XmlIgnore]
         public BitmapImage Image
         {
-            get { return image; }
+            get { return _image; }
             set
             {
-                SetProperty(value, ref image);
+                SetProperty(value, ref _image);
             }
         }
 
-        private bool isloadingimage;
+        private bool _isloadingimage;
         [XmlIgnore]
         public bool IsLoadingImage
         {
-            get { return isloadingimage; }
+            get { return _isloadingimage; }
             set
             {
-                SetProperty(value, ref isloadingimage);
+                SetProperty(value, ref _isloadingimage);
             }
         }
 
@@ -97,15 +101,7 @@ namespace Hurricane.Music
         {
             get
             {
-                if (Duration.Split(':').Length == 2)
-                {
-                    return TimeSpan.ParseExact(Duration, @"mm\:ss", null);
-
-                }
-                else
-                {
-                    return TimeSpan.ParseExact(Duration, @"hh\:mm\:ss", null);
-                }
+                return TimeSpan.ParseExact(Duration, Duration.Split(':').Length == 2 ? @"mm\:ss" : @"hh\:mm\:ss", null);
             }
         }
 
@@ -117,93 +113,83 @@ namespace Hurricane.Music
             }
         }
 
-        private FileInfo trackinformations;
+        private FileInfo _trackinformations;
         public FileInfo TrackInformations
         {
-            get
-            {
-                if (trackinformations == null) trackinformations = new FileInfo(Path);
-                return trackinformations;
-            }
+            get { return _trackinformations ?? (_trackinformations = new FileInfo(Path)); }
         }
 
-        public async Task<bool> LoadInformations()
-        {
-            trackinformations = null; //to refresh the fileinfo
-            FileInfo file = TrackInformations;
+        #endregion
 
-            try //We just try to open the file to test if it works with CSCore
+        #region Import
+
+        public bool NotChecked { get; set; }
+        public bool ShouldSerializeNotChecked { get { return NotChecked; } }
+
+        public async Task<bool> CheckTrack()
+        {
+            TimeSpan duration = TimeSpan.Zero;
+            try
             {
-                TimeSpan duration = TimeSpan.Zero;
                 await Task.Run(() =>
                 {
-                    using (IWaveSource SoundSource = CodecFactory.Instance.GetCodec(Path))
+                    using (IWaveSource soundSource = CodecFactory.Instance.GetCodec(Path))
                     {
-                        duration = SoundSource.GetLength();
+                        duration = soundSource.GetLength();
                     }
                 });
-                if (duration.Hours == 0)
-                {
-                    this.Duration = duration.ToString(@"mm\:ss");
-                }
-                else
-                {
-                    this.Duration = duration.ToString(@"hh\:mm\:ss");
-                }
+                Duration = duration.ToString(duration.Hours == 0 ? @"mm\:ss" : @"hh\:mm\:ss");
             }
             catch (Exception)
             {
                 return false;
             }
 
+            NotChecked = false;
+            return true;
+        }
+
+        public async Task<bool> LoadInformations()
+        {
+            _trackinformations = null; //to refresh the fileinfo
+            FileInfo file = TrackInformations;
+
             try
             {
-                TagLib.File info = null;
-                await Task.Run(() => info = TagLib.File.Create(file.FullName));
+                File info = null;
+                try
+                {
+                    await Task.Run(() => info = File.Create(file.FullName));
+                }
+                catch
+                {
+                    return false;
+                }
+
                 using (info)
                 {
-                    if (!string.IsNullOrWhiteSpace(info.Tag.FirstPerformer))
-                    {
-                        this.Artist = RemoveInvalidXMLChars(info.Tag.FirstPerformer);
-                    }
-                    else
-                    {
-                        this.Artist = RemoveInvalidXMLChars(info.Tag.FirstAlbumArtist);
-                    }
-                    if (!string.IsNullOrWhiteSpace(info.Tag.Title))
-                    {
-                        this.Title = RemoveInvalidXMLChars(info.Tag.Title);
-                    }
-                    else
-                    {
-                        this.Title = System.IO.Path.GetFileNameWithoutExtension(file.FullName);
-                    }
-                    this.Genres = info.Tag.JoinedGenres;
-                    this.kbps = info.Properties.AudioBitrate;
-                    this.kHz = info.Properties.AudioSampleRate / 1000;
-                    this.Extension = file.Extension.ToUpper().Replace(".", string.Empty);
-                    this.Year = info.Tag.Year;
+                    Artist = RemoveInvalidXmlChars(!string.IsNullOrWhiteSpace(info.Tag.FirstPerformer) ? info.Tag.FirstPerformer : info.Tag.FirstAlbumArtist);
+                    Title = !string.IsNullOrWhiteSpace(info.Tag.Title) ? RemoveInvalidXmlChars(info.Tag.Title) : System.IO.Path.GetFileNameWithoutExtension(file.FullName);
+                    Genres = info.Tag.JoinedGenres;
+                    kbps = info.Properties.AudioBitrate;
+                    kHz = info.Properties.AudioSampleRate / 1000;
+                    Extension = file.Extension.ToUpper().Replace(".", string.Empty);
+                    Year = info.Tag.Year;
+                    Duration = info.Properties.Duration.ToString(info.Properties.Duration.Hours == 0 ? @"mm\:ss" : @"hh\:mm\:ss");
                 }
             }
             catch (NullReferenceException)
             {
-                this.Title = System.IO.Path.GetFileNameWithoutExtension(file.FullName);
+                Title = System.IO.Path.GetFileNameWithoutExtension(file.FullName);
             }
             return true;
-        }
-
-        public override string ToString()
-        {
-            if (!string.IsNullOrEmpty(Artist))
-                return string.Format("{0} - {1}", this.Artist, this.Title);
-            return Title;
         }
         #endregion
 
         #region Methods
         public void RefreshTrackExists()
         {
-            trackinformations = null;
+            _trackinformations = null;
             OnPropertyChanged("TrackExists");
         }
 
@@ -212,39 +198,37 @@ namespace Hurricane.Music
         /// </summary>
         public async void Load()
         {
-            this.IsLoadingImage = true;
+            IsLoadingImage = true;
             try
             {
-                using (TagLib.File file = TagLib.File.Create(Path))
+                using (File file = File.Create(Path))
                 {
                     if (file.Tag.Pictures != null && file.Tag.Pictures.Any())
-                    {
-                        this.Image = Utilities.GeneralHelper.ByteArrayToBitmapImage(file.Tag.Pictures.First().Data.ToArray());
-                    }
+                        Image = GeneralHelper.ByteArrayToBitmapImage(file.Tag.Pictures.First().Data.ToArray());
                 }
             }
             catch (Exception)
             {
-                this.Image = null;
+                Image = null;
             }
 
-            if (this.Image == null)
+            if (Image == null)
             {
                 DirectoryInfo diAlbumCover = new DirectoryInfo("AlbumCover");
-                this.Image = MusicDatabase.MusicCoverManager.GetImage(this, diAlbumCover);
-                if (this.Image == null && Settings.HurricaneSettings.Instance.Config.LoadAlbumCoverFromInternet)
+                Image = MusicCoverManager.GetImage(this, diAlbumCover);
+                if (Image == null && HurricaneSettings.Instance.Config.LoadAlbumCoverFromInternet)
                 {
                     try
                     {
-                        this.Image = await MusicDatabase.MusicCoverManager.LoadCoverFromWeb(this, diAlbumCover).ConfigureAwait(false);
+                        Image = await MusicCoverManager.LoadCoverFromWeb(this, diAlbumCover).ConfigureAwait(false);
                     }
-                    catch (System.Net.WebException)
+                    catch (WebException)
                     {
                         //Happens, doesn't matter
                     }
                 }
             }
-            this.IsLoadingImage = false;
+            IsLoadingImage = false;
         }
 
         /// <summary>
@@ -252,31 +236,36 @@ namespace Hurricane.Music
         /// </summary>
         public void Unload()
         {
-            if (this.Image != null)
+            if (Image != null)
             {
-                if (this.Image.StreamSource != null) this.Image.StreamSource.Dispose();
-                this.Image = null;
+                if (Image.StreamSource != null) Image.StreamSource.Dispose();
+                Image = null;
             }
         }
 
         public string GenerateHash()
         {
-            using (var md5Hasher = System.Security.Cryptography.MD5.Create())
+            using (var md5Hasher = MD5.Create())
             {
-                byte[] data = md5Hasher.ComputeHash(Encoding.Default.GetBytes(this.Path));
+                byte[] data = md5Hasher.ComputeHash(Encoding.Default.GetBytes(Path));
                 return BitConverter.ToString(data);
             }
         }
 
-        protected string RemoveInvalidXMLChars(string content)
+        protected string RemoveInvalidXmlChars(string content)
         {
             if (string.IsNullOrEmpty(content)) return string.Empty;
             try
             {
-                System.Xml.XmlConvert.VerifyXmlChars(content);
+                XmlConvert.VerifyXmlChars(content);
                 return content;
             }
-            catch { return new string(content.Where(ch => System.Xml.XmlConvert.IsXmlChar(ch)).ToArray()); }
+            catch { return new string(content.Where(XmlConvert.IsXmlChar).ToArray()); }
+        }
+
+        public override string ToString()
+        {
+            return !string.IsNullOrEmpty(Artist) ? string.Format("{0} - {1}", Artist, Title) : Title;
         }
         #endregion
 
@@ -289,36 +278,36 @@ namespace Hurricane.Music
         #endregion
 
         #region Animations
-        private bool isremoving = false;
+        private bool _isremoving;
         [XmlIgnore]
         public bool IsRemoving
         {
-            get { return isremoving; }
+            get { return _isremoving; }
             set
             {
-                SetProperty(value, ref isremoving);
+                SetProperty(value, ref _isremoving);
             }
         }
 
-        private bool isadded = false;
+        private bool _isadded;
         [XmlIgnore]
         public bool IsAdded
         {
-            get { return isadded; }
+            get { return _isadded; }
             set
             {
-                SetProperty(value, ref isadded);
+                SetProperty(value, ref _isadded);
             }
         }
 
-        private bool isselected;
+        private bool _isselected;
         [XmlIgnore]
         public bool IsSelected
         {
-            get { return isselected; }
+            get { return _isselected; }
             set
             {
-                SetProperty(value, ref isselected);
+                SetProperty(value, ref _isselected);
             }
         }
 

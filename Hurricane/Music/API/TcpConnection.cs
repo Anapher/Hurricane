@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Sockets;
-using System.Text;
-using System.Threading.Tasks;
 using System.IO;
+using System.Net.Sockets;
+using Hurricane.Music.MusicDatabase.EventArgs;
 
 namespace Hurricane.Music.API
 {
@@ -43,7 +40,7 @@ namespace Hurricane.Music.API
             this.PlayStateChangedEvent = true;
         }
 
-        void CSCoreEngine_PlaybackStateChanged(object sender, Music.PlayStateChangedEventArgs e)
+        void CSCoreEngine_PlaybackStateChanged(object sender, PlayStateChangedEventArgs e)
         {
             WriteLine("event playstate");
         }
@@ -53,18 +50,18 @@ namespace Hurricane.Music.API
             WriteLine("event volume");
         }
 
-        void CSCoreEngine_TrackChanged(object sender, Music.TrackChangedEventArgs e)
+        void CSCoreEngine_TrackChanged(object sender, TrackChangedEventArgs e)
         {
             WriteLine("event track");
         }
 
-        void CSCoreEngine_PositionChanged(object sender, Music.PositionChangedEventArgs e)
+        void CSCoreEngine_PositionChanged(object sender, PositionChangedEventArgs e)
         {
             WriteLine(string.Format("event position {0} {1}", e.NewPosition, e.TrackLength));
         }
 
-        protected Music.MusicManager manager;
-        public TcpConnection(TcpClient client, Music.MusicManager manager)
+        protected MusicManager manager;
+        public TcpConnection(TcpClient client, MusicManager manager)
         {
             this.Client = client;
             this.Reader = new StreamReader(client.GetStream());
@@ -74,8 +71,14 @@ namespace Hurricane.Music.API
 
         public void WriteLine(string line)
         {
-            Writer.WriteLine(line);
-            Writer.Flush();
+            try
+            {
+                Writer.WriteLine(line);
+                Writer.Flush();
+            }
+            catch (Exception)
+            {
+            }
         }
 
         public void Dispose()

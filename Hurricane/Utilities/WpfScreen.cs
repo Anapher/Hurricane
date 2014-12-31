@@ -2,11 +2,10 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Interop;
+using Point = System.Windows.Point;
 
 namespace Hurricane.Utilities
 {
@@ -14,28 +13,25 @@ namespace Hurricane.Utilities
     {
         public static IEnumerable<WpfScreen> AllScreens()
         {
-            foreach (Screen screen in System.Windows.Forms.Screen.AllScreens)
-            {
-                yield return new WpfScreen(screen);
-            }
+            return Screen.AllScreens.Select(screen => new WpfScreen(screen));
         }
 
         public static WpfScreen GetScreenFrom(Window window)
         {
             WindowInteropHelper windowInteropHelper = new WindowInteropHelper(window);
-            Screen screen = System.Windows.Forms.Screen.FromHandle(windowInteropHelper.Handle);
+            Screen screen = Screen.FromHandle(windowInteropHelper.Handle);
             WpfScreen wpfScreen = new WpfScreen(screen);
             return wpfScreen;
         }
 
-        public static WpfScreen GetScreenFrom(System.Windows.Point point)
+        public static WpfScreen GetScreenFrom(Point point)
         {
             int x = (int)Math.Round(point.X);
             int y = (int)Math.Round(point.Y);
 
             // are x,y device-independent-pixels ??
             System.Drawing.Point drawingPoint = new System.Drawing.Point(x, y);
-            Screen screen = System.Windows.Forms.Screen.FromPoint(drawingPoint);
+            Screen screen = Screen.FromPoint(drawingPoint);
             WpfScreen wpfScreen = new WpfScreen(screen);
 
             return wpfScreen;
@@ -47,7 +43,7 @@ namespace Hurricane.Utilities
             {
 
                 double i = 0;
-                foreach (var s in System.Windows.Forms.Screen.AllScreens)
+                foreach (var s in Screen.AllScreens)
                     if (s.Bounds.Height > i) i = s.Bounds.Height;
                 return i;
             }
@@ -61,7 +57,7 @@ namespace Hurricane.Utilities
                 if (allscreenswidth == -1)
                 {
                     allscreenswidth = 0;
-                    foreach (var screen in Utilities.WpfScreen.AllScreens())
+                    foreach (var screen in AllScreens())
                         allscreenswidth += screen.WorkingArea.Width;
                 }
                 return allscreenswidth;
@@ -70,24 +66,24 @@ namespace Hurricane.Utilities
 
         public static WpfScreen Primary
         {
-            get { return new WpfScreen(System.Windows.Forms.Screen.PrimaryScreen); }
+            get { return new WpfScreen(Screen.PrimaryScreen); }
         }
 
-        private readonly Screen screen;
+        private readonly Screen _screen;
 
-        internal WpfScreen(System.Windows.Forms.Screen screen)
+        internal WpfScreen(Screen screen)
         {
-            this.screen = screen;
+            this._screen = screen;
         }
 
         public Rect DeviceBounds
         {
-            get { return this.GetRect(this.screen.Bounds); }
+            get { return this.GetRect(this._screen.Bounds); }
         }
 
         public Rect WorkingArea
         {
-            get { return this.GetRect(this.screen.WorkingArea); }
+            get { return this.GetRect(this._screen.WorkingArea); }
         }
 
         private Rect GetRect(Rectangle value)
@@ -103,12 +99,12 @@ namespace Hurricane.Utilities
 
         public bool IsPrimary
         {
-            get { return this.screen.Primary; }
+            get { return this._screen.Primary; }
         }
 
         public string DeviceName
         {
-            get { return this.screen.DeviceName; }
+            get { return this._screen.DeviceName; }
         }
     }
 }

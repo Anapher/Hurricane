@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -19,7 +15,8 @@ namespace Hurricane.Extensions
             if (!itemsControl.TryScrollToCenterOfView(item))
             {
                 // Otherwise wait until everything is loaded, then scroll
-                if (itemsControl is ListBox) ((ListBox)itemsControl).ScrollIntoView(item);
+                var box = itemsControl as ListBox;
+                if (box != null) box.ScrollIntoView(item);
                 itemsControl.Dispatcher.BeginInvoke(DispatcherPriority.Loaded, new Action(() =>
                 {
                     itemsControl.TryScrollToCenterOfView(item);
@@ -57,7 +54,8 @@ namespace Hurricane.Extensions
             if (scrollInfo is StackPanel || scrollInfo is VirtualizingStackPanel)
             {
                 double logicalCenter = itemsControl.ItemContainerGenerator.IndexFromContainer(container) + 0.5;
-                Orientation orientation = scrollInfo is StackPanel ? ((StackPanel)scrollInfo).Orientation : ((VirtualizingStackPanel)scrollInfo).Orientation;
+                var info = scrollInfo as StackPanel;
+                Orientation orientation = info != null ? info.Orientation : ((VirtualizingStackPanel)scrollInfo).Orientation;
                 if (orientation == Orientation.Horizontal)
                     center.X = logicalCenter;
                 else

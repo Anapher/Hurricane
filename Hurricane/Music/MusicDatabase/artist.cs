@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Xml.Serialization;
 
 namespace Hurricane.Music.MusicDatabase
 {
 
     /// <remarks/>
-    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
-    [System.Xml.Serialization.XmlRootAttribute(Namespace = "", IsNullable = false)]
+    [XmlType(AnonymousType = true)]
+    [XmlRoot(Namespace = "", IsNullable = false)]
     public partial class lfm
     {
 
@@ -32,7 +28,7 @@ namespace Hurricane.Music.MusicDatabase
     }
 
     /// <remarks/>
-    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
+    [XmlType(AnonymousType = true)]
     public partial class lfmArtist
     {
 
@@ -96,7 +92,7 @@ namespace Hurricane.Music.MusicDatabase
         }
 
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute("image")]
+        [XmlElement("image")]
         public lfmArtistImage[] image
         {
             get
@@ -162,7 +158,7 @@ namespace Hurricane.Music.MusicDatabase
         }
 
         /// <remarks/>
-        [System.Xml.Serialization.XmlArrayItemAttribute("tag", IsNullable = false)]
+        [XmlArrayItem("tag", IsNullable = false)]
         public lfmArtistTag[] tags
         {
             get
@@ -190,7 +186,7 @@ namespace Hurricane.Music.MusicDatabase
     }
 
     /// <remarks/>
-    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
+    [XmlType(AnonymousType = true)]
     public partial class lfmArtistImage
     {
 
@@ -199,7 +195,7 @@ namespace Hurricane.Music.MusicDatabase
         private string valueField;
 
         /// <remarks/>
-        [System.Xml.Serialization.XmlAttributeAttribute()]
+        [XmlAttribute()]
         public string size
         {
             get
@@ -213,7 +209,7 @@ namespace Hurricane.Music.MusicDatabase
         }
 
         /// <remarks/>
-        [System.Xml.Serialization.XmlTextAttribute()]
+        [XmlText()]
         public string Value
         {
             get
@@ -228,7 +224,7 @@ namespace Hurricane.Music.MusicDatabase
     }
 
     /// <remarks/>
-    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
+    [XmlType(AnonymousType = true)]
     public partial class lfmArtistStats
     {
 
@@ -264,7 +260,7 @@ namespace Hurricane.Music.MusicDatabase
     }
 
     /// <remarks/>
-    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
+    [XmlType(AnonymousType = true)]
     public partial class lfmArtistTag
     {
 
@@ -300,7 +296,7 @@ namespace Hurricane.Music.MusicDatabase
     }
 
     /// <remarks/>
-    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
+    [XmlType(AnonymousType = true)]
     public partial class lfmArtistBio
     {
 
@@ -366,7 +362,7 @@ namespace Hurricane.Music.MusicDatabase
     }
 
     /// <remarks/>
-    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
+    [XmlType(AnonymousType = true)]
     public partial class lfmArtistBioLinks
     {
 
@@ -387,7 +383,7 @@ namespace Hurricane.Music.MusicDatabase
     }
 
     /// <remarks/>
-    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
+    [XmlType(AnonymousType = true)]
     public partial class lfmArtistBioLinksLink
     {
 
@@ -396,7 +392,7 @@ namespace Hurricane.Music.MusicDatabase
         private string hrefField;
 
         /// <remarks/>
-        [System.Xml.Serialization.XmlAttributeAttribute()]
+        [XmlAttribute()]
         public string rel
         {
             get
@@ -410,7 +406,7 @@ namespace Hurricane.Music.MusicDatabase
         }
 
         /// <remarks/>
-        [System.Xml.Serialization.XmlAttributeAttribute()]
+        [XmlAttribute()]
         public string href
         {
             get
