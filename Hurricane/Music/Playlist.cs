@@ -92,7 +92,7 @@ namespace Hurricane.Music
                 {
                     if (progresschanged != null) progresschanged(this, new TrackImportProgressChangedEventArgs(i, paths.Length, fi.Name));
                     Track t = new Track { Path = fi.FullName };
-                    if (!await t.LoadInformations()) continue;
+                    if (!await t.LoadInformation()) continue;
                     t.TimeAdded = DateTime.Now;
                     AddTrackWithAnimation(t);
                 }
@@ -104,14 +104,14 @@ namespace Hurricane.Music
             await AddFiles(null, paths);
         }
 
-        public async Task ReloadTrackInformations(EventHandler<TrackImportProgressChangedEventArgs> progresschanged)
+        public async Task ReloadTrackInformation(EventHandler<TrackImportProgressChangedEventArgs> progresschanged)
         {
             foreach (Track t in Tracks)
             {
                 if (progresschanged != null) progresschanged(this, new TrackImportProgressChangedEventArgs(Tracks.IndexOf(t), Tracks.Count, t.ToString()));
                 if (t.TrackExists)
                 {
-                    await t.LoadInformations();
+                    await t.LoadInformation();
                 }
             }
         }

@@ -9,9 +9,11 @@
              d:DesignHeight="600" d:DesignWidth="800" Background="White" x:Name="aboutcontrol">
     <UserControl.Resources>
         <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/Resources/Styles/TextBlockStyles.xaml"/>
-            </ResourceDictionary.MergedDictionaries>
+            <Style TargetType="TextBlock" x:Key="TextBlockHeader">
+                <Setter Property="FontWeight" Value="Bold"/>
+                <Setter Property="FontSize" Value="14"/>
+                <Setter Property="Foreground" Value="{DynamicResource AccentColorBrush}"/>
+            </Style>
             <converter:TextWithHyperlinkParametersConverter x:Key="TextWithHyperlinkParametersConverter"/>
             <Style TargetType="Hyperlink" x:Key="hyperlink">
                 <Setter Property="Foreground" Value="{DynamicResource NormalColorBrush}"/>

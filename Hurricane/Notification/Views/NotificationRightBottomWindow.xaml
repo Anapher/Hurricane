@@ -65,7 +65,7 @@
                     <TextBlock Text=" :: "/>
                     <TextBlock Text="{Binding kHz}"/>
                     <TextBlock Text=" kHz :: "/>
-                    <TextBlock Text="{Binding TrackInformations.Length,Converter={StaticResource RoundSizeConverter}}"/>
+                    <TextBlock Text="{Binding TrackInformation.Length,Converter={StaticResource RoundSizeConverter}}"/>
                 </StackPanel>
             </StackPanel>
         </Grid>

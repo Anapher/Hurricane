@@ -125,7 +125,7 @@ namespace Hurricane
 
         #region ApplyHostWindow
 
-        protected void ApplyHostWindow(IWindowSkin skin, bool saveinformations = true)
+        protected void ApplyHostWindow(IWindowSkin skin, bool saveinformation = true)
         {
             if (skin == HostedWindow) return;
             if (HostedWindow != null)
@@ -142,7 +142,7 @@ namespace Hurricane
             skin.ToggleWindowState += skin_ToggleWindowState;
 
             var appstate = HurricaneSettings.Instance.Config.ApplicationState;
-            if (skin != AdvancedWindowSkin && saveinformations)
+            if (skin != AdvancedWindowSkin && saveinformation)
             {
                 appstate.Height = Height;
                 appstate.Width = Width;
@@ -157,7 +157,7 @@ namespace Hurricane
             ShowTitleBar = skin.Configuration.ShowTitleBar;
             ShowSystemMenuOnRightClick = skin.Configuration.ShowSystemMenuOnRightClick;
 
-            if (skin == AdvancedWindowSkin && saveinformations)
+            if (skin == AdvancedWindowSkin && saveinformation)
             {
                 Width = appstate.Width;
                 Height = appstate.Height;
@@ -292,11 +292,11 @@ namespace Hurricane
             }
         }
 
-        public async Task ShowTrackInformations(Track track)
+        public async Task ShowTrackInformation(Track track)
         {
             if (HostedWindow.Configuration.ShowFullscreenDialogs)
             {
-                var dialog = new TrackInformationsDialog(this, track, null);
+                var dialog = new TrackInformationDialog(this, track, null);
                 await this.ShowMetroDialogAsync(dialog);
                 await dialog.WaitForCloseAsync();
                 await this.HideMetroDialogAsync(dialog);

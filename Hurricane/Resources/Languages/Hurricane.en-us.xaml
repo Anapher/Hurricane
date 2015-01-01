@@ -16,7 +16,7 @@
     <system:String x:Key="AddTracks">Add tracks</system:String>
     <system:String x:Key="Play">Play</system:String>
     <system:String x:Key="Pause">Pause</system:String>
-    <system:String x:Key="FileInfos">File infos</system:String>
+    <system:String x:Key="FileInfo">File info</system:String>
     <system:String x:Key="FileLocation">File location</system:String>
     <system:String x:Key="Remove">Remove</system:String>
     <system:String x:Key="Del">Del</system:String>
@@ -80,7 +80,7 @@
     <system:String x:Key="Played">Played</system:String>
     <system:String x:Key="Never">Never</system:String>
 
-    <system:String x:Key="AboutCopyright">Copyright © 2014 Alkaline. All Rights Reserved.</system:String>
+    <system:String x:Key="AboutCopyright">Copyright © 2014-2015 Alkaline. All Rights Reserved.</system:String>
     <system:String x:Key="AboutThanks1">To all the talented creators of the images and libraries mentioned above.</system:String>
     <system:String x:Key="AboutThanks2">To a really beautiful girl from my school class who gave me the inspiration for the name (she doesn't know that).</system:String>
     <system:String x:Key="AboutThanks3">To {0}, {1} and {2} (who also developed CSCore) for supporting me.</system:String>
@@ -96,12 +96,12 @@
     <system:String x:Key="Disabled">Disabled</system:String>
     <system:String x:Key="Top">Top</system:String>
     <system:String x:Key="RightBottom">Right bottom</system:String>
-    <system:String x:Key="TrackInformations">Trackinformations</system:String>
+    <system:String x:Key="TrackInformation">Trackinformation</system:String>
     <system:String x:Key="DisableNotificationsInGame">Disable notifications during a fullscreen application</system:String>
 
-    <system:String x:Key="ReloadTrackInfo">Reload track informations</system:String>
+    <system:String x:Key="ReloadTrackInfo">Reload track information</system:String>
     <system:String x:Key="RemoveMissingTracks">Remove missing tracks</system:String>
-    <system:String x:Key="LoadTrackInformations">Loading ({0} of {1})</system:String>
+    <system:String x:Key="LoadTrackInformation">Loading ({0} of {1})</system:String>
     <system:String x:Key="DeleteAllMissingTracks">Are you sure that you want to remove all missing tracks from the playlist?</system:String>
 
     <system:String x:Key="IncludeSubfolder">Include Subfolder</system:String>

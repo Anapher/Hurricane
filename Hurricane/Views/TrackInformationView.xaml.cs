@@ -11,13 +11,13 @@ using TagLib;
 namespace Hurricane.Views
 {
     /// <summary>
-    /// Interaction logic for TrackInformationsView.xaml
+    /// Interaction logic for TrackInformationView.xaml
     /// </summary>
-    public partial class TrackInformationsView : UserControl, INotifyPropertyChanged, IDisposable
+    public partial class TrackInformationView : UserControl, INotifyPropertyChanged, IDisposable
     {
         public event EventHandler CloseRequest;
 
-        public TrackInformationsView(Track track)
+        public TrackInformationView(Track track)
         {
             this.TagFile = File.Create(track.Path);
             this.CurrentTrack = track;
@@ -75,7 +75,7 @@ namespace Hurricane.Views
         {
             TagFile.Tag.Genres = (from item in (List<Genre>) lstGenre.ItemsSource where item.IsChecked select item.Text).ToArray();
             TagFile.Save();
-            await CurrentTrack.LoadInformations();
+            await CurrentTrack.LoadInformation();
         }
 
         private void ButtonClose_Click(object sender, RoutedEventArgs e)

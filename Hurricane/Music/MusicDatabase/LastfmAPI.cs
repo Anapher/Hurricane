@@ -15,7 +15,7 @@ namespace Hurricane.Music.MusicDatabase
     {
         public async static Task<BitmapImage> GetImage(string tracktitle, string artist, ImageQuality imagequality, bool saveimage, DirectoryInfo directory, Track t, bool trimtrackname)
         {
-            string apikey = SensitiveInformations.LastfmAPIKey;
+            string apikey = SensitiveInformation.LastfmAPIKey;
 
             if (trimtrackname) tracktitle = TrimTrackTitle(tracktitle);
 
@@ -34,9 +34,9 @@ namespace Hurricane.Music.MusicDatabase
                         url = Uri.EscapeUriString(string.Format("http://ws.audioscrobbler.com/2.0/?method=track.getInfo&api_key={2}&track={0}&artist={1}", foundtrack.name, foundtrack.artist, apikey));
                         result = await web.DownloadStringTaskAsync(url);
 
-                        using (StringReader srtrackinformations = new StringReader(result))
+                        using (StringReader srtrackinformation = new StringReader(result))
                         {
-                            var trackinfo = (lfm)xmls.Deserialize(srtrackinformations);
+                            var trackinfo = (lfm)xmls.Deserialize(srtrackinformation);
                             if (trackinfo.track.album != null && trackinfo.track.album.image != null && trackinfo.track.album.image.Length > 0)
                             {
                                 string imageurl = GetImageLink(trackinfo.track.album.image, imagequality);

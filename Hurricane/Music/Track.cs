@@ -109,14 +109,14 @@ namespace Hurricane.Music
         {
             get
             {
-                return TrackInformations.Exists;
+                return TrackInformation.Exists;
             }
         }
 
-        private FileInfo _trackinformations;
-        public FileInfo TrackInformations
+        private FileInfo _trackinformation;
+        public FileInfo TrackInformation
         {
-            get { return _trackinformations ?? (_trackinformations = new FileInfo(Path)); }
+            get { return _trackinformation ?? (_trackinformation = new FileInfo(Path)); }
         }
 
         #endregion
@@ -149,10 +149,10 @@ namespace Hurricane.Music
             return true;
         }
 
-        public async Task<bool> LoadInformations()
+        public async Task<bool> LoadInformation()
         {
-            _trackinformations = null; //to refresh the fileinfo
-            FileInfo file = TrackInformations;
+            _trackinformation = null; //to refresh the fileinfo
+            FileInfo file = TrackInformation;
 
             try
             {
@@ -189,7 +189,7 @@ namespace Hurricane.Music
         #region Methods
         public void RefreshTrackExists()
         {
-            _trackinformations = null;
+            _trackinformation = null;
             OnPropertyChanged("TrackExists");
         }
 
@@ -247,8 +247,7 @@ namespace Hurricane.Music
         {
             using (var md5Hasher = MD5.Create())
             {
-                byte[] data = md5Hasher.ComputeHash(Encoding.Default.GetBytes(Path));
-                return BitConverter.ToString(data);
+                return BitConverter.ToString(md5Hasher.ComputeHash(Encoding.Default.GetBytes(Path)));
             }
         }
 

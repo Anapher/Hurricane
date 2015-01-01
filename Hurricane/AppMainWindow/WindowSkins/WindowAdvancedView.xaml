@@ -17,7 +17,6 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/Resources/Styles/AdvancedTimelineSlider.xaml"/>
                 <ResourceDictionary Source="/Resources/Styles/RoundButtons.xaml"/>
-                <ResourceDictionary Source="/Resources/Styles/TextBlockStyles.xaml"/>
                 <ResourceDictionary Source="/Resources/Styles/FavoriteToggleButton.xaml"/>
             </ResourceDictionary.MergedDictionaries>
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
@@ -43,8 +42,7 @@
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
         <Grid MouseLeftButtonDown="Grid_MouseLeftButtonDown" MouseLeftButtonUp="Grid_MouseLeftButtonUp" Background="White">
-            <!--<TextBlock Text="Hurricane" Foreground="#FFAAAAAA" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Center"/>-->
-            <Image Source="/Resources/App/christmastitle.png" Margin="0,5,0,0" RenderOptions.BitmapScalingMode="HighQuality"/>
+            <TextBlock Text="Hurricane" Foreground="#FFAAAAAA" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Center"/>
         </Grid>
         <TabControl Grid.Row="1">
             <TabItem Header="{DynamicResource Playlists}">
@@ -71,7 +69,7 @@
                                 <MenuItem Header="{DynamicResource AddFiles}" Command="{Binding AddFilesToPlaylist}"/>
                                 <MenuItem Header="{DynamicResource AddDirectories}" Command="{Binding AddFolderToPlaylist}"/>
                                 <Separator />
-                                <MenuItem Header="{DynamicResource ReloadTrackInfo}" Command="{Binding ReloadTrackInformations}"/>
+                                <MenuItem Header="{DynamicResource ReloadTrackInfo}" Command="{Binding ReloadTrackInformation}"/>
                                 <MenuItem Header="{DynamicResource RemoveTracks}">
                                     <MenuItem Header="{DynamicResource RemoveMissingTracks}" Command="{Binding RemoveMissingTracks}" IsEnabled="{Binding MusicManager.SelectedPlaylist.ContainsMissingTracks}"/>
                                     <MenuItem Header="{DynamicResource RemoveDuplicates}" Command="{Binding RemoveDuplicateTracks}"/>
@@ -123,7 +121,7 @@
                                         <MenuItem Header="{DynamicResource QueueManager}" Command="{Binding OpenQueueManager}" InputGestureText="{DynamicResource CtrlQ}"/>
                                     </MenuItem>
                                     <Separator />
-                                    <MenuItem Header="{DynamicResource FileInfos}" Command="{Binding OpenTrackInformations}" IsEnabled="{Binding MusicManager.SelectedTrack.TrackExists}" InputGestureText="F4"/>
+                                    <MenuItem Header="{DynamicResource FileInfo}" Command="{Binding OpenTrackInformation}" IsEnabled="{Binding MusicManager.SelectedTrack.TrackExists}" InputGestureText="F4"/>
                                     <MenuItem Header="{DynamicResource FileLocation}" Command="{Binding MusicManager.Commands.OpenTrackLocation}" InputGestureText="Alt+O" IsEnabled="{Binding MusicManager.SelectedTrack.TrackExists}"/>
                                     <Separator />
                                     <MenuItem Header="{DynamicResource Remove}" Command="{Binding RemoveSelectedTracks}" InputGestureText="{DynamicResource Del}"/>
@@ -139,7 +137,7 @@
                                 <KeyBinding Key="Q" Modifiers="Control" Command="{Binding OpenQueueManager}"/>
                                 <KeyBinding Key="Insert" Command="{Binding AddFilesToPlaylist}"/>
                                 <KeyBinding Key="Insert" Modifiers="Control" Command="{Binding AddFolderToPlaylist}"/>
-                                <KeyBinding Key="F4" Command="{Binding OpenTrackInformations}"/>
+                                <KeyBinding Key="F4" Command="{Binding OpenTrackInformation}"/>
                             </ListView.InputBindings>
                             <ListView.Style>
                                 <Style TargetType="{x:Type ListView}">
@@ -481,15 +479,10 @@
                             </wpfsvl:SpectrumAnalyzer.Style>
                         </wpfsvl:SpectrumAnalyzer>
                     </Grid>
-
                 </Grid>
             </TabItem>
             <TabItem Header="{DynamicResource Settings}" xmlns:settingsconverter="clr-namespace:Hurricane.Settings.Converter" xmlns:tkt="http://schemas.xceed.com/wpf/xaml/toolkit">
                 <Grid DataContext="{x:Static viewmodels:SettingsViewModel.Instance}">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="200"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="25"/>
                         <RowDefinition Height="*"/>
@@ -497,221 +490,7 @@
                     <Grid Grid.ColumnSpan="2">
                         <Button Content="{DynamicResource Apply}" HorizontalAlignment="Right" Margin="0,0,10,0" Command="{Binding ApplyChanges}" IsEnabled="{Binding CanApply}"/>
                     </Grid>
-                    <ListBox x:Name="lst" SelectedIndex="{Binding SelectedTab}" Grid.Row="1">
-                        <ListBoxItem Content="{DynamicResource Playback}"/>
-                        <ListBoxItem Content="{DynamicResource Appearance}"/>
-                        <ListBoxItem Content="{DynamicResource Behaviour}"/>
-                        <ListBoxItem Content="{DynamicResource System}"/>
-                        <ListBoxItem Content="{DynamicResource Reset}"/>
-                        <ListBoxItem Content="{DynamicResource Language}"/>
-                        <ListBoxItem Content="{DynamicResource About}"/>
-                    </ListBox>
-                    <TabControl Grid.Column="1" Grid.Row="1" SelectedIndex="{Binding SelectedTab}">
-                        <TabControl.Resources>
-                            <Style TargetType="TabItem">
-                                <Setter Property="Visibility" Value="Collapsed"/>
-                            </Style>
-                        </TabControl.Resources>
-                        <TabItem Header="Playback">
-                            <TabItem.Resources>
-                                <settingsconverter:BitrateToIndexConverter x:Key="BitrateToIndexConverter"/>
-                                <settingsconverter:SampleRateToIndexConverter x:Key="SampleRateToIndexConverter"/>
-                            </TabItem.Resources>
-                            <Grid>
-                                <StackPanel Orientation="Vertical" Margin="10">
-                                    <DockPanel>
-                                        <TextBlock Text="{DynamicResource Device}" VerticalAlignment="Center"/>
-                                        <TextBlock Text=":" VerticalAlignment="Center"/>
-                                        <ComboBox Margin="10,0,0,0" ItemsSource="{Binding AudioDevices}" SelectedItem="{Binding SelectedAudioDevice}" Width="300" HorizontalAlignment="Left">
-                                            <ComboBox.ItemTemplate>
-                                                <DataTemplate>
-                                                    <Grid x:Name="grid">
-                                                        <TextBlock Text="{Binding}" x:Name="txt"/>
-                                                    </Grid>
-                                                    <DataTemplate.Triggers>
-                                                        <DataTrigger Binding="{Binding IsDefault}" Value="True">
-                                                            <Setter TargetName="txt" Property="Foreground" Value="#FFC15757"/>
-                                                        </DataTrigger>
-                                                    </DataTemplate.Triggers>
-                                                </DataTemplate>
-                                            </ComboBox.ItemTemplate>
-                                        </ComboBox>
-                                    </DockPanel>
-                                    <DockPanel Margin="0,10,0,0" LastChildFill="False">
-                                        <TextBlock Text="{DynamicResource SampleSourceBitrate}" VerticalAlignment="Center"/>
-                                        <TextBlock Text=":" VerticalAlignment="Center" Margin="0,0,10,0"/>
-                                        <ComboBox Width="100" SelectedIndex="{Binding Config.WaveSourceBits,Converter={StaticResource BitrateToIndexConverter}}" SelectionChanged="SettingChanged">
-                                            <ComboBoxItem Content="8 Bits"/>
-                                            <ComboBoxItem Content="16 Bits"/>
-                                            <ComboBoxItem Content="24 Bits"/>
-                                            <ComboBoxItem Content="32 Bits"/>
-                                        </ComboBox>
-                                    </DockPanel>
-                                    <DockPanel Margin="0,10,0,0" LastChildFill="False">
-                                        <TextBlock Text="{DynamicResource Samplerate}" VerticalAlignment="Center"/>
-                                        <TextBlock Text=":" VerticalAlignment="Center" Margin="0,0,10,0"/>
-                                        <ComboBox Width="250" SelectedIndex="{Binding Config.SampleRate,Converter={StaticResource SampleRateToIndexConverter}}" SelectionChanged="SettingChanged">
-                                            <ComboBoxItem Content="{DynamicResource DefaultSamplerate}"/>
-                                            <ComboBoxItem Content="44100 Hz"/>
-                                            <ComboBoxItem Content="48000 Hz"/>
-                                            <ComboBoxItem Content="88200 Hz"/>
-                                            <ComboBoxItem Content="96000 Hz"/>
-                                            <ComboBoxItem Content="176400 Hz"/>
-                                            <ComboBoxItem Content="192000 Hz"/>
-                                        </ComboBox>
-                                    </DockPanel>
-                                </StackPanel>
-                            </Grid>
-                        </TabItem>
-                        <TabItem Header="Visual">
-                            <StackPanel Orientation="Vertical" Margin="10">
-                                <TextBlock Style="{StaticResource TextBlockHeader}" extensions:TextBlockHelper.UpperText="{DynamicResource Theme}"/>
-                                <StackPanel Orientation="Horizontal">
-                                    <ComboBox Margin="0,10,0,0" x:Name="cbb" ItemsSource="{Binding Config.Theme.Themes}" SelectedItem="{Binding Config.Theme.SelectedColorTheme}" SelectionChanged="SettingChanged" Width="300" HorizontalAlignment="Left">
-                                        <ComboBox.ItemTemplate>
-                                            <DataTemplate>
-                                                <DockPanel>
-                                                    <Ellipse Width="16" Height="16" Fill="{Binding ColorBrush}"/>
-                                                    <TextBlock Text="{Binding TranslatedName}" Margin="10,0,0,0"/>
-                                                </DockPanel>
-                                            </DataTemplate>
-                                        </ComboBox.ItemTemplate>
-                                    </ComboBox>
-                                    <Button Margin="10,0,0,0" Content="{DynamicResource Edit}" IsEnabled="{Binding ElementName=cbb,Path=SelectedItem.IsEditable}" VerticalAlignment="Bottom" Command="{Binding EditTheme}"/>
-                                    <Button Margin="10,0,0,0" Content="{DynamicResource Create}" VerticalAlignment="Bottom" Command="{Binding OpenThemeCreator}"/>
-                                </StackPanel>
-                                <DockPanel Margin="0,5,0,0" >
-                                    <CheckBox Content="{DynamicResource SpectrumAnalyzerColor}" VerticalAlignment="Center" IsChecked="{Binding Config.Theme.UseCustomSpectrumAnalyzerColor}" Checked="SettingChanged" Unchecked="SettingChanged"/>
-                                    <tkt:ColorPicker Margin="10,0,0,0" IsEnabled="{Binding Config.Theme.UseCustomSpectrumAnalyzerColor}" SelectedColor="{Binding Config.Theme.SpectrumAnalyzerColor}" SelectedColorChanged="SettingChanged" Width="200" HorizontalAlignment="Left" ColorMode="ColorCanvas" ShowStandardColors="False" ShowAvailableColors="False" ShowAdvancedButton="False"/>
-                                </DockPanel>
-                            </StackPanel>
-                        </TabItem>
-                        <TabItem Header="Behaviour">
-                            <ScrollViewer>
-                                <StackPanel Orientation="Vertical" Margin="10">
-                                    <TextBlock Text="MAGIC ARROW" Style="{StaticResource TextBlockHeader}"/>
-                                    <CheckBox Content="{DynamicResource ShowMagicArrowBelowCursor}" IsChecked="{Binding Config.ShowMagicArrowBelowCursor}" Margin="0,10,0,0" Checked="SettingChanged" Unchecked="SettingChanged"/>
-                                    <TextBlock extensions:TextBlockHelper.UpperText="{DynamicResource Notifications}" Margin="0,30,0,0" Style="{StaticResource TextBlockHeader}"/>
-                                    <Grid Margin="0,5,0,0">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="125"/>
-                                            <ColumnDefinition Width="*"/>
-                                        </Grid.ColumnDefinitions>
-                                        <Grid.Resources>
-                                            <settingsconverter:NotificationTypeConverter x:Key="NotificationTypeConverter"/>
-                                        </Grid.Resources>
-                                        <StackPanel Orientation="Horizontal">
-                                            <TextBlock Text="{DynamicResource TrackInformations}" VerticalAlignment="Center"/>
-                                            <TextBlock Text=":" Margin="0,0,10,0" VerticalAlignment="Center"/>
-                                        </StackPanel>
-                                        <StackPanel Orientation="Horizontal" Grid.Column="1">
-                                            <ComboBox Width="150" SelectedIndex="{Binding Config.Notification,Converter={StaticResource NotificationTypeConverter}}" SelectionChanged="SettingChanged">
-                                                <ComboBoxItem Content="{DynamicResource Disabled}"/>
-                                                <ComboBoxItem Content="{DynamicResource Top}"/>
-                                                <ComboBoxItem Content="{DynamicResource RightBottom}"/>
-                                            </ComboBox>
-                                            <Button Content="{DynamicResource Test}" Margin="5,0,0,0" Width="70" Command="{Binding TestNotification}"/>
-                                        </StackPanel>
-                                    </Grid>
-                                    <Grid Margin="0,10,0,0">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="125"/>
-                                            <ColumnDefinition Width="*"/>
-                                        </Grid.ColumnDefinitions>
-                                        <TextBlock Text="{DynamicResource ShowTime}" VerticalAlignment="Center"/>
-                                        <controls:NumericUpDown Minimum="1000" Maximum="1000000" Interval="100" Width="125" Grid.Column="1" HorizontalAlignment="Left" Value="{Binding Config.NotificationShowTime}" ValueChanged="SettingChanged" StringFormat="{}{0} ms"/>
-                                    </Grid>
-                                    <CheckBox IsChecked="{Binding Config.DisableNotificationInGame}" Margin="0,10,0,0" Checked="SettingChanged" Unchecked="SettingChanged">
-                                        <TextBlock Text="{DynamicResource DisableNotificationsInGame}" TextWrapping="Wrap"/>
-                                    </CheckBox>
-                                    <TextBlock extensions:TextBlockHelper.UpperText="{DynamicResource CoverArt}" Margin="0,30,0,0" Style="{StaticResource TextBlockHeader}"/>
-                                    <CheckBox Content="{DynamicResource LoadAlbumCoverFromInternet}" Margin="0,10,0,0" x:Name="chkDownloadCover" IsChecked="{Binding Config.LoadAlbumCoverFromInternet}"  Checked="SettingChanged" Unchecked="SettingChanged"/>
-                                    <Grid IsEnabled="{Binding ElementName=chkDownloadCover,Path=IsChecked}" Margin="0,5,0,0">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="125"/>
-                                            <ColumnDefinition Width="*"/>
-                                        </Grid.ColumnDefinitions>
-                                        <Grid.Resources>
-                                            <settingsconverter:QualityToIndexConverter x:Key="QualityToIndexConverter"/>
-                                        </Grid.Resources>
-                                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                            <TextBlock Text="{DynamicResource CoverQuality}"/>
-                                            <TextBlock Text=":"/>
-                                        </StackPanel>
-                                        <ComboBox Width="150" SelectedIndex="{Binding Config.DownloadAlbumCoverQuality,Converter={StaticResource QualityToIndexConverter}}" SelectionChanged="SettingChanged" Grid.Column="1" HorizontalAlignment="Left">
-                                            <ComboBoxItem Content="{DynamicResource Small}"/> 
-                                            <ComboBoxItem Content="{DynamicResource Medium}"/>
-                                            <ComboBoxItem Content="{DynamicResource Large}"/>
-                                            <ComboBoxItem Content="{DynamicResource Maximum}"/>
-                                        </ComboBox>
-                                    </Grid>
-                                    <CheckBox Content="{DynamicResource SaveAlbumCoverLocal}" Margin="0,10,0,0" IsChecked="{Binding Config.SaveCoverLocal}" IsEnabled="{Binding ElementName=chkDownloadCover,Path=IsChecked}" Checked="SettingChanged" Unchecked="SettingChanged"/>
-                                </StackPanel>
-                            </ScrollViewer>
-                        </TabItem>
-                        <TabItem Header="System">
-                            <ScrollViewer>
-                                <StackPanel Orientation="Vertical" Margin="10">
-                                    <TextBlock Style="{StaticResource TextBlockHeader}" extensions:TextBlockHelper.UpperText="{DynamicResource General}"/>
-                                    <CheckBox Content="{DynamicResource AddToSendTo}" Margin="0,10,0,0" IsChecked="{Binding RegistryManager.SendToShortcut}" Checked="SettingChanged" Unchecked="SettingChanged"/>
-                                    <TextBlock Style="{StaticResource TextBlockHeader}" Text="API" Margin="0,30,0,0"/>
-                                    <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
-                                        <CheckBox Content="{DynamicResource ApiIsEnabled}" IsChecked="{Binding Config.ApiIsEnabled}" x:Name="chk" Checked="SettingChanged" Unchecked="SettingChanged"/>
-                                    </StackPanel>
-                                    <StackPanel Orientation="Horizontal" Margin="0,10,0,0" IsEnabled="{Binding ElementName=chk,Path=IsChecked}">
-                                        <TextBlock Text="{DynamicResource Port}" VerticalAlignment="Center"/>
-                                        <TextBlock Text=": " VerticalAlignment="Center"/>
-                                        <controls:NumericUpDown Width="100" Minimum="1" Maximum="65535" Value="{Binding Config.ApiPort}" ValueChanged="SettingChanged"/>
-                                    </StackPanel>
-                                    <StackPanel Orientation="Horizontal" Margin="0,10,0,0"  VerticalAlignment="Center">
-                                        <TextBlock Text="Status: "/>
-                                        <TextBlock Text="{Binding ApiState}"/>
-                                    </StackPanel>
-                                    <TextBlock Style="{StaticResource TextBlockHeader}" extensions:TextBlockHelper.UpperText="{DynamicResource ContextMenuItemForExtensions}" Margin="0,30,0,0"/>
-                                    <ItemsControl ItemsSource="{Binding RegistryManager.ContextMenuItems}" Margin="0,10,0,0">
-                                        <ItemsControl.ItemTemplate>
-                                            <DataTemplate>
-                                                <StackPanel Orientation="Horizontal">
-                                                    <controls:ToggleSwitchButton IsChecked="{Binding IsRegistered}"/>
-                                                    <TextBlock Text="{Binding Extension}" VerticalAlignment="Center"/>
-                                                </StackPanel>
-                                            </DataTemplate>
-                                        </ItemsControl.ItemTemplate>
-                                    </ItemsControl>
-                                </StackPanel>
-                            </ScrollViewer>
-                        </TabItem>
-                        <TabItem Header="Reset">
-                            <StackPanel Orientation="Vertical">
-                                <TextBlock Style="{StaticResource TextBlockHeader}" extensions:TextBlockHelper.UpperText="{DynamicResource ImportTrack}"/>
-                                <Button Margin="0,10,0,0" Content="{DynamicResource Reset}" HorizontalAlignment="Left" Width="200" IsEnabled="{Binding Config.RememberTrackImportPlaylist}" Command="{Binding ResetTrackImport}"/>
-                                <TextBlock Text="HURRICANE" Style="{StaticResource TextBlockHeader}" Margin="0,30,0,0"/>
-                                <Button Margin="0,10,0,0" Content="{DynamicResource TotalReset}" Foreground="#FFCF0606" Command="{Binding TotalReset}" HorizontalAlignment="Left" Width="200"/>
-                            </StackPanel>
-                        </TabItem>
-                        <TabItem Header="Language">
-                            <ListBox ItemsSource="{Binding Config.Languages}" SelectedItem="{Binding CurrentLanguage}">
-                                <ListBox.ItemTemplate>
-                                    <DataTemplate>
-                                        <Grid Margin="4">
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="40"/>
-                                                <ColumnDefinition Width="*"/>
-                                            </Grid.ColumnDefinitions>
-                                            <Image Source="{Binding Icon}" Width="32" Height="32" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                            <StackPanel Orientation="Vertical" Grid.Column="1" Margin="10,5,0,5">
-                                                <TextBlock Text="{Binding Name}" FontWeight="Bold" FontSize="14"/>
-                                                <TextBlock Text="{Binding Translator}"/>
-                                            </StackPanel>
-                                        </Grid>
-                                    </DataTemplate>
-                                </ListBox.ItemTemplate>
-                            </ListBox>
-                        </TabItem>
-                        <TabItem Header="About">
-                            <views:AboutView />
-                        </TabItem>
-                    </TabControl>
+                    <views:SettingsView Grid.Row="1"/>
                 </Grid>
             </TabItem>
         </TabControl>

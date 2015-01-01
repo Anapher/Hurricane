@@ -17,12 +17,12 @@ namespace Hurricane.Music
 
         private AsyncTrackLoader()
         {
-            Lists = new List<IList<Track>>();
+            Lists = new List<IList<TrackPlaylistPair>>();
         }
 
-        public List<IList<Track>> Lists { get; set; }
-     
-        public void AddTrackList(IList<Track> tracks)
+        public List<IList<TrackPlaylistPair>> Lists { get; set; }
+
+        public void AddTrackList(IList<TrackPlaylistPair> tracks)
         {
             Lists.Add(tracks);
         }
@@ -35,7 +35,7 @@ namespace Hurricane.Music
             {
                 foreach (var track in list)
                 {
-                    if (track.NotChecked && !(await track.CheckTrack())) list.Remove(track);
+                    if (track.Track.NotChecked && !(await track.Track.CheckTrack())) track.Playlist.RemoveTrackWithAnimation(track.Track);
                 }
             }
         }

@@ -221,20 +221,20 @@ namespace Hurricane.ViewModels
             }
         }
 
-        private RelayCommand _reloadtrackinformations;
-        public RelayCommand ReloadTrackInformations
+        private RelayCommand _reloadtrackinformation;
+        public RelayCommand ReloadTrackInformation
         {
             get
             {
-                return _reloadtrackinformations ?? (_reloadtrackinformations = new RelayCommand(async parameter =>
+                return _reloadtrackinformation ?? (_reloadtrackinformation = new RelayCommand(async parameter =>
                 {
                     var controller = _baseWindow.Messages.CreateProgressDialog(string.Empty, false);
 
-                    await MusicManager.SelectedPlaylist.ReloadTrackInformations((s, e) =>
+                    await MusicManager.SelectedPlaylist.ReloadTrackInformation((s, e) =>
                     {
                         controller.SetProgress(e.Percentage);
                         controller.SetMessage(e.CurrentFile);
-                        controller.SetTitle(string.Format(Application.Current.FindResource("LoadTrackInformations").ToString(), e.FilesImported, e.TotalFiles));
+                        controller.SetTitle(string.Format(Application.Current.FindResource("LoadTrackInformation").ToString(), e.FilesImported, e.TotalFiles));
                     });
 
                     MusicManager.SaveToSettings();
@@ -427,14 +427,14 @@ namespace Hurricane.ViewModels
             }
         }
 
-        private RelayCommand _opentrackinformations;
-        public RelayCommand OpenTrackInformations
+        private RelayCommand _opentrackinformation;
+        public RelayCommand OpenTrackInformation
         {
             get
             {
-                return _opentrackinformations ?? (_opentrackinformations = new RelayCommand(async parameter =>
+                return _opentrackinformation ?? (_opentrackinformation = new RelayCommand(async parameter =>
                 {
-                    await _baseWindow.ShowTrackInformations(MusicManager.SelectedTrack);
+                    await _baseWindow.ShowTrackInformation(MusicManager.SelectedTrack);
                 }));
             }
         }

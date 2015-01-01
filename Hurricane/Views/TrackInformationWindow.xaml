@@ -2,5 +2,5 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
-        Title="{StaticResource FileInfos}" GlowBrush="{StaticResource AccentColorBrush}" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" Width="600" Height="500">
+        Title="{StaticResource FileInfo}" GlowBrush="{StaticResource AccentColorBrush}" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" Width="600" Height="500">
 </controls:MetroWindow>

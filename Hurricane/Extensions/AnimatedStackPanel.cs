@@ -26,13 +26,14 @@ namespace Hurricane.Extensions
             set { SetValue(UpdateObjectProperty, value); }
         }
 
-        private static Storyboard _story;
+        public Storyboard FadeAnimationStoryboard { get; set; }
+
         private static void PropertyCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var stackPanel = (AnimatedStackPanel) d;
-            if (_story != null){ _story.Stop(stackPanel); }
-            _story = FadeInAnimation(stackPanel.AnimationInterval, stackPanel.Children.OfType<FrameworkElement>().ToArray());
-            _story.Begin(stackPanel, true);
+            if (stackPanel.FadeAnimationStoryboard != null) { stackPanel.FadeAnimationStoryboard.Stop(stackPanel); }
+            stackPanel.FadeAnimationStoryboard = FadeInAnimation(stackPanel.AnimationInterval, stackPanel.Children.OfType<FrameworkElement>().ToArray());
+            stackPanel.FadeAnimationStoryboard.Begin(stackPanel, true);
         }
 
         private static Storyboard FadeInAnimation(int interval, params FrameworkElement[] controls)

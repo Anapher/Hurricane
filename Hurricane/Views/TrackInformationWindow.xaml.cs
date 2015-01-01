@@ -9,10 +9,10 @@ namespace Hurricane.Views
     /// </summary>
     public partial class TrackInformationWindow : MetroWindow
     {
-        readonly TrackInformationsView content;
+        readonly TrackInformationView content;
         public TrackInformationWindow(Track track)
         {
-            content = new TrackInformationsView(track);
+            content = new TrackInformationView(track);
             this.Content = content;
             content.CloseRequest += (s, e) => this.Close();
             InitializeComponent();

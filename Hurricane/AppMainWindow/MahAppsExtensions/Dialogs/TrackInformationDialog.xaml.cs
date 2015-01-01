@@ -9,17 +9,15 @@ using MahApps.Metro.Controls.Dialogs;
 
 namespace Hurricane.AppMainWindow.MahAppsExtensions.Dialogs
 {
-    public partial class TrackInformationsDialog : BaseMetroDialog
+    public partial class TrackInformationDialog : BaseMetroDialog
     {
 
-        protected TrackInformationsView view;
-        internal TrackInformationsDialog(MetroWindow parentWindow, Track track, MetroDialogSettings settings)
+        protected TrackInformationView view;
+        internal TrackInformationDialog(MetroWindow parentWindow, Track track, MetroDialogSettings settings)
             : base(parentWindow, settings)
         {
             InitializeComponent();
-            view = new TrackInformationsView(track);
-            view.Width = 600;
-            view.Height = 500;
+            view = new TrackInformationView(track) { Width = 600, Height = 500 };
             this.gridContent.Children.Add(view);
         }
 

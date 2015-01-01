@@ -16,7 +16,7 @@
     <system:String x:Key="AddTracks">Tracks hinzufügen</system:String>
     <system:String x:Key="Play">Abspielen</system:String>
     <system:String x:Key="Pause">Pause</system:String>
-    <system:String x:Key="FileInfos">Datei Informationen</system:String>
+    <system:String x:Key="FileInfo">Datei Informationen</system:String>
     <system:String x:Key="FileLocation">Dateiort</system:String>
     <system:String x:Key="Remove">Entfernen</system:String>
     <system:String x:Key="Del">Entf</system:String>
@@ -80,7 +80,7 @@
     <system:String x:Key="Played">Abgespielt</system:String>
     <system:String x:Key="Never">Nie</system:String>
 
-    <system:String x:Key="AboutCopyright">Copyright © 2014 Alkaline. Alle Rechte vorbehalten.</system:String>
+    <system:String x:Key="AboutCopyright">Copyright © 2014-2015 Alkaline. Alle Rechte vorbehalten.</system:String>
     <system:String x:Key="AboutThanks1">An alle talentierten Ersteller der Bilder und Bibliotheken, die oben genannt werden.</system:String>
     <system:String x:Key="AboutThanks2">An ein hübsches Mädchen aus meiner Schulklasse, die mir die Inspiration für den Namen gab (Sie weiß es nicht).</system:String>
     <system:String x:Key="AboutThanks3">An {0}, {1} und {2} (welcher auch CSCore entwickelt hat) für die hilfreiche Unterstützung.</system:String>
@@ -96,12 +96,12 @@
     <system:String x:Key="Disabled">Ausgeschaltet</system:String>
     <system:String x:Key="Top">Oben</system:String>
     <system:String x:Key="RightBottom">Rechts unten</system:String>
-    <system:String x:Key="TrackInformations">Trackinformationen</system:String>
+    <system:String x:Key="TrackInformation">Trackinformationen</system:String>
     <system:String x:Key="DisableNotificationsInGame">Benachrichtigungen während einer Vollbild-Anwendung deaktivieren</system:String>
 
     <system:String x:Key="ReloadTrackInfo">Trackinformationen neu laden</system:String>
     <system:String x:Key="RemoveMissingTracks">Fehlende Tracks entfernen</system:String>
-    <system:String x:Key="LoadTrackInformations">Lade ({0} von {1})</system:String>
+    <system:String x:Key="LoadTrackInformation">Lade ({0} von {1})</system:String>
     <system:String x:Key="DeleteAllMissingTracks">Sind Sie sicher, dass sie alle fehlenden Tracks aus der Wiedergabeliste entfernen wollen?</system:String>
 
     <system:String x:Key="IncludeSubfolder">Unterordner einschließen</system:String>

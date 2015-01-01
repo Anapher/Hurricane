@@ -20,14 +20,9 @@ namespace Hurricane.Views
             SettingsViewModel.Instance.Load();
         }
 
-        void SomethingChanged(object sender, RoutedEventArgs e)
-        {
-            SettingsViewModel.Instance.StateChanged();
-        }
-
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            tabroot.SelectedIndex = tabroot.SelectedIndex == 0 ? 1 : 0;
+            TabControl.SelectedIndex = TabControl.SelectedIndex == 0 ? 1 : 0;
         }
 
         private void CloseButton_Click(object sender, RoutedEventArgs e)

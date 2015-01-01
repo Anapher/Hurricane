@@ -105,11 +105,6 @@ namespace Hurricane.AppMainWindow.WindowSkins
             listview.ScrollIntoView(listview.SelectedItem);
         }
 
-        private void SettingChanged(object sender, RoutedEventArgs e)
-        {
-            SettingsViewModel.Instance.StateChanged();
-        }
-
         private void ListView_DragEnter(object sender, DragEventArgs e)
         {
             e.Effects = DragDropEffects.Move;

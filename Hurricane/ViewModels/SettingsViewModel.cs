@@ -30,7 +30,7 @@ namespace Hurricane.ViewModels
 
         public void Load()
         {
-            Config = ObjectCopier.Clone<ConfigSettings>(HurricaneSettings.Instance.Config);
+            Config = ObjectCopier.Clone(HurricaneSettings.Instance.Config);
             AudioDevices = CSCoreEngine.GetAudioDevices();
             SelectedAudioDevice = AudioDevices.FirstOrDefault(x => x.ID == Config.SoundOutDeviceID) ?? AudioDevices.First(x => x.IsDefault);
             CurrentLanguage = Config.Languages.First((x) => x.Code == Config.Language);

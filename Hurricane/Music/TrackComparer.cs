@@ -9,7 +9,7 @@ namespace Hurricane.Music
         public bool Equals(Track x, Track y)
         {
             if (x == null || y == null || !x.TrackExists || !y.TrackExists) return false; //would crash if it needs to compute the hash
-            return x.TrackInformations.Length == y.TrackInformations.Length && GetHash(x.TrackInformations.FullName) == GetHash(y.TrackInformations.FullName);
+            return x.TrackInformation.Length == y.TrackInformation.Length && GetHash(x.TrackInformation.FullName) == GetHash(y.TrackInformation.FullName);
         }
 
         protected string GetHash(string path)

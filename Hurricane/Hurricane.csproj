@@ -119,8 +119,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="AppMainWindow\MahAppsExtensions\Dialogs\TrackInformationsDialog.xaml.cs">
-      <DependentUpon>TrackInformationsDialog.xaml</DependentUpon>
+    <Compile Include="AppMainWindow\MahAppsExtensions\Dialogs\TrackInformationDialog.xaml.cs">
+      <DependentUpon>TrackInformationDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="AppMainWindow\MahAppsExtensions\Dialogs\AdvancedInputDialog.xaml.cs">
       <DependentUpon>AdvancedInputDialog.xaml</DependentUpon>
@@ -196,7 +196,7 @@
     <Compile Include="Settings\RegistryManager\RegistryContextMenuItem.cs" />
     <Compile Include="Settings\RegistryManager\RegistryManager.cs" />
     <Compile Include="Settings\RegistryManager\RegistryRegister.cs" />
-    <Compile Include="Settings\SensitiveInformations.cs" />
+    <Compile Include="Settings\SensitiveInformation.cs" />
     <Compile Include="Settings\SettingsBase.cs" />
     <Compile Include="Settings\Themes\AccentColorTheme.cs" />
     <Compile Include="Settings\Themes\ApplicationThemeManager.cs" />
@@ -251,6 +251,9 @@
     <Compile Include="Views\ReportExceptionWindow.xaml.cs">
       <DependentUpon>ReportExceptionWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\SettingsView.xaml.cs">
+      <DependentUpon>SettingsView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\SettingsWindow.xaml.cs">
       <DependentUpon>SettingsWindow.xaml</DependentUpon>
     </Compile>
@@ -263,8 +266,8 @@
     <Compile Include="Views\TrackImportWindow.xaml.cs">
       <DependentUpon>TrackImportWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\TrackInformationsView.xaml.cs">
-      <DependentUpon>TrackInformationsView.xaml</DependentUpon>
+    <Compile Include="Views\TrackInformationView.xaml.cs">
+      <DependentUpon>TrackInformationView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\TrackInformationWindow.xaml.cs">
       <DependentUpon>TrackInformationWindow.xaml</DependentUpon>
@@ -272,7 +275,7 @@
     <Compile Include="Views\UpdateWindow.xaml.cs">
       <DependentUpon>UpdateWindow.xaml</DependentUpon>
     </Compile>
-    <Page Include="AppMainWindow\MahAppsExtensions\Dialogs\TrackInformationsDialog.xaml">
+    <Page Include="AppMainWindow\MahAppsExtensions\Dialogs\TrackInformationDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -317,10 +320,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Resources\Styles\RoundButtons.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Resources\Styles\TextBlockStyles.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -508,6 +507,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\SettingsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\SettingsWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -524,7 +527,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\TrackInformationsView.xaml">
+    <Page Include="Views\TrackInformationView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
