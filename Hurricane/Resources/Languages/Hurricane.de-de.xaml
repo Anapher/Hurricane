@@ -29,7 +29,7 @@
 
     <system:String x:Key="Presets">Vorlagen</system:String>
     <system:String x:Key="Bass">Bass</system:String>
-    <system:String x:Key="BassExteme">Bass extrem</system:String>
+    <system:String x:Key="BassExtreme">Bass extrem</system:String>
     <system:String x:Key="BassAndHeights">Bass und Höhen</system:String>
     <system:String x:Key="Heights">Höhen</system:String>
     <system:String x:Key="Classic">Klassisch</system:String>
@@ -187,6 +187,7 @@
     <system:String x:Key="LoadAlbumCoverFromInternet">Fehlende Cover aus dem Internet herunterladen</system:String>
     <system:String x:Key="CoverQuality">Coverqualität</system:String>
     <system:String x:Key="SaveAlbumCoverLocal">Cover lokal speichern</system:String>
+    <system:String x:Key="PreferFavoriteTracks">Favorisierte Tracks bei zufälliger Wiedergabe bevorzugen</system:String>
 
     <system:String x:Key="Small">Klein</system:String>
     <system:String x:Key="Medium">Mittel</system:String>
@@ -221,11 +222,15 @@
     <system:String x:Key="BrightColorDescription">Ein heller Farbton</system:String>
     <system:String x:Key="NormalColorDescription">Die Farbe, auf die abgezielt wird</system:String>
     <system:String x:Key="DarkColorDescription">Eine sehr dunkle Farbe</system:String>
-    <system:String x:Key="HighlightColorDescription">Die Farbe, wenn die Maus gedückt ist.</system:String>
+    <system:String x:Key="HighlightColorDescription">Die Farbe, wenn die Maus gedrückt ist.</system:String>
     <system:String x:Key="AccentColorDescription">Die Hintergrundfarbe (Hintergrund der Titelleiste)</system:String>
     <system:String x:Key="AccentSelectedColorDescription">Die Vordergrundfarbe bei Steuerelementen (Bei Einträgen von Listen).</system:String>
     <system:String x:Key="IdealForegroundColorDescription">Die generelle Vordergrundfarbe (Schriftzug bei Titelleisten).</system:String>
 
     <system:String x:Key="Edit">Bearbeiten</system:String>
     <system:String x:Key="SaveError">Es ist ein Fehler aufgetreten. Bitte überprüfen Sie ihre Eingaben.</system:String>
+    <system:String x:Key="SaveTagsError">Es ist ein Fehler beim Speichern der Tags aufgetreten: "{0}"</system:String>
+    <system:String x:Key="TagEditor">Tag Editor</system:String>
+    <system:String x:Key="Change">Ändern</system:String>
+    <system:String x:Key="Favorites">Favoriten</system:String>
 </ResourceDictionary>

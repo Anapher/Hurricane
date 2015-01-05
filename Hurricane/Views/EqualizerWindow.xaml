@@ -21,7 +21,7 @@
             <Menu>
                 <MenuItem Header="{DynamicResource Presets}">
                     <MenuItem Header="{DynamicResource Bass}" Command="{Binding MusicManager.CSCoreEngine.EqualizerSettings.LoadPresetBass}"/>
-                    <MenuItem Header="{DynamicResource BassExteme}" Command="{Binding MusicManager.CSCoreEngine.EqualizerSettings.LoadPresetBassExteme}"/>
+                    <MenuItem Header="{DynamicResource BassExtreme}" Command="{Binding MusicManager.CSCoreEngine.EqualizerSettings.LoadPresetBassExteme}"/>
                     <MenuItem Header="{DynamicResource BassAndHeights}" Command="{Binding MusicManager.CSCoreEngine.EqualizerSettings.LoadPresetBassAndHeights}"/>
                     <MenuItem Header="{DynamicResource Heights}" Command="{Binding MusicManager.CSCoreEngine.EqualizerSettings.LoadPresetHeights}"/>
                     <MenuItem Header="{DynamicResource Classic}" Command="{Binding MusicManager.CSCoreEngine.EqualizerSettings.LoadPresetClassic}"/>

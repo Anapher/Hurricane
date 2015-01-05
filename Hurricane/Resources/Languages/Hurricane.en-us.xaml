@@ -25,11 +25,11 @@
     <system:String x:Key="RemovePlaylist">Remove playlist</system:String>
     <system:String x:Key="RemoveDuplicates">Remove duplicates</system:String>
     <system:String x:Key="NoArtist">no artist</system:String>
-    <system:String x:Key="NowPlaying"> Now Playing </system:String>
+    <system:String x:Key="NowPlaying">Now Playing </system:String>
 
     <system:String x:Key="Presets">Presets</system:String>
     <system:String x:Key="Bass">Bass</system:String>
-    <system:String x:Key="BassExteme">Bass extrem</system:String>
+    <system:String x:Key="BassExtreme">Bass extreme</system:String>
     <system:String x:Key="BassAndHeights">Bass und heights</system:String>
     <system:String x:Key="Heights">Heights</system:String>
     <system:String x:Key="Classic">Classic</system:String>
@@ -187,6 +187,7 @@
     <system:String x:Key="LoadAlbumCoverFromInternet">Download missing cover art from internet</system:String>
     <system:String x:Key="CoverQuality">Cover art quality</system:String>
     <system:String x:Key="SaveAlbumCoverLocal">Save cover art local</system:String>
+    <system:String x:Key="PreferFavoriteTracks">Prefer favorite tracks in shuffle mode</system:String>
     
     <system:String x:Key="Small">Small</system:String>
     <system:String x:Key="Medium">Medium</system:String>
@@ -228,4 +229,8 @@
 
     <system:String x:Key="Edit">Edit</system:String>
     <system:String x:Key="SaveError">An error occurred. Please check your inputs.</system:String>
+    <system:String x:Key="SaveTagsError">An error occurred while saving the tags: "{0}"</system:String>
+    <system:String x:Key="TagEditor">Tag editor</system:String>
+    <system:String x:Key="Change">Change</system:String>
+    <system:String x:Key="Favorites">Favorites</system:String>
 </ResourceDictionary>

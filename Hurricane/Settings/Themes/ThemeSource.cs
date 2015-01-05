@@ -69,7 +69,7 @@ namespace Hurricane.Settings.Themes
 
         protected string GetResource(string resourcename)
         {
-            return Application.Current.FindResource(resourcename).ToString();
+            return Application.Current.Resources[resourcename].ToString();
         }
 
         public void LoadFromFile(string filename)

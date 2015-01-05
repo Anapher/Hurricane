@@ -322,6 +322,7 @@
                         <KeyBinding Key="Insert" Command="{Binding AddFilesToPlaylist}"/>
                         <KeyBinding Key="Insert" Modifiers="Control" Command="{Binding AddFolderToPlaylist}"/>
                         <KeyBinding Key="F4" Command="{Binding OpenTrackInformation}"/>
+                        <KeyBinding Key="F3" Command="{Binding OpenTagEditor}"/>
                     </ListView.InputBindings>
                     <ListView.Resources>
                         <converter:TrueFalseValueConverter x:Key="boldifplaying" FalseValue="Normal" TrueValue="Bold"/>
@@ -359,7 +360,12 @@
                                 <MenuItem Header="{DynamicResource QueueManager}" Command="{Binding OpenQueueManager}" InputGestureText="{DynamicResource CtrlQ}"/>
                             </MenuItem>
                             <Separator />
-                            <MenuItem Header="{DynamicResource FileInfo}" Command="{Binding OpenTrackInformation}" IsEnabled="{Binding MusicManager.SelectedTrack.TrackExists}" InputGestureText="F4">
+                            <MenuItem Header="{DynamicResource TrackInformation}" Command="{Binding OpenTrackInformation}" IsEnabled="{Binding MusicManager.SelectedTrack.TrackExists}" InputGestureText="F4">
+                                <MenuItem.Icon>
+                                    <Viewbox Width="16" Height="16" Stretch="Uniform" Child="{StaticResource VectorInfo}"/>
+                                </MenuItem.Icon>
+                            </MenuItem>
+                            <MenuItem Header="{DynamicResource TagEditor}" Command="{Binding OpenTagEditor}" IsEnabled="{Binding MusicManager.SelectedTrack.TrackExists}" InputGestureText="F3">
                                 <MenuItem.Icon>
                                     <Viewbox Width="16" Height="16" Stretch="Uniform" Child="{StaticResource VectorInfo}"/>
                                 </MenuItem.Icon>
@@ -419,8 +425,8 @@
                                     <DataTrigger.EnterActions>
                                         <BeginStoryboard>
                                             <Storyboard>
-                                                <ThicknessAnimation From="-40,0,40,0" To="0" Duration="0:0:0.5" Storyboard.TargetProperty="Margin"/>
-                                                <DoubleAnimation From="0" To="1" Duration="0:0:0.5" Storyboard.TargetProperty="Opacity"/>
+                                                <ThicknessAnimation From="-40,0,40,0" To="0" Duration="0:0:0.5" Storyboard.TargetProperty="Margin" FillBehavior="Stop"/>
+                                                <DoubleAnimation From="0" To="1" Duration="0:0:0.5" Storyboard.TargetProperty="Opacity" FillBehavior="Stop"/>
                                             </Storyboard>
                                         </BeginStoryboard>
                                     </DataTrigger.EnterActions>
@@ -470,7 +476,7 @@
                                             <TextBlock Text=" kbps"/>
                                             <ToggleButton IsChecked="{Binding IsFavorite}" Foreground="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem},Path=IsSelected,Converter={StaticResource TrueFalseValueConverter}}" Background="Black" DockPanel.Dock="Right" Width="12" Height="12" Margin="0,4,0,0">
                                                 <ToggleButton.Style>
-                                                    <Style TargetType="ToggleButton" BasedOn="{StaticResource favoritetogglebutton}">
+                                                    <Style TargetType="ToggleButton" BasedOn="{StaticResource FavoriteToggleButton}">
                                                         <Setter Property="Visibility" Value="Hidden"/>
                                                         <Style.Triggers>
                                                             <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem},Path=IsSelected}" Value="True">

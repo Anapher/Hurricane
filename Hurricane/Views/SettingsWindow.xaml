@@ -4,6 +4,7 @@
         xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
         xmlns:vm="clr-namespace:Hurricane.ViewModels"
         xmlns:views="clr-namespace:Hurricane.Views"
+        xmlns:userControls="clr-namespace:Hurricane.Views.UserControls"
         Title="{DynamicResource Settings}" Height="400" Width="600" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" ShowInTaskbar="False" DataContext="{x:Static vm:SettingsViewModel.Instance}" GlowBrush="{DynamicResource AccentColorBrush}">
     <Window.Resources>
         <Style TargetType="TabItem">
@@ -17,10 +18,10 @@
         </Grid.RowDefinitions>
         <TabControl x:Name="TabControl">
             <TabItem>
-                <views:SettingsView ShowAbout="False"/>
+                <userControls:SettingsView ShowAbout="False"/>
             </TabItem>
             <TabItem>
-                <views:AboutView />
+                <userControls:AboutView />
             </TabItem>
         </TabControl>
         <Grid Grid.Row="1" Grid.ColumnSpan="2" Grid.IsSharedSizeScope="True" Background="#FFF9F9F9">

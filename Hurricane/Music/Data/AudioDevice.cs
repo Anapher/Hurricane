@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Hurricane.Music
+namespace Hurricane.Music.Data
 {
     [Serializable]
     public class AudioDevice

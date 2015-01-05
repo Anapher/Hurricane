@@ -45,6 +45,7 @@ namespace Hurricane.Settings
         public bool EnableAdvancedView { get; set; }
         public bool RememberTrackImportPlaylist { get; set; }
         public string PlaylistToImportTrack { get; set; }
+        public bool ShufflePreferFavoritTracks { get; set; }
 
         public bool ApiIsEnabled { get; set; }
         public int ApiPort { get; set; }
@@ -79,7 +80,7 @@ namespace Hurricane.Settings
         public override sealed void SetStandardValues()
         {
             SoundOutDeviceID = "-0";
-            LastPlaylistIndex = -1;
+            LastPlaylistIndex = -10;
             LastTrackIndex = -1;
             TrackPosition = 0;
             Volume = 1.0f;
@@ -148,7 +149,6 @@ namespace Hurricane.Settings
             }
             result.LoadLanguage();
             result.Theme.LoadTheme();
-            if (result.SelectedPlaylist == -1) result.SelectedPlaylist = 0;
             return result;
         }
 
@@ -156,22 +156,23 @@ namespace Hurricane.Settings
         {
             if (other == null) return false;
             return (CompareTwoValues(this.SoundOutDeviceID, other.SoundOutDeviceID) &&
-                CompareTwoValues(this.WaveSourceBits, other.WaveSourceBits) &&
-                CompareTwoValues(this.ShowMagicArrowBelowCursor, other.ShowMagicArrowBelowCursor) &&
-                CompareTwoValues(this.SampleRate, other.SampleRate) &&
-                CompareTwoValues(this.Language, other.Language) &&
-                CompareTwoValues(this.Notification, other.Notification) &&
-                CompareTwoValues(this.DisableNotificationInGame, other.DisableNotificationInGame) &&
-                CompareTwoValues(this.Theme, other.Theme) &&
-                CompareTwoValues(this.EnableAdvancedView, other.EnableAdvancedView) &&
-                CompareTwoValues(this.NotificationShowTime, other.NotificationShowTime) &&
-                CompareTwoValues(this.RememberTrackImportPlaylist, other.RememberTrackImportPlaylist) &&
-                CompareTwoValues(this.DownloadAlbumCoverQuality, other.DownloadAlbumCoverQuality) &&
-                CompareTwoValues(this.LoadAlbumCoverFromInternet, other.LoadAlbumCoverFromInternet) &&
-                CompareTwoValues(this.SaveCoverLocal, other.SaveCoverLocal) &&
-                CompareTwoValues(this.TrimTrackname, other.TrimTrackname) &&
-                CompareTwoValues(this.ApiIsEnabled, other.ApiIsEnabled) &&
-                CompareTwoValues(this.ApiPort, other.ApiPort));
+                    CompareTwoValues(this.WaveSourceBits, other.WaveSourceBits) &&
+                    CompareTwoValues(this.ShowMagicArrowBelowCursor, other.ShowMagicArrowBelowCursor) &&
+                    CompareTwoValues(this.SampleRate, other.SampleRate) &&
+                    CompareTwoValues(this.Language, other.Language) &&
+                    CompareTwoValues(this.Notification, other.Notification) &&
+                    CompareTwoValues(this.DisableNotificationInGame, other.DisableNotificationInGame) &&
+                    CompareTwoValues(this.Theme, other.Theme) &&
+                    CompareTwoValues(this.EnableAdvancedView, other.EnableAdvancedView) &&
+                    CompareTwoValues(this.NotificationShowTime, other.NotificationShowTime) &&
+                    CompareTwoValues(this.RememberTrackImportPlaylist, other.RememberTrackImportPlaylist) &&
+                    CompareTwoValues(this.DownloadAlbumCoverQuality, other.DownloadAlbumCoverQuality) &&
+                    CompareTwoValues(this.LoadAlbumCoverFromInternet, other.LoadAlbumCoverFromInternet) &&
+                    CompareTwoValues(this.SaveCoverLocal, other.SaveCoverLocal) &&
+                    CompareTwoValues(this.TrimTrackname, other.TrimTrackname) &&
+                    CompareTwoValues(this.ApiIsEnabled, other.ApiIsEnabled) &&
+                    CompareTwoValues(this.ApiPort, other.ApiPort) &&
+                    CompareTwoValues(this.ShufflePreferFavoritTracks, other.ShufflePreferFavoritTracks));
         }
 
         protected bool CompareTwoValues(object v1, object v2)

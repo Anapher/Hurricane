@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using Hurricane.Music.API;
+using Hurricane.Music.Data;
 using Hurricane.Music.MusicDatabase.EventArgs;
 using Hurricane.Notification;
 using Hurricane.Settings;
@@ -43,13 +44,14 @@ namespace Hurricane.Music
             }
         }
 
-        private Playlist _selectedplaylist;
-        public Playlist SelectedPlaylist
+        private IPlaylist _selectedplaylist;
+        public IPlaylist SelectedPlaylist
         {
             get { return _selectedplaylist; }
             set
             {
-                SetProperty(value, ref _selectedplaylist);
+                if (SetProperty(value, ref _selectedplaylist))
+                    OnPropertyChanged("FavoriteListIsSelected");
             }
         }
 
@@ -75,8 +77,8 @@ namespace Hurricane.Music
         }
 
         //WARNING: The different between the Current- and the SelectedPlaylist is, that the current playlist is the playlist who is played. The selected playlist is the playlist the user sees (can be the same)
-        private Playlist _currentplaylist;
-        public Playlist CurrentPlaylist
+        private IPlaylist _currentplaylist;
+        public IPlaylist CurrentPlaylist
         {
             get { return _currentplaylist; }
             set
@@ -94,6 +96,30 @@ namespace Hurricane.Music
         public QueueManager Queue { get; set; }
 
         public TcpServer ApiServer { get; set; }
+
+        protected FavoriteList favoritePlaylist;
+        public FavoriteList FavoritePlaylist
+        {
+            get { return favoritePlaylist; }
+        }
+
+        public bool FavoriteListIsSelected {
+            get { return SelectedPlaylist == FavoritePlaylist; }
+            set
+            {
+                if (value)
+                {
+                    SelectedPlaylist = null;
+                    SelectedPlaylist = FavoritePlaylist;
+                }
+                else
+                {
+                    SelectedPlaylist = Playlists[0];
+                }
+
+            }
+        }
+
         #endregion
 
         #region Contructor and Loading
@@ -122,9 +148,13 @@ namespace Hurricane.Music
             CSCoreEngine.EqualizerSettings = config.EqualizerSettings;
             CSCoreEngine.EqualizerSettings.Loaded();
             CSCoreEngine.Volume = config.Volume;
-            if (config.LastPlaylistIndex > -1)
+
+            favoritePlaylist = new FavoriteList();
+            favoritePlaylist.Initalize(this.Playlists);
+
+            if (config.LastPlaylistIndex > -10)
             {
-                CurrentPlaylist = Playlists[config.LastPlaylistIndex];
+                CurrentPlaylist = IndexToPlaylist(config.LastPlaylistIndex);
             }
 
             if (config.LastTrackIndex > -1)
@@ -138,10 +168,8 @@ namespace Hurricane.Music
                 }
             }
 
-            if (config.SelectedPlaylist > -1)
-            {
-                SelectedPlaylist = Playlists[config.SelectedPlaylist];
-            }
+            SelectedPlaylist = IndexToPlaylist(config.SelectedPlaylist);
+
             if (config.SelectedTrack > -1)
             {
                 SelectedTrack = SelectedPlaylist.Tracks[config.SelectedTrack];
@@ -152,7 +180,10 @@ namespace Hurricane.Music
             {
                 lst.LoadList();
             }
-            if (config.Queue != null) { Queue = config.Queue; Queue.Initialize(Playlists.ToList()); }
+            favoritePlaylist.LoadList();
+            if (config.Queue != null) { Queue = config.Queue; Queue.Initialize(Playlists); }
+            AsyncTrackLoader.Instance.RunAsync(Playlists.ToList());
+           
         }
         #endregion
 
@@ -190,7 +221,7 @@ namespace Hurricane.Music
             playlist.LoadList();
         }
 
-        public void PlayTrack(Track track, Playlist playlist)
+        public void PlayTrack(Track track, IPlaylist playlist)
         {
             CSCoreEngine.StopPlayback();
             CSCoreEngine.OpenTrack(track);
@@ -217,27 +248,9 @@ namespace Hurricane.Music
                 {
                     if (IsShuffleEnabled)
                     {
-                        if (CurrentPlaylist.ShuffleList.Count == 0) CurrentPlaylist.ShuffleList = new List<Track>(CurrentPlaylist.Tracks);
-                        bool hasrefreshed = false;
-                        while (true)
-                        {
-                            int i = Random.Next(0, CurrentPlaylist.ShuffleList.Count);
-                            if (i != currenttrackindex && CurrentPlaylist.ShuffleList[i].TrackExists)
-                            {
-                                nexttrackindex = CurrentPlaylist.Tracks.IndexOf(CurrentPlaylist.ShuffleList[i]);
-                                CurrentPlaylist.ShuffleList.RemoveAt(i);
-                                break;
-                            }
-                            else
-                            {
-                                CurrentPlaylist.ShuffleList.RemoveAt(i);
-                                if (CurrentPlaylist.ShuffleList.Count == 0)
-                                {
-                                    if (hasrefreshed) continue;
-                                    CurrentPlaylist.ShuffleList = new List<Track>(CurrentPlaylist.Tracks); hasrefreshed = true;
-                                }
-                            }
-                        }
+                        var nextTrack = CurrentPlaylist.GetRandomTrack(CSCoreEngine.CurrentTrack);
+                        if (nextTrack == null) return;
+                        nexttrackindex = CurrentPlaylist.Tracks.IndexOf(nextTrack);
                     }
                     else
                     {
@@ -259,7 +272,7 @@ namespace Hurricane.Music
             CSCoreEngine.TogglePlayPause();
         }
 
-        private bool CheckIfTracksExists(Playlist list)
+        private bool CheckIfTracksExists(IPlaylist list)
         {
             int counter = 0;
             bool result = false;
@@ -317,15 +330,35 @@ namespace Hurricane.Music
             settings.Playlists.Playlists = this.Playlists;
             ConfigSettings config = settings.Config;
             config.Volume = CSCoreEngine.Volume;
-            config.LastPlaylistIndex = CurrentPlaylist == null ? -1 : Playlists.IndexOf(CurrentPlaylist);
+            config.LastPlaylistIndex = CurrentPlaylist == null ? -1 : PlaylistToIndex(CurrentPlaylist);
             config.LastTrackIndex = CSCoreEngine.CurrentTrack == null ? -1 : CurrentPlaylist.Tracks.IndexOf(CSCoreEngine.CurrentTrack);
-            config.SelectedPlaylist = Playlists.IndexOf(SelectedPlaylist); //Its impossible that no playlist is selected
+            config.SelectedPlaylist = PlaylistToIndex(SelectedPlaylist); //Its impossible that no playlist is selected
             config.SelectedTrack = SelectedTrack == null ? -1 : SelectedPlaylist.Tracks.IndexOf(SelectedTrack);
             config.IsLoopEnabled = IsLoopEnabled;
             config.IsShuffleEnabled = IsShuffleEnabled;
             config.TrackPosition = CSCoreEngine.CurrentTrack == null ? 0 : CSCoreEngine.Position;
             config.EqualizerSettings = CSCoreEngine.EqualizerSettings;
             config.Queue = Queue.Count > 0 ? Queue : null;
+        }
+
+        public IPlaylist IndexToPlaylist(int index)
+        {
+            switch (index)
+            {
+                case -1:
+                    return FavoritePlaylist;
+                case -10:
+                    return Playlists[0];
+                default:
+                    return Playlists[index];
+            }
+        }
+
+        public int PlaylistToIndex(IPlaylist playlist)
+        {
+            if (playlist is Playlist) return Playlists.IndexOf((Playlist)playlist);
+            if (playlist is FavoriteList) return -1;
+            return -10;
         }
 
         public void Dispose()

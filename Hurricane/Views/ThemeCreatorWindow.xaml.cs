@@ -42,7 +42,7 @@ namespace Hurricane.Views
             }
             catch (Exception)
             {
-                MessageWindow window = new MessageWindow(Application.Current.FindResource("SaveError").ToString(), Application.Current.FindResource("Error").ToString(), false) { Owner = this };
+                MessageWindow window = new MessageWindow(Application.Current.Resources["SaveError"].ToString(), Application.Current.Resources["Error"].ToString(), false) { Owner = this };
                 window.ShowDialog();
             }
         }

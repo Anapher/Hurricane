@@ -2,7 +2,7 @@
 using System.ComponentModel;
 using System.Windows;
 using MahApps.Metro.Controls;
-using Ookii.Dialogs.Wpf;
+using WPFFolderBrowser;
 
 namespace Hurricane.Views
 {
@@ -18,15 +18,13 @@ namespace Hurricane.Views
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            VistaFolderBrowserDialog fbd = new VistaFolderBrowserDialog
+            WPFFolderBrowserDialog fbd = new WPFFolderBrowserDialog
             {
-                RootFolder = Environment.SpecialFolder.MyMusic,
-                ShowNewFolderButton = false,
-                Description = Application.Current.FindResource("SelectedFolder").ToString(),
-                UseDescriptionForTitle = true
+                Title = Application.Current.Resources["SelectedFolder"].ToString(),
+                InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyMusic)
             };
             if (fbd.ShowDialog() == true)
-                SelectedPath = fbd.SelectedPath;
+                SelectedPath = fbd.FileName;
         }
 
         private string _selectedpath;

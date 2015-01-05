@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using Hurricane.Music;
+using Hurricane.Music.Data;
 using MahApps.Metro.Controls;
 
 namespace Hurricane.Views

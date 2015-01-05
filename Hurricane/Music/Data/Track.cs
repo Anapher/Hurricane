@@ -10,6 +10,7 @@ using System.Xml;
 using System.Xml.Serialization;
 using CSCore;
 using CSCore.Codecs;
+using CSCore.Codecs.MP3;
 using Hurricane.Music.MusicDatabase;
 using Hurricane.Settings;
 using Hurricane.Utilities;
@@ -21,13 +22,31 @@ namespace Hurricane.Music
     [Serializable]
     public class Track : PropertyChangedBase
     {
+        #region Events
+        public event EventHandler ImageLoadComplete;
+
+        #endregion
+
         #region Properties
         public string Duration { get; set; }
         public int kHz { get; set; }
         public int kbps { get; set; }
-        public string Title { get; set; }
+
+        private string _title;
+        public string Title
+        {
+            get { return _title; }
+            set { _title = value; OnPropertyChanged("DisplayText"); }
+        }
+
+        private string _artist;
+        public string Artist
+        {
+            get { return _artist; }
+            set { _artist = value; OnPropertyChanged("DisplayText"); }
+        }
+        
         public string Path { get; set; }
-        public string Artist { get; set; }
         public string Extension { get; set; }
         public string Genres { get; set; }
         public uint Year { get; set; }
@@ -50,7 +69,15 @@ namespace Hurricane.Music
             get { return _isfavorite; }
             set
             {
-                SetProperty(value, ref _isfavorite);
+                if (SetProperty(value, ref _isfavorite))
+                {
+                    if (ViewModels.MainViewModel.Instance.MusicManager == null) return;
+                    if (value) // I know that this is ugly as hell but it would be a pain to drop all events to the favorite list. If you got an idea to solve this problem, please tell me
+                    {
+                        ViewModels.MainViewModel.Instance.MusicManager.FavoritePlaylist.AddTrack(this);
+                    }
+                    else { ViewModels.MainViewModel.Instance.MusicManager.FavoritePlaylist.RemoveTrack(this); }
+                }
             }
         }
 
@@ -119,6 +146,10 @@ namespace Hurricane.Music
             get { return _trackinformation ?? (_trackinformation = new FileInfo(Path)); }
         }
 
+        public string DisplayText
+        {
+            get { return !string.IsNullOrEmpty(Artist) ? string.Format("{0} - {1}", Artist, Title) : Title; }
+        }
         #endregion
 
         #region Import
@@ -142,7 +173,7 @@ namespace Hurricane.Music
             }
             catch (Exception)
             {
-                return false;
+               return false;
             }
 
             NotChecked = false;
@@ -153,35 +184,74 @@ namespace Hurricane.Music
         {
             _trackinformation = null; //to refresh the fileinfo
             FileInfo file = TrackInformation;
+            NotChecked = true;
+            Extension = file.Extension.ToUpper().Replace(".", string.Empty);
+
+            return await TryLoadWithTagLibSharp(file) || await TryLoadWithCSCore(file);
+        }
+
+        private async Task<bool> TryLoadWithTagLibSharp(FileInfo filename)
+        {
+            File info = null;
 
             try
             {
-                File info = null;
-                try
-                {
-                    await Task.Run(() => info = File.Create(file.FullName));
-                }
-                catch
-                {
-                    return false;
-                }
-
-                using (info)
-                {
-                    Artist = RemoveInvalidXmlChars(!string.IsNullOrWhiteSpace(info.Tag.FirstPerformer) ? info.Tag.FirstPerformer : info.Tag.FirstAlbumArtist);
-                    Title = !string.IsNullOrWhiteSpace(info.Tag.Title) ? RemoveInvalidXmlChars(info.Tag.Title) : System.IO.Path.GetFileNameWithoutExtension(file.FullName);
-                    Genres = info.Tag.JoinedGenres;
-                    kbps = info.Properties.AudioBitrate;
-                    kHz = info.Properties.AudioSampleRate / 1000;
-                    Extension = file.Extension.ToUpper().Replace(".", string.Empty);
-                    Year = info.Tag.Year;
-                    Duration = info.Properties.Duration.ToString(info.Properties.Duration.Hours == 0 ? @"mm\:ss" : @"hh\:mm\:ss");
-                }
+                await Task.Run(() => info = File.Create(filename.FullName));
             }
-            catch (NullReferenceException)
+            catch (Exception)
             {
-                Title = System.IO.Path.GetFileNameWithoutExtension(file.FullName);
+                return false;
             }
+
+            using (info)
+            {
+                Artist = RemoveInvalidXmlChars(!string.IsNullOrWhiteSpace(info.Tag.FirstPerformer) ? info.Tag.FirstPerformer : info.Tag.FirstAlbumArtist);
+                Title = !string.IsNullOrWhiteSpace(info.Tag.Title) ? RemoveInvalidXmlChars(info.Tag.Title) : System.IO.Path.GetFileNameWithoutExtension(filename.FullName);
+                Album = RemoveInvalidXmlChars(info.Tag.Album);
+                Genres = string.Join(", ", info.Tag.Genres);
+                kbps = info.Properties.AudioBitrate;
+                kHz = info.Properties.AudioSampleRate / 1000;
+                Year = info.Tag.Year;
+                Duration = info.Properties.Duration.ToString(info.Properties.Duration.Hours == 0 ? @"mm\:ss" : @"hh\:mm\:ss");
+            }
+            return true;
+        }
+
+        private async Task<bool> TryLoadWithCSCore(FileInfo filename)
+        {
+            this.Title = System.IO.Path.GetFileNameWithoutExtension(filename.FullName);
+            Mp3Frame frame = null;
+
+            try
+            {
+                await Task.Run(() =>
+                {
+                    using (FileStream sr = new FileStream(filename.FullName, FileMode.Open, FileAccess.Read))
+                        frame = Mp3Frame.FromStream(sr);
+                });
+
+                if (frame != null) { kbps = frame.BitRate / 1000; }
+                TimeSpan duration = TimeSpan.Zero;
+                int samplerate = 0;
+
+                await Task.Run(() =>
+                {
+                    using (IWaveSource SoundSource = CodecFactory.Instance.GetCodec(filename.FullName))
+                    {
+                        samplerate = SoundSource.WaveFormat.SampleRate;
+                        duration = SoundSource.GetLength();
+                    }
+                });
+
+                kHz = samplerate / 1000;
+                Duration = duration.ToString(duration.Hours == 0 ? @"mm\:ss" : @"hh\:mm\:ss");
+                NotChecked = false;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+
             return true;
         }
         #endregion
@@ -229,6 +299,7 @@ namespace Hurricane.Music
                 }
             }
             IsLoadingImage = false;
+            if (ImageLoadComplete != null) ImageLoadComplete(this, EventArgs.Empty);
         }
 
         /// <summary>
@@ -264,7 +335,7 @@ namespace Hurricane.Music
 
         public override string ToString()
         {
-            return !string.IsNullOrEmpty(Artist) ? string.Format("{0} - {1}", Artist, Title) : Title;
+            return DisplayText;
         }
         #endregion
 

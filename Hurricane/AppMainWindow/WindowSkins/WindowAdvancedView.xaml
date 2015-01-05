@@ -7,9 +7,9 @@
              xmlns:converter="clr-namespace:Hurricane.Extensions.Converter"
              xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
              xmlns:wpfsvl="clr-namespace:WPFSoundVisualizationLib;assembly=WPFSoundVisualizationLib"
-             xmlns:views="clr-namespace:Hurricane.Views"
              xmlns:extensions="clr-namespace:Hurricane.Extensions"
              xmlns:jas="clr-namespace:Hurricane.Resources.Styles.DragDropListView.ServiceProviders.UI"
+             xmlns:userControls="clr-namespace:Hurricane.Views.UserControls"
              mc:Ignorable="d" 
              d:DesignHeight="500" d:DesignWidth="850" DataContext="{x:Static viewmodels:MainViewModel.Instance}">
     <UserControl.Resources>
@@ -57,30 +57,31 @@
                         <RowDefinition Height="30"/>
                         <RowDefinition />
                     </Grid.RowDefinitions>
-                    <Grid Grid.ColumnSpan="5" Margin="0,0,10,0">
-                        <Menu Width="500" HorizontalAlignment="Left">
-                            <MenuItem Header="{DynamicResource Playlist}">
-                                <MenuItem Header="{DynamicResource NewPlaylist}" Command="{Binding AddNewPlaylist}"/>
+                    <Menu>
+                        <MenuItem Header="{DynamicResource Playlist}">
+                            <MenuItem Header="{DynamicResource NewPlaylist}" Command="{Binding AddNewPlaylist}"/>
+                            <Separator />
+                            <MenuItem Header="{DynamicResource RemovePlaylist}" Command="{Binding RemovePlaylist}" IsEnabled="{Binding MusicManager.SelectedPlaylist.CanEdit}"/>
+                            <MenuItem Header="{DynamicResource RenamePlaylist}" Command="{Binding RenamePlaylist}"  IsEnabled="{Binding MusicManager.SelectedPlaylist.CanEdit}"/>
+                        </MenuItem>
+                        <MenuItem Header="{DynamicResource Tracks}">
+                            <MenuItem Header="{DynamicResource AddFiles}" Command="{Binding AddFilesToPlaylist}" IsEnabled="{Binding MusicManager.SelectedPlaylist.CanEdit}"/>
+                            <MenuItem Header="{DynamicResource AddDirectories}" Command="{Binding AddFolderToPlaylist}" IsEnabled="{Binding MusicManager.SelectedPlaylist.CanEdit}"/>
+                            <Separator />
+                            <MenuItem Header="{DynamicResource ReloadTrackInfo}" Command="{Binding ReloadTrackInformation}" IsEnabled="{Binding MusicManager.SelectedPlaylist.CanEdit}"/>
+                            <MenuItem Header="{DynamicResource RemoveTracks}" IsEnabled="{Binding MusicManager.SelectedPlaylist.CanEdit}">
+                                <MenuItem Header="{DynamicResource RemoveMissingTracks}" Command="{Binding RemoveMissingTracks}" IsEnabled="{Binding MusicManager.SelectedPlaylist.ContainsMissingTracks}"/>
+                                <MenuItem Header="{DynamicResource RemoveDuplicates}" Command="{Binding RemoveDuplicateTracks}"/>
                                 <Separator />
-                                <MenuItem Header="{DynamicResource RemovePlaylist}" Command="{Binding RemovePlaylist}"/>
-                                <MenuItem Header="{DynamicResource RenamePlaylist}" Command="{Binding RenamePlaylist}"/>
+                                <MenuItem Header="{DynamicResource RemoveAllTracks}" Command="{Binding ClearSelectedPlaylist}"/>
                             </MenuItem>
-                            <MenuItem Header="{DynamicResource Tracks}">
-                                <MenuItem Header="{DynamicResource AddFiles}" Command="{Binding AddFilesToPlaylist}"/>
-                                <MenuItem Header="{DynamicResource AddDirectories}" Command="{Binding AddFolderToPlaylist}"/>
-                                <Separator />
-                                <MenuItem Header="{DynamicResource ReloadTrackInfo}" Command="{Binding ReloadTrackInformation}"/>
-                                <MenuItem Header="{DynamicResource RemoveTracks}">
-                                    <MenuItem Header="{DynamicResource RemoveMissingTracks}" Command="{Binding RemoveMissingTracks}" IsEnabled="{Binding MusicManager.SelectedPlaylist.ContainsMissingTracks}"/>
-                                    <MenuItem Header="{DynamicResource RemoveDuplicates}" Command="{Binding RemoveDuplicateTracks}"/>
-                                    <Separator />
-                                    <MenuItem Header="{DynamicResource RemoveAllTracks}" Command="{Binding ClearSelectedPlaylist}"/>
-                                </MenuItem>
-                            </MenuItem>
-                        </Menu>
-                        <TextBox x:Name="txtSearch" VerticalAlignment="Center" controls:TextBoxHelper.ClearTextButton="True" HorizontalAlignment="Right" Width="200" controls:TextBoxHelper.Watermark="{StaticResource Search}" Text="{Binding MusicManager.SelectedPlaylist.SearchText,UpdateSourceTrigger=PropertyChanged}"/>
-                    </Grid>
-                    <ListBox Grid.Row="1" ItemsSource="{Binding MusicManager.Playlists}" DisplayMemberPath="Name" SelectedItem="{Binding MusicManager.SelectedPlaylist}" Margin="5" SelectionChanged="ListBox_SelectionChanged">
+                        </MenuItem>
+                    </Menu>
+                    <StackPanel Orientation="Horizontal" Grid.Column="2" HorizontalAlignment="Right">
+                        <ToggleButton IsChecked="{Binding MusicManager.FavoriteListIsSelected}" Style="{StaticResource FavoriteListToggleButton}" Margin="5"/>
+                    </StackPanel>
+                    <TextBox Grid.Column="5" Margin="0,0,10,0" x:Name="txtSearch" VerticalAlignment="Center" controls:TextBoxHelper.ClearTextButton="True" HorizontalAlignment="Right" Width="200" controls:TextBoxHelper.Watermark="{StaticResource Search}" Text="{Binding MusicManager.SelectedPlaylist.SearchText,UpdateSourceTrigger=PropertyChanged}"/>
+                    <ListBox Grid.Row="1" ItemsSource="{Binding MusicManager.Playlists}" DisplayMemberPath="Name" SelectedItem="{Binding MusicManager.SelectedPlaylist}" Margin="5">
                         <ListBox.InputBindings>
                             <KeyBinding Key="Delete" Command="{Binding RemovePlaylist}"/>
                         </ListBox.InputBindings>
@@ -102,7 +103,7 @@
                             <RowDefinition Height="auto"/>
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
-                        <ListView SelectionMode="Extended" Grid.Row="1" ItemsSource="{Binding MusicManager.SelectedPlaylist.ViewSource}" SelectedItem="{Binding MusicManager.SelectedTrack}" BorderThickness="0" Margin="5,0,5,0" SelectionChanged="ListView_SelectionChanged"
+                        <extensions:AnimatedListView SelectionMode="Extended" Grid.Row="1" ItemsSource="{Binding MusicManager.SelectedPlaylist.ViewSource}" SelectedItem="{Binding MusicManager.SelectedTrack}" BorderThickness="0" Margin="5,0,5,0" SelectionChanged="ListView_SelectionChanged"
                                   DragEnter="ListView_DragEnter" Drop="ListView_Drop" x:Name="listview">
                             <ListView.Resources>
                                 <ContextMenu x:Key="ItemContextMenu" DataContext="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}, Path=DataContext}">
@@ -121,7 +122,8 @@
                                         <MenuItem Header="{DynamicResource QueueManager}" Command="{Binding OpenQueueManager}" InputGestureText="{DynamicResource CtrlQ}"/>
                                     </MenuItem>
                                     <Separator />
-                                    <MenuItem Header="{DynamicResource FileInfo}" Command="{Binding OpenTrackInformation}" IsEnabled="{Binding MusicManager.SelectedTrack.TrackExists}" InputGestureText="F4"/>
+                                    <MenuItem Header="{DynamicResource TrackInformation}" Command="{Binding OpenTrackInformation}" IsEnabled="{Binding MusicManager.SelectedTrack.TrackExists}" InputGestureText="F4"/>
+                                    <MenuItem Header="{DynamicResource TagEditor}" Command="{Binding OpenTagEditor}" IsEnabled="{Binding MusicManager.SelectedTrack.TrackExists}" InputGestureText="F3"/>
                                     <MenuItem Header="{DynamicResource FileLocation}" Command="{Binding MusicManager.Commands.OpenTrackLocation}" InputGestureText="Alt+O" IsEnabled="{Binding MusicManager.SelectedTrack.TrackExists}"/>
                                     <Separator />
                                     <MenuItem Header="{DynamicResource Remove}" Command="{Binding RemoveSelectedTracks}" InputGestureText="{DynamicResource Del}"/>
@@ -138,6 +140,7 @@
                                 <KeyBinding Key="Insert" Command="{Binding AddFilesToPlaylist}"/>
                                 <KeyBinding Key="Insert" Modifiers="Control" Command="{Binding AddFolderToPlaylist}"/>
                                 <KeyBinding Key="F4" Command="{Binding OpenTrackInformation}"/>
+                                <KeyBinding Key="F3" Command="{Binding OpenTagEditor}"/>
                             </ListView.InputBindings>
                             <ListView.Style>
                                 <Style TargetType="{x:Type ListView}">
@@ -198,7 +201,7 @@
                                             <ColumnDefinition Width="16"/>
                                             <ColumnDefinition Width="*"/>
                                             <ColumnDefinition Width="auto"/>
-                                            <ColumnDefinition Width="auto"/>
+                                            <ColumnDefinition Width="60"/>
                                         </Grid.ColumnDefinitions>
                                         <Grid.InputBindings>
                                             <MouseBinding MouseAction="LeftDoubleClick" Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=DataContext.MusicManager.Commands.PlaySelectedTrack}"/>
@@ -291,14 +294,16 @@
                                                 </Viewbox.Style>
                                             </Viewbox>
                                         </Grid>
-                                        
-                                        <TextBlock Text="{Binding}" Margin="10,0,0,0" VerticalAlignment="Center" Grid.Column="1"/>
-                                        <ToggleButton Background="Black" Foreground="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem},Path=IsSelected,Converter={StaticResource TrueFalseValueConverter}}" Style="{StaticResource favoritetogglebutton}" Height="16" Width="16" HorizontalAlignment="Left" Margin="10,0,50,0" IsChecked="{Binding IsFavorite}" Grid.Column="2"/>
+                                        <Grid x:Name="Grid" Margin="10,0,0,0" Grid.Column="1">
+                                            <TextBlock Text="{Binding DisplayText}" VerticalAlignment="Center" TextTrimming="CharacterEllipsis"/>
+                                        </Grid>
+
+                                        <ToggleButton Background="Black" Foreground="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem},Path=IsSelected,Converter={StaticResource TrueFalseValueConverter}}" Style="{StaticResource FavoriteToggleButton}" Height="16" Width="16" HorizontalAlignment="Left" Margin="10,0,50,0" IsChecked="{Binding IsFavorite}" Grid.Column="2"/>
                                         <TextBlock Text="{Binding Duration}" VerticalAlignment="Center" Grid.Column="3" Margin="0,0,10,0"/>
                                     </Grid>
                                 </DataTemplate>
                             </ListView.ItemTemplate>
-                        </ListView>
+                        </extensions:AnimatedListView>
                     </Grid>
                     <Grid Grid.Column="3" Grid.Row="1" x:Name="girdcover" Visibility="{Binding MusicManager.CSCoreEngine.CurrentTrack,Converter={StaticResource CollapsedOnNullValue}}">
                         <Grid.ColumnDefinitions>
@@ -310,48 +315,11 @@
                         </Grid.InputBindings>
                         <Rectangle Width="1" Fill="Gray"/>
                         <StackPanel Orientation="Vertical" Margin="5" Grid.Column="1">
-                            <Border BorderThickness="0" Width="190" Height="190" Margin="10" Background="White" x:Name="mainpicture">
-                                <Border.Effect>
-                                    <DropShadowEffect BlurRadius="4" ShadowDepth="0" Direction="0" Opacity="0.4" Color="#FFD1D1D1" />
-                                </Border.Effect>
-                                <Border Margin="3" Background="#FFFBFBFB">
-                                    <Grid>
-                                        <Grid>
-                                            <Image Source="/Resources/GUI/music.png" VerticalAlignment="Center" HorizontalAlignment="Center" Stretch="None" RenderOptions.BitmapScalingMode="HighQuality">
-                                                <Image.Style>
-                                                    <Style TargetType="Image">
-                                                        <Setter Property="Visibility" Value="Hidden"/>
-                                                        <Style.Triggers>
-                                                            <DataTrigger Binding="{Binding MusicManager.CSCoreEngine.CurrentTrack.Image}" Value="{x:Null}">
-                                                                <Setter Property="Visibility" Value="Visible"/>
-                                                            </DataTrigger>
-                                                            <DataTrigger Binding="{Binding MusicManager.CSCoreEngine.CurrentTrack.IsLoadingImage}" Value="True">
-                                                                <Setter Property="Visibility" Value="Hidden"/>
-                                                            </DataTrigger>
-                                                        </Style.Triggers>
-                                                    </Style>
-                                                </Image.Style>
-                                            </Image>
-                                        </Grid>
-                                        <Image Source="{Binding MusicManager.CSCoreEngine.CurrentTrack.Image}" Stretch="UniformToFill">
-                                            <Image.Style>
-                                                <Style TargetType="Image">
-                                                    <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding MusicManager.CSCoreEngine.CurrentTrack.Image}" Value="{x:Null}">
-                                                            <Setter Property="Visibility" Value="Hidden"/>
-                                                        </DataTrigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </Image.Style>
-                                        </Image>
-                                        <controls:ProgressRing IsActive="{Binding MusicManager.CSCoreEngine.CurrentTrack.IsLoadingImage}" />
-                                    </Grid>
-                                </Border>
-                            </Border>
+                            <extensions:TrackImagePreseter Track="{Binding MusicManager.CSCoreEngine.CurrentTrack}" Width="200" Height="200"/>
                             <extensions:AnimatedStackPanel AnimationInterval="300" UpdateObject="{Binding MusicManager.CSCoreEngine.CurrentTrack}" Orientation="Vertical" Margin="10,10,0,0">
                                 <TextBlock Text="{Binding MusicManager.CSCoreEngine.CurrentTrack.Title}" Foreground="{DynamicResource NormalColorBrush}" TextWrapping="Wrap"/>
                                 <TextBlock FontSize="22" FontFamily="Segoe UI Light" Style="{StaticResource AristTextBlock}" TextWrapping="Wrap"/>
-                                <ToggleButton Foreground="#FFB4B4B4" Background="{DynamicResource NormalColorBrush}" Style="{StaticResource favoritetogglebutton}" Height="16" Width="16" HorizontalAlignment="Left" Margin="0,10,0,10" IsChecked="{Binding MusicManager.CSCoreEngine.CurrentTrack.IsFavorite}"/>
+                                <ToggleButton Foreground="#FFB4B4B4" Background="{DynamicResource NormalColorBrush}" Style="{StaticResource FavoriteToggleButton}" Height="16" Width="16" HorizontalAlignment="Left" Margin="0,10,0,10" IsChecked="{Binding MusicManager.CSCoreEngine.CurrentTrack.IsFavorite}"/>
                                 <StackPanel Orientation="Horizontal" Margin="0,30,0,0">
                                     <TextBlock Text="{DynamicResource Bitrate}"/>
                                     <TextBlock Text="{Binding MusicManager.CSCoreEngine.CurrentTrack.kbps}" Foreground="{DynamicResource NormalColorBrush}" Margin="5,0,0,0"/>
@@ -378,44 +346,7 @@
                         <ColumnDefinition Width="50"/>
                         <ColumnDefinition Width="500"/>
                     </Grid.ColumnDefinitions>
-                    <Border BorderThickness="0" Width="280" Height="280" Background="White">
-                        <Border.Effect>
-                            <DropShadowEffect BlurRadius="6" ShadowDepth="2" Direction="0" Opacity="0.4" Color="#FFD1D1D1" />
-                        </Border.Effect>
-                        <Border Margin="3" Background="#FFFBFBFB">
-                            <Grid>
-                                <Grid>
-                                    <Image Source="/Resources/GUI/music.png" VerticalAlignment="Center" HorizontalAlignment="Center" Stretch="None" RenderOptions.BitmapScalingMode="HighQuality">
-                                        <Image.Style>
-                                            <Style TargetType="Image">
-                                                <Setter Property="Visibility" Value="Hidden"/>
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding MusicManager.CSCoreEngine.CurrentTrack.Image}" Value="{x:Null}">
-                                                        <Setter Property="Visibility" Value="Visible"/>
-                                                    </DataTrigger>
-                                                    <DataTrigger Binding="{Binding MusicManager.CSCoreEngine.CurrentTrack.IsLoadingImage}" Value="True">
-                                                        <Setter Property="Visibility" Value="Hidden"/>
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </Image.Style>
-                                    </Image>
-                                </Grid>
-                                <Image Source="{Binding MusicManager.CSCoreEngine.CurrentTrack.Image}" Stretch="UniformToFill">
-                                    <Image.Style>
-                                        <Style TargetType="Image">
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding MusicManager.CSCoreEngine.CurrentTrack.Image}" Value="{x:Null}">
-                                                    <Setter Property="Visibility" Value="Hidden"/>
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </Image.Style>
-                                </Image>
-                                <controls:ProgressRing IsActive="{Binding MusicManager.CSCoreEngine.CurrentTrack.IsLoadingImage}" />
-                            </Grid>
-                        </Border>
-                    </Border>
+                    <extensions:TrackImagePreseter Track="{Binding MusicManager.CSCoreEngine.CurrentTrack}" Width="280" Height="280" />
                     <Grid Grid.Column="2"  Margin="0,25,0,0">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="auto"/>
@@ -435,7 +366,7 @@
                                     </Style>
                                 </TextBlock.Style>
                             </TextBlock>
-                            <ToggleButton Foreground="#FFB4B4B4" Background="{DynamicResource NormalColorBrush}" Style="{StaticResource favoritetogglebutton}" Height="18" Width="18" HorizontalAlignment="Left" Margin="0,10,0,10" IsChecked="{Binding MusicManager.CSCoreEngine.CurrentTrack.IsFavorite}"/>
+                            <ToggleButton Foreground="#FFB4B4B4" Background="{DynamicResource NormalColorBrush}" Style="{StaticResource FavoriteToggleButton}" Height="18" Width="18" HorizontalAlignment="Left" Margin="0,10,0,10" IsChecked="{Binding MusicManager.CSCoreEngine.CurrentTrack.IsFavorite}"/>
                         </extensions:AnimatedStackPanel>
                         <wpfsvl:SpectrumAnalyzer x:Name="spektrum1" Grid.Row="1" BarCount="50" Height="100" VerticalAlignment="Bottom" Focusable="False">
                             <wpfsvl:SpectrumAnalyzer.Style>
@@ -490,7 +421,7 @@
                     <Grid Grid.ColumnSpan="2">
                         <Button Content="{DynamicResource Apply}" HorizontalAlignment="Right" Margin="0,0,10,0" Command="{Binding ApplyChanges}" IsEnabled="{Binding CanApply}"/>
                     </Grid>
-                    <views:SettingsView Grid.Row="1"/>
+                    <userControls:SettingsView Grid.Row="1"/>
                 </Grid>
             </TabItem>
         </TabControl>

@@ -2,5 +2,196 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
-        Title="{StaticResource FileInfo}" GlowBrush="{StaticResource AccentColorBrush}" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" Width="600" Height="500">
+        xmlns:converter="clr-namespace:Hurricane.Extensions.Converter"
+        xmlns:extensions="clr-namespace:Hurricane.Extensions"
+        Title="{StaticResource TrackInformation}" SizeToContent="Height" GlowBrush="{StaticResource AccentColorBrush}" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" Width="800" x:Name="window" ShowInTaskbar="False" DataContext="{Binding ElementName=window}">
+    <Window.Resources>
+        <converter:RoundSizeConverter x:Key="RoundSizeConverter"/>
+        <converter:NeverIfDateIsNull x:Key="NeverIfDateIsNull"/>
+        <converter:PlaceholderConverter x:Key="PlaceholderConverter"/>
+    </Window.Resources>
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="auto"/>
+            </Grid.ColumnDefinitions>
+            <StackPanel Orientation="Vertical">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="200"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <TextBlock Text="{StaticResource Filename}"/>
+                        <TextBlock Text=":"/>
+                    </StackPanel>
+                    <TextBlock Text="{Binding ElementName=window,Path=CurrentTrack.TrackInformation.Name}" Grid.Column="1"/>
+                </Grid>
+                <Grid Margin="0,5,0,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="200"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <TextBlock Text="{StaticResource Folder}"/>
+                        <TextBlock Text=":"/>
+                    </StackPanel>
+                    <TextBlock Text="{Binding ElementName=window,Path=CurrentTrack.TrackInformation.Directory.FullName}" Grid.Column="1"/>
+                </Grid>
+                <Separator Margin="0,10,0,10"/>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="200"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <TextBlock Text="{StaticResource Format}"/>
+                        <TextBlock Text=":"/>
+                    </StackPanel>
+                    <TextBlock Text="{Binding ElementName=window,Path=CurrentTrack.Extension,Converter={StaticResource PlaceholderConverter}}" Grid.Column="1"/>
+                </Grid>
+                <Grid Margin="0,5,0,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="200"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <TextBlock Text="{StaticResource Duration}"/>
+                        <TextBlock Text=":"/>
+                    </StackPanel>
+                    <TextBlock Text="{Binding ElementName=window,Path=CurrentTrack.Duration,Converter={StaticResource PlaceholderConverter}}" Grid.Column="1"/>
+                </Grid>
+                <Grid Margin="0,5,0,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="200"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <TextBlock Text="{StaticResource Quality}"/>
+                        <TextBlock Text=":"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Grid.Column="1">
+                        <TextBlock Text="{Binding ElementName=window,Path=CurrentTrack.kHz}"/>
+                        <TextBlock Text=" kHz, "/>
+                        <TextBlock Text="{Binding ElementName=window,Path=CurrentTrack.kbps}"/>
+                        <TextBlock Text=" kbps"/>
+                    </StackPanel>
+                </Grid>
+                <Grid Margin="0,5,0,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="200"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <TextBlock Text="{StaticResource FileSize}"/>
+                        <TextBlock Text=":"/>
+                    </StackPanel>
+                    <TextBlock Text="{Binding ElementName=window,Path=CurrentTrack.TrackInformation.Length,Converter={StaticResource RoundSizeConverter}}" Grid.Column="1"/>
+                </Grid>
+            </StackPanel>
+            <extensions:TrackImagePreseter Track="{Binding ElementName=window,Path=CurrentTrack}" Height="136" Width="136" HorizontalAlignment="Left" Grid.Column="1">
+                <extensions:TrackImagePreseter.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="{StaticResource Save}" Command="{Binding SaveImage}">
+                            <MenuItem.Style>
+                                <Style TargetType="MenuItem" BasedOn="{StaticResource MetroMenuItem}">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding CurrentTrack.Image}" Value="{x:Null}">
+                                            <Setter Property="IsEnabled" Value="False"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </MenuItem.Style>
+                        </MenuItem>
+                    </ContextMenu>
+                </extensions:TrackImagePreseter.ContextMenu>
+            </extensions:TrackImagePreseter>
+        </Grid>
+        <StackPanel Orientation="Vertical" Grid.Row="1" Margin="0,10,0,0">
+            <Separator />
+            <Grid Margin="0,10,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="200"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                    <TextBlock Text="{StaticResource Title}"/>
+                    <TextBlock Text=":"/>
+                </StackPanel>
+                <TextBox Text="{Binding ElementName=window,Path=CurrentTrack.Title}" Grid.Column="1"/>
+            </Grid>
+            <Grid Margin="0,5,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="200"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                    <TextBlock Text="{StaticResource Artist}"/>
+                    <TextBlock Text=":"/>
+                </StackPanel>
+                <TextBox Text="{Binding ElementName=window,Path=CurrentTrack.Artist}" Grid.Column="1"/>
+            </Grid>
+            <Grid Margin="0,5,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="200"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                    <TextBlock Text="{StaticResource Album}"/>
+                    <TextBlock Text=":"/>
+                </StackPanel>
+                <TextBox Grid.Column="1" Text="{Binding ElementName=window,Path=CurrentTrack.Album}"/>
+            </Grid>
+            <Grid Margin="0,5,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="200"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                    <TextBlock Text="{StaticResource Genre}"/>
+                    <TextBlock Text=":"/>
+                </StackPanel>
+                <TextBox Text="{Binding ElementName=window,Path=CurrentTrack.Genres}" Grid.Column="1"/>
+            </Grid>
+            <Grid Margin="0,5,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="200"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                    <TextBlock Text="{StaticResource Year}"/>
+                    <TextBlock Text=":"/>
+                </StackPanel>
+                <TextBox Text="{Binding ElementName=window,Path=CurrentTrack.Year,ValidatesOnDataErrors=True,UpdateSourceTrigger=PropertyChanged,NotifyOnValidationError=True}" Grid.Column="1"/>
+            </Grid>
+            <Separator Margin="0,10,0,10"/>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="200"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                    <TextBlock Text="{StaticResource Added}"/>
+                    <TextBlock Text=":"/>
+                </StackPanel>
+                <TextBlock Text="{Binding ElementName=window,Path=CurrentTrack.TimeAdded,StringFormat={StaticResource DateFormat}}" Grid.Column="1"/>
+            </Grid>
+            <Grid Margin="0,5,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="200"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                    <TextBlock Text="{StaticResource Played}"/>
+                    <TextBlock Text=":"/>
+                </StackPanel>
+                <TextBlock Text="{Binding ElementName=window,Path=CurrentTrack.LastTimePlayed,Converter={StaticResource NeverIfDateIsNull}}" Grid.Column="1"/>
+            </Grid>
+        </StackPanel>
+    </Grid>
 </controls:MetroWindow>

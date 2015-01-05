@@ -80,9 +80,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Newtonsoft.Json.6.0.7\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="Ookii.Dialogs.Wpf">
-      <HintPath>..\packages\Ookii.Dialogs.1.0\lib\net35\Ookii.Dialogs.Wpf.dll</HintPath>
-    </Reference>
     <Reference Include="policy.2.0.taglib-sharp">
       <HintPath>..\packages\taglib.2.1.0.0\lib\policy.2.0.taglib-sharp.dll</HintPath>
     </Reference>
@@ -107,6 +104,9 @@
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="WPFFolderBrowser">
+      <HintPath>..\Libraries\WPFFolderBrowser.dll</HintPath>
+    </Reference>
     <Reference Include="WPFSoundVisualizationLib">
       <HintPath>..\Libraries\WPFSoundVisualizationLib.dll</HintPath>
     </Reference>
@@ -119,15 +119,13 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="AppMainWindow\MahAppsExtensions\Dialogs\TrackInformationDialog.xaml.cs">
-      <DependentUpon>TrackInformationDialog.xaml</DependentUpon>
-    </Compile>
     <Compile Include="AppMainWindow\MahAppsExtensions\Dialogs\AdvancedInputDialog.xaml.cs">
       <DependentUpon>AdvancedInputDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="AppMainWindow\Messages\MessageDialog.cs" />
     <Compile Include="AppMainWindow\Messages\MessageManager.cs" />
     <Compile Include="AppMainWindow\Messages\ProgressDialog.cs" />
+    <Compile Include="Extensions\AnimatedListView.cs" />
     <Compile Include="Extensions\AnimatedStackPanel.cs" />
     <Compile Include="Extensions\Converter\CollapsedOnNullValue.cs" />
     <Compile Include="Extensions\Converter\FalseOnNullValue.cs" />
@@ -138,6 +136,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Extensions\Converter\TimespanToMinutesSecounds.cs" />
+    <Compile Include="Extensions\TrackImagePreseter.xaml.cs">
+      <DependentUpon>TrackImagePreseter.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Extensions\ItemsControlExtensions.cs" />
     <Compile Include="Extensions\TextBlockHelper.cs" />
     <Compile Include="Extensions\VisibilityAnimation.cs" />
@@ -154,8 +155,10 @@
       <DependentUpon>StrokeWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Music\AsyncTrackLoader.cs" />
-    <Compile Include="Music\AudioDevice.cs" />
+    <Compile Include="Music\Data\AudioDevice.cs" />
+    <Compile Include="Music\Data\FavoriteList.cs" />
     <Compile Include="Music\Equalizer\EqualizerBand.cs" />
+    <Compile Include="Music\Data\IPlaylist.cs" />
     <Compile Include="Music\MusicDatabase\EventArgs\EqualizerChangedEventArgs.cs" />
     <Compile Include="Music\Equalizer\EqualizerSettings.cs" />
     <Compile Include="Music\MusicDatabase\EventArgs\PlaybackStateChangedEventArgs.cs" />
@@ -167,9 +170,10 @@
     <Compile Include="Music\MusicDatabase\MusicCoverManager.cs" />
     <Compile Include="Music\MusicDatabase\track.cs" />
     <Compile Include="Music\MusicManagerCommands.cs" />
+    <Compile Include="Music\Data\PlaylistBase.cs" />
     <Compile Include="Music\QueueManager.cs" />
-    <Compile Include="Music\TrackComparer.cs" />
-    <Compile Include="Music\TrackPlaylistPair.cs" />
+    <Compile Include="Music\Data\TrackComparer.cs" />
+    <Compile Include="Music\Data\TrackPlaylistPair.cs" />
     <Compile Include="Music\VolumeFading.cs" />
     <Compile Include="Notification\NotificationService.cs" />
     <Compile Include="Notification\Views\NotificationRightBottomWindow.xaml.cs">
@@ -218,7 +222,10 @@
     <Compile Include="Utilities\WindowHelper.cs" />
     <Compile Include="Utilities\WpfScreen.cs" />
     <Compile Include="ViewModels\SettingsViewModel.cs" />
-    <Compile Include="Views\AboutView.xaml.cs">
+    <Compile Include="Views\TagEditorWindow.xaml.cs">
+      <DependentUpon>TagEditorWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\UserControls\AboutView.xaml.cs">
       <DependentUpon>AboutView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\EqualizerWindow.xaml.cs">
@@ -245,13 +252,13 @@
     <Compile Include="Views\ProgressWindow.xaml.cs">
       <DependentUpon>ProgressWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\QueueManager.xaml.cs">
-      <DependentUpon>QueueManager.xaml</DependentUpon>
+    <Compile Include="Views\QueueManagerWindow.xaml.cs">
+      <DependentUpon>QueueManagerWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\ReportExceptionWindow.xaml.cs">
       <DependentUpon>ReportExceptionWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\SettingsView.xaml.cs">
+    <Compile Include="Views\UserControls\SettingsView.xaml.cs">
       <DependentUpon>SettingsView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\SettingsWindow.xaml.cs">
@@ -266,20 +273,17 @@
     <Compile Include="Views\TrackImportWindow.xaml.cs">
       <DependentUpon>TrackImportWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\TrackInformationView.xaml.cs">
-      <DependentUpon>TrackInformationView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Views\TrackInformationWindow.xaml.cs">
       <DependentUpon>TrackInformationWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\UpdateWindow.xaml.cs">
       <DependentUpon>UpdateWindow.xaml</DependentUpon>
     </Compile>
-    <Page Include="AppMainWindow\MahAppsExtensions\Dialogs\TrackInformationDialog.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="AppMainWindow\MahAppsExtensions\Dialogs\AdvancedInputDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Extensions\TrackImagePreseter.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -427,7 +431,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\AboutView.xaml">
+    <Page Include="Views\TagEditorWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\UserControls\AboutView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -466,8 +474,8 @@
     <Compile Include="Music\CSCoreEngine.cs" />
     <Compile Include="Music\MusicDatabase\EventArgs\TrackChangedEventArgs.cs" />
     <Compile Include="Music\MusicManager.cs" />
-    <Compile Include="Music\Playlist.cs" />
-    <Compile Include="Music\Track.cs" />
+    <Compile Include="Music\Data\Playlist.cs" />
+    <Compile Include="Music\Data\Track.cs" />
     <Compile Include="Music\Visualization\SampleAnalyser.cs" />
     <Compile Include="Resources\Styles\DragDropListView\DragAdorner.cs" />
     <Compile Include="Resources\Styles\DragDropListView\ListViewDragDropManager.cs" />
@@ -499,7 +507,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\QueueManager.xaml">
+    <Page Include="Views\QueueManagerWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -507,7 +515,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\SettingsView.xaml">
+    <Page Include="Views\UserControls\SettingsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -524,10 +532,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\TrackImportWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\TrackInformationView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -261,7 +261,7 @@ namespace Hurricane
         {
             if (HostedWindow.Configuration.ShowFullscreenDialogs)
             {
-                MessageDialogResult result = await this.ShowMessageAsync(title, message, cancancel ? MessageDialogStyle.AffirmativeAndNegative : MessageDialogStyle.Affirmative, new MetroDialogSettings() { AffirmativeButtonText = "OK", NegativeButtonText = Application.Current.FindResource("Cancel").ToString(), AnimateHide = false });
+                MessageDialogResult result = await this.ShowMessageAsync(title, message, cancancel ? MessageDialogStyle.AffirmativeAndNegative : MessageDialogStyle.Affirmative, new MetroDialogSettings() { AffirmativeButtonText = "OK", NegativeButtonText = Application.Current.Resources["Cancel"].ToString(), AnimateHide = false });
                 return result == MessageDialogResult.Affirmative;
             }
             else
@@ -277,7 +277,7 @@ namespace Hurricane
         {
             if (HostedWindow.Configuration.ShowFullscreenDialogs)
             {
-                var dialog = new AdvancedInputDialog(this, new MetroDialogSettings() { AffirmativeButtonText = buttonok, DefaultText = defaulttext, NegativeButtonText = Application.Current.FindResource("Cancel").ToString() }) { Title = title, Message = message };
+                var dialog = new AdvancedInputDialog(this, new MetroDialogSettings() { AffirmativeButtonText = buttonok, DefaultText = defaulttext, NegativeButtonText = Application.Current.Resources["Cancel"].ToString() }) { Title = title, Message = message };
                 await this.ShowMetroDialogAsync(dialog);
                 string result = await dialog.WaitForButtonPressAsync();
                 await dialog._WaitForCloseAsync();
@@ -289,22 +289,6 @@ namespace Hurricane
                 InputDialog inputdialog = new InputDialog(title, message, buttonok, defaulttext) { Owner = this };
                 await Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => inputdialog.ShowDialog()));
                 return inputdialog.ResultText;
-            }
-        }
-
-        public async Task ShowTrackInformation(Track track)
-        {
-            if (HostedWindow.Configuration.ShowFullscreenDialogs)
-            {
-                var dialog = new TrackInformationDialog(this, track, null);
-                await this.ShowMetroDialogAsync(dialog);
-                await dialog.WaitForCloseAsync();
-                await this.HideMetroDialogAsync(dialog);
-            }
-            else
-            {
-                TrackInformationWindow trackInformationWindow = new TrackInformationWindow(track) { Owner = this };
-                trackInformationWindow.ShowDialog();
             }
         }
 
@@ -333,6 +317,18 @@ namespace Hurricane
                 e.Instance.CloseRequest = () => { progressWindow.Close(); return null; };
                 await Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => progressWindow.ShowDialog()));
             }
+        }
+
+        public void OpenTrackInformations(Track track)
+        {
+            TrackInformationWindow trackInformationWindow = new TrackInformationWindow(track) { Owner = this, WindowStartupLocation = this.HostedWindow.Configuration.ShowFullscreenDialogs ? WindowStartupLocation.CenterOwner : WindowStartupLocation.CenterScreen };
+            trackInformationWindow.ShowDialog();
+        }
+
+        public void OpenTagEditor(Track track)
+        {
+            TagEditorWindow tagEditorWindow = new TagEditorWindow(track) { Owner = this, WindowStartupLocation = this.HostedWindow.Configuration.ShowFullscreenDialogs ? WindowStartupLocation.CenterOwner : WindowStartupLocation.CenterScreen };
+            tagEditorWindow.ShowDialog();
         }
 
         #endregion

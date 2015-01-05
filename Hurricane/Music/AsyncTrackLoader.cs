@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
+using Hurricane.Music.Data;
 
 namespace Hurricane.Music
 {
@@ -17,27 +19,37 @@ namespace Hurricane.Music
 
         private AsyncTrackLoader()
         {
-            Lists = new List<IList<TrackPlaylistPair>>();
+            PlaylistsToCheck = new List<Playlist>();
         }
 
-        public List<IList<TrackPlaylistPair>> Lists { get; set; }
+        private bool _isrunning;
 
-        public void AddTrackList(IList<TrackPlaylistPair> tracks)
+        public List<Playlist> PlaylistsToCheck { get; set; }
+
+        private bool havetocheck;
+        public void RunAsync(List<Playlist> lst)
         {
-            Lists.Add(tracks);
+            PlaylistsToCheck.AddRange(lst.Where(p => !PlaylistsToCheck.Contains(p))); //We only add tracks which aren't already in our queue
+            havetocheck = true;
+            var t = LoadTracks();
         }
 
-        protected bool TracksAreLoaded;
-        protected async void LoadTracks()
+        protected async Task LoadTracks()
         {
-            TracksAreLoaded = true;
-            foreach (var list in Lists)
+            if (_isrunning) return;
+            _isrunning = true;
+            havetocheck = false;
+            foreach (var p in PlaylistsToCheck.ToList())
             {
-                foreach (var track in list)
+                foreach (var track in p.Tracks)
                 {
-                    if (track.Track.NotChecked && !(await track.Track.CheckTrack())) track.Playlist.RemoveTrackWithAnimation(track.Track);
+                    //if(track.NotChecked && !await track.CheckTrack()) p.RemoveTrackWithAnimation(track);
                 }
+                PlaylistsToCheck.Remove(p);
             }
+
+            _isrunning = false;
+            if (havetocheck) await LoadTracks();
         }
     }
 }

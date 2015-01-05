@@ -8,6 +8,7 @@ using CSCore.Codecs;
 using CSCore.CoreAudioAPI;
 using CSCore.SoundOut;
 using CSCore.Streams;
+using Hurricane.Music.Data;
 using Hurricane.Music.MusicDatabase.EventArgs;
 using Hurricane.Music.Visualization;
 using Hurricane.Settings;

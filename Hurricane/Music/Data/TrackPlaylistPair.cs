@@ -1,11 +1,11 @@
-﻿namespace Hurricane.Music
+﻿namespace Hurricane.Music.Data
 {
     public class TrackPlaylistPair
     {
         public Track Track { get; set; }
-        public Playlist Playlist { get; set; }
+        public IPlaylist Playlist { get; set; }
 
-        public TrackPlaylistPair(Track track, Playlist playlist)
+        public TrackPlaylistPair(Track track, IPlaylist playlist)
         {
             Track = track;
             Playlist = playlist;

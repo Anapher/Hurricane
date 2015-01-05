@@ -5,6 +5,7 @@ using System.Windows;
 using System.Windows.Media;
 using Hurricane.Music;
 using Hurricane.Music.API;
+using Hurricane.Music.Data;
 using Hurricane.Settings;
 using Hurricane.Settings.RegistryManager;
 using Hurricane.Settings.Themes;
@@ -227,9 +228,9 @@ namespace Hurricane.ViewModels
         {
             get
             {
-                if (ApiServer == null) return Application.Current.FindResource("Deactivated").ToString();
-                if (ApiServer.IsRunning) { return Application.Current.FindResource("Activated").ToString(); }
-                return ApiServer.GotProblems ? Application.Current.FindResource("FailedToBindToPort").ToString() : Application.Current.FindResource("Deactivated").ToString();
+                if (ApiServer == null) return Application.Current.Resources["Deactivated"].ToString();
+                if (ApiServer.IsRunning) { return Application.Current.Resources["Activated"].ToString(); }
+                return ApiServer.GotProblems ? Application.Current.Resources["FailedToBindToPort"].ToString() : Application.Current.Resources["Deactivated"].ToString();
             }
         }
 

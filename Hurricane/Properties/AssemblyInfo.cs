@@ -9,7 +9,7 @@ using Exceptionless.Configuration;
 [assembly: AssemblyTitle("Hurricane")]
 [assembly: AssemblyDescription("Hurricane is a powerful music player based on CSCore")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Alkaline")]
 [assembly: AssemblyProduct("Hurricane")]
 [assembly: AssemblyCopyright("Copyright © Alkaline  2014")]
 [assembly: AssemblyTrademark("")]

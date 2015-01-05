@@ -11,6 +11,7 @@ namespace Hurricane.Music.MusicDatabase
     {
         public static BitmapImage GetImage(Track track, DirectoryInfo di)
         {
+            if (string.IsNullOrEmpty(track.Album)) return null;
             if (di.Exists)
             {
                 foreach (var item in di.GetFiles("*.png"))

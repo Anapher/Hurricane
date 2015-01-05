@@ -11,9 +11,9 @@ namespace Hurricane.Extensions.Converter
         {
             if (value == null || ((DateTime)value).Year == 1)
             {
-                return Application.Current.FindResource("Never").ToString();
+                return Application.Current.Resources["Never"].ToString();
             }
-            return ((DateTime)value).ToString(Application.Current.FindResource("DateFormat").ToString());
+            return ((DateTime)value).ToString(Application.Current.Resources["DateFormat"].ToString());
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

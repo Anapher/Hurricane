@@ -1,4 +1,5 @@
 ﻿using Hurricane.Music;
+using Hurricane.Music.Data;
 using Hurricane.ViewModelBase;
 using Hurricane.ViewModels;
 using MahApps.Metro.Controls;
@@ -6,11 +7,11 @@ using MahApps.Metro.Controls;
 namespace Hurricane.Views
 {
     /// <summary>
-    /// Interaction logic for QueueManager.xaml
+    /// Interaction logic for QueueManagerWindow.xaml
     /// </summary>
-    public partial class QueueManager : MetroWindow
+    public partial class QueueManagerWindow : MetroWindow
     {
-        public QueueManager()
+        public QueueManagerWindow()
         {
             InitializeComponent();
         }

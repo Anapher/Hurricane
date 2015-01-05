@@ -30,7 +30,7 @@ namespace Hurricane.Settings.Themes
         {
             get
             {
-                return Application.Current.FindResource(Name).ToString();
+                return Application.Current.Resources[Name].ToString();
             }
         }
 

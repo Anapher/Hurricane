@@ -2,6 +2,7 @@
 using System.IO;
 using System.Xml.Serialization;
 using Hurricane.Music;
+using Hurricane.Music.Data;
 
 namespace Hurricane.Settings
 {

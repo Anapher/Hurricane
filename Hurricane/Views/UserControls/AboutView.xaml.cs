@@ -5,7 +5,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Navigation;
 
-namespace Hurricane.Views
+namespace Hurricane.Views.UserControls
 {
     /// <summary>
     /// Interaction logic for AboutView.xaml

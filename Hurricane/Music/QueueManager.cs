@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Xml.Serialization;
+using Hurricane.Music.Data;
 
 namespace Hurricane.Music
 {
@@ -18,7 +19,7 @@ namespace Hurricane.Music
             TrackPlaylists = new ObservableCollection<TrackPlaylistPair>();
         }
 
-        public void Initialize(List<Playlist> playlists)
+        public void Initialize(IEnumerable<Playlist> playlists)
         {
             foreach (var item in this)
             {
@@ -29,7 +30,7 @@ namespace Hurricane.Music
             RefreshDuration();
         }
 
-        public void AddTrack(Track track, Playlist playlist)
+        public void AddTrack(Track track, IPlaylist playlist)
         {
             Add(new TrackRepresenter(track));
             TrackPlaylists.Add(new TrackPlaylistPair(track, playlist));
@@ -135,7 +136,7 @@ namespace Hurricane.Music
                 this[i].Track.QueueID = (i + 1).ToString();
         }
 
-        public Tuple<Track, Playlist> PlayNextTrack()
+        public Tuple<Track, IPlaylist> PlayNextTrack()
         {
             if (!HasTracks) return null;
             Track nexttrack = this.First().Track;
@@ -178,7 +179,7 @@ namespace Hurricane.Music
 
         public string TrackID { get; set; }
 
-        public Playlist GetTrack(List<Playlist> playlists)
+        public Playlist GetTrack(IEnumerable<Playlist> playlists)
         {
             foreach (var playlist in playlists)
             {

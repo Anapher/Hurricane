@@ -3,27 +3,25 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows;
-using System.Windows.Controls;
 using Hurricane.Music;
-using Ookii.Dialogs.Wpf;
+using Hurricane.Views.UserControls;
+using MahApps.Metro.Controls;
 using TagLib;
 
 namespace Hurricane.Views
 {
     /// <summary>
-    /// Interaction logic for TrackInformationView.xaml
+    /// Interaction logic for TagEditorWindow.xaml
     /// </summary>
-    public partial class TrackInformationView : UserControl, INotifyPropertyChanged, IDisposable
+    public partial class TagEditorWindow : MetroWindow, INotifyPropertyChanged
     {
-        public event EventHandler CloseRequest;
-
-        public TrackInformationView(Track track)
+        public TagEditorWindow(Track track)
         {
             this.TagFile = File.Create(track.Path);
             this.CurrentTrack = track;
+            InitializeComponent();
 
             List<Genre> genres = Genres.Audio.Select(item => new Genre(item, TagFile.Tag.Genres.Contains(item))).ToList();
-            InitializeComponent();
             lstGenre.ItemsSource = genres;
         }
 
@@ -33,7 +31,7 @@ namespace Hurricane.Views
         #region Lyrics
         private void MenuItemOpenLyrics_Click(object sender, RoutedEventArgs e)
         {
-            VistaOpenFileDialog ofd = new VistaOpenFileDialog
+            var ofd = new Microsoft.Win32.OpenFileDialog()
             {
                 Filter = string.Format("{0} (*.txt)|*.txt|{1} (*.*)|*.*", Application.Current.FindResource("TextFiles"), Application.Current.FindResource("AllFiles"))
             };
@@ -46,7 +44,7 @@ namespace Hurricane.Views
 
         private void MenuItemSaveAs_Click(object sender, RoutedEventArgs e)
         {
-            VistaSaveFileDialog sfd = new VistaSaveFileDialog
+            var sfd = new Microsoft.Win32.SaveFileDialog()
             {
                 Filter = string.Format("{0} (*.txt)|*.txt|{1} (*.*)|*.*", Application.Current.FindResource("TextFiles"), Application.Current.FindResource("AllFiles"))
             };
@@ -62,6 +60,28 @@ namespace Hurricane.Views
         }
         #endregion
 
+        private async void ButtonSave_Click(object sender, RoutedEventArgs e)
+        {
+            TagFile.Tag.Genres = (from item in (List<Genre>)lstGenre.ItemsSource where item.IsChecked select item.Text).ToArray();
+            try
+            {
+                TagFile.Save();
+            }
+            catch (Exception ex)
+            {
+                Views.MessageWindow message = new Views.MessageWindow(string.Format(Application.Current.Resources["SaveTagsError"].ToString(), ex.Message), Application.Current.Resources["Error"].ToString(), false);
+                message.ShowDialog();
+                return;
+            }
+
+            await CurrentTrack.LoadInformation();
+        }
+        protected override void OnClosing(CancelEventArgs e)
+        {
+            base.OnClosing(e);
+            TagFile.Dispose();
+        }
+
         #region INotifyPropertyChanged
         protected void OnPropertyChanged(string propertyName)
         {
@@ -71,33 +91,21 @@ namespace Hurricane.Views
         public event PropertyChangedEventHandler PropertyChanged;
         #endregion
 
-        private async void ButtonSave_Click(object sender, RoutedEventArgs e)
-        {
-            TagFile.Tag.Genres = (from item in (List<Genre>) lstGenre.ItemsSource where item.IsChecked select item.Text).ToArray();
-            TagFile.Save();
-            await CurrentTrack.LoadInformation();
-        }
-
         private void ButtonClose_Click(object sender, RoutedEventArgs e)
         {
-            if (CloseRequest != null) CloseRequest(this, EventArgs.Empty);
+            this.Close();
         }
 
-        public void Dispose()
+        public class Genre
         {
-            TagFile.Dispose();
-        }
-    }
+            public string Text { get; set; }
+            public bool IsChecked { get; set; }
 
-    public class Genre
-    {
-        public string Text { get; set; }
-        public bool IsChecked { get; set; }
-
-        public Genre(string genre, bool ischecked)
-        {
-            this.Text = genre;
-            this.IsChecked = ischecked;
+            public Genre(string genre, bool ischecked)
+            {
+                this.Text = genre;
+                this.IsChecked = ischecked;
+            }
         }
     }
 }

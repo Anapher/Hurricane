@@ -109,7 +109,7 @@ namespace Hurricane.Settings
             StringBuilder sb = new StringBuilder();
             foreach (var package in e.Result.newUpdatePackages)
             {
-                sb.AppendLine(string.Format(Application.Current.FindResource("UpdateChangelogText").ToString(), package.releaseInfo.Version, DateTime.Parse(package.ReleaseDate).ToString(Application.Current.FindResource("DateFormat").ToString())));
+                sb.AppendLine(string.Format(Application.Current.Resources["UpdateChangelogText"].ToString(), package.releaseInfo.Version, DateTime.Parse(package.ReleaseDate).ToString(Application.Current.Resources["DateFormat"].ToString())));
                 sb.AppendLine(changelogseperator);
                 sb.AppendLine(this.language == Language.English ? updController.currentUpdateResult.Changelogs[package].englishChanges : updController.currentUpdateResult.Changelogs[package].germanChanges);
                 sb.AppendLine();

@@ -64,24 +64,6 @@ namespace Hurricane.AppMainWindow.WindowSkins
             }
         }
 
-        #region Animations
-        private void ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            Storyboard storyb = new Storyboard();
-            DoubleAnimation da = new DoubleAnimation(0.3, 1, TimeSpan.FromMilliseconds(500));
-            ThicknessAnimation ta = new ThicknessAnimation(new Thickness(-10, 0, 10, 0), new Thickness(0), TimeSpan.FromSeconds(0.4));
-            Storyboard.SetTarget(da, gridplaylist);
-            Storyboard.SetTarget(ta, gridplaylist);
-            Storyboard.SetTargetProperty(da, new PropertyPath(OpacityProperty));
-            Storyboard.SetTargetProperty(ta, new PropertyPath(MarginProperty));
-
-            storyb.Children.Add(da);
-            storyb.Children.Add(ta);
-            storyb.Begin(this);
-        }
-
-        #endregion
-
         private void Grid_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             if (DragMoveStart != null) DragMoveStart(this, EventArgs.Empty);
