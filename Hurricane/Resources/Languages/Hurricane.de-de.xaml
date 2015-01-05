@@ -233,4 +233,6 @@
     <system:String x:Key="TagEditor">Tag Editor</system:String>
     <system:String x:Key="Change">Ändern</system:String>
     <system:String x:Key="Favorites">Favoriten</system:String>
+    <system:String x:Key="TrimTrackname">Suchtext verbessern</system:String>
+    <system:String x:Key="ShowArtistAndTitle">Künstlernamen und Titel in Liste anzeigen</system:String>
 </ResourceDictionary>

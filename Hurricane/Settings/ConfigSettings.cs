@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using System.Windows;
+using System.Windows.Media;
 using System.Xml.Serialization;
 using Hurricane.MagicArrow.DockManager;
 using Hurricane.Music;
@@ -46,6 +47,7 @@ namespace Hurricane.Settings
         public bool RememberTrackImportPlaylist { get; set; }
         public string PlaylistToImportTrack { get; set; }
         public bool ShufflePreferFavoritTracks { get; set; }
+        public bool ShowArtistAndTitle { get; set; }
 
         public bool ApiIsEnabled { get; set; }
         public int ApiPort { get; set; }
@@ -109,6 +111,7 @@ namespace Hurricane.Settings
             TrimTrackname = true;
             ApiIsEnabled = false;
             ApiPort = 10898; //10.08.1998
+            ShowArtistAndTitle = true;
         }
 
         public ConfigSettings()
@@ -172,7 +175,8 @@ namespace Hurricane.Settings
                     CompareTwoValues(this.TrimTrackname, other.TrimTrackname) &&
                     CompareTwoValues(this.ApiIsEnabled, other.ApiIsEnabled) &&
                     CompareTwoValues(this.ApiPort, other.ApiPort) &&
-                    CompareTwoValues(this.ShufflePreferFavoritTracks, other.ShufflePreferFavoritTracks));
+                    CompareTwoValues(this.ShufflePreferFavoritTracks, other.ShufflePreferFavoritTracks) &&
+                    CompareTwoValues(this.ShowArtistAndTitle, other.ShowArtistAndTitle));
         }
 
         protected bool CompareTwoValues(object v1, object v2)

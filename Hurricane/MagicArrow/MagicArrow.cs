@@ -58,28 +58,35 @@ namespace Hurricane.MagicArrow
 
         #region Animations
         protected Side _movedoutside;
-        protected void MoveWindowOutOfScreen(Side side)
+        protected async void MoveWindowOutOfScreen(Side side)
         {
             BaseWindow.Topmost = true;
             if (MoveOut != null) MoveOut(this, EventArgs.Empty);
-            double newleft;
-            if (side == Side.Left) { newleft = -(BaseWindow.ActualWidth + 50); } else { newleft = maxwidth + BaseWindow.ActualWidth + 50; }
-
-            Storyboard moveWindowOutOfScreenStoryboard = new Storyboard();
-            DoubleAnimation outanimation = new DoubleAnimation(BaseWindow.Left, newleft, TimeSpan.FromMilliseconds(150), FillBehavior.Stop);
-            outanimation.Completed += (s, e) => { BaseWindow.Left = newleft; BaseWindow.Topmost = false; };
-            moveWindowOutOfScreenStoryboard.Children.Add(outanimation);
-            Storyboard.SetTargetName(outanimation, BaseWindow.Name);
-            Storyboard.SetTargetProperty(outanimation, new PropertyPath(Window.LeftProperty));
+            if (side == Side.Left)
+            {
+                for (int i = 0; i > -32; i--)
+                {
+                    await Task.Delay(1);
+                    BaseWindow.Left = i * 10;
+                }
+            }
+            else
+            {
+                for (int i = 0; i < 32; i++)
+                {
+                    await Task.Delay(1);
+                    BaseWindow.Left = WpfScreen.AllScreensWidth - 300 + i * 10;
+                }
+            }
 
             MovedOut = true;
-            moveWindowOutOfScreenStoryboard.Begin(BaseWindow);
             BaseWindow.ShowInTaskbar = false;
             _movedoutside = side;
             StartMagic();
+
         }
 
-        protected void MoveWindowBackInScreen()
+        protected async void MoveWindowBackInScreen()
         {
             if (MoveIn != null) MoveIn(this, EventArgs.Empty);
             double newleft;
@@ -91,11 +98,13 @@ namespace Hurricane.MagicArrow
             Storyboard.SetTargetName(inanimation, BaseWindow.Name);
             Storyboard.SetTargetProperty(moveWindowBackInScreenStoryboard, new PropertyPath(Window.LeftProperty));
 
+            moveWindowBackInScreenStoryboard.Begin(BaseWindow);
+
             MovedOut = false;
             BaseWindow.Topmost = true;
             BaseWindow.Activate();
             BaseWindow.ShowInTaskbar = true;
-            moveWindowBackInScreenStoryboard.Begin(BaseWindow);
+            
             StopMagic();
         }
         #endregion
@@ -206,7 +215,8 @@ namespace Hurricane.MagicArrow
         {
             if (StrokeWindow.PositionIsOk(_movedoutside, Cursor.Position.X, 2, maxwidth))
             {
-                Strokewindow.SetLeft(_movedoutside == Side.Left ? 0 : maxwidth - 1, _movedoutside);
+                if (Strokewindow != null)
+                    Strokewindow.SetLeft(_movedoutside == Side.Left ? 0 : maxwidth - 1, _movedoutside);
                 HideMagicArrow();
             }
             else { Strokewindow.SetLeft(_movedoutside == Side.Left ? 0 : maxwidth - 1, _movedoutside); }

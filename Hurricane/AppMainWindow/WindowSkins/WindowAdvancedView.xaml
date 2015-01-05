@@ -109,7 +109,7 @@
                                 <ContextMenu x:Key="ItemContextMenu" DataContext="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}, Path=DataContext}">
                                     <MenuItem Header="{DynamicResource Play}" Command="{Binding MusicManager.Commands.PlaySelectedTrack}" IsEnabled="{Binding MusicManager.SelectedTrack.TrackExists}" InputGestureText="Enter"/>
                                     <Separator />
-                                    <MenuItem Header="{DynamicResource AddTracks}">
+                                    <MenuItem Header="{DynamicResource AddTracks}" IsEnabled="{Binding MusicManager.SelectedPlaylist.CanEdit}">
                                         <MenuItem Header="{DynamicResource AddFiles}" Command="{Binding AddFilesToPlaylist}" InputGestureText="{DynamicResource Ins}"/>
                                         <MenuItem Header="{DynamicResource AddDirectories}" Command="{Binding AddFolderToPlaylist}" InputGestureText="{DynamicResource CtrlIns}"/>
                                     </MenuItem>
@@ -226,7 +226,8 @@
                                         </Grid.Resources>
                                         <Grid VerticalAlignment="Center" Margin="5,0,0,0">
                                             <TextBlock Text="{Binding QueueID}" HorizontalAlignment="Center"/> <!--We dont have to hide it because it gets automatically null-->
-                                            <Viewbox Width="12" Height="12" Child="{StaticResource VectorPlay}">
+                                            <Viewbox Width="12" Height="12">
+                                                <Path Data="{StaticResource VectorPlay}"/>
                                                 <Viewbox.Resources>
                                                     <Style TargetType="Path">
                                                         <Setter Property="Fill" Value="{DynamicResource AccentColorBrush}"/>
@@ -260,7 +261,8 @@
                                                     </Style>
                                                 </Viewbox.Style>
                                             </Viewbox>
-                                            <Viewbox Width="12" Height="12" Child="{StaticResource VectorPause}">
+                                            <Viewbox Width="12" Height="12">
+                                                <Path Data="{StaticResource VectorPause}"/>
                                                 <Viewbox.Resources>
                                                     <Style TargetType="Path">
                                                         <Setter Property="Fill" Value="{DynamicResource AccentColorBrush}"/>
@@ -437,19 +439,22 @@
                         <Grid>
                             <Viewbox Width="12" Height="12" RenderOptions.BitmapScalingMode="HighQuality" VerticalAlignment="Center" HorizontalAlignment="Center">
                                 <Grid>
-                                    <Path Fill="{Binding RelativeSource={RelativeSource AncestorType=ToggleButton},Path=Foreground}" Data="F1 M 9.042,2.000 L 12.000,2.000 L 12.000,0.000 L 16.000,3.000 L 12.000,6.000 L 12.000,4.000 L 10.042,4.000 L 4.001,12.000 L 0.000,12.000 L 0.000,10.000 L 3.001,10.000 L 9.042,2.000 Z M 4.384,5.845 L 3.000,4.000 L 0.000,4.000 L 0.000,2.000 L 4.000,2.000 L 5.638,4.184 L 4.384,5.845 Z M 9.000,12.000 L 7.384,9.845 L 8.638,8.184 L 10.000,10.000 L 12.000,10.000 L 12.000,8.000 L 16.000,11.000 L 12.000,14.000 L 12.000,12.000 L 9.000,12.000 Z"/>
+                                    <Path Fill="{Binding RelativeSource={RelativeSource AncestorType=ToggleButton},Path=Foreground}" Data="{StaticResource VectorShuffle}"/>
                                 </Grid>
                             </Viewbox>
                         </Grid>
                     </ToggleButton>
                     <Button Style="{StaticResource RoundButton}" Height="30" Width="30" Background="White" Command="{Binding MusicManager.Commands.GoBackward}">
                         <Grid>
-                            <Viewbox Width="12" Height="12" RenderOptions.BitmapScalingMode="HighQuality" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,1,0" Child="{StaticResource VectorFastBackward}"/>
+                            <Viewbox Width="12" Height="12" RenderOptions.BitmapScalingMode="HighQuality" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,1,0">
+                                <Path Data="{StaticResource VectorFastBackward}" Fill="Black"/>
+                            </Viewbox>
                         </Grid>
                     </Button>
                     <Button Style="{StaticResource RoundButton}" Width="45" Height="45" Command="{Binding MusicManager.Commands.TogglePlayPause}" Margin="8,0,8,0">
                         <Grid VerticalAlignment="Center" HorizontalAlignment="Center">
-                            <Viewbox Width="16" Height="16" Stretch="Uniform" Margin="3,0,0,0" Child="{StaticResource VectorPlay}">
+                            <Viewbox Width="16" Height="16" Stretch="Uniform" Margin="3,0,0,0">
+                                <Path Data="{StaticResource VectorPlay}" Fill="Black"/>
                                 <Viewbox.Resources>
                                     <Style TargetType="{x:Type Viewbox}">
                                         <Style.Triggers>
@@ -463,7 +468,8 @@
                                     </Style>
                                 </Viewbox.Resources>
                             </Viewbox>
-                            <Viewbox Width="13" Height="15" Stretch="Fill" Child="{StaticResource VectorPause}">
+                            <Viewbox Width="13" Height="15" Stretch="Fill">
+                                <Path Data="{StaticResource VectorPause}" Fill="Black"/>
                                 <Viewbox.Resources>
                                     <Style TargetType="{x:Type Viewbox}">
                                         <Style.Triggers>
@@ -479,15 +485,17 @@
                             </Viewbox>
                         </Grid>
                     </Button>
-                    <Button Style="{StaticResource RoundButton}" Height="30" Width="30" Background="White" Command="{Binding MusicManager.Commands.GoForward}" Focusable="False">
+                    <Button Style="{StaticResource RoundButton}" Height="30" Width="30" Background="White" Command="{Binding MusicManager.Commands.GoForward}">
                         <Grid>
-                            <Viewbox Width="12" Height="12" RenderOptions.BitmapScalingMode="HighQuality" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="1,0,0,0" Child="{StaticResource VectorFastForward}"/>
+                            <Viewbox Width="12" Height="12" RenderOptions.BitmapScalingMode="HighQuality" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="1,0,0,0">
+                                <Path Data="{StaticResource VectorFastForward}" Fill="Black"/>
+                            </Viewbox>
                         </Grid>
                     </Button>
                     <ToggleButton Height="30" Width="30" Background="White" Style="{StaticResource RoundToggleButton}" Margin="8,0,0,0" IsChecked="{Binding MusicManager.IsLoopEnabled}">
                         <Grid>
                             <Viewbox Width="12" Height="12" RenderOptions.BitmapScalingMode="HighQuality" VerticalAlignment="Center" HorizontalAlignment="Center">
-                                <Path Fill="{Binding RelativeSource={RelativeSource AncestorType=ToggleButton},Path=Foreground}" Data="F1 M 25.797,17.087 C 26.181,15.857 26.404,14.556 26.404,13.202 C 26.404,5.923 20.481,0.000 13.202,0.000 C 5.923,0.000 0.000,5.922 0.000,13.202 C 0.000,20.482 5.923,26.406 13.202,26.406 L 13.202,22.168 C 8.259,22.168 4.237,18.147 4.237,13.203 C 4.237,8.260 8.258,4.239 13.202,4.239 C 18.144,4.239 22.167,8.260 22.167,13.203 C 22.167,13.881 22.079,14.536 21.935,15.170 L 17.972,13.202 L 20.732,21.402 L 28.930,18.640 L 25.797,17.087 Z"/>
+                                <Path Fill="{Binding RelativeSource={RelativeSource AncestorType=ToggleButton},Path=Foreground}" Data="{StaticResource VectorRepeat}"/>
                             </Viewbox>
                         </Grid>
                     </ToggleButton>

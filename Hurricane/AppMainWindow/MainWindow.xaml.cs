@@ -64,22 +64,31 @@ namespace Hurricane
             var appsettings = HurricaneSettings.Instance.Config;
             if (appsettings.ApplicationState == null)
             {
-                appsettings.ApplicationState = new DockingApplicationState();
-                appsettings.ApplicationState.CurrentSide = DockingSide.None;
-                appsettings.ApplicationState.Height = 600;
-                appsettings.ApplicationState.Width = 1000;
                 WindowStartupLocation = WindowStartupLocation.CenterScreen;
-                appsettings.ApplicationState.Left = Left;
-                appsettings.ApplicationState.Top = Top;
+                appsettings.ApplicationState = new DockingApplicationState
+                {
+                    CurrentSide = DockingSide.None,
+                    Height = 600,
+                    Width = 1000,
+                    Left = Left,
+                    Top = Top
+                };
             }
 
             if (appsettings.ApplicationState.CurrentSide == DockingSide.None)
             {
-                Height = appsettings.ApplicationState.Height;
-                Width = appsettings.ApplicationState.Width;
-                Left = appsettings.ApplicationState.Left;
-                Top = appsettings.ApplicationState.Top;
-                WindowState = appsettings.ApplicationState.WindowState;
+                if (appsettings.ApplicationState.Left < WpfScreen.AllScreensWidth) //To prevent that the window is out of view when the user unplugs a monitor
+                {
+                    Height = appsettings.ApplicationState.Height;
+                    Width = appsettings.ApplicationState.Width;
+                    Left = appsettings.ApplicationState.Left;
+                    Top = appsettings.ApplicationState.Top;
+                    WindowState = appsettings.ApplicationState.WindowState;
+                }
+                else
+                {
+                    this.WindowStartupLocation = WindowStartupLocation.CenterScreen;
+                }
             }
 
             MagicArrow.DockManager.CurrentSide = appsettings.ApplicationState.CurrentSide;

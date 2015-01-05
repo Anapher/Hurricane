@@ -26,14 +26,6 @@ namespace Hurricane.AppMainWindow.WindowSkins
             this.Configuration = new WindowSkinConfiguration() {  MaxHeight = WpfScreen.MaxHeight, MaxWidth = 300, MinHeight = 400, MinWidth  = 300, ShowSystemMenuOnRightClick = false, ShowTitleBar = false, ShowWindowControls = false, NeedMovingHelp = true, ShowFullscreenDialogs = false };
         }
 
-        private void buttonplus_Click(object sender, RoutedEventArgs e)
-        {
-            ContextMenu menu = ((Button)sender).ContextMenu;
-            menu.PlacementTarget = (UIElement)sender;
-            menu.Placement = PlacementMode.Bottom;
-            menu.IsOpen = true;
-        }
-
         #region CurrentTrackAnimation
         private void Grid_MouseEnter(object sender, MouseEventArgs e)
         {

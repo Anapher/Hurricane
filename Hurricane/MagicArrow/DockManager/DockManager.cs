@@ -39,27 +39,50 @@ namespace Hurricane.MagicArrow.DockManager
 
         #endregion
 
-        private bool isatborder;
+        #region Properties
+
+        public bool IsEnabled { get; set; }
+
+        #endregion
 
         public double WindowHeight { get; set; }
 
-        protected double left;
-        protected DockingSide side = DockingSide.None; //new side
-        public DockingSide CurrentSide { get; set; }//the applied side
-        protected bool enabled;
-        private bool FullscreenWindowIsOpen;
+        private WindowPositionSide? _newSide;
+        public WindowPositionSide? NewSide
+        {
+            get { return _newSide; }
+            set { _newSide = value; }
+        }
+
+        public DockingSide CurrentSide { get; set; } //the applied side
 
         public void DragStart()
         {
-            if (!dragstopped) return;
-            dragstopped = false;
-            enabled = true;
+            if (IsEnabled) return;
+            IsEnabled = true;
+            NewSide = null;
             HookManager.MouseMove += HookManager_MouseMove;
         }
 
-        protected bool MouseIsLeftOrRight(int MouseX)
+        protected bool MouseIsLeftRightOrTop(int MouseX, int MouseY, out WindowPositionSide? side)
         {
-            return MouseX < 5 || MouseX >= WpfScreen.AllScreensWidth - 5;
+            if (MouseX < 5)
+            {
+                side = WindowPositionSide.Left;
+                return true;
+            }
+            if (MouseX >= WpfScreen.AllScreensWidth - 5)
+            {
+                side = WindowPositionSide.Right;
+                return true;
+            }
+            if (MouseY < 5)
+            {
+                side = WindowPositionSide.Top;
+                return true;
+            }
+            side = WindowPositionSide.None;
+            return false;
         }
 
         protected bool WindowIsLeftOrRight()
@@ -69,51 +92,63 @@ namespace Hurricane.MagicArrow.DockManager
 
         void HookManager_MouseMove(object sender, MouseEventArgs e)
         {
-            if (!enabled) return;
+            //Side dock > top dock
+            if (!IsEnabled) return;
             if (Mouse.LeftButton == MouseButtonState.Released) //If the user doubleclicks the window, relocates the window and releases the mouse, it doesn't get stopped
             {
                 DragStop();
                 return;
             }
-            
-            if (MouseIsLeftOrRight(e.X)) // || !(basewindow.Left == 0 || basewindow.Left == maxwidth - 300)
+
+            if (MouseIsLeftRightOrTop(e.X, e.Y, out _newSide))
             {
-                if (!isatborder)
+                var screen = WpfScreen.GetScreenFrom(new Point(e.X, e.Y));
+                if (NewSide == WindowPositionSide.Left || NewSide == WindowPositionSide.Right)
                 {
-                    isatborder = true;
-                    side = e.X <= 5 ? DockingSide.Left : DockingSide.Right;
-                    WindowHeight = WpfScreen.GetScreenFrom(new Point(e.X, e.Y)).WorkingArea.Height;
-                    left = side == DockingSide.Left ? 0 : WpfScreen.AllScreensWidth - 300;
-                    window = new DockRangeWindow(left, WindowHeight);
-                    window.Show();
+                    if (!IsAtRightOrLeftBorder)
+                    {
+                        IsAtRightOrLeftBorder = true;
+                        OpenWindow(NewSide.Value, screen);
+                        if (IsAtTop) IsAtTop = false;
+                    }
                     return;
                 }
+                if (IsAtRightOrLeftBorder)
+                {
+                    IsAtRightOrLeftBorder = false;
+                    CloseWindowIfExists();
+                }
+                if (NewSide == WindowPositionSide.Top)
+                {
+                    if (!IsAtTop || screen.DeviceName != DisplayingScreen)
+                    {
+                        IsAtTop = true;
+                        OpenWindow(NewSide.Value, screen);
+                        DisplayingScreen = screen.DeviceName;
+                    }
+                }
             }
-            else if (isatborder) //&& !WindowIsLeftOrRight()
+            else
             {
-                isatborder = false;
-                CloseWindowIfExists();
-                Debug.Print("close window");
-                side = DockingSide.None;
                 OnUndocked();
-                return;
-            }
-
-            if (e.Y < 1 && !FullscreenWindowIsOpen && basewindow.WindowState != WindowState.Maximized)
-            {
-                var currentScreen = WpfScreen.GetScreenFrom(new Point(e.X, 0));
-                window = new DockRangeWindow(0, 0, currentScreen.WorkingArea.Height, currentScreen.WorkingArea.Width);
-                window.Show();
-                FullscreenWindowIsOpen = true;
-            }
-            else if (FullscreenWindowIsOpen)
-            {
-                CloseWindowIfExists();
-                FullscreenWindowIsOpen = false;
+                if (IsAtTop)
+                {
+                    IsAtTop = false;
+                    CloseWindowIfExists();
+                }
+                if (IsAtRightOrLeftBorder)
+                {
+                    IsAtRightOrLeftBorder = false;
+                    CloseWindowIfExists();
+                }
             }
         }
 
         #region DockWindow Management
+
+        public bool IsAtRightOrLeftBorder { get; set; }
+        public bool IsAtTop { get; set; }
+        public string DisplayingScreen { get; set; }
 
         private DockRangeWindow window;
         private void CloseWindowIfExists()
@@ -121,30 +156,63 @@ namespace Hurricane.MagicArrow.DockManager
             if (window != null) { window.Close(); window = null; }
         }
 
-        private void OpenWindow()
+        private void OpenWindow(WindowPositionSide side, WpfScreen screen)
         {
-            
+            if (side == WindowPositionSide.None) return;
+            CloseWindowIfExists();
+
+            double dockwindowLeft, dockwindowWidth;
+
+            switch (side)
+            {
+                case WindowPositionSide.Left:
+                    dockwindowLeft = 0;
+                    dockwindowWidth = 300;
+                    break;
+                case WindowPositionSide.Right:
+                    dockwindowLeft = WpfScreen.AllScreensWidth - 300;
+                    dockwindowWidth = 300;
+                    break;
+                case WindowPositionSide.Top:
+                    dockwindowLeft = screen.WorkingArea.Left;
+                    dockwindowWidth = screen.WorkingArea.Width;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException("side");
+            }
+
+            window = new DockRangeWindow(0, dockwindowLeft, screen.WorkingArea.Height, dockwindowWidth);
+            window.Show();
         }
         #endregion
 
 
         protected bool dragstopped = true;
+
         public void DragStop()
         {
-            if (dragstopped) return;
-            dragstopped = true;
-            enabled = false;
+            if (!IsEnabled) return;
+            IsEnabled = false;
             HookManager.MouseMove -= HookManager_MouseMove;
-            CurrentSide = side;
-
-            if (side != DockingSide.None)
-            {
-                basewindow.Left = left;
-                basewindow.Top = 0;
-                if (Docked != null) Docked(this, EventArgs.Empty);
-            }
-            side = DockingSide.None;
             CloseWindowIfExists();
+            if (NewSide.HasValue)
+            {
+                switch (NewSide)
+                {
+                    case WindowPositionSide.Left:
+                    case WindowPositionSide.Right:
+                        CurrentSide = NewSide == WindowPositionSide.Left ? DockingSide.Left : DockingSide.Right;
+                        ApplyCurrentSide();
+                        if (Docked != null) Docked(this, EventArgs.Empty);
+                        return;
+                    case WindowPositionSide.Top:
+                        basewindow.WindowState = WindowState.Maximized;
+                        break;
+                    case WindowPositionSide.None:
+                        break;
+                }
+            }
+            CurrentSide = DockingSide.None;
         }
 
         public void ApplyCurrentSide()
@@ -153,17 +221,15 @@ namespace Hurricane.MagicArrow.DockManager
             {
                 basewindow.Top = 0;
                 basewindow.Left = CurrentSide == DockingSide.Left ? 0 : WpfScreen.AllScreensWidth - 300;
-                isatborder = true;
+                WindowHeight = WpfScreen.GetScreenFrom(new Point(basewindow.Left, 0)).WorkingArea.Height;
             }
-            else { isatborder = false; }
         }
 
         public void Save()
         {
-            if (HurricaneSettings.Instance.Config.ApplicationState == null) HurricaneSettings.Instance.Config.ApplicationState = new DockingApplicationState();
-            var appstate = HurricaneSettings.Instance.Config.ApplicationState;
-
-            appstate.CurrentSide = CurrentSide;
+            if (HurricaneSettings.Instance.Config.ApplicationState == null)
+                HurricaneSettings.Instance.Config.ApplicationState = new DockingApplicationState();
+            HurricaneSettings.Instance.Config.ApplicationState.CurrentSide = CurrentSide;
         }
 
         public void Dispose()
@@ -171,4 +237,6 @@ namespace Hurricane.MagicArrow.DockManager
             HookManager.MouseMove -= HookManager_MouseMove;
         }
     }
+
+    public enum WindowPositionSide { Left, Right, Top, None }
 }

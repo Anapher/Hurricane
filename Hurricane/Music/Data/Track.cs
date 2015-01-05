@@ -148,7 +148,7 @@ namespace Hurricane.Music
 
         public string DisplayText
         {
-            get { return !string.IsNullOrEmpty(Artist) ? string.Format("{0} - {1}", Artist, Title) : Title; }
+            get { return !string.IsNullOrEmpty(Artist) && HurricaneSettings.Instance.Config.ShowArtistAndTitle ? string.Format("{0} - {1}", Artist, Title) : Title; }
         }
         #endregion
 

@@ -112,6 +112,7 @@
                         <CheckBox Content="{DynamicResource SpectrumAnalyzerColor}" VerticalAlignment="Center" IsChecked="{Binding Config.Theme.UseCustomSpectrumAnalyzerColor}" Checked="SettingChanged" Unchecked="SettingChanged"/>
                         <tkt:ColorPicker Margin="10,0,0,0" Width="150" HorizontalAlignment="Left" IsEnabled="{Binding Config.Theme.UseCustomSpectrumAnalyzerColor}" SelectedColor="{Binding Config.Theme.SpectrumAnalyzerColor}" SelectedColorChanged="SettingChanged" ColorMode="ColorCanvas" ShowStandardColors="False" ShowAvailableColors="False" ShowAdvancedButton="False"/>
                     </DockPanel>
+                    <CheckBox Margin="0,10,0,0" Content="{DynamicResource ShowArtistAndTitle}" IsChecked="{Binding Config.ShowArtistAndTitle}" Checked="SettingChanged" Unchecked="SettingChanged"/>
                 </StackPanel>
             </TabItem>
             <TabItem Header="Behaviour">
@@ -154,7 +155,7 @@
                         </CheckBox>
                         <TextBlock extensions:TextBlockHelper.UpperText="{DynamicResource CoverArt}" Margin="0,30,0,0" Style="{StaticResource TextBlockHeader}"/>
                         <CheckBox Content="{DynamicResource LoadAlbumCoverFromInternet}" Margin="0,10,0,0" x:Name="chkDownloadCover" IsChecked="{Binding Config.LoadAlbumCoverFromInternet}"  Checked="SettingChanged" Unchecked="SettingChanged"/>
-                        <Grid IsEnabled="{Binding ElementName=chkDownloadCover,Path=IsChecked}" Margin="0,5,0,0">
+                        <Grid IsEnabled="{Binding ElementName=chkDownloadCover,Path=IsChecked}" Margin="0,10,0,0">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="125"/>
                                 <ColumnDefinition Width="*"/>
@@ -174,6 +175,7 @@
                             </ComboBox>
                         </Grid>
                         <CheckBox Content="{DynamicResource SaveAlbumCoverLocal}" Margin="0,10,0,0" IsChecked="{Binding Config.SaveCoverLocal}" IsEnabled="{Binding ElementName=chkDownloadCover,Path=IsChecked}" Checked="SettingChanged" Unchecked="SettingChanged"/>
+                        <CheckBox Content="{DynamicResource TrimTrackname}" Margin="0,10,0,0" IsChecked="{Binding Config.TrimTrackname}" IsEnabled="{Binding ElementName=chkDownloadCover,Path=IsChecked}" Checked="SettingChanged" Unchecked="SettingChanged"/>
                     </StackPanel>
                 </ScrollViewer>
             </TabItem>
@@ -211,7 +213,7 @@
                 </ScrollViewer>
             </TabItem>
             <TabItem Header="Reset">
-                <StackPanel Orientation="Vertical">
+                <StackPanel Orientation="Vertical" Margin="10">
                     <TextBlock Style="{StaticResource TextBlockHeader}" extensions:TextBlockHelper.UpperText="{DynamicResource ImportTrack}"/>
                     <Button Margin="0,10,0,0" Content="{DynamicResource Reset}" HorizontalAlignment="Left" Width="200" IsEnabled="{Binding Config.RememberTrackImportPlaylist}" Command="{Binding ResetTrackImport}"/>
                     <TextBlock Text="HURRICANE" Style="{StaticResource TextBlockHeader}" Margin="0,30,0,0"/>
