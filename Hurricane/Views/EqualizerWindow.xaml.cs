@@ -5,6 +5,7 @@ using System.Windows.Media.Animation;
 using Hurricane.Music;
 using Hurricane.Utilities;
 using Hurricane.Utilities.Native;
+using Hurricane.Views.UserControls;
 using MahApps.Metro.Controls;
 
 namespace Hurricane.Views
@@ -16,7 +17,7 @@ namespace Hurricane.Views
     {
         public event EventHandler BeginCloseAnimation;
 
-        public EqualizerWindow(RECT rect,double width)
+        public EqualizerWindow(RECT rect, double width)
         {
             InitializeComponent();
             this.SetPosition(rect, width);
@@ -47,7 +48,7 @@ namespace Hurricane.Views
             }
         }
 
-        protected const double width = 300; //the wídht of this window. we can't use this.ActualWidth because the window isn't always initialized
+        protected const double width = 300; //the widht of this window. we can't use this.ActualWidth because the window isn't always initialized
         protected bool IsLeft;
         public void SetPosition(RECT parentRecantgle, double windowWidth)
         {
@@ -64,7 +65,7 @@ namespace Hurricane.Views
             }
         }
 
-        private void PART_CLOSE_Click(object sender, RoutedEventArgs e)
+        private void EqualizerView_OnWantClose(object sender, EventArgs e)
         {
             this.Close();
         }

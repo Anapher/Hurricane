@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Windows.Data;
 using Hurricane.Settings.Themes;
 
@@ -7,30 +9,20 @@ namespace Hurricane.Settings.Converter
 {
     class BaseThemeToIndexConverter : IValueConverter
     {
+        private static readonly Dictionary<int, BaseTheme> indexValueDictionary = new Dictionary<int, BaseTheme>()
+        {
+            {0, BaseTheme.Light},
+            {1, BaseTheme.Dark}
+        };
+
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            switch ((BaseTheme) value)
-            {
-                case BaseTheme.Light:
-                    return 0;
-                case BaseTheme.Dark:
-                    return 1;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
+            return indexValueDictionary.First(x => x.Value == (BaseTheme) value).Key;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            switch ((int)value)
-            {
-                case 0:
-                    return BaseTheme.Light;
-                case 1:
-                    return BaseTheme.Dark;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
+            return indexValueDictionary[(int) value];
         }
     }
 }

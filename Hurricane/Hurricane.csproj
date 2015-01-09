@@ -33,7 +33,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
+    <Optimize>true</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
@@ -43,7 +43,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
-    <Optimize>false</Optimize>
+    <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
@@ -87,7 +87,6 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -122,6 +121,9 @@
     </ApplicationDefinition>
     <Compile Include="AppMainWindow\MahAppsExtensions\Dialogs\AdvancedInputDialog.xaml.cs">
       <DependentUpon>AdvancedInputDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="AppMainWindow\MahAppsExtensions\Dialogs\EqualizerDialog.xaml.cs">
+      <DependentUpon>EqualizerDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="AppMainWindow\Messages\MessageDialog.cs" />
     <Compile Include="AppMainWindow\Messages\MessageManager.cs" />
@@ -161,7 +163,6 @@
     <Compile Include="Extensions\Converter\RoundSizeConverter.cs" />
     <Compile Include="Extensions\Converter\NeverIfDateIsNull.cs" />
     <Compile Include="Extensions\WindowBehaviours.cs" />
-    <Compile Include="Extensions\WindowCustomizer.cs" />
     <Compile Include="MagicArrow\StrokeWindow.xaml.cs">
       <DependentUpon>StrokeWindow.xaml</DependentUpon>
     </Compile>
@@ -205,6 +206,7 @@
     <Compile Include="Settings\ConfigSettings.cs" />
     <Compile Include="Settings\Converter\BaseThemeToIndexConverter.cs" />
     <Compile Include="Settings\Converter\BitrateToIndexConverter.cs" />
+    <Compile Include="Settings\Converter\LatencyToIndexConverter.cs" />
     <Compile Include="Settings\Converter\NotificationTypeConverter.cs" />
     <Compile Include="Settings\Converter\QualityToIndexConverter.cs" />
     <Compile Include="Settings\Converter\SampleRateToIndexConverter.cs" />
@@ -274,6 +276,9 @@
     <Compile Include="Views\ReportExceptionWindow.xaml.cs">
       <DependentUpon>ReportExceptionWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\UserControls\EqualizerView.xaml.cs">
+      <DependentUpon>EqualizerView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\UserControls\SettingsView.xaml.cs">
       <DependentUpon>SettingsView.xaml</DependentUpon>
     </Compile>
@@ -296,6 +301,10 @@
       <DependentUpon>UpdateWindow.xaml</DependentUpon>
     </Compile>
     <Page Include="AppMainWindow\MahAppsExtensions\Dialogs\AdvancedInputDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="AppMainWindow\MahAppsExtensions\Dialogs\EqualizerDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -543,6 +552,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\UserControls\EqualizerView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\UserControls\SettingsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -637,9 +650,6 @@
     <Resource Include="Resources\App\icon.ico" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\GUI\rename.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Resources\Languages\Icons\de.png" />
   </ItemGroup>
   <ItemGroup>
@@ -647,18 +657,6 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\GUI\updater.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\GUI\error.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\GUI\music.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\App\christmastitle.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\GUI\music_light.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\MediaIcons\Advanced\Volume\loud_light.png" />

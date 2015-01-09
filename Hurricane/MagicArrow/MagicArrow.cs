@@ -91,6 +91,8 @@ namespace Hurricane.MagicArrow
             if (MoveIn != null) MoveIn(this, EventArgs.Empty);
             double newleft;
             if (_movedoutside == Side.Left) { newleft = 0; } else { newleft = maxwidth - BaseWindow.Width; }
+            BaseWindow.Left = _movedoutside == Side.Left ? newleft + 10 : newleft - 10;
+
             Storyboard moveWindowBackInScreenStoryboard = new Storyboard();
             DoubleAnimation inanimation = new DoubleAnimation(BaseWindow.Left, newleft, TimeSpan.FromMilliseconds(150), FillBehavior.Stop);
             inanimation.Completed += (s, e) => { BaseWindow.Topmost = false; BaseWindow.Left = newleft; };

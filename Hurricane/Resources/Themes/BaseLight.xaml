@@ -6,6 +6,7 @@
     </ResourceDictionary.MergedDictionaries>
 
     <SolidColorBrush x:Key="PicturePreviewBackgroundBrush" Color="#FFFBFBFB"/>
+    <SolidColorBrush x:Key="PicturePreviewForegroundBrush" Color="#FFCECECE"/>
     <system:Boolean x:Key="LightPlaceHolder">False</system:Boolean>
     <system:Boolean x:Key="LightVolumeIcon">False</system:Boolean>
 </ResourceDictionary>

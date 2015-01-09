@@ -21,7 +21,6 @@ namespace Hurricane.Extensions.Converter
         {
             bool light = (bool)Application.Current.Resources["LightVolumeIcon"];
             double volume = (double)value;
-            BitmapImage result;
             if (volume == 0)
             {
                 return light ? _muteimageLight ?? (_muteimageLight = new BitmapImage(new Uri(@"/Resources/MediaIcons/Advanced/Volume/mute_light.png", UriKind.Relative))) : _muteimage ?? (_muteimage = new BitmapImage(new Uri(@"/Resources/MediaIcons/Advanced/Volume/mute.png", UriKind.Relative)));

@@ -109,7 +109,8 @@ namespace Hurricane.Views.Tools
             {
                 return _resetValues ?? (_resetValues = new RelayCommand(parameter =>
                 {
-                    this.CurrentLanguageDocument.LanguageEntries.ForEach(x => x.Value = string.Empty);
+                    if (CurrentLanguageDocument != null)
+                        this.CurrentLanguageDocument.LanguageEntries.ForEach(x => x.Value = string.Empty);
                 }));
             }
         }
@@ -161,47 +162,33 @@ namespace Hurricane.Views.Tools
             foreach (Match match in Regex.Matches(text, "<system:String x:Key=\"(?<key>(.*?))\">(?<value>(.*?))</system:String>"))
                 document.LanguageEntries.Add(new LanguageEntry() { Key = match.Groups["key"].Value, Value = match.Groups["value"].Value });
             SetEnglishWords(document);
+            SetGermanWords(document);
             return document;
         }
 
         public static LanguageDocument CreateNew()
         {
-            var document = FromString(EnglishDocument());
+            var document = FromString(Properties.Resources.Hurricane_en_us);
             document.LanguageEntries.ForEach(x => x.Value = string.Empty);
             return document;
         }
 
         private static void SetEnglishWords(LanguageDocument document)
         {
-            foreach (Match match in Regex.Matches(EnglishDocument(), "<system:String x:Key=\"(?<key>(.*?))\">(?<value>(.*?))</system:String>"))
+            foreach (Match match in Regex.Matches(Properties.Resources.Hurricane_en_us, "<system:String x:Key=\"(?<key>(.*?))\">(?<value>(.*?))</system:String>"))
             {
                 document.LanguageEntries.First(x => x.Key == match.Groups["key"].Value).EnglishWord =
                     match.Groups["value"].Value;
             }
         }
 
-        public static string EnglishDocument()
+        private static void SetGermanWords(LanguageDocument document)
         {
-            return Properties.Resources.Hurricane_en_us;
-            /*
-            if (string.IsNullOrEmpty(_englishDocument))
+            foreach (Match match in Regex.Matches(Properties.Resources.Hurricane_de_de, "<system:String x:Key=\"(?<key>(.*?))\">(?<value>(.*?))</system:String>"))
             {
-                var info = Application.GetResourceStream(new Uri("pack://application:,,,/Hurricane;component/Resources/Languages/Hurricane.en-us.xaml"));
-                if (info == null) throw new Exception("Couldn't read english file");
-                var tempFile = Path.GetTempFileName();
-                using (var sw = new StreamWriter(tempFile, false, UTF8Encoding.Unicode))
-                {
-                    info.Stream.Seek(0, SeekOrigin.Begin);
-                    info.Stream.CopyTo(sw.BaseStream);
-                }
-                using (var sr = new StreamReader(info.Stream, UTF8Encoding.UTF8))
-                {
-                    
-                    _englishDocument = File.ReadAllText(tempFile); // sr.ReadToEnd();
-                    File.Delete(tempFile);
-                }
+                document.LanguageEntries.First(x => x.Key == match.Groups["key"].Value).GermanWord =
+                    match.Groups["value"].Value;
             }
-            return _englishDocument;*/
         }
     }
 
@@ -210,5 +197,6 @@ namespace Hurricane.Views.Tools
         public string Key { get; set; }
         public string Value { get; set; }
         public string EnglishWord { get; set; }
+        public string GermanWord { get; set; }
     }
 }

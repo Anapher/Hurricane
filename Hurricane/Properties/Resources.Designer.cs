@@ -78,6 +78,21 @@ namespace Hurricane.Properties {
         ///   Sucht eine lokalisierte Zeichenfolge, die &lt;ResourceDictionary xmlns=&quot;http://schemas.microsoft.com/winfx/2006/xaml/presentation&quot;
         ///                    xmlns:x=&quot;http://schemas.microsoft.com/winfx/2006/xaml&quot;
         ///                    xmlns:system=&quot;clr-namespace:System;assembly=mscorlib&quot;&gt;
+        ///    &lt;system:String x:Key=&quot;DateFormat&quot;&gt;dd.MM.yyyy HH:mm&lt;/system:String&gt;
+        ///    &lt;system:String x:Key=&quot;Search&quot;&gt;Suche...&lt;/system:String&gt;
+        ///    &lt;system:String x:Key=&quot;PreviousTrack&quot;&gt;Vorheriger Track&lt;/system:String&gt;
+        ///    &lt;system:String x:Key=&quot;NextTrack&quot;&gt;Nächster Track&lt;/system:String [Rest der Zeichenfolge wurde abgeschnitten]&quot;; ähnelt.
+        /// </summary>
+        internal static string Hurricane_de_de {
+            get {
+                return ResourceManager.GetString("Hurricane_de_de", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die &lt;ResourceDictionary xmlns=&quot;http://schemas.microsoft.com/winfx/2006/xaml/presentation&quot;
+        ///                    xmlns:x=&quot;http://schemas.microsoft.com/winfx/2006/xaml&quot;
+        ///                    xmlns:system=&quot;clr-namespace:System;assembly=mscorlib&quot;&gt;
         ///    &lt;system:String x:Key=&quot;DateFormat&quot;&gt;MM.dd.yyyy hh:mm tt&lt;/system:String&gt;
         ///    &lt;system:String x:Key=&quot;Search&quot;&gt;Search...&lt;/system:String&gt;
         ///    &lt;system:String x:Key=&quot;PreviousTrack&quot;&gt;Previous track&lt;/system:String&gt;

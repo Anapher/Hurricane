@@ -111,6 +111,12 @@ namespace Hurricane.Utilities.Native
         [SuppressUnmanagedCodeSecurity] // We won't use this maliciously
         [DllImport("User32.dll", CharSet = CharSet.Auto)]
         internal static extern bool PeekMessage(out Message msg, IntPtr hWnd, uint messageFilterMin, uint messageFilterMax, uint flags);
+
+        [DllImport("user32.dll")]
+        internal extern static int GetWindowLong(IntPtr hwnd, int index);
+
+        [DllImport("user32.dll")]
+        internal extern static int SetWindowLong(IntPtr hwnd, int index, int value);
     }
 
     public delegate void WinEventDelegate(IntPtr hWinEventHook, uint eventType, IntPtr hwnd, int idObject, int idChild, uint dwEventThread, uint dwmsEventTime);

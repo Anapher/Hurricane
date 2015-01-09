@@ -449,29 +449,39 @@ namespace Hurricane.Music
         #endregion
 
         #region Static Methods
+
         public static List<SoundOutRepresenter> GetSoundOutList()
         {
             List<SoundOutRepresenter> result = new List<SoundOutRepresenter>();
-            var wasApiItem = new SoundOutRepresenter { Name = "WASAPI", SoundOutMode = SoundOutMode.WASAPI };
-            MMDevice standarddevice;
             using (MMDeviceEnumerator enumerator = new MMDeviceEnumerator())
             {
-                standarddevice = enumerator.GetDefaultAudioEndpoint(DataFlow.Render, Role.Multimedia);
-                using (MMDeviceCollection devices = enumerator.EnumAudioEndpoints(DataFlow.Render, DeviceState.Active))
+                MMDevice standarddevice = enumerator.GetDefaultAudioEndpoint(DataFlow.Render, Role.Multimedia);
+                if (WasapiOut.IsSupportedOnCurrentPlatform)
                 {
-                    wasApiItem.AudioDevices.Add(new AudioDevice("-0", "Windows Default"));
-                    wasApiItem.AudioDevices.AddRange(devices.Select(device => new AudioDevice(device.DeviceID, device.FriendlyName, standarddevice.DeviceID == device.DeviceID)));
+                    var wasApiItem = new SoundOutRepresenter { Name = "WASAPI", SoundOutMode = SoundOutMode.WASAPI };
+
+                    using (
+                        MMDeviceCollection devices = enumerator.EnumAudioEndpoints(DataFlow.Render, DeviceState.Active))
+                    {
+                        wasApiItem.AudioDevices.Add(new AudioDevice("-0", "Windows Default"));
+                        wasApiItem.AudioDevices.AddRange(
+                            devices.Select(
+                                device =>
+                                    new AudioDevice(device.DeviceID, device.FriendlyName,
+                                        standarddevice.DeviceID == device.DeviceID)));
+                    }
+                    result.Add(wasApiItem);
                 }
+
+                var directSoundItem = new SoundOutRepresenter { Name = "DirectSound", SoundOutMode = SoundOutMode.DirectSound };
+                directSoundItem.AudioDevices.Add(new AudioDevice("-0", "Windows Default"));
+                directSoundItem.AudioDevices.AddRange(
+                    new DirectSoundDeviceEnumerator().Devices.Select(x => new AudioDevice(x.Guid.ToString(), x.Description, x.Description == standarddevice.FriendlyName)));
+
+                result.Add(directSoundItem);
+
+                return result;
             }
-
-            var directSoundItem = new SoundOutRepresenter {Name = "DirectSound", SoundOutMode = SoundOutMode.DirectSound};
-            directSoundItem.AudioDevices.Add(new AudioDevice("-0", "Windows Default"));
-            directSoundItem.AudioDevices.AddRange(
-                new DirectSoundDeviceEnumerator().Devices.Select(x => new AudioDevice(x.Guid.ToString(), x.Description, x.Description == standarddevice.FriendlyName)));
-            result.Add(wasApiItem);
-            result.Add(directSoundItem);
-
-            return result;
         }
         #endregion
     }

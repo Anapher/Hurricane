@@ -10,7 +10,8 @@
         public double MaxHeight { get; set; }
 
         public bool ShowWindowControls { get; set; }
-        public bool NeedMovingHelp { get; set; }
+        public bool NeedsMovingHelp { get; set; }
         public bool ShowFullscreenDialogs { get; set; }
+        public bool IsResizable { get; set; }
     }
 }

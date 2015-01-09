@@ -1,0 +1,51 @@
+﻿<UserControl x:Class="Hurricane.Views.UserControls.EqualizerView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:viewmodels="clr-namespace:Hurricane.ViewModels"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300" DataContext="{x:Static viewmodels:MainViewModel.Instance}" x:Name="UserControl">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Resources/Styles/MetroWindowStyle.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Grid Margin="5">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Menu>
+            <MenuItem Header="{DynamicResource Presets}">
+                <MenuItem Header="{DynamicResource Bass}" Command="{Binding MusicManager.CSCoreEngine.EqualizerSettings.LoadPresetBass}"/>
+                <MenuItem Header="{DynamicResource BassExtreme}" Command="{Binding MusicManager.CSCoreEngine.EqualizerSettings.LoadPresetBassExteme}"/>
+                <MenuItem Header="{DynamicResource BassAndHeights}" Command="{Binding MusicManager.CSCoreEngine.EqualizerSettings.LoadPresetBassAndHeights}"/>
+                <MenuItem Header="{DynamicResource Heights}" Command="{Binding MusicManager.CSCoreEngine.EqualizerSettings.LoadPresetHeights}"/>
+                <MenuItem Header="{DynamicResource Classic}" Command="{Binding MusicManager.CSCoreEngine.EqualizerSettings.LoadPresetClassic}"/>
+                <MenuItem Header="{DynamicResource Dance}" Command="{Binding MusicManager.CSCoreEngine.EqualizerSettings.LoadPresetDance}"/>
+                <MenuItem Header="{DynamicResource Rock}" Command="{Binding MusicManager.CSCoreEngine.EqualizerSettings.LoadPresetRock}"/>
+                <MenuItem Header="{DynamicResource Techno}" Command="{Binding MusicManager.CSCoreEngine.EqualizerSettings.LoadPresetTechno}"/>
+                <MenuItem Header="{DynamicResource Pop}" Command="{Binding MusicManager.CSCoreEngine.EqualizerSettings.LoadPresetPop}"/>
+                <MenuItem Header="{DynamicResource SoftBass}" Command="{Binding MusicManager.CSCoreEngine.EqualizerSettings.LoadPresetSoftBass}"/>
+                <MenuItem Header="{DynamicResource SoftHeights}" Command="{Binding MusicManager.CSCoreEngine.EqualizerSettings.LoadPresetSoftHeights}"/>
+            </MenuItem>
+            <MenuItem Header="{DynamicResource Reset}" Command="{Binding MusicManager.CSCoreEngine.EqualizerSettings.ResetEqualizer}"/>
+        </Menu>
+        <Button Style="{StaticResource WindowButtonStyle}" Click="PART_CLOSE_Click" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="5" Width="20" Height="20"/>
+        <ItemsControl Margin="5,10,5,10" Grid.Row="1" ItemsSource="{Binding MusicManager.CSCoreEngine.EqualizerSettings.Bands}">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <StackPanel Orientation="Horizontal"/>
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <Slider Orientation="Vertical" Maximum="100" Minimum="-100" Margin="{Binding ElementName=UserControl,Path=SliderThickness}" Value="{Binding Value}" ToolTip="{Binding Label}"/>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+    </Grid>
+</UserControl>

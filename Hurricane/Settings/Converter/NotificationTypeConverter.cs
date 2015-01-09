@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Windows.Data;
 using Hurricane.Notification;
 
@@ -7,32 +9,21 @@ namespace Hurricane.Settings.Converter
 {
     class NotificationTypeConverter : IValueConverter
     {
+        private static readonly Dictionary<int, NotificationType> indexValueDictionary = new Dictionary<int, NotificationType>()
+        {
+            {0, NotificationType.None},
+            {1, NotificationType.Top},
+            {2, NotificationType.RightBottom}
+        };
+
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            switch ((NotificationType)value)
-            {
-                case NotificationType.None:
-                    return 0;
-                case NotificationType.Top:
-                    return 1;
-                case NotificationType.RightBottom:
-                    return 2;
-            }
-            throw new ArgumentException();
+            return indexValueDictionary.First(x => x.Value == (NotificationType)value).Key;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            switch ((int)value)
-            {
-                case 0:
-                    return NotificationType.None;
-                case 1:
-                    return NotificationType.Top;
-                case 2:
-                    return NotificationType.RightBottom;
-            }
-            throw new ArgumentException();
+            return indexValueDictionary[(int)value];
         }
     }
 }

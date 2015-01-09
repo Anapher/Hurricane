@@ -41,18 +41,18 @@ namespace Hurricane.Views.UserControls
                 },
                 new Component()
                 {
+                    Name = "Json.NET",
+                    Url = "http://james.newtonking.com/json",
+                    LicenceUrl = "https://github.com/JamesNK/Newtonsoft.Json/blob/master/LICENSE.md",
+                    Description =
+                        "Popular high-performance JSON framework for .NET"
+                },
+                new Component()
+                {
                     Name = "MahApps.Metro",
                     Url = "http://mahapps.com/",
                     LicenceUrl = "https://github.com/MahApps/MahApps.Metro/blob/master/LICENSE",
                     Description = "A toolkit for creating metro-style WPF applications."
-                },
-                new Component()
-                {
-                    Name = "Ookii.Dialogs",
-                    Url = "http://mahapps.com/",
-                    LicenceUrl = "https://github.com/MahApps/MahApps.Metro/blob/master/LICENSE",
-                    Description =
-                        "Ookii.Dialogs is a class library for .Net applications providing several common dialogs."
                 },
                 new Component()
                 {
@@ -68,6 +68,14 @@ namespace Hurricane.Views.UserControls
                     Url = "http://www.updatesystem.net/",
                     LicenceUrl = "https://github.com/maximilian-krauss/updateSystem.NET/blob/master/LICENSE.md",
                     Description = "UpdateSystem.Net is a free update solution for .net applications"
+                },
+                new Component()
+                {
+                    Name = "WPF Native Folder Browser",
+                    Url = "https://wpffolderbrowser.codeplex.com/",
+                    LicenceUrl = "https://wpffolderbrowser.codeplex.com/license",
+                    Description =
+                        "Use the Windows Vista / Windows 7 Folder Browser Dialog from your WPF projects, without any additional dependencies."
                 },
                 new Component()
                 {
@@ -110,6 +118,18 @@ namespace Hurricane.Views.UserControls
                     Name = "Icons8",
                     Licence = "http://icons8.com/license/",
                     Website = "http://www.icons8.com/"
+                },
+                new ImageCreator()
+                {
+                    Name = "freepik",
+                    Licence = "https://creativecommons.org/licenses/by/3.0/",
+                    Website = "http://www.flaticon.com/authors/freepik"
+                },
+                new ImageCreator()
+                {
+                    Name = "Elegant Themes",
+                    Licence = "https://creativecommons.org/licenses/by/3.0/",
+                    Website = "http://www.elegantthemes.com"
                 }
             };
 

@@ -22,7 +22,6 @@ namespace Hurricane
     /// </summary>
     public partial class App : Application
     {
-        const int BringTheWindowToFrontMessage = 3532;
         Mutex _myMutex;
         protected override void OnStartup(StartupEventArgs e)
         {

@@ -48,5 +48,19 @@ namespace Hurricane.Utilities
             }
             return string.Empty;
         }
+
+        private const int GWL_STYLE = -16,
+                          WS_MAXIMIZEBOX = 0x10000,
+                          WS_MINIMIZEBOX = 0x20000;
+
+
+
+        internal static void HideMinimizeAndMaximizeButtons(Window window)
+        {
+            IntPtr hwnd = new WindowInteropHelper(window).Handle;
+            var currentStyle = UnsafeNativeMethods.GetWindowLong(hwnd, GWL_STYLE);
+
+            UnsafeNativeMethods.SetWindowLong(hwnd, GWL_STYLE, (currentStyle & ~WS_MAXIMIZEBOX & ~WS_MINIMIZEBOX));
+        }
     }
 }

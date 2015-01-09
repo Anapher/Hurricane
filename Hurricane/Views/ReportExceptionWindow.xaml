@@ -9,7 +9,9 @@
                 <ColumnDefinition Width="auto"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <Image Width="54" Height="54" Source="/Resources/GUI/error.png"/>
+            <Viewbox Width="54">
+                <Path Data="{StaticResource VectorError}" Fill="{StaticResource BlackBrush}"/>
+            </Viewbox>
             <TextBlock Text="{StaticResource ExceptionWindowTitle}" TextWrapping="Wrap" Grid.Column="1" Margin="10"/>
         </Grid>
         <Separator />

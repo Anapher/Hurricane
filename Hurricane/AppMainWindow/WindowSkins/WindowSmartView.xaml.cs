@@ -23,7 +23,19 @@ namespace Hurricane.AppMainWindow.WindowSkins
         {
             InitializeComponent();
             new ListViewDragDropManager<Track>(listview) {ShowDragAdorner = true};
-            this.Configuration = new WindowSkinConfiguration() {  MaxHeight = WpfScreen.MaxHeight, MaxWidth = 300, MinHeight = 400, MinWidth  = 300, ShowSystemMenuOnRightClick = false, ShowTitleBar = false, ShowWindowControls = false, NeedMovingHelp = true, ShowFullscreenDialogs = false };
+            this.Configuration = new WindowSkinConfiguration()
+            {
+                MaxHeight = WpfScreen.MaxHeight,
+                MaxWidth = 300,
+                MinHeight = 400,
+                MinWidth = 300,
+                ShowSystemMenuOnRightClick = false,
+                ShowTitleBar = false,
+                ShowWindowControls = false,
+                NeedsMovingHelp = true,
+                ShowFullscreenDialogs = false,
+                IsResizable = false
+            };
         }
 
         #region CurrentTrackAnimation

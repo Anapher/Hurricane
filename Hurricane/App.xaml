@@ -13,7 +13,7 @@
                 
                 <ResourceDictionary Source="/Resources/VectorGraphics.xaml"/>
                 <ResourceDictionary Source="/Resources/Themes/Blue.xaml"/>
-                <ResourceDictionary Source="/Resources/Themes/BaseDark.xaml"/>
+                <ResourceDictionary Source="/Resources/Themes/BaseLight.xaml"/>
             </ResourceDictionary.MergedDictionaries>
             
             <SolidColorBrush x:Key="SpectrumAnalyzerBrush" Color="Blue"/>

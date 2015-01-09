@@ -20,7 +20,20 @@ namespace Hurricane.AppMainWindow.WindowSkins
             InitializeComponent();
             new ListViewDragDropManager<Track>(this.listview) {ShowDragAdorner = true};
 
-            this.Configuration = new WindowSkinConfiguration() { MaxHeight = double.PositiveInfinity, MaxWidth = double.PositiveInfinity, MinHeight = 500, MinWidth = 850, ShowSystemMenuOnRightClick = true, ShowTitleBar = false, ShowWindowControls = true, NeedMovingHelp = true, ShowFullscreenDialogs = true };
+            this.Configuration = new WindowSkinConfiguration()
+            {
+                MaxHeight = double.PositiveInfinity,
+                MaxWidth = double.PositiveInfinity,
+                MinHeight = 500,
+                MinWidth = 850,
+                ShowSystemMenuOnRightClick = true,
+                ShowTitleBar = false,
+                ShowWindowControls = true,
+                NeedsMovingHelp = true,
+                ShowFullscreenDialogs = true,
+                IsResizable = true
+            };
+
             SettingsViewModel.Instance.Load();
         }
 

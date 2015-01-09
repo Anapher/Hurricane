@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
@@ -14,6 +15,7 @@ using Hurricane.MagicArrow.DockManager;
 using Hurricane.Music;
 using Hurricane.Music.MusicDatabase.EventArgs;
 using Hurricane.Settings;
+using Hurricane.Settings.Themes;
 using Hurricane.Utilities;
 using Hurricane.ViewModels;
 using Hurricane.Views;
@@ -47,7 +49,7 @@ namespace Hurricane
 
             MagicArrow = new MagicArrow.MagicArrow();
             MagicArrow.Register(this);
-            MagicArrow.MoveOut += (s, e) => { MainViewModel.Instance.MoveOut(); HostedWindow.DisableWindow(); };
+            MagicArrow.MoveOut += (s, e) => { HideEqualizer(); HostedWindow.DisableWindow(); };
             MagicArrow.MoveIn += (s, e) => { HostedWindow.EnableWindow(); };
             MagicArrow.FilesDropped += (s, e) => { MainViewModel.Instance.DragDropFiles((string[])e.Data.GetData(DataFormats.FileDrop)); };
 
@@ -157,7 +159,7 @@ namespace Hurricane
                 appstate.Width = Width;
             }
 
-            MainViewModel.Instance.CloseEqualizer();
+            HideEqualizer();
 
             MaxHeight = skin.Configuration.MaxHeight;
             MinHeight = skin.Configuration.MinHeight;
@@ -165,6 +167,15 @@ namespace Hurricane
             MinWidth = skin.Configuration.MinWidth;
             ShowTitleBar = skin.Configuration.ShowTitleBar;
             ShowSystemMenuOnRightClick = skin.Configuration.ShowSystemMenuOnRightClick;
+            if (skin.Configuration.IsResizable)
+            {
+                ResizeMode = ResizeMode.CanResize;
+                WindowHelper.HideMinimizeAndMaximizeButtons(this);
+            }
+            else
+            {
+                ResizeMode = ResizeMode.NoResize;
+            }
 
             if (skin == AdvancedWindowSkin && saveinformation)
             {
@@ -208,7 +219,7 @@ namespace Hurricane
         void skin_DragMoveStart(object sender, EventArgs e)
         {
             MagicArrow.DockManager.DragStart();
-            if (HostedWindow.Configuration.NeedMovingHelp) DragMove();
+            if (HostedWindow.Configuration.NeedsMovingHelp) DragMove();
         }
 
         void skin_DragMoveStop(object sender, EventArgs e)
@@ -260,11 +271,11 @@ namespace Hurricane
             Messages = new MessageManager { ProgressDialogStart = Messages_ProgressDialogStart };
         }
 
-        public async Task<bool> ShowMessage(string message, string title, bool cancancel)
+        public async Task<bool> ShowMessage(string message, string title, bool cancancel, DialogMode mode)
         {
             if (HostedWindow.Configuration.ShowFullscreenDialogs)
             {
-                MessageDialogResult result = await this.ShowMessageAsync(title, message, cancancel ? MessageDialogStyle.AffirmativeAndNegative : MessageDialogStyle.Affirmative, new MetroDialogSettings() { AffirmativeButtonText = "OK", NegativeButtonText = Application.Current.Resources["Cancel"].ToString(), AnimateHide = false });
+                MessageDialogResult result = await this.ShowMessageAsync(title, message, cancancel ? MessageDialogStyle.AffirmativeAndNegative : MessageDialogStyle.Affirmative, new MetroDialogSettings() { AffirmativeButtonText = "OK", NegativeButtonText = Application.Current.Resources["Cancel"].ToString(), AnimateHide = ShowHideAnimation(mode), AnimateShow = ShowShowAnimation(mode), ColorScheme = GetTheme() });
                 return result == MessageDialogResult.Affirmative;
             }
             else
@@ -276,11 +287,52 @@ namespace Hurricane
             }
         }
 
-        public async Task<string> ShowInputDialog(string title, string message, string buttonok, string defaulttext)
+        private MetroDialogColorScheme GetTheme()
+        {
+            return HurricaneSettings.Instance.Config.Theme.BaseTheme == BaseTheme.Light
+                ? MetroDialogColorScheme.Theme
+                : MetroDialogColorScheme.Accented;
+        }
+
+        private bool ShowHideAnimation(DialogMode mode)
+        {
+            switch (mode)
+            {
+                case DialogMode.Single:
+                    return true;
+                case DialogMode.First:
+                    return false;
+                case DialogMode.Last:
+                    return true;
+                case DialogMode.Following:
+                    return false;
+                default:
+                    throw new ArgumentOutOfRangeException("mode");
+            }
+        }
+
+        private bool ShowShowAnimation(DialogMode mode)
+        {
+            switch (mode)
+            {
+                case DialogMode.Single:
+                    return true;
+                case DialogMode.First:
+                    return true;
+                case DialogMode.Last:
+                    return false;
+                case DialogMode.Following:
+                    return false;
+                default:
+                    throw new ArgumentOutOfRangeException("mode");
+            }
+        }
+
+        public async Task<string> ShowInputDialog(string title, string message, string buttonok, string defaulttext, DialogMode mode)
         {
             if (HostedWindow.Configuration.ShowFullscreenDialogs)
             {
-                var dialog = new AdvancedInputDialog(this, new MetroDialogSettings() { AffirmativeButtonText = buttonok, DefaultText = defaulttext, NegativeButtonText = Application.Current.Resources["Cancel"].ToString() }) { Title = title, Message = message };
+                var dialog = new AdvancedInputDialog(this, new MetroDialogSettings() { AffirmativeButtonText = buttonok, DefaultText = defaulttext, NegativeButtonText = Application.Current.Resources["Cancel"].ToString(), ColorScheme = GetTheme(), AnimateHide = ShowHideAnimation(mode), AnimateShow = ShowShowAnimation(mode) }) { Title = title, Message = message };
                 await this.ShowMetroDialogAsync(dialog);
                 string result = await dialog.WaitForButtonPressAsync();
                 await dialog._WaitForCloseAsync();
@@ -322,6 +374,41 @@ namespace Hurricane
             }
         }
 
+        EqualizerWindow _equalizerWindow;
+        private bool _equalizerIsOpen;
+
+        public async Task ShowEqualizer()
+        {
+            if (HostedWindow.Configuration.ShowFullscreenDialogs)
+            {
+                var dialog = new EqualizerDialog(this, new MetroDialogSettings() { ColorScheme = GetTheme() });
+                await this.ShowMetroDialogAsync(dialog);
+                await dialog.WaitForCloseAsync();
+                await this.HideMetroDialogAsync(dialog);
+            }
+            else
+            {
+                if (!_equalizerIsOpen)
+                {
+                    var rect = WindowHelper.GetWindowRectangle(this);
+                    _equalizerWindow = new EqualizerWindow(rect, ActualWidth);
+                    _equalizerWindow.Closed += (s, e) => _equalizerIsOpen = false;
+                    _equalizerWindow.BeginCloseAnimation += (s, e) => Activate();
+                    _equalizerWindow.Show();
+                    _equalizerIsOpen = true;
+                }
+                else
+                {
+                    _equalizerWindow.Activate();
+                }
+            }
+        }
+
+        private void HideEqualizer()
+        {
+         if(_equalizerIsOpen){   _equalizerWindow.Close(); _equalizerIsOpen = false;}
+        }
+
         public void OpenTrackInformations(Track track)
         {
             TrackInformationWindow trackInformationWindow = new TrackInformationWindow(track) { Owner = this, WindowStartupLocation = this.HostedWindow.Configuration.ShowFullscreenDialogs ? WindowStartupLocation.CenterOwner : WindowStartupLocation.CenterScreen };
@@ -335,6 +422,7 @@ namespace Hurricane
         }
 
         #endregion
-
     }
+
+    public enum DialogMode { Single, First, Last, Following }
 }

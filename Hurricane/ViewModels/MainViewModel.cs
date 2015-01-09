@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
 using CSCore.Codecs;
 using Hurricane.Music;
@@ -15,7 +13,7 @@ using Hurricane.Settings;
 using Hurricane.Utilities;
 using Hurricane.ViewModelBase;
 using Hurricane.Views;
-using ListView = System.Windows.Forms.ListView;
+using Microsoft.Win32;
 using QueueManager = Hurricane.Views.QueueManagerWindow;
 
 namespace Hurricane.ViewModels
@@ -112,7 +110,6 @@ namespace Hurricane.ViewModels
         public void Closing()
         {
             MusicManager.CSCoreEngine.StopPlayback();
-            if (_equalizerIsOpen) _equalizerWindow.Close();
             if (MusicManager != null)
             {
                 MusicManager.SaveToSettings();
@@ -179,42 +176,20 @@ namespace Hurricane.ViewModels
             await ImportFiles(new string[] { file.FullName }, selectedplaylist, (s, e) => OpenFile(file, play));
         }
 
-        public void MoveOut()
-        {
-            if (_equalizerIsOpen) { _equalizerWindow.Close(); _equalizerIsOpen = false; }
-        }
-
-        public void CloseEqualizer()
-        {
-            if (_equalizerIsOpen) _equalizerWindow.Close();
-        }
-
         #endregion
 
         #region Commands
-        private bool _equalizerIsOpen;
-        EqualizerWindow _equalizerWindow;
+
+
 
         private RelayCommand _openequalizer;
         public RelayCommand OpenEqualizer
         {
             get
             {
-                return _openequalizer ?? (_openequalizer = new RelayCommand(parameter =>
+                return _openequalizer ?? (_openequalizer = new RelayCommand(async parameter =>
                 {
-                    if (!_equalizerIsOpen)
-                    {
-                        var rect = WindowHelper.GetWindowRectangle(_baseWindow);
-                        _equalizerWindow = new EqualizerWindow(rect, _baseWindow.ActualWidth);
-                        _equalizerWindow.Closed += (s, e) => _equalizerIsOpen = false;
-                        _equalizerWindow.BeginCloseAnimation += (s, e) => _baseWindow.Activate();
-                        _equalizerWindow.Show();
-                        _equalizerIsOpen = true;
-                    }
-                    else
-                    {
-                        _equalizerWindow.Activate();
-                    }
+                    await _baseWindow.ShowEqualizer();
                 }));
             }
         }
@@ -250,7 +225,7 @@ namespace Hurricane.ViewModels
             {
                 return _removemissingtracks ?? (_removemissingtracks = new RelayCommand(async parameter =>
                 {
-                    if (MusicManager.SelectedPlaylist.CanEdit && await _baseWindow.ShowMessage(Application.Current.Resources["DeleteAllMissingTracks"].ToString(), Application.Current.Resources["RemoveMissingTracks"].ToString(), true))
+                    if (MusicManager.SelectedPlaylist.CanEdit && await _baseWindow.ShowMessage(Application.Current.Resources["DeleteAllMissingTracks"].ToString(), Application.Current.Resources["RemoveMissingTracks"].ToString(), true, DialogMode.Single))
                     {
                         ((Playlist)MusicManager.SelectedPlaylist).RemoveMissingTracks();
                         MusicManager.SaveToSettings();
@@ -267,14 +242,14 @@ namespace Hurricane.ViewModels
             {
                 return _removeduplicatetracks ?? (_removeduplicatetracks = new RelayCommand(async parameter =>
                 {
-                    if (await _baseWindow.ShowMessage(Application.Current.Resources["RemoveDuplicateTracks"].ToString(), Application.Current.Resources["RemoveDuplicates"].ToString(), true))
+                    if (await _baseWindow.ShowMessage(Application.Current.Resources["RemoveDuplicateTracks"].ToString(), Application.Current.Resources["RemoveDuplicates"].ToString(), true, DialogMode.First))
                     {
                         var controller = _baseWindow.Messages.CreateProgressDialog(Application.Current.Resources["RemoveDuplicates"].ToString(), true);
                         controller.SetMessage(Application.Current.Resources["SearchingForDuplicates"].ToString());
 
                         var counter = await ((PlaylistBase)MusicManager.SelectedPlaylist).RemoveDuplicates();
                         await controller.Close();
-                        await _baseWindow.ShowMessage(counter == 0 ? Application.Current.Resources["NoDuplicatesFound"].ToString() : string.Format(Application.Current.Resources["TracksRemoved"].ToString(), counter), Application.Current.Resources["RemoveDuplicates"].ToString(), false);
+                        await _baseWindow.ShowMessage(counter == 0 ? Application.Current.Resources["NoDuplicatesFound"].ToString() : string.Format(Application.Current.Resources["TracksRemoved"].ToString(), counter), Application.Current.Resources["RemoveDuplicates"].ToString(), false, DialogMode.Last);
                     }
                 }));
             }
@@ -301,7 +276,7 @@ namespace Hurricane.ViewModels
                 return _addfilestoplaylist ?? (_addfilestoplaylist = new RelayCommand(async parameter =>
                 {
                     if (!MusicManager.SelectedPlaylist.CanEdit) return;
-                    var ofd = new Microsoft.Win32.OpenFileDialog
+                    var ofd = new OpenFileDialog
                     {
                         CheckFileExists = true,
                         Title = Application.Current.Resources["SelectedFiles"].ToString(),
@@ -337,7 +312,7 @@ namespace Hurricane.ViewModels
             {
                 return _addnewplaylist ?? (_addnewplaylist = new RelayCommand(async parameter =>
                 {
-                    string result = await _baseWindow.ShowInputDialog(Application.Current.Resources["NewPlaylist"].ToString(), Application.Current.Resources["NameOfPlaylist"].ToString(), Application.Current.Resources["Create"].ToString(), string.Empty);
+                    string result = await _baseWindow.ShowInputDialog(Application.Current.Resources["NewPlaylist"].ToString(), Application.Current.Resources["NameOfPlaylist"].ToString(), Application.Current.Resources["Create"].ToString(), string.Empty, DialogMode.Single);
                     if (string.IsNullOrEmpty(result)) return;
                     Playlist newplaylist = new Playlist() { Name = result };
                     MusicManager.Playlists.Add(newplaylist);
@@ -358,7 +333,7 @@ namespace Hurricane.ViewModels
                 {
                     var tracks = ((IList) parameter).Cast<Track>().ToList();
                     if (tracks.Count == 0) return;
-                    if (await _baseWindow.ShowMessage(string.Format(Application.Current.Resources["RemoveTracksMessage"].ToString(), tracks.Count > 0 ? string.Format("{0} {1}", tracks.Count, Application.Current.Resources["Tracks"].ToString()) : string.Format("\"{0}\"", tracks[0].Title)), Application.Current.Resources["RemoveTracks"].ToString(), true))
+                    if (await _baseWindow.ShowMessage(string.Format(Application.Current.Resources["RemoveTracksMessage"].ToString(), tracks.Count > 0 ? string.Format("{0} {1}", tracks.Count, Application.Current.Resources["Tracks"].ToString()) : string.Format("\"{0}\"", tracks[0].Title)), Application.Current.Resources["RemoveTracks"].ToString(), true, DialogMode.Single))
                     {
                         foreach (var t in tracks)
                         {
@@ -397,10 +372,10 @@ namespace Hurricane.ViewModels
                     if (!MusicManager.SelectedPlaylist.CanEdit) return;
                     if (MusicManager.Playlists.Count == 1)
                     {
-                        await _baseWindow.ShowMessage(Application.Current.Resources["CantDeletePlaylist"].ToString(), Application.Current.Resources["Error"].ToString(), false);
+                        await _baseWindow.ShowMessage(Application.Current.Resources["CantDeletePlaylist"].ToString(), Application.Current.Resources["Error"].ToString(), false, DialogMode.Single);
                         return;
                     }
-                    if (await _baseWindow.ShowMessage(string.Format(Application.Current.Resources["ReallyDeletePlaylist"].ToString(), MusicManager.SelectedPlaylist.Name), Application.Current.Resources["RemovePlaylist"].ToString(), true))
+                    if (await _baseWindow.ShowMessage(string.Format(Application.Current.Resources["ReallyDeletePlaylist"].ToString(), MusicManager.SelectedPlaylist.Name), Application.Current.Resources["RemovePlaylist"].ToString(), true, DialogMode.Single))
                     {
                         Playlist playlistToDelete = (Playlist)MusicManager.SelectedPlaylist;
                         Playlist newPlaylist = MusicManager.Playlists[0];
@@ -422,7 +397,7 @@ namespace Hurricane.ViewModels
             {
                 return _renameplaylist ?? (_renameplaylist = new RelayCommand(async parameter =>
                 {
-                    string result = await _baseWindow.ShowInputDialog(Application.Current.Resources["RenamePlaylist"].ToString(), Application.Current.Resources["NameOfPlaylist"].ToString(), Application.Current.Resources["Rename"].ToString(), MusicManager.SelectedPlaylist.Name);
+                    string result = await _baseWindow.ShowInputDialog(Application.Current.Resources["RenamePlaylist"].ToString(), Application.Current.Resources["NameOfPlaylist"].ToString(), Application.Current.Resources["Rename"].ToString(), MusicManager.SelectedPlaylist.Name, DialogMode.Single);
                     if (!string.IsNullOrEmpty(result)) { MusicManager.SelectedPlaylist.Name = result; }
                 }));
             }
@@ -469,7 +444,7 @@ namespace Hurricane.ViewModels
             {
                 return _clearselectedplaylist ?? (_clearselectedplaylist = new RelayCommand(async parameter =>
                 {
-                    if (await _baseWindow.ShowMessage(string.Format(Application.Current.Resources["RemoveAllTracksQuestion"].ToString(), MusicManager.SelectedPlaylist.Name), Application.Current.Resources["RemoveAllTracks"].ToString(), true))
+                    if (await _baseWindow.ShowMessage(string.Format(Application.Current.Resources["RemoveAllTracksQuestion"].ToString(), MusicManager.SelectedPlaylist.Name), Application.Current.Resources["RemoveAllTracks"].ToString(), true, DialogMode.Single))
                     {
                         MusicManager.SelectedPlaylist.Clear();
                     }

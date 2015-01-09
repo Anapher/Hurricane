@@ -7,7 +7,7 @@
         xmlns:viewmodels="clr-namespace:Hurricane.ViewModels"
         DataContext="{x:Static viewmodels:MainViewModel.Instance}"
         Title="Hurricane" SizeToContent="Manual" x:Name="window" Icon="/Resources/App/icon.ico"
-        IsWindowDraggable="False" GlowBrush="{DynamicResource AccentColorBrush}" ex:WindowCustomizer.CanMaximize="false" ShowIconOnTitleBar="False" Height="400" Width="500">
+        IsWindowDraggable="False" GlowBrush="{DynamicResource AccentColorBrush}" ShowIconOnTitleBar="False" Height="400" Width="500">
     <Window.Resources>
         <converter:TrueFalseValueConverter x:Key="PlayPauseConverter" TrueValue="pack://application:,,,/Hurricane;component/Resources/MediaIcons/ThumbButtons/pause.png" FalseValue="pack://application:,,,/Hurricane;component/Resources/MediaIcons/ThumbButtons/play.png"/>
     </Window.Resources>
@@ -24,5 +24,6 @@
     </Window.TaskbarItemInfo>
     <Window.InputBindings>
         <KeyBinding Key="Space" Command="{Binding MusicManager.Commands.TogglePlayPause}"/>
+        <KeyBinding Key="E" Modifiers="Control" Command="{Binding OpenEqualizer}"/>
     </Window.InputBindings>
 </controls:MetroWindow>

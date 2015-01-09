@@ -60,9 +60,9 @@
     <system:String x:Key="Playback">Wiedergabe</system:String>
     <system:String x:Key="Device">Gerät</system:String>
     <system:String x:Key="SampleSourceBitrate">Sample Source Bitrate</system:String>
-    <system:String x:Key="Samplerate">Samplerate</system:String>
+    <system:String x:Key="Samplerate">Abtastrate</system:String>
     <system:String x:Key="ShowMagicArrowBelowCursor">Magic Arrow direkt unter dem Cursor anzeigen</system:String>
-    <system:String x:Key="DefaultSamplerate">(Samplerate von Track übernehmen)</system:String>
+    <system:String x:Key="DefaultSamplerate">(Abtastrate von Track übernehmen)</system:String>
     <system:String x:Key="Language">Sprache</system:String>
     
     <system:String x:Key="Title">Titel</system:String>
@@ -241,4 +241,10 @@
     <system:String x:Key="BaseTheme">Basis Theme</system:String>
     <system:String x:Key="Light">Hell</system:String>
     <system:String x:Key="Dark">Dunkel</system:String>
+    <system:String x:Key="Latency">Latenz</system:String>
+    
+    <system:String x:Key="DefaultLatency">100 ms (Standard)</system:String>
+    <system:String x:Key="PreferFavoriteDescription">Favorisierte Tracks werden im Gegensatz zu normalen Tracks doppelt so wahrscheinlich bei zufälliger Wiedergabe ausgewählt.</system:String>
+    <system:String x:Key="ColorTheme">Farbtheme</system:String>
+    <system:String x:Key="TrimTracknameDescription">Aus dem Titel werden überflüssige Sachen wie das Datum oder die Qualität entfernt, was die Trefferquote erhöhen kann.</system:String>
 </ResourceDictionary>

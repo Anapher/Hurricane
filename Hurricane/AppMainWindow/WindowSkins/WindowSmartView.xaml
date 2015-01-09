@@ -203,40 +203,29 @@
                         <Slider x:Name="volumeslider" Maximum="1" Minimum="0" IsMoveToPointEnabled="True" Style="{StaticResource VolumeSlider}" VerticalAlignment="Center" LargeChange="0.1" Value="{Binding MusicManager.CSCoreEngine.Volume}"/>
                     </DockPanel>
                     <StackPanel Orientation="Horizontal">
+                        <StackPanel.Resources>
+                            <Style TargetType="Path" x:Key="TogglePath">
+                                <Setter Property="Fill" Value="{DynamicResource BlackBrush}"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsChecked,RelativeSource={RelativeSource AncestorType=ToggleButton}}" Value="True">
+                                        <Setter Property="Fill" Value="{DynamicResource GrayBrush10}"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </StackPanel.Resources>
                         <Button Width="24" Height="24" Focusable="False" Command="{Binding OpenEqualizer}">
                             <Viewbox Width="14" Height="14" Stretch="Fill">
                                 <Path Data="{StaticResource VectorEqualizer}" Fill="{DynamicResource BlackBrush}"/>
                             </Viewbox>
-                            <!--<Image Width="14" Height="14" Source="/Resources/MediaIcons/Advanced/Options/equalizer.png"/>-->
                         </Button>
                         <ToggleButton Width="24" Height="24" Focusable="False" Margin="5,0,0,0" x:Name="tbtn_random" IsChecked="{Binding MusicManager.IsShuffleEnabled}">
-                            <ToggleButton.Resources>
-                                <Style TargetType="Path">
-                                    <Setter Property="Fill" Value="Black"/>
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding MusicManager.IsShuffleEnabled}" Value="True">
-                                            <Setter Property="Fill" Value="White"/>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </ToggleButton.Resources>
                             <Viewbox>
-                                <Path Data="{StaticResource VectorRandom}" Fill="{StaticResource BlackBrush}"/>
+                                <Path Data="{StaticResource VectorRandom}" Style="{StaticResource TogglePath}"/>
                             </Viewbox>
                         </ToggleButton>
                         <ToggleButton Width="24" Height="24" Focusable="False" Margin="5,0,0,0" x:Name="tbtn_repeat" IsChecked="{Binding MusicManager.IsLoopEnabled}">
-                            <ToggleButton.Resources>
-                                <Style TargetType="Path">
-                                    <Setter Property="Fill" Value="Black"/>
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding MusicManager.IsLoopEnabled}" Value="True">
-                                            <Setter Property="Fill" Value="White"/>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </ToggleButton.Resources>
                             <Viewbox Stretch="UniformToFill">
-                                <Path Data="{StaticResource VectorRepeat}" Fill="{StaticResource BlackBrush}"/>
+                                <Path Data="{StaticResource VectorRepeat}" Style="{StaticResource TogglePath}"/>
                             </Viewbox>
                         </ToggleButton>
                     </StackPanel>
@@ -384,7 +373,7 @@
                             <MenuItem Header="{DynamicResource RenamePlaylist}" Command="{Binding RenamePlaylist}" IsEnabled="{Binding MusicManager.SelectedPlaylist.CanEdit}">
                                 <MenuItem.Icon>
                                     <Viewbox Stretch="Uniform" Height="16" Width="16">
-                                        <Path Data="{StaticResource VectorRename}" Stroke="{DynamicResource BlackBrush}" Fill="White"/>
+                                        <Path Data="{StaticResource VectorRename}" Stroke="{DynamicResource BlackBrush}" Fill="{DynamicResource BlackBrush}"/>
                                     </Viewbox>
                                 </MenuItem.Icon>
                             </MenuItem>
@@ -417,7 +406,7 @@
                         </MenuItem>
                     </Menu>
                 </Grid>
-                <ListView ItemsSource="{Binding MusicManager.SelectedPlaylist.ViewSource}" SelectionMode="Extended" Grid.Row="1" Drop="listview_Drop" DragEnter="listview_DragEnter" x:Name="listview" SelectedItem="{Binding MusicManager.SelectedTrack}" ScrollViewer.VerticalScrollBarVisibility="Visible" Margin="0,5,0,0" HorizontalContentAlignment="Stretch" ScrollViewer.HorizontalScrollBarVisibility="Disabled" SelectionChanged="listview_SelectionChanged" IsSynchronizedWithCurrentItem="True">
+                <ListView ItemsSource="{Binding MusicManager.SelectedPlaylist.ViewSource}" SelectionMode="Extended" Grid.Row="1" Drop="listview_Drop" DragEnter="listview_DragEnter" x:Name="listview" SelectedItem="{Binding MusicManager.SelectedTrack}" ScrollViewer.VerticalScrollBarVisibility="Visible" Margin="0,5,-1,0" HorizontalContentAlignment="Stretch" ScrollViewer.HorizontalScrollBarVisibility="Disabled" SelectionChanged="listview_SelectionChanged" IsSynchronizedWithCurrentItem="True">
                     <ListView.Style>
                         <Style TargetType="{x:Type ListView}">
                             <Setter Property="VirtualizingStackPanel.IsVirtualizing" Value="True"/>

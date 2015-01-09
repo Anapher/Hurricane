@@ -82,7 +82,25 @@ namespace Hurricane.Music
         {
             get
             {
-                return _toggleplaypause ?? (_toggleplaypause = new RelayCommand(parameter => { Musicmanager.CSCoreEngine.TogglePlayPause(); }));
+                return _toggleplaypause ?? (_toggleplaypause = new RelayCommand(parameter =>
+                {
+                    if (Musicmanager.CSCoreEngine.CurrentTrack != null)
+                    {
+                        Musicmanager.CSCoreEngine.TogglePlayPause();
+                        return;
+                    }
+                    if (Musicmanager.SelectedTrack != null)
+                    {
+                        Musicmanager.CSCoreEngine.OpenTrack(Musicmanager.SelectedTrack);
+                        Musicmanager.CSCoreEngine.TogglePlayPause();
+                        return;
+                    }
+                    if (Musicmanager.SelectedPlaylist.Tracks.Count > 0)
+                    {
+                        Musicmanager.CSCoreEngine.OpenTrack(Musicmanager.SelectedPlaylist.Tracks[0]);
+                        Musicmanager.CSCoreEngine.TogglePlayPause();
+                    }
+                }));
             }
         }
 
