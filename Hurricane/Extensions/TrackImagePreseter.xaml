@@ -10,13 +10,14 @@
         <Border.Effect>
             <DropShadowEffect BlurRadius="4" ShadowDepth="0" Direction="0" Opacity="0.4" Color="#FFD1D1D1" />
         </Border.Effect>
-        <Border Margin="3" Background="#FFFBFBFB">
+        <Border Margin="3" Background="{StaticResource PicturePreviewBackgroundBrush}">
             <Grid>
                 <Grid>
-                    <Image Source="/Resources/GUI/music.png" VerticalAlignment="Center" HorizontalAlignment="Center" Stretch="Uniform" Margin="25" RenderOptions.BitmapScalingMode="HighQuality">
+                    <Image VerticalAlignment="Center" HorizontalAlignment="Center" Stretch="Uniform" Margin="25" RenderOptions.BitmapScalingMode="HighQuality">
                         <Image.Style>
                             <Style TargetType="Image">
                                 <Setter Property="Visibility" Value="Hidden"/>
+                                <Setter Property="IsEnabled" Value="{DynamicResource LightPlaceHolder}"/>
                                 <Style.Triggers>
                                     <DataTrigger Binding="{Binding ElementName=UserControl,Path=Track.Image}" Value="{x:Null}">
                                         <Setter Property="Visibility" Value="Visible"/>
@@ -24,6 +25,12 @@
                                     <DataTrigger Binding="{Binding ElementName=UserControl,Path=Track.IsLoadingImage}" Value="True">
                                         <Setter Property="Visibility" Value="Hidden"/>
                                     </DataTrigger>
+                                    <Trigger Property="IsEnabled" Value="True">
+                                        <Setter Property="Source" Value="/Resources/GUI/music_light.png"/>
+                                    </Trigger>
+                                    <Trigger Property="IsEnabled" Value="False">
+                                        <Setter Property="Source" Value="/Resources/GUI/music.png"/>
+                                    </Trigger>
                                 </Style.Triggers>
                             </Style>
                         </Image.Style>

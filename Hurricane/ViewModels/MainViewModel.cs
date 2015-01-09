@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using CSCore.Codecs;
 using Hurricane.Music;
@@ -13,6 +15,7 @@ using Hurricane.Settings;
 using Hurricane.Utilities;
 using Hurricane.ViewModelBase;
 using Hurricane.Views;
+using ListView = System.Windows.Forms.ListView;
 using QueueManager = Hurricane.Views.QueueManagerWindow;
 
 namespace Hurricane.ViewModels
@@ -43,7 +46,6 @@ namespace Hurricane.ViewModels
             MusicManager = new MusicManager();
             MusicManager.CSCoreEngine.StartVisualization += CSCoreEngine_StartVisualization;
             MusicManager.CSCoreEngine.TrackChanged += CSCoreEngine_TrackChanged;
-            MusicManager.CSCoreEngine.PositionChanged += CSCoreEngine_PositionChanged;
             MusicManager.LoadFromSettings();
 
             _keyboardListener = new KeyboardListener();
@@ -64,12 +66,6 @@ namespace Hurricane.ViewModels
         void CSCoreEngine_TrackChanged(object sender, TrackChangedEventArgs e)
         {
             if (TrackChanged != null) TrackChanged(sender, e);
-        }
-
-        public event EventHandler<PositionChangedEventArgs> PositionChanged;
-        void CSCoreEngine_PositionChanged(object sender, PositionChangedEventArgs e)
-        {
-            if (PositionChanged != null) PositionChanged(sender, e);
         }
 
         void KListener_KeyDown(object sender, RawKeyEventArgs args)
@@ -360,14 +356,11 @@ namespace Hurricane.ViewModels
             {
                 return _removeselectedtracks ?? (_removeselectedtracks = new RelayCommand(async parameter =>
                 {
-                    Track track = MusicManager.SelectedTrack;
-                    if (track == null) return;
-
-                    List<Track> tracksToRemove = MusicManager.SelectedPlaylist.Tracks.Where(t => t.IsSelected).ToList();
-
-                    if (await _baseWindow.ShowMessage(string.Format(Application.Current.Resources["RemoveTracksMessage"].ToString(), tracksToRemove.Count > 0 ? string.Format("{0} {1}", tracksToRemove.Count, Application.Current.Resources["Tracks"].ToString()) : string.Format("\"{0}\"", track.Title)), Application.Current.Resources["RemoveTracks"].ToString(), true))
+                    var tracks = ((IList) parameter).Cast<Track>().ToList();
+                    if (tracks.Count == 0) return;
+                    if (await _baseWindow.ShowMessage(string.Format(Application.Current.Resources["RemoveTracksMessage"].ToString(), tracks.Count > 0 ? string.Format("{0} {1}", tracks.Count, Application.Current.Resources["Tracks"].ToString()) : string.Format("\"{0}\"", tracks[0].Title)), Application.Current.Resources["RemoveTracks"].ToString(), true))
                     {
-                        foreach (var t in tracksToRemove)
+                        foreach (var t in tracks)
                         {
                             if (t.IsPlaying)
                             {

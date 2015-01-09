@@ -45,7 +45,7 @@ namespace Hurricane.AppMainWindow.WindowSkins
         {
             Storyboard story = new Storyboard();
 
-            ColorAnimation coloranimation2 = new ColorAnimation(inAnimate ? ((SolidColorBrush)Application.Current.FindResource("DarkColorBrush")).Color : Colors.Black, TimeSpan.FromMilliseconds(250));
+            ColorAnimation coloranimation2 = new ColorAnimation(inAnimate ? ((SolidColorBrush)Application.Current.Resources["AccentColorBrush"]).Color : (Color)Application.Current.Resources["BlackColor"], TimeSpan.FromMilliseconds(250));
             Storyboard.SetTarget(coloranimation2, txtCurrentTrack);
             Storyboard.SetTargetProperty(coloranimation2, new PropertyPath("Foreground.Color"));
 

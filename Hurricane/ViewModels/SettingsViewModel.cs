@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Windows;
@@ -32,8 +33,8 @@ namespace Hurricane.ViewModels
         public void Load()
         {
             Config = ObjectCopier.Clone(HurricaneSettings.Instance.Config);
-            AudioDevices = CSCoreEngine.GetAudioDevices();
-            SelectedAudioDevice = AudioDevices.FirstOrDefault(x => x.ID == Config.SoundOutDeviceID) ?? AudioDevices.First(x => x.IsDefault);
+            SoundOutList = CSCoreEngine.GetSoundOutList();
+            SelectedSoundOut = SoundOutList.First(x => x.SoundOutMode == Config.SoundOutMode);
             CurrentLanguage = Config.Languages.First((x) => x.Code == Config.Language);
 
             OnPropertyChanged("CanApply");
@@ -57,12 +58,13 @@ namespace Hurricane.ViewModels
                 {
                     ConfigSettings original = HurricaneSettings.Instance.Config;
                     HurricaneSettings.Instance.Config = Config;
-                    if (Config.SoundOutDeviceID != original.SoundOutDeviceID) { MusicManager.CSCoreEngine.UpdateSoundOut(); }
+                    if (Config.SoundOutDeviceID != original.SoundOutDeviceID || Config.SoundOutMode != original.SoundOutMode) { MusicManager.CSCoreEngine.UpdateSoundOut(); }
                     if (original.Language != Config.Language) { Config.LoadLanguage(); }
                     if (Config.Theme.UseCustomSpectrumAnalyzerColor && string.IsNullOrEmpty(Config.Theme.SpectrumAnalyzerHexColor)) Config.Theme.SpectrumAnalyzerColor = Colors.Black;
                     if (original.Theme != Config.Theme) { Config.Theme.LoadTheme(); }
+                    if (original.Theme.BaseTheme != Config.Theme.BaseTheme) Config.Theme.LoadBaseTheme();
                     if (original.ApiIsEnabled != Config.ApiIsEnabled) { if (Config.ApiIsEnabled) { ApiServer.StartListening(); } else { ApiServer.StopListening(); } }
-                    Config = ObjectCopier.Clone<ConfigSettings>(HurricaneSettings.Instance.Config);
+                    Config = ObjectCopier.Clone(HurricaneSettings.Instance.Config);
                     OnPropertyChanged("CanApply");
                     CurrentLanguage = Config.Languages.First((x) => x.Code == Config.Language);
                     OnPropertyChanged("ApiState");
@@ -99,13 +101,13 @@ namespace Hurricane.ViewModels
             }
         }
 
-        private List<AudioDevice> _audiodevices;
-        public List<AudioDevice> AudioDevices
+        private List<SoundOutRepresenter> _soundOutList;
+        public List<SoundOutRepresenter> SoundOutList
         {
-            get { return _audiodevices; }
+            get { return _soundOutList; }
             set
             {
-                SetProperty(value, ref _audiodevices);
+                SetProperty(value, ref _soundOutList);
                 OnPropertyChanged("CanApply");
             }
         }
@@ -121,6 +123,21 @@ namespace Hurricane.ViewModels
                 {
                     Config.SoundOutDeviceID = value.ID;
                     OnPropertyChanged("CanApply");
+                }
+            }
+        }
+
+        private SoundOutRepresenter _selectedSoundOut;
+        public SoundOutRepresenter SelectedSoundOut
+        {
+            get { return _selectedSoundOut; }
+            set
+            {
+                if (SetProperty(value, ref _selectedSoundOut) && value != null)
+                {
+                    Config.SoundOutMode = value.SoundOutMode;
+                    OnPropertyChanged("CanApply");
+                    SelectedAudioDevice = value.AudioDevices.FirstOrDefault(x => x.ID == Config.SoundOutDeviceID) ?? SelectedSoundOut.AudioDevices.First(x => x.IsDefault);
                 }
             }
         }
@@ -180,7 +197,7 @@ namespace Hurricane.ViewModels
                 return _totalreset ?? (_totalreset = new RelayCommand(parameter =>
                 {
                     Config.SetStandardValues();
-                    SelectedAudioDevice = AudioDevices[0];
+                    SelectedAudioDevice = SoundOutList[0].AudioDevices[0];
                     OnPropertyChanged("Config");
                     StateChanged();
                 }));

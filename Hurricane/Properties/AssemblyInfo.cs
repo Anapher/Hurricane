@@ -11,7 +11,7 @@ using Exceptionless.Configuration;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Alkaline")]
 [assembly: AssemblyProduct("Hurricane")]
-[assembly: AssemblyCopyright("Copyright © Alkaline  2014")]
+[assembly: AssemblyCopyright("Copyright © 2014-2015 Alkaline")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 [assembly: Exceptionless("3e5cdb4c97c2440884e4514a02821ddb")]

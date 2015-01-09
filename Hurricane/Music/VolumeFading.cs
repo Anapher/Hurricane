@@ -8,7 +8,10 @@ namespace Hurricane.Music
     public class VolumeFading : IDisposable
     {
         public bool IsFading { get; set; }
-        private bool _cancel = false;
+
+        private bool _cancel;
+
+        public double OutDuration { get; set; }
 
         protected AutoResetEvent cancelledwaiter;
 
@@ -25,7 +28,14 @@ namespace Hurricane.Music
                 await Task.Delay(20);
                 if (getLouder) { currentvolume += step; } else { currentvolume -= step; }
                 if (currentvolume < 0 || currentvolume > 1) break;
-                soundout.Volume = currentvolume;
+                try
+                {
+                    soundout.Volume = currentvolume;
+                }
+                catch (ObjectDisposedException)
+                {
+                    break;
+                }
             }
             IsFading = false;
         }
@@ -53,19 +63,19 @@ namespace Hurricane.Music
         #endregion
 
         #region Public Fading
-        public async Task FadeIn(ISoundOut soundout, float tovolume)
+        public async Task FadeIn(ISoundOut soundOut, float toVolume)
         {
-            await Fade(0, tovolume, TimeSpan.FromMilliseconds(300), true, soundout);
+            await Fade(0, toVolume, TimeSpan.FromMilliseconds(300), true, soundOut);
         }
 
-        public async Task FadeOut(ISoundOut soundout, float fromvolume)
+        public async Task FadeOut(ISoundOut soundOut, float fromVolume)
         {
-            await Fade(fromvolume, 0, TimeSpan.FromMilliseconds(300), false, soundout);
+            await Fade(fromVolume, 0, TimeSpan.FromMilliseconds(300), false, soundOut);
         }
 
-        public void Crossfading(float fromvolume, ISoundOut moveout, ISoundOut movein)
+        public async void CrossfadeIn(ISoundOut soundOut, float toVolume)
         {
-
+            await Fade(0, toVolume, TimeSpan.FromSeconds(OutDuration), true, soundOut);
         }
 
         #endregion
@@ -80,7 +90,46 @@ namespace Hurricane.Music
         {
             cancelledwaiter = new AutoResetEvent(false);
         }
-
         #endregion
+    }
+
+    public class Crossfade
+    {
+        public bool IsCrossfading { get; set; }
+        private bool _cancel;
+        public async void FadeOut(double Secounds, ISoundOut soundOut)
+        {
+            IsCrossfading = true;
+            var steps = Secounds / 0.2;
+            var soundstep = soundOut.Volume / (float)steps;
+
+            for (int i = 0; i < steps; i++)
+            {
+                if (_cancel) { _cancel = false; break; }
+                await Task.Delay(200);
+                try
+                {
+                    var value = soundOut.Volume - soundstep;
+                    if (0 > value) break;
+                    soundOut.Volume -= soundstep;
+                }
+                catch (ObjectDisposedException)
+                {
+                    IsCrossfading = false;
+                    break;
+                }
+            }
+
+            IsCrossfading = false;
+            if (soundOut.PlaybackState != PlaybackState.Stopped) soundOut.Stop();
+            soundOut.WaveSource.Dispose();
+            soundOut.Dispose();
+        }
+
+        public void CancelFading()
+        {
+            if (!IsCrossfading) return;
+            _cancel = true;
+        }
     }
 }

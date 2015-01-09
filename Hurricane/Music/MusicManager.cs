@@ -267,7 +267,6 @@ namespace Hurricane.Music
                 nexttrack = CurrentPlaylist.Tracks[nexttrackindex];
             }
 
-            CSCoreEngine.StopPlayback();
             CSCoreEngine.OpenTrack(nexttrack);
             CSCoreEngine.TogglePlayPause();
         }

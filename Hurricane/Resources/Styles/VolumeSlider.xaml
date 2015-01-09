@@ -19,7 +19,7 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="RepeatButton">
-                    <Border SnapsToDevicePixels="True" Background="{DynamicResource NormalColorBrush}" BorderBrush="WhiteSmoke" BorderThickness="1" Height="5"/>
+                    <Border SnapsToDevicePixels="True" Background="{DynamicResource NormalColorBrush}" BorderBrush="{DynamicResource GrayBrush10}" BorderThickness="1" Height="5"/>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>

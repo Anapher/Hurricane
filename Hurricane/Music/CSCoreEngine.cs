@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using CSCore;
 using CSCore.Codecs;
 using CSCore.CoreAudioAPI;
 using CSCore.SoundOut;
+using CSCore.SoundOut.DirectSound;
 using CSCore.Streams;
 using Hurricane.Music.Data;
 using Hurricane.Music.MusicDatabase.EventArgs;
@@ -132,11 +135,12 @@ namespace Hurricane.Music
 
         #region Members
         private string _currentDeviceId;
-        protected WasapiOut _soundOut;
+        protected ISoundOut _soundOut;
         protected MMNotificationClient _client;
         protected bool _manualstop;
         protected VolumeFading _fader;
         protected bool _isfadingout;
+        protected Crossfade _Crossfade;
 
         #endregion
 
@@ -154,7 +158,7 @@ namespace Hurricane.Music
         protected void SetEqualizerValue(double value, int number)
         {
             if (MusicEqualizer == null) return;
-            double perc = (value / (double)100);
+            double perc = (value / 100);
             var newvalue = (float)(perc * MaxDB);
 
             //the tag of the trackbar contains the index of the filter
@@ -173,29 +177,28 @@ namespace Hurricane.Music
         #endregion
 
         #region Public Methods
+        SimpleNotificationSource simpleNotificationSource;
+        SingleBlockNotificationStream singleBlockNotificationStream;
         public void OpenTrack(Track track)
         {
+            StopPlayback();
             if (CurrentTrack != null) { CurrentTrack.IsPlaying = false; CurrentTrack.Unload(); }
-            if (SoundSource != null) { SoundSource.Dispose(); }
+            if (SoundSource != null && !_Crossfade.IsCrossfading) { SoundSource.Dispose(); }
             track.IsPlaying = true;
-            SoundSource = CodecFactory.Instance.GetCodec(track.Path);
+            Equalizer equalizer;
 
+            SoundSource = CodecFactory.Instance.GetCodec(track.Path);
             if (Settings.SampleRate == -1 && SoundSource.WaveFormat.SampleRate < 44100)
             {
                 SoundSource = SoundSource.ChangeSampleRate(44100);
             }
             else if (Settings.SampleRate > -1) { SoundSource.ChangeSampleRate(Settings.SampleRate); }
-
-            Equalizer equalizer;
-            SimpleNotificationSource simpleNotificationSource;
-            SingleBlockNotificationStream singleBlockNotificationStream;
-
             SoundSource = SoundSource
-    .AppendSource(Equalizer.Create10BandEqualizer, out equalizer)
-    .AppendSource(x => new SimpleNotificationSource(x) { Interval = 100 }, out simpleNotificationSource)
-    .AppendSource(x => new SingleBlockNotificationStream(x), out singleBlockNotificationStream)
-    .ToWaveSource(Settings.WaveSourceBits);
-
+.AppendSource(Equalizer.Create10BandEqualizer, out equalizer)
+.AppendSource(x => new SingleBlockNotificationStream(x), out singleBlockNotificationStream)
+.AppendSource(x => new SimpleNotificationSource(x) { Interval = 100 }, out simpleNotificationSource)
+.ToWaveSource(Settings.WaveSourceBits);
+            
             MusicEqualizer = equalizer;
             SetAllEqualizerSettings();
             simpleNotificationSource.BlockRead += notifysource_BlockRead;
@@ -203,17 +206,21 @@ namespace Hurricane.Music
 
             _analyser = new SampleAnalyser(FFTSize);
             _analyser.Initialize(SoundSource.WaveFormat);
+            StopPlayback();
             _soundOut.Initialize(SoundSource);
 
             CurrentTrack = track;
             OnPropertyChanged("TrackLength");
             OnPropertyChanged("CurrentTrackLength");
+            
             CurrentStateChanged();
             _soundOut.Volume = Volume;
-
+            
             if (StartVisualization != null) StartVisualization(this, EventArgs.Empty);
             track.LastTimePlayed = DateTime.Now;
             track.Load();
+            if (_Crossfade.IsCrossfading)
+                _fader.CrossfadeIn(_soundOut, Volume);
         }
 
         public void StopPlayback()
@@ -243,6 +250,7 @@ namespace Hurricane.Music
             if (_fader != null && _fader.IsFading) { _fader.CancelFading(); _fader.WaitForCancel(); }
             if (_soundOut.PlaybackState == PlaybackState.Playing)
             {
+                if (_Crossfade != null && _Crossfade.IsCrossfading) { _Crossfade.CancelFading(); }
                 _isfadingout = true;
                 await _fader.FadeOut(_soundOut, this.Volume);
                 _soundOut.Pause();
@@ -276,7 +284,23 @@ namespace Hurricane.Music
         {
             OnPropertyChanged("Position");
             OnPropertyChanged("CurrentTrackPosition");
-            if (PositionChanged != null) Application.Current.Dispatcher.Invoke(() => PositionChanged(this, new PositionChangedEventArgs((int)this.CurrentTrackPosition.TotalSeconds, (int)this.CurrentTrackLength.TotalSeconds)));
+            var secounds = (int)CurrentTrackPosition.TotalSeconds;
+            var totalsecounds = (int)CurrentTrackLength.TotalSeconds;
+            if (PositionChanged != null)
+                Application.Current.Dispatcher.Invoke(() => PositionChanged(this, new PositionChangedEventArgs(secounds, totalsecounds)));
+            if (Settings.IsCrossfadeEnabled && totalsecounds - Settings.CrossfadeDuration > 6 && !_Crossfade.IsCrossfading && totalsecounds - secounds < Settings.CrossfadeDuration)
+            {
+                _fader.OutDuration = totalsecounds - secounds;
+                _Crossfade.FadeOut(Settings.CrossfadeDuration, _soundOut);
+                simpleNotificationSource.BlockRead -= notifysource_BlockRead;
+                singleBlockNotificationStream.SingleBlockRead -= notificationSource_SingleBlockRead;
+                _soundOut.Stopped -= soundOut_Stopped;
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    RefreshSoundOut();
+                    if (TrackFinished != null) TrackFinished(this, EventArgs.Empty);
+                });
+            }
         }
         #endregion
 
@@ -287,6 +311,7 @@ namespace Hurricane.Music
             RefreshSoundOut();
             _client.DefaultDeviceChanged += client_DefaultDeviceChanged;
             _fader = new VolumeFading();
+            _Crossfade = new Crossfade();
         }
 
         #endregion
@@ -308,34 +333,57 @@ namespace Hurricane.Music
 
         public void RefreshSoundOut()
         {
-            MMDevice device = null;
-            using (MMDeviceEnumerator enumerator = new MMDeviceEnumerator())
+            if (Settings.SoundOutMode == SoundOutMode.DirectSound)
             {
+                var enumerator = new DirectSoundDeviceEnumerator();
+                DirectSoundDevice device;
                 if (Settings.SoundOutDeviceID == "-0")
                 {
-                    device = enumerator.GetDefaultAudioEndpoint(DataFlow.Render, Role.Multimedia);
+                    using (var wasapiEnumerator = new MMDeviceEnumerator())
+                    {
+                        device = enumerator.Devices.FirstOrDefault(x => x.Description == wasapiEnumerator.GetDefaultAudioEndpoint(DataFlow.Render, Role.Multimedia).FriendlyName) ?? enumerator.Devices.First();
+                    }
                 }
                 else
                 {
-                    using (MMDeviceCollection devices = enumerator.EnumAudioEndpoints(DataFlow.Render, DeviceState.Active))
+                    device = enumerator.Devices.FirstOrDefault(x => x.Guid.ToString() == Settings.SoundOutDeviceID);
+                    if (device == null)
                     {
-                        foreach (MMDevice currentDevice in devices)
+                        Settings.SoundOutDeviceID = "-0";
+                        RefreshSoundOut();
+                        return;
+                    }
+                }
+                
+                _soundOut = new DirectSoundOut { Device = device.Guid, Latency = Settings.Latency};
+            }
+            else
+            {
+                MMDevice device;
+                using (var enumerator = new MMDeviceEnumerator())
+                {
+                    if (Settings.SoundOutDeviceID == "-0")
+                    {
+                        device = enumerator.GetDefaultAudioEndpoint(DataFlow.Render, Role.Multimedia);
+                    }
+                    else
+                    {
+                        using (MMDeviceCollection devices = enumerator.EnumAudioEndpoints(DataFlow.Render, DeviceState.Active))
                         {
-                            if (currentDevice.DeviceID == Settings.SoundOutDeviceID)
+                            device = devices.First(x => x.DeviceID == Settings.SoundOutDeviceID);
+
+                            if (device == null)
                             {
-                                device = currentDevice;
+                                Settings.SoundOutDeviceID = "-0";
+                                RefreshSoundOut();
+                                return;
                             }
-                        }
-                        if (device == null)
-                        {
-                            Settings.SoundOutDeviceID = "-0";
-                            RefreshSoundOut();
-                            return;
                         }
                     }
                 }
+                _soundOut = new WasapiOut { Device = device, Latency = Settings.Latency };
+
             }
-            _soundOut = new WasapiOut {Device = device, Latency = 100};
             _soundOut.Stopped += soundOut_Stopped;
         }
 
@@ -343,12 +391,10 @@ namespace Hurricane.Music
         {
             long position = Position;
             bool isplaying = IsPlaying;
-            StopPlayback();
-            if (_soundOut != null) _soundOut.Dispose();
+            if (_soundOut != null) { StopPlayback(); _soundOut.Dispose(); }
             RefreshSoundOut();
-            Track currenttrack = CurrentTrack;
-            CurrentTrack = null;
-            if (currenttrack != null) OpenTrack(currenttrack);
+            if (CurrentTrack != null)
+                OpenTrack(CurrentTrack);
             Position = position;
             if (isplaying) TogglePlayPause();
         }
@@ -395,6 +441,7 @@ namespace Hurricane.Music
                 if (_fader.IsFading) { _fader.CancelFading(); _fader.WaitForCancel(); }
                 _soundOut.Dispose();
                 _fader.Dispose();
+                _Crossfade.CancelFading();
             }
             if (SoundSource != null) SoundSource.Dispose();
             if (_client != null) _client.Dispose();
@@ -402,18 +449,27 @@ namespace Hurricane.Music
         #endregion
 
         #region Static Methods
-        public static List<AudioDevice> GetAudioDevices()
+        public static List<SoundOutRepresenter> GetSoundOutList()
         {
-            List<AudioDevice> result = new List<AudioDevice>();
+            List<SoundOutRepresenter> result = new List<SoundOutRepresenter>();
+            var wasApiItem = new SoundOutRepresenter { Name = "WASAPI", SoundOutMode = SoundOutMode.WASAPI };
+            MMDevice standarddevice;
             using (MMDeviceEnumerator enumerator = new MMDeviceEnumerator())
             {
-                MMDevice standarddevice = enumerator.GetDefaultAudioEndpoint(DataFlow.Render, Role.Multimedia);
+                standarddevice = enumerator.GetDefaultAudioEndpoint(DataFlow.Render, Role.Multimedia);
                 using (MMDeviceCollection devices = enumerator.EnumAudioEndpoints(DataFlow.Render, DeviceState.Active))
                 {
-                    result.Add(new AudioDevice() { ID = "-0", Name = "Windows Default" });
-                    result.AddRange(devices.Select(device => new AudioDevice() {ID = device.DeviceID, Name = device.FriendlyName, IsDefault = standarddevice.DeviceID == device.DeviceID}));
+                    wasApiItem.AudioDevices.Add(new AudioDevice("-0", "Windows Default"));
+                    wasApiItem.AudioDevices.AddRange(devices.Select(device => new AudioDevice(device.DeviceID, device.FriendlyName, standarddevice.DeviceID == device.DeviceID)));
                 }
             }
+
+            var directSoundItem = new SoundOutRepresenter {Name = "DirectSound", SoundOutMode = SoundOutMode.DirectSound};
+            directSoundItem.AudioDevices.Add(new AudioDevice("-0", "Windows Default"));
+            directSoundItem.AudioDevices.AddRange(
+                new DirectSoundDeviceEnumerator().Devices.Select(x => new AudioDevice(x.Guid.ToString(), x.Description, x.Description == standarddevice.FriendlyName)));
+            result.Add(wasApiItem);
+            result.Add(directSoundItem);
 
             return result;
         }

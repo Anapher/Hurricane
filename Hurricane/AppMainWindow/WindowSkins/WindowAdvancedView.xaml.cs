@@ -101,5 +101,10 @@ namespace Hurricane.AppMainWindow.WindowSkins
                 MainViewModel.Instance.DragDropFiles((string[])e.Data.GetData(DataFormats.FileDrop));
             }
         }
+
+        private void ListViewItem_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            MainViewModel.Instance.MusicManager.Commands.PlaySelectedTrack.Execute(null);
+        }
     }
 }

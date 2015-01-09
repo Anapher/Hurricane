@@ -12,11 +12,13 @@ namespace Hurricane.Music.Data
         string SearchText { get; set; }
         string Name { get; set; }
         bool CanEdit { get; }
+        bool ContainsMissingTracks { get; }
 
         Track GetRandomTrack(Track currentTrack);
 
         void AddTrack(Track track);
         void RemoveTrack(Track track);
         void Clear();
+        void RemoveMissingTracks();
     }
 }

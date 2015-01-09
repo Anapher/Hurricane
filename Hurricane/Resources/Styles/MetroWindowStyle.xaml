@@ -28,7 +28,7 @@
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="FontFamily" Value="Webdings"/>
         <Setter Property="FontSize" Value="13.333" />
-        <Setter Property="Foreground" Value="Black" />
+        <Setter Property="Foreground" Value="{DynamicResource BlackBrush}"/>
         <Setter Property="Margin" Value="0,2,3,0"/>
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">

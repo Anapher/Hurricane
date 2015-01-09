@@ -13,6 +13,7 @@ using Hurricane.Utilities.Native;
 using Hurricane.ViewModels;
 using Hurricane.Views;
 using Hurricane.Views.Test;
+using Hurricane.Views.Tools;
 
 namespace Hurricane
 {
@@ -35,6 +36,10 @@ namespace Hurricane
                     case "/test":
                         TestWindow view = new TestWindow();
                         view.Show();
+                        return;
+                    case "/language_creator":
+                        LanguageCreatorWindow languageCreator = new LanguageCreatorWindow();
+                        languageCreator.ShowDialog();
                         return;
                     case "/registry":
                         RegistryManager manager = new RegistryManager();

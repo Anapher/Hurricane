@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using System.Windows;
-using System.Windows.Media;
 using System.Xml.Serialization;
 using Hurricane.MagicArrow.DockManager;
 using Hurricane.Music;
@@ -19,10 +18,14 @@ namespace Hurricane.Settings
 
         //CSCore
         public string SoundOutDeviceID { get; set; }
-        public long TrackPosition { get; set; }
+        public SoundOutMode SoundOutMode { get; set; }
         public float Volume { get; set; }
+        public int Latency { get; set; }
+        public bool IsCrossfadeEnabled { get; set; }
+        public int CrossfadeDuration { get; set; }
 
         //Current State
+        public long TrackPosition { get; set; }
         public int LastPlaylistIndex { get; set; }
         public int LastTrackIndex { get; set; }
         public int SelectedPlaylist { get; set; }
@@ -69,13 +72,13 @@ namespace Hurricane.Settings
         {
             get
             {
-                if (_languages == null)
+                return _languages ?? (_languages = new List<LanguageInfo>
                 {
-                    _languages = new List<LanguageInfo>();
-                    _languages.Add(new LanguageInfo("Deutsch", "/Resources/Languages/Hurricane.de-de.xaml", new Uri("/Resources/Languages/Icons/de.png",UriKind.Relative), "Alkaline", "de"));
-                    _languages.Add(new LanguageInfo("English", "/Resources/Languages/Hurricane.en-us.xaml", new Uri("/Resources/Languages/Icons/us.png",UriKind.Relative), "Alkaline", "en"));
-                }
-                return _languages;
+                    new LanguageInfo("Deutsch", "/Resources/Languages/Hurricane.de-de.xaml",
+                        new Uri("/Resources/Languages/Icons/de.png", UriKind.Relative), "Alkaline", "de"),
+                    new LanguageInfo("English", "/Resources/Languages/Hurricane.en-us.xaml",
+                        new Uri("/Resources/Languages/Icons/us.png", UriKind.Relative), "Alkaline", "en")
+                });
             }
         }
 
@@ -112,6 +115,10 @@ namespace Hurricane.Settings
             ApiIsEnabled = false;
             ApiPort = 10898; //10.08.1998
             ShowArtistAndTitle = true;
+            SoundOutMode = CSCore.SoundOut.WasapiOut.IsSupportedOnCurrentPlatform ? SoundOutMode.WASAPI : SoundOutMode.DirectSound;
+            Latency = 100;
+            IsCrossfadeEnabled = false;
+            CrossfadeDuration = 6;
         }
 
         public ConfigSettings()
@@ -152,6 +159,7 @@ namespace Hurricane.Settings
             }
             result.LoadLanguage();
             result.Theme.LoadTheme();
+            result.Theme.LoadBaseTheme();
             return result;
         }
 
@@ -176,7 +184,11 @@ namespace Hurricane.Settings
                     CompareTwoValues(this.ApiIsEnabled, other.ApiIsEnabled) &&
                     CompareTwoValues(this.ApiPort, other.ApiPort) &&
                     CompareTwoValues(this.ShufflePreferFavoritTracks, other.ShufflePreferFavoritTracks) &&
-                    CompareTwoValues(this.ShowArtistAndTitle, other.ShowArtistAndTitle));
+                    CompareTwoValues(this.ShowArtistAndTitle, other.ShowArtistAndTitle) &&
+                    CompareTwoValues(this.SoundOutMode, other.SoundOutMode) &&
+                    CompareTwoValues(this.Latency, other.Latency) &&
+                    CompareTwoValues(this.CrossfadeDuration, other.CrossfadeDuration) &&
+                    CompareTwoValues(this.IsCrossfadeEnabled, other.IsCrossfadeEnabled));
         }
 
         protected bool CompareTwoValues(object v1, object v2)
@@ -189,5 +201,10 @@ namespace Hurricane.Settings
     public enum ImageQuality
     {
         Small, Medium, Large, Maximum
+    }
+
+    public enum SoundOutMode
+    {
+        DirectSound, WASAPI
     }
 }

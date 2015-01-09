@@ -31,7 +31,9 @@ namespace Hurricane.Extensions
         private static void PropertyCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var stackPanel = (AnimatedStackPanel) d;
-            if (stackPanel.FadeAnimationStoryboard != null) { stackPanel.FadeAnimationStoryboard.Stop(stackPanel); }
+            if (stackPanel.FadeAnimationStoryboard != null)
+                stackPanel.FadeAnimationStoryboard.Stop(stackPanel);
+
             stackPanel.FadeAnimationStoryboard = FadeInAnimation(stackPanel.AnimationInterval, stackPanel.Children.OfType<FrameworkElement>().Where(x => !(x is TextBlock) || !string.IsNullOrEmpty(((TextBlock)x).Text)).ToArray());
             stackPanel.FadeAnimationStoryboard.Begin(stackPanel, true);
         }

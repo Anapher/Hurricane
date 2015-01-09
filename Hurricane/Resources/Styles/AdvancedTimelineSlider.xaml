@@ -8,7 +8,7 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="RepeatButton">
-                    <Border BorderThickness="1" BorderBrush="#FFF9F9F9" Background="#FFF9F9F9" Height="5"/>
+                    <Border BorderThickness="1" BorderBrush="{DynamicResource GrayBrush10}" Background="{DynamicResource GrayBrush10}" Height="5"/>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
@@ -20,7 +20,7 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Thumb">
-                    <Rectangle Height="13" Width="6" Fill="Black"/>
+                    <Rectangle Height="13" Width="6" Fill="{DynamicResource BlackBrush}"/>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>

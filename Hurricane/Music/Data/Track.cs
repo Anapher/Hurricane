@@ -370,17 +370,6 @@ namespace Hurricane.Music
             }
         }
 
-        private bool _isselected;
-        [XmlIgnore]
-        public bool IsSelected
-        {
-            get { return _isselected; }
-            set
-            {
-                SetProperty(value, ref _isselected);
-            }
-        }
-
         #endregion
     }
 }

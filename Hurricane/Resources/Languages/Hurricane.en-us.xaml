@@ -42,7 +42,7 @@
 
     <system:String x:Key="RemoveTracks">Remove tracks</system:String>
     <system:String x:Key="RemoveTracksMessage">Are you sure that you want to remove '{0}' from the playlist?</system:String>
-    <system:String x:Key="Tracks">tracks</system:String>
+    <system:String x:Key="Tracks">Tracks</system:String>
     <system:String x:Key="Error">Error</system:String>
     <system:String x:Key="ReallyDeletePlaylist">Are you sure that you want to remove the playlist '{0}'?</system:String>
     <system:String x:Key="CantDeletePlaylist">The playlist can't be removed because it is the only one</system:String>
@@ -234,5 +234,11 @@
     <system:String x:Key="Change">Change</system:String>
     <system:String x:Key="Favorites">Favorites</system:String>
     <system:String x:Key="TrimTrackname">Trim search text</system:String>
-    <system:String x:Key="ShowArtistAndTitle">Künstlernamen und Titel in Liste anzeigen</system:String>
+    <system:String x:Key="ShowArtistAndTitle">Show artist and title in list</system:String>
+    <system:String x:Key="Crossfade">Crossfade</system:String>
+    <system:String x:Key="Secounds">Secounds</system:String>
+    <system:String x:Key="View">View</system:String>
+    <system:String x:Key="BaseTheme">Base theme</system:String>
+    <system:String x:Key="Light">Light</system:String>
+    <system:String x:Key="Dark">Dark</system:String>
 </ResourceDictionary>

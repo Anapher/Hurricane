@@ -13,6 +13,7 @@
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -25,7 +26,6 @@
     <MapFileExtensions>true</MapFileExtensions>
     <ApplicationRevision>0</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
@@ -43,7 +43,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
+    <Optimize>false</Optimize>
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
@@ -87,6 +87,7 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -131,11 +132,21 @@
     <Compile Include="Extensions\Converter\FalseOnNullValue.cs" />
     <Compile Include="Extensions\Converter\FormatTimespan.cs" />
     <Compile Include="Extensions\Converter\PlaceholderConverter.cs" />
+    <Compile Include="Extensions\Converter\TimeSpanProgressConverter.cs" />
     <Compile Include="Extensions\Converter\StringArrayToStringConverter.cs" />
     <Compile Include="Extensions\Converter\TextWithHyperlinkParametersConverter.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Extensions\Converter\TimespanToMinutesSecounds.cs" />
+    <Compile Include="Extensions\ImageFromFont.cs" />
+    <Compile Include="Extensions\ListViewLayoutManager\ConverterGridViewColumn.cs" />
+    <Compile Include="Extensions\ListViewLayoutManager\FixedColumn.cs" />
+    <Compile Include="Extensions\ListViewLayoutManager\ImageGridViewColumn.cs" />
+    <Compile Include="Extensions\ListViewLayoutManager\LayoutColumn.cs" />
+    <Compile Include="Extensions\ListViewLayoutManager\ListViewLayoutManager.cs" />
+    <Compile Include="Extensions\ListViewLayoutManager\ProportionalColumn.cs" />
+    <Compile Include="Extensions\ListViewLayoutManager\RangeColumn.cs" />
+    <Compile Include="Extensions\TaskbarItemInfoEx.cs" />
     <Compile Include="Extensions\TrackImagePreseter.xaml.cs">
       <DependentUpon>TrackImagePreseter.xaml</DependentUpon>
     </Compile>
@@ -157,6 +168,7 @@
     <Compile Include="Music\AsyncTrackLoader.cs" />
     <Compile Include="Music\Data\AudioDevice.cs" />
     <Compile Include="Music\Data\FavoriteList.cs" />
+    <Compile Include="Music\Data\SoundOutRepresenter.cs" />
     <Compile Include="Music\Equalizer\EqualizerBand.cs" />
     <Compile Include="Music\Data\IPlaylist.cs" />
     <Compile Include="Music\MusicDatabase\EventArgs\EqualizerChangedEventArgs.cs" />
@@ -191,6 +203,7 @@
     <Compile Include="Music\API\TcpConnection.cs" />
     <Compile Include="Music\API\TcpServer.cs" />
     <Compile Include="Settings\ConfigSettings.cs" />
+    <Compile Include="Settings\Converter\BaseThemeToIndexConverter.cs" />
     <Compile Include="Settings\Converter\BitrateToIndexConverter.cs" />
     <Compile Include="Settings\Converter\NotificationTypeConverter.cs" />
     <Compile Include="Settings\Converter\QualityToIndexConverter.cs" />
@@ -224,6 +237,9 @@
     <Compile Include="ViewModels\SettingsViewModel.cs" />
     <Compile Include="Views\TagEditorWindow.xaml.cs">
       <DependentUpon>TagEditorWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Tools\LanguageCreatorWindow.xaml.cs">
+      <DependentUpon>LanguageCreatorWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\UserControls\AboutView.xaml.cs">
       <DependentUpon>AboutView.xaml</DependentUpon>
@@ -339,6 +355,14 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Resources\Themes\BaseDark.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Resources\Themes\BaseLight.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Resources\Themes\Lime.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -432,6 +456,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\TagEditorWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Tools\LanguageCreatorWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -600,9 +628,6 @@
     <Resource Include="Resources\MediaIcons\Advanced\Volume\mute.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\MediaIcons\Advanced\Options\equalizer.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Resources\MediaIcons\ThumbButtons\backward.png" />
     <Resource Include="Resources\MediaIcons\ThumbButtons\forward.png" />
     <Resource Include="Resources\MediaIcons\ThumbButtons\pause.png" />
@@ -630,10 +655,15 @@
     <Resource Include="Resources\GUI\music.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\App\title.png" />
+    <Resource Include="Resources\App\christmastitle.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\App\christmastitle.png" />
+    <Resource Include="Resources\GUI\music_light.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\MediaIcons\Advanced\Volume\loud_light.png" />
+    <Resource Include="Resources\MediaIcons\Advanced\Volume\medium_light.png" />
+    <Resource Include="Resources\MediaIcons\Advanced\Volume\mute_light.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

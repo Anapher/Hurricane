@@ -1,5 +1,4 @@
-﻿using Hurricane.Music;
-using Hurricane.Music.Data;
+﻿using Hurricane.Music.Data;
 using Hurricane.ViewModelBase;
 using Hurricane.ViewModels;
 using MahApps.Metro.Controls;

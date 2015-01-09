@@ -56,21 +56,6 @@ namespace Hurricane.Music.Data
             }
         }
 
-        public bool ContainsMissingTracks
-        {
-            get { return Tracks.Any(t => !t.TrackExists); }
-        }
-
-        public void RemoveMissingTracks()
-        {
-            for (int i = Tracks.Count - 1; i > -1; i--)
-            {
-                Track t = Tracks[i];
-                if (!t.TrackExists) RemoveTrack(t);
-            }
-            OnPropertyChanged("ContainsMissingTracks");
-        }
-
         public override void AddTrack(Track track)
         {
             Tracks.Add(track);

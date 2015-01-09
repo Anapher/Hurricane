@@ -130,7 +130,7 @@
                 </Grid>
             </TabItem>
         </TabControl>
-        <Grid Grid.Row="1" Background="White">
+        <Grid Grid.Row="1">
             <Separator VerticalAlignment="Top"/>
             <Grid Margin="10" Grid.IsSharedSizeScope="True">
                 <Grid.ColumnDefinitions>

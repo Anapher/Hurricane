@@ -27,7 +27,7 @@
         <comment>This is a comment</comment>
     </data>
                 
-    There are any Number of "resheader" rows that contain simple 
+    There are any number of "resheader" rows that contain simple 
     name/value pairs.
     
     Each data row contains a name, and value. The row also contains a 
@@ -159,5 +159,9 @@
     &lt;Color x:Key="IdealForegroundColor"&gt;{IdealForegroundColor}&lt;/Color&gt;
     &lt;SolidColorBrush x:Key="IdealForegroundColorBrush" Color="{StaticResource IdealForegroundColor}" options:Freeze="True" /&gt;
 &lt;/ResourceDictionary&gt;</value>
+  </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="Hurricane_en_us" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\languages\hurricane.en-us.xaml;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
 </root>

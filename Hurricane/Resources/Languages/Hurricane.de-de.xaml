@@ -235,4 +235,10 @@
     <system:String x:Key="Favorites">Favoriten</system:String>
     <system:String x:Key="TrimTrackname">Suchtext verbessern</system:String>
     <system:String x:Key="ShowArtistAndTitle">Künstlernamen und Titel in Liste anzeigen</system:String>
+    <system:String x:Key="Crossfade">Crossfade</system:String>
+    <system:String x:Key="Secounds">Sekunden</system:String>
+    <system:String x:Key="View">Anzeige</system:String>
+    <system:String x:Key="BaseTheme">Basis Theme</system:String>
+    <system:String x:Key="Light">Hell</system:String>
+    <system:String x:Key="Dark">Dunkel</system:String>
 </ResourceDictionary>

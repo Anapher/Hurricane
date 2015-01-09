@@ -44,7 +44,6 @@ namespace Hurricane
         public MainWindow()
         {
             InitializeComponent();
-            Timeline.DesiredFrameRateProperty.OverrideMetadata(typeof(Timeline), new FrameworkPropertyMetadata(60));
 
             MagicArrow = new MagicArrow.MagicArrow();
             MagicArrow.Register(this);
@@ -112,12 +111,13 @@ namespace Hurricane
 
                 MainViewModel viewmodel = MainViewModel.Instance;
                 viewmodel.StartVisualization += CSCoreEngine_StartVisualization;
-                viewmodel.PositionChanged += viewmodel_PositionChanged;
+
                 viewmodel.Loaded(this);
                 viewmodel.MusicManager.CSCoreEngine.PlaybackStateChanged += CSCoreEngine_PlaybackStateChanged;
 
                 AdvancedWindowSkin.MusicManagerEnabled(viewmodel.MusicManager);
                 SmartWindowSkin.MusicManagerEnabled(viewmodel.MusicManager);
+
             }
             catch (Exception ex)
             {
@@ -243,12 +243,6 @@ namespace Hurricane
         #endregion
 
         #region Taskbar
-
-        void viewmodel_PositionChanged(object sender, PositionChangedEventArgs e)
-        {
-            double progress = e.NewPosition / (double)e.TrackLength;
-            if (taskbarinfo.ProgressValue != progress) taskbarinfo.ProgressValue = progress;
-        }
 
         void CSCoreEngine_PlaybackStateChanged(object sender, PlayStateChangedEventArgs e)
         {

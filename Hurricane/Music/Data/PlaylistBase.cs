@@ -161,5 +161,21 @@ namespace Hurricane.Music.Data
         }
 
         public abstract bool CanEdit { get; }
+
+
+        public bool ContainsMissingTracks
+        {
+            get { return Tracks.Any(t => !t.TrackExists); }
+        }
+
+        public void RemoveMissingTracks()
+        {
+            for (int i = Tracks.Count - 1; i > -1; i--)
+            {
+                Track t = Tracks[i];
+                if (!t.TrackExists) RemoveTrack(t);
+            }
+            OnPropertyChanged("ContainsMissingTracks");
+        }
     }
 }

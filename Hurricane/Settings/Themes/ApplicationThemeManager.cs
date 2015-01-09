@@ -15,6 +15,7 @@ namespace Hurricane.Settings.Themes
         public ThemeBase SelectedColorTheme { get; set; }
         public bool UseCustomSpectrumAnalyzerColor { get; set; }
         public string SpectrumAnalyzerHexColor { get; set; }
+        public BaseTheme BaseTheme { get; set; }
 
         [XmlIgnore]
         public Color SpectrumAnalyzerColor
@@ -96,18 +97,25 @@ namespace Hurricane.Settings.Themes
             }
         }
 
+        public void LoadBaseTheme()
+        {
+            var resource = new ResourceDictionary() { Source = new Uri(string.Format("/Resources/Themes/{0}.xaml", BaseTheme == BaseTheme.Dark ? "BaseDark" : "BaseLight"), UriKind.Relative) };
+            Application.Current.Resources.MergedDictionaries.Add(resource);
+        }
+
         public void LoadStandard()
         {
             this.SelectedColorTheme = Themes.First(x => x.Name == "Blue");
             this.UseCustomSpectrumAnalyzerColor = false;
             this.SpectrumAnalyzerHexColor = null;
+            this.BaseTheme = BaseTheme.Light;
         }
 
         public override bool Equals(object obj)
         {
             var other = obj as ApplicationThemeManager;
             if (other == null) return false;
-            return this.SelectedColorTheme.Name == other.SelectedColorTheme.Name && this.UseCustomSpectrumAnalyzerColor == other.UseCustomSpectrumAnalyzerColor && this.SpectrumAnalyzerColor == other.SpectrumAnalyzerColor;
+            return this.SelectedColorTheme.Name == other.SelectedColorTheme.Name && this.UseCustomSpectrumAnalyzerColor == other.UseCustomSpectrumAnalyzerColor && this.SpectrumAnalyzerColor == other.SpectrumAnalyzerColor && this.BaseTheme == other.BaseTheme;
         }
 
         public override int GetHashCode()
@@ -122,4 +130,6 @@ namespace Hurricane.Settings.Themes
             appliedResource = resource;
         }
     }
+
+    public enum BaseTheme { Light, Dark }
 }

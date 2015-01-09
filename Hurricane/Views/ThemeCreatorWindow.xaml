@@ -13,7 +13,7 @@
             <RowDefinition Height="auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <Grid Background="WhiteSmoke">
+        <Grid Background="{StaticResource GrayBrush8}">
             <Grid Margin="10">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="75"/>
@@ -52,14 +52,7 @@
                     <StackPanel Orientation="Vertical" Margin="10">
                         <TextBlock Text="{Binding ElementName=lst,Path=SelectedItem.Name}" FontSize="18"/>
                         <TextBlock Text="{Binding ElementName=lst,Path=SelectedItem.Description}" Margin="0,5,0,0" TextWrapping="Wrap"/>
-                        <tkt:ColorCanvas SelectedColor="{Binding ElementName=lst,Path=SelectedItem.Color}" Margin="0,10,0,0" UsingAlphaChannel="{Binding ElementName=lst,Path=SelectedItem.IsTransparencyEnabled}">
-                            <tkt:ColorCanvas.Background>
-                                <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
-                                    <GradientStop Color="White" Offset="0"/>
-                                    <GradientStop Color="White" Offset="1"/>
-                                </LinearGradientBrush>
-                            </tkt:ColorCanvas.Background>
-                        </tkt:ColorCanvas>
+                        <tkt:ColorCanvas Background="{StaticResource WhiteBrush}" SelectedColor="{Binding ElementName=lst,Path=SelectedItem.Color}" Margin="0,10,0,0" UsingAlphaChannel="{Binding ElementName=lst,Path=SelectedItem.IsTransparencyEnabled}"/>
                     </StackPanel>
                 </ScrollViewer>
             </Grid>

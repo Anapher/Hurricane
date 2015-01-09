@@ -86,7 +86,7 @@ namespace Hurricane.MagicArrow
 
         }
 
-        protected async void MoveWindowBackInScreen()
+        protected void MoveWindowBackInScreen()
         {
             if (MoveIn != null) MoveIn(this, EventArgs.Empty);
             double newleft;

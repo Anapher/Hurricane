@@ -124,5 +124,17 @@ namespace Hurricane.Music
                 }));
             }
         }
+            
+        private RelayCommand _openFavorites;
+        public RelayCommand OpenFavorites
+        {
+            get
+            {
+                return _openFavorites ?? (_openFavorites = new RelayCommand(parameter =>
+                {
+                    Musicmanager.FavoriteListIsSelected = !Musicmanager.FavoriteListIsSelected;
+                }));
+            }
+        }
     }
 }

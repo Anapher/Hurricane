@@ -12,7 +12,7 @@
         <converter:TrueFalseValueConverter x:Key="PlayPauseConverter" TrueValue="pack://application:,,,/Hurricane;component/Resources/MediaIcons/ThumbButtons/pause.png" FalseValue="pack://application:,,,/Hurricane;component/Resources/MediaIcons/ThumbButtons/play.png"/>
     </Window.Resources>
     <Window.TaskbarItemInfo>
-        <TaskbarItemInfo x:Name="taskbarinfo" Description="{Binding MusicManager.CSCoreEngine.CurrentTrack}">
+        <TaskbarItemInfo x:Name="taskbarinfo" Description="{Binding MusicManager.CSCoreEngine.CurrentTrack}" ex:TaskbarItemInfoEx.Progress="{Binding MusicManager.CSCoreEngine.CurrentTrackPosition.TotalSeconds}" ex:TaskbarItemInfoEx.Maximum="{Binding MusicManager.CSCoreEngine.CurrentTrackLength.TotalSeconds}">
             <TaskbarItemInfo.ThumbButtonInfos>
                 <ThumbButtonInfoCollection>
                     <ThumbButtonInfo Description="{DynamicResource PreviousTrack}" ImageSource="pack://application:,,,/Hurricane;component/Resources/MediaIcons/ThumbButtons/backward.png" Command="{Binding MusicManager.Commands.GoBackward}"/>

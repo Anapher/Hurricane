@@ -9,11 +9,11 @@
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Colors.xaml" />
                 
-                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/BaseLight.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.AnimatedTabControl.xaml" />
                 
                 <ResourceDictionary Source="/Resources/VectorGraphics.xaml"/>
                 <ResourceDictionary Source="/Resources/Themes/Blue.xaml"/>
+                <ResourceDictionary Source="/Resources/Themes/BaseDark.xaml"/>
             </ResourceDictionary.MergedDictionaries>
             
             <SolidColorBrush x:Key="SpectrumAnalyzerBrush" Color="Blue"/>

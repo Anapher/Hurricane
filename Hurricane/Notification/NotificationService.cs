@@ -61,7 +61,7 @@ namespace Hurricane.Notification
         {
             Track trackToUse = _lasttrack ?? new Track
             {
-                Artist = "Alkalinee",
+                Artist = "Alkaline",
                 Title = "Sample Track",
                 Duration = "03:26",
                 kHz = 44,
