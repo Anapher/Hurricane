@@ -1,31 +1,45 @@
 Hurricane
 ==============
 
-Hurricane is a powerful music player written in C# based on the [CSCore sound library](https://cscore.codeplex.com/).
+Hurricane is a music player written in C# based on the [CSCore sound library](https://cscore.codeplex.com/).
 
-![Hurricane](http://www.vincentgri.de/hurricane/images/GitHub/Wallpaper.png)
+![Playlists](http://www.vincentgri.de/hurricane/images/GitHub/advancedWindowPlaylists.png)
 
-The goal is that you don't get annoyed by Hurricane so it's only visible if you really need it. If you need Hurricane, you can move your mouse to the left side of your monitor, so a blue arrow appears:
+##Smart/Advanced view
 
-![Magic Arrow](http://www.vincentgri.de/hurricane/images/GitHub/MagicArrow.png)
+Hurricane provides two views: The smart view and the advanced view. The advanced view provides much informations and is easy to use. The smart view is reduced to the essential functions. If you pin the window to the left or right side of your monitor, it switches to the smart view and hides automatically if it loses focus. To bring it into the view again, move your cursor to the side where Hurricane has disappeared and an arrow will be shown: (Magic Arrow!)
 
-If you click on it, Hurricane appears. But when you don't dock Hurricane to the left or right side, it displays an advanced window:
-![Playlists](http://www.vincentgri.de/hurricane/images/GitHub/AdvancedWindowPlaylists.png)
-![NowPlaying](http://www.vincentgri.de/hurricane/images/GitHub/AdvancedWindowNowPlaying.png)
+![Magic Arrow](http://www.vincentgri.de/hurricane/images/GitHub/magicArrow.png)
 
-##What Hurricane isn't
-A standard music player. Hurricane is a music player for listen music while you do something.
+If you click on it, Hurricane appears.
 
-##Features
 
- - Equalizer
- - Game compatible
- - High adaptability
+##Why Hurricane?
+
  - Modern design
- - Highly optimized Performance
- - Multilanguage (english and german)
- - Colorthemes
+ - Tag editor
+ - Crossfade
+ - Automatic cover downloading
+ - Equalizer
+ - 23 Colorthemes (you can also create your own)
+ - Two base themes: Light and dark
+ - Multilanguage
+ - Api for developer
+ - Supported codecs: MP3, WAVE(PCM, IeeeFloat, GSM, ADPCM,…), FLAC, AAC, AC3, WMA, Raw data
+ - Works well with games
+ - Supports DirectSound and WASAPI
  
+ 
+##Screenshots
+Now Playing tab, advanced view:
+![NowPlaying](http://www.vincentgri.de/hurricane/images/GitHub/advancedWindowNowPlaying.png)
+
+Base theme = dark, color theme = lime, advanced view:
+![DarkTheme](http://www.vincentgri.de/hurricane/images/GitHub/advancedWindowRestyle.png)
+
+Smart view:
+
+![SmartView](http://www.vincentgri.de/hurricane/images/GitHub/SmartWindow.png)
 
 ##License
-Hurricane is licensed under the [GNU GENERAL PUBLIC LICENSE](LICENSE.txt)
+Hurricane is licensed under the [GNU General Public License](LICENSE.txt)
