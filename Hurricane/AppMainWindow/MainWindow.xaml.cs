@@ -244,7 +244,7 @@ namespace Hurricane
                 appstate.Top = Top;
                 appstate.WindowState = WindowState;
             }
-            if (HurricaneSettings.Instance.Loaded)
+            if (HurricaneSettings.Instance.IsLoaded)
                 MagicArrow.DockManager.Save();
             MainViewModel.Instance.Closing();
             MagicArrow.Dispose();

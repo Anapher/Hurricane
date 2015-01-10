@@ -333,7 +333,7 @@ namespace Hurricane.ViewModels
                 {
                     var tracks = ((IList) parameter).Cast<Track>().ToList();
                     if (tracks.Count == 0) return;
-                    if (await _baseWindow.ShowMessage(string.Format(Application.Current.Resources["RemoveTracksMessage"].ToString(), tracks.Count > 0 ? string.Format("{0} {1}", tracks.Count, Application.Current.Resources["Tracks"].ToString()) : string.Format("\"{0}\"", tracks[0].Title)), Application.Current.Resources["RemoveTracks"].ToString(), true, DialogMode.Single))
+                    if (await _baseWindow.ShowMessage(tracks.Count > 1 ? string.Format(Application.Current.Resources["RemoveTracksMessage"].ToString(), tracks.Count) : string.Format(Application.Current.Resources["RemoveTrackMessage"].ToString(), tracks[0].Title), Application.Current.Resources["RemoveTracks"].ToString(), true, DialogMode.Single))
                     {
                         foreach (var t in tracks)
                         {
@@ -450,6 +450,24 @@ namespace Hurricane.ViewModels
                     }
                 }));
             }
+        }
+
+        private RelayCommand _toggleVolume;
+        private float oldVolume;
+        public RelayCommand ToggleVolume
+        {
+            get { return _toggleVolume ?? (_toggleVolume = new RelayCommand(parameter =>
+            {
+                if (MusicManager.CSCoreEngine.Volume == 0)
+                {
+                    MusicManager.CSCoreEngine.Volume = oldVolume;
+                }
+                else
+                {
+                    oldVolume = MusicManager.CSCoreEngine.Volume;
+                    MusicManager.CSCoreEngine.Volume = 0;
+                }
+            })); }
         }
         #endregion
 

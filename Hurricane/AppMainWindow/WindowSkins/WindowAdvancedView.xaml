@@ -523,7 +523,11 @@
                     <DockPanel.Resources>
                         <converter:VolumeToImage x:Key="VolumeToImage"/>
                     </DockPanel.Resources>
-                    <Image Source="{Binding ElementName=volumeslider,Path=Value,Converter={StaticResource VolumeToImage}}" Width="24" Height="24"/>
+                    <Image Source="{Binding ElementName=volumeslider,Path=Value,Converter={StaticResource VolumeToImage}}" Width="24" Height="24">
+                        <Image.InputBindings>
+                            <MouseBinding MouseAction="LeftClick" Command="{Binding ToggleVolume}"/>
+                        </Image.InputBindings>
+                    </Image>
                     <Slider x:Name="volumeslider" Maximum="1" Minimum="0" IsMoveToPointEnabled="True" Style="{StaticResource AdvancedTimelineSlider}" VerticalAlignment="Center" LargeChange="0.1" Value="{Binding MusicManager.CSCoreEngine.Volume}"/>
                 </DockPanel>
             </Grid>

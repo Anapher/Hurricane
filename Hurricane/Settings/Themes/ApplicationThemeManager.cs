@@ -64,7 +64,7 @@ namespace Hurricane.Settings.Themes
                 }
             }
 
-            DirectoryInfo themefolder = new DirectoryInfo("Themes");
+            DirectoryInfo themefolder = new DirectoryInfo(HurricaneSettings.Instance.ThemeDirectory);
             if (themefolder.Exists)
             {
                 foreach (var file in themefolder.GetFiles("*.xaml"))

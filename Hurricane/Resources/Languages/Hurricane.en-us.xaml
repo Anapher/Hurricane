@@ -41,7 +41,8 @@
     <system:String x:Key="SoftHeights">Soft heights</system:String>
 
     <system:String x:Key="RemoveTracks">Remove tracks</system:String>
-    <system:String x:Key="RemoveTracksMessage">Are you sure that you want to remove '{0}' from the playlist?</system:String>
+    <system:String x:Key="RemoveTracksMessage">Are you sure that you want to remove {0} tracks from the playlist?</system:String>
+    <system:String x:Key="RemoveTrackMessage">Are you sure that you want to remove '{0}' from the playlist?</system:String>
     <system:String x:Key="Tracks">Tracks</system:String>
     <system:String x:Key="Error">Error</system:String>
     <system:String x:Key="ReallyDeletePlaylist">Are you sure that you want to remove the playlist '{0}'?</system:String>

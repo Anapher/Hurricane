@@ -32,7 +32,7 @@ namespace Hurricane.Settings.Themes
         {
             if (resource == null)
             {
-                var foo = new Uri(string.Format("pack://siteoforigin:,,,/Themes/{0}.xaml", Name), UriKind.RelativeOrAbsolute);
+                var foo = new Uri(Path.Combine(HurricaneSettings.Instance.ThemeDirectory, Name + ".xaml"), UriKind.RelativeOrAbsolute);
                 resource = new ResourceDictionary() { Source = foo };
             }
         }

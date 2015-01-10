@@ -74,7 +74,7 @@ namespace Hurricane.Settings.Themes
 
         public void LoadFromFile(string filename)
         {
-            string content = File.ReadAllText(Path.Combine("Themes", filename));
+            string content = File.ReadAllText(Path.Combine(HurricaneSettings.Instance.ThemeDirectory, filename));
             foreach (var color in this.ThemeColors)
             {
                 color.Color = GetColorValue(color.RegexPattern, content);
@@ -84,7 +84,7 @@ namespace Hurricane.Settings.Themes
         public void Save()
         {
             string xamlstring = this.ThemeColors.Aggregate(Properties.Resources.ColorTheme, (current, color) => current.Replace("{" + color.Name + "}", ColorToString(color.Color, color.IsTransparencyEnabled)));
-            File.WriteAllText(Path.Combine("Themes", Name + ".xaml"), xamlstring);
+            File.WriteAllText(Path.Combine(HurricaneSettings.Instance.ThemeDirectory, Name + ".xaml"), xamlstring);
         }
 
         protected Color GetColorValue(string pattern, string input)

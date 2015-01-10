@@ -7,7 +7,7 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="RepeatButton">
-                    <Border BorderThickness="1" Background="LightGray" Height="5"/>
+                    <Border BorderThickness="1" Background="{DynamicResource SliderBackground}" Height="5"/>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>

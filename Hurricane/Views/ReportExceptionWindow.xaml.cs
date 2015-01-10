@@ -18,7 +18,7 @@ namespace Hurricane.Views
         {
             InitializeComponent();
             this.Error = error;
-            if (HurricaneSettings.Instance.Loaded) HurricaneSettings.Instance.Save();
+            if (HurricaneSettings.Instance.IsLoaded) HurricaneSettings.Instance.Save();
         }
 
         private Exception _error;

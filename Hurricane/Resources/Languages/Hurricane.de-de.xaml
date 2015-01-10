@@ -41,7 +41,8 @@
     <system:String x:Key="SoftHeights">Weiche Höhen</system:String>
     
     <system:String x:Key="RemoveTracks">Tracks entfernen</system:String>
-    <system:String x:Key="RemoveTracksMessage">Sind Sie sicher, dass Sie {0} aus der Wiedergabeliste entfernen möchten?</system:String>
+    <system:String x:Key="RemoveTracksMessage">Sind Sie sicher, dass Sie {0} Tracks aus der Wiedergabeliste entfernen möchten?</system:String>
+    <system:String x:Key="RemoveTrackMessage">Sind Sie sicher, dass Sie den Track '{0}' aus der Wiedergabeliste entfernen möchten?</system:String>
     <system:String x:Key="Tracks">Tracks</system:String>
     <system:String x:Key="Error">Fehler</system:String>
     <system:String x:Key="ReallyDeletePlaylist">Sind Sie sicher, dass Sie die Wiedergabeliste '{0}' entfernen wollen?</system:String>

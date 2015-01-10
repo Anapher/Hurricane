@@ -154,8 +154,20 @@ namespace Hurricane.Music
 
         #region Import
 
-        public bool NotChecked { get; set; }
-        public bool ShouldSerializeNotChecked { get { return NotChecked; } }
+        [XmlElement("IsChecked")]
+        public string Checked { get; set; }
+
+        [XmlIgnore]
+        public bool IsChecked
+        {
+            get { return Checked == "1"; }
+            set { Checked = value ? "1" : "0"; }
+        }
+
+        public bool ShouldSerializeChecked()
+        {
+            return !IsChecked;
+        }
 
         public async Task<bool> CheckTrack()
         {
@@ -176,7 +188,7 @@ namespace Hurricane.Music
                return false;
             }
 
-            NotChecked = false;
+            IsChecked = true;
             return true;
         }
 
@@ -184,7 +196,7 @@ namespace Hurricane.Music
         {
             _trackinformation = null; //to refresh the fileinfo
             FileInfo file = TrackInformation;
-            NotChecked = true;
+            IsChecked = false;
             Extension = file.Extension.ToUpper().Replace(".", string.Empty);
 
             return await TryLoadWithTagLibSharp(file) || await TryLoadWithCSCore(file);
@@ -245,7 +257,7 @@ namespace Hurricane.Music
 
                 kHz = samplerate / 1000;
                 Duration = duration.ToString(duration.Hours == 0 ? @"mm\:ss" : @"hh\:mm\:ss");
-                NotChecked = false;
+                IsChecked = true;
             }
             catch (Exception)
             {
@@ -284,7 +296,7 @@ namespace Hurricane.Music
 
             if (Image == null)
             {
-                DirectoryInfo diAlbumCover = new DirectoryInfo("AlbumCover");
+                DirectoryInfo diAlbumCover = new DirectoryInfo(HurricaneSettings.Instance.CoverDirectory);
                 Image = MusicCoverManager.GetImage(this, diAlbumCover);
                 if (Image == null && HurricaneSettings.Instance.Config.LoadAlbumCoverFromInternet)
                 {

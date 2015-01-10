@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Windows;
+using Hurricane.Settings;
 using Hurricane.Settings.Themes;
 using MahApps.Metro.Controls;
 
@@ -35,7 +36,7 @@ namespace Hurricane.Views
         {
             try
             {
-                DirectoryInfo di = new DirectoryInfo("Themes");
+                DirectoryInfo di = new DirectoryInfo(HurricaneSettings.Instance.ThemeDirectory);
                 if (!di.Exists) di.Create();
                 Theme.Save();
                 this.DialogResult = true;

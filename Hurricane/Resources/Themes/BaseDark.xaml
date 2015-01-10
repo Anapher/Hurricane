@@ -7,6 +7,7 @@
 
     <SolidColorBrush x:Key="PicturePreviewBackgroundBrush" Color="{StaticResource WhiteColor}"/>
     <SolidColorBrush x:Key="PicturePreviewForegroundBrush" Color="White"/>
+    <SolidColorBrush x:Key="SliderBackground" Color="#FF646464"></SolidColorBrush>
     <system:Boolean x:Key="LightPlaceHolder">True</system:Boolean>
     <system:Boolean x:Key="LightVolumeIcon">True</system:Boolean>
 </ResourceDictionary>

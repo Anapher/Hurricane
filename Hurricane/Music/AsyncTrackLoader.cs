@@ -43,7 +43,7 @@ namespace Hurricane.Music
             {
                 foreach (var track in p.Tracks)
                 {
-                    //if(track.NotChecked && !await track.CheckTrack()) p.RemoveTrackWithAnimation(track);
+                    if(track.IsChecked == false && !await track.CheckTrack()) p.RemoveTrack(track);
                 }
                 PlaylistsToCheck.Remove(p);
             }
