@@ -149,6 +149,7 @@ namespace Hurricane.Views.Tools
                 }
                 sw.WriteLine("</ResourceDictionary>");
             }
+            MessageBox.Show("Document saved");
         }
 
         public static LanguageDocument FromFile(string path)

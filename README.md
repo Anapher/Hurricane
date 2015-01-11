@@ -7,7 +7,7 @@ Hurricane is a music player written in C# based on the [CSCore sound library](ht
 
 ##Smart/Advanced view
 
-Hurricane provides two views: The smart view and the advanced view. The advanced view provides much informations and is easy to use. The smart view is reduced to the essential functions. If you pin the window to the left or right side of your monitor, it switches to the smart view and hides automatically if it loses focus. To bring it into the view again, move your cursor to the side where Hurricane has disappeared and an arrow will be shown: (Magic Arrow!)
+Hurricane provides two views: The smart view and the advanced view. The advanced view provides much information and is easy to use. The smart view is reduced to the essential functions. If you pin the window to the left or right side of your screen, it switches to the smart view and hides automatically if it loses focus. To bring it into the view again, move your cursor to the side where Hurricane has disappeared and an arrow will be shown: (Magic Arrow!)
 
 ![Magic Arrow](http://www.vincentgri.de/hurricane/images/GitHub/magicArrow.png)
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Windows;
 using System.Xml.Serialization;
@@ -77,7 +78,9 @@ namespace Hurricane.Settings
                     new LanguageInfo("Deutsch", "/Resources/Languages/Hurricane.de-de.xaml",
                         new Uri("/Resources/Languages/Icons/de.png", UriKind.Relative), "Alkaline", "de"),
                     new LanguageInfo("English", "/Resources/Languages/Hurricane.en-us.xaml",
-                        new Uri("/Resources/Languages/Icons/us.png", UriKind.Relative), "Alkaline", "en")
+                        new Uri("/Resources/Languages/Icons/us.png", UriKind.Relative), "Alkaline", "en"),
+                                            new LanguageInfo("Suomi", "/Resources/Languages/Hurricane.fi-fi.xaml",
+                        new Uri("/Resources/Languages/Icons/fi.png", UriKind.Relative), "Väinämö Vettenranta", "fi")
                 });
             }
         }
@@ -99,7 +102,8 @@ namespace Hurricane.Settings
             ShowMagicArrowBelowCursor = true;
             WaveSourceBits = 16;
             SampleRate = -1;
-            this.Language = Thread.CurrentThread.CurrentCulture.TwoLetterISOLanguageName == "de" ? "de" : "en";
+            var language = Languages.FirstOrDefault(x => x.Code == Thread.CurrentThread.CurrentCulture.TwoLetterISOLanguageName);
+            Language = language == null ? "en" : language.Code;
             Notification = NotificationType.Top;
             ApplicationState = null;
             Theme = new ApplicationThemeManager();
@@ -130,9 +134,7 @@ namespace Hurricane.Settings
         public void LoadLanguage()
         {
             if (_lastLanguage != null) Application.Current.Resources.Remove(_lastLanguage);
-            LanguageInfo info = new LanguageInfo(Language);
-            info.Load(Languages);
-            _lastLanguage = new ResourceDictionary() { Source = new Uri(info.Path, UriKind.Relative) };
+            _lastLanguage = new ResourceDictionary() { Source = new Uri(this.Languages.First(x => x.Code == Language).Path, UriKind.Relative) };
             Application.Current.Resources.MergedDictionaries.Add(_lastLanguage);
         }
 

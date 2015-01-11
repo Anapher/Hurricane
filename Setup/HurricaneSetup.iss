@@ -67,6 +67,20 @@ Name: "{userappdata}\Microsoft\Internet Explorer\Quick Launch\{#MyAppName}"; Fil
 Filename: "{app}\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#StringChange(MyAppName, '&', '&&')}}"; Flags: nowait postinstall skipifsilent
 
 [Code]
+var CancelWithoutPrompt: boolean;
+
+function InitializeSetup(): Boolean;
+begin
+  CancelWithoutPrompt := false;
+  result := true;
+end;
+
+procedure CancelButtonClick(CurPageID: Integer; var Cancel, Confirm: Boolean);
+begin
+  if CurPageID=wpInstalling then
+    Confirm := not CancelWithoutPrompt;
+end;
+
 function FrameworkIsNotInstalled: Boolean;
 begin
   Result := not RegKeyExists(HKEY_LOCAL_MACHINE, 'SOFTWARE\Microsoft\NET Framework Setup\NDP\v4\Full');
@@ -81,11 +95,13 @@ begin
   WizardForm.StatusLabel.Caption := 'Installing .NET framework...';
   WizardForm.ProgressGauge.Style := npbstMarquee;
   try
-      if not Exec(ExpandConstant('{tmp}\dotNetFx45_Full_setup.exe'), '/q /restart', '', SW_SHOW, ewWaitUntilTerminated, ResultCode) then
+      if not Exec(ExpandConstant('{tmp}\dotNetFx45_Full_setup.exe'), '/q /norestart', '', SW_SHOW, ewWaitUntilTerminated, ResultCode) then
   begin
     // you can interact with the user that the installation failed
     MsgBox('.NET installation failed with code: ' + IntToStr(ResultCode) + '.',
       mbError, MB_OK);
+    CancelWithoutPrompt := true;
+    WizardForm.Close;
   end;
   finally
     WizardForm.StatusLabel.Caption := StatusText;

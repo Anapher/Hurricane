@@ -48,6 +48,7 @@ namespace Hurricane.AppMainWindow.WindowSkins
         }
 
         public event EventHandler ToggleWindowState;
+        public event EventHandler<MouseEventArgs> TitleBarMouseMove;
 
         public void EnableWindow()
         {
@@ -77,17 +78,31 @@ namespace Hurricane.AppMainWindow.WindowSkins
             }
         }
 
-        private void Grid_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        #region Titlebar
+
+
+        private void Titlebar_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
+            if (e.ClickCount == 2)
+            {
+                if (ToggleWindowState != null) ToggleWindowState(this, EventArgs.Empty);
+                return;
+            }
+
             if (DragMoveStart != null) DragMoveStart(this, EventArgs.Empty);
-            if (e.ClickCount == 2) if (ToggleWindowState != null) ToggleWindowState(this, EventArgs.Empty);
         }
 
-        private void Grid_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        private void Titlebar_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             if (DragMoveStop != null) DragMoveStop(this, EventArgs.Empty);
         }
 
+        private void Titlebar_OnMouseMove(object sender, MouseEventArgs e)
+        {
+            if (TitleBarMouseMove != null) TitleBarMouseMove(this, e);
+        }
+
+        #endregion
         private MusicManager _manager;
         public void MusicManagerEnabled(object manager)
         {

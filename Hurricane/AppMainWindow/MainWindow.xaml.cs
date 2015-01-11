@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows;
@@ -144,6 +145,7 @@ namespace Hurricane
                 HostedWindow.DragMoveStart -= skin_DragMoveStart;
                 HostedWindow.DragMoveStop -= skin_DragMoveStop;
                 HostedWindow.ToggleWindowState -= skin_ToggleWindowState;
+                HostedWindow.TitleBarMouseMove -= skin_TitleBarMouseMove;
                 HostedWindow.DisableWindow();
             }
 
@@ -151,6 +153,7 @@ namespace Hurricane
             skin.DragMoveStart += skin_DragMoveStart;
             skin.DragMoveStop += skin_DragMoveStop;
             skin.ToggleWindowState += skin_ToggleWindowState;
+            skin.TitleBarMouseMove += skin_TitleBarMouseMove;
 
             var appstate = HurricaneSettings.Instance.Config.ApplicationState;
             if (skin != AdvancedWindowSkin && saveinformation)
@@ -204,28 +207,47 @@ namespace Hurricane
             WindowState = WindowState == WindowState.Normal ? WindowState.Maximized : WindowState.Normal;
         }
 
-        protected override void TitleBarMouseDown(object sender, MouseButtonEventArgs e)
-        {
-            MagicArrow.DockManager.DragStart();
-            base.TitleBarMouseDown(sender, e);
-        }
+        #region Titlebar
 
-        protected override void TitleBarMouseUp(object sender, MouseButtonEventArgs e)
-        {
-            MagicArrow.DockManager.DragStop();
-            base.TitleBarMouseUp(sender, e);
-        }
-
+        private bool _restoreIfMove;
         void skin_DragMoveStart(object sender, EventArgs e)
         {
+            if (WindowState == WindowState.Maximized) _restoreIfMove = true;
             MagicArrow.DockManager.DragStart();
             if (HostedWindow.Configuration.NeedsMovingHelp) DragMove();
         }
 
         void skin_DragMoveStop(object sender, EventArgs e)
         {
+            _restoreIfMove = false;
             MagicArrow.DockManager.DragStop();
         }
+
+        void skin_TitleBarMouseMove(object sender, MouseEventArgs e)
+        {
+            if (_restoreIfMove)
+            {
+                _restoreIfMove = false;
+
+                double percentHorizontal = e.GetPosition(this).X / ActualWidth;
+                double targetHorizontal = RestoreBounds.Width * percentHorizontal;
+
+                double percentVertical = e.GetPosition(this).Y / ActualHeight;
+                double targetVertical = RestoreBounds.Height * percentVertical;
+
+                WindowState = WindowState.Normal;
+
+                Utilities.Native.POINT lMousePosition;
+                Utilities.Native.UnsafeNativeMethods.GetCursorPos(out lMousePosition);
+
+                Left = lMousePosition.X - targetHorizontal;
+                Top = lMousePosition.Y - targetVertical;
+
+                DragMove();
+            }
+        }
+
+        #endregion
 
         void CSCoreEngine_StartVisualization(object sender, EventArgs e)
         {
@@ -406,7 +428,7 @@ namespace Hurricane
 
         private void HideEqualizer()
         {
-         if(_equalizerIsOpen){   _equalizerWindow.Close(); _equalizerIsOpen = false;}
+            if (_equalizerIsOpen) { _equalizerWindow.Close(); _equalizerIsOpen = false; }
         }
 
         public void OpenTrackInformations(Track track)

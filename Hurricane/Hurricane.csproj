@@ -332,6 +332,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Resources\Languages\Hurricane.fi-fi.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Resources\Languages\Hurricane.de-de.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -662,6 +666,9 @@
     <Resource Include="Resources\MediaIcons\Advanced\Volume\loud_light.png" />
     <Resource Include="Resources\MediaIcons\Advanced\Volume\medium_light.png" />
     <Resource Include="Resources\MediaIcons\Advanced\Volume\mute_light.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Languages\Icons\fi.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

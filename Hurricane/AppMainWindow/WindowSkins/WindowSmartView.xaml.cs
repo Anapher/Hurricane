@@ -119,6 +119,12 @@ namespace Hurricane.AppMainWindow.WindowSkins
             remove { }
         }
 
+        public event EventHandler<MouseEventArgs> TitleBarMouseMove
+        {
+            add { }
+            remove { }
+        }
+
         public void EnableWindow()
         {
             SpectrumAnalyzer.RefreshInterval = 20;

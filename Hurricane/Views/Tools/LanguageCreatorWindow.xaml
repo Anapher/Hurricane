@@ -73,7 +73,7 @@
                     <GridViewColumn Header="Value" ctrl:ProportionalColumn.Width="1">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBox Text="{Binding Value,Mode=TwoWay}" Margin="0,2,0,2"/>
+                                <TextBox Text="{Binding Value,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Margin="0,2,0,2"/>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
