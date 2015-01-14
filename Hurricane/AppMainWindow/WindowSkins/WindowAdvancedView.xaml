@@ -12,7 +12,7 @@
              xmlns:ctrl="clr-namespace:Hurricane.Extensions.ListViewLayoutManager"
              xmlns:userControls="clr-namespace:Hurricane.Views.UserControls"
              mc:Ignorable="d"
-             d:DesignHeight="500" d:DesignWidth="850" DataContext="{x:Static viewmodels:MainViewModel.Instance}">
+             d:DesignHeight="500" d:DesignWidth="1000" DataContext="{x:Static viewmodels:MainViewModel.Instance}">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -45,7 +45,7 @@
         <Grid MouseLeftButtonDown="Titlebar_MouseLeftButtonDown" MouseLeftButtonUp="Titlebar_MouseLeftButtonUp" MouseMove="Titlebar_OnMouseMove" Background="{DynamicResource WhiteColorBrush}">
             <TextBlock Text="Hurricane" Foreground="#FFAAAAAA" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Center"/>
         </Grid>
-        <TabControl Grid.Row="1">
+        <TabControl Grid.Row="1" SelectedIndex="{Binding MainTabControlIndex}">
             <TabItem Header="{DynamicResource Playlists}">
                 <Grid>
                     <Grid.ColumnDefinitions>
@@ -78,6 +78,7 @@
                             </MenuItem>
                         </MenuItem>
                         <MenuItem Header="{DynamicResource Favorites}" Command="{Binding MusicManager.Commands.OpenFavorites}"/>
+                        <MenuItem Header="Online" Command="{Binding OpenOnlineSection}"/>
                     </Menu>
                     <TextBox Grid.Column="5" Margin="0,0,10,0" x:Name="txtSearch" VerticalAlignment="Center" controls:TextBoxHelper.ClearTextButton="True" HorizontalAlignment="Right" Width="200" controls:TextBoxHelper.Watermark="{StaticResource Search}" Text="{Binding MusicManager.SelectedPlaylist.SearchText,UpdateSourceTrigger=PropertyChanged}"/>
                     <ListBox Grid.Row="1" ItemsSource="{Binding MusicManager.Playlists}" DisplayMemberPath="Name" SelectedItem="{Binding MusicManager.SelectedPlaylist}" Margin="5">
@@ -105,7 +106,7 @@
                         <extensions:AnimatedListView SelectionMode="Extended" Grid.Row="1" ItemsSource="{Binding MusicManager.SelectedPlaylist.ViewSource}" SelectedItem="{Binding MusicManager.SelectedTrack}" BorderThickness="0" Margin="5,0,5,0" SelectionChanged="ListView_SelectionChanged"
                                   DragEnter="ListView_DragEnter" Drop="ListView_Drop" x:Name="listview" ctrl:ListViewLayoutManager.Enabled="True">
                             <ListView.Resources>
-                                <ContextMenu x:Key="ItemContextMenu" DataContext="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}, Path=DataContext}">
+                                <ContextMenu x:Key="FileContextMenu" DataContext="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}, Path=DataContext}">
                                     <MenuItem Header="{DynamicResource Play}" Command="{Binding MusicManager.Commands.PlaySelectedTrack}" IsEnabled="{Binding MusicManager.SelectedTrack.TrackExists}" InputGestureText="Enter"/>
                                     <Separator />
                                     <MenuItem Header="{DynamicResource AddTracks}" IsEnabled="{Binding MusicManager.SelectedPlaylist.CanEdit}">
@@ -124,6 +125,29 @@
                                     <MenuItem Header="{DynamicResource TrackInformation}" Command="{Binding OpenTrackInformation}" IsEnabled="{Binding MusicManager.SelectedTrack.TrackExists}" InputGestureText="F4"/>
                                     <MenuItem Header="{DynamicResource TagEditor}" Command="{Binding OpenTagEditor}" IsEnabled="{Binding MusicManager.SelectedTrack.TrackExists}" InputGestureText="F3"/>
                                     <MenuItem Header="{DynamicResource FileLocation}" Command="{Binding MusicManager.Commands.OpenTrackLocation}" InputGestureText="Alt+O" IsEnabled="{Binding MusicManager.SelectedTrack.TrackExists}"/>
+                                    <Separator />
+                                    <MenuItem Header="{DynamicResource Remove}" Command="{Binding RemoveSelectedTracks}" InputGestureText="{DynamicResource Del}"/>
+                                </ContextMenu>
+                                <ContextMenu x:Key="StreamContextMenu" DataContext="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}, Path=DataContext}">
+                                    <MenuItem Header="{DynamicResource Play}" Command="{Binding MusicManager.Commands.PlaySelectedTrack}" InputGestureText="Enter"/>
+                                    <Separator />
+                                    <MenuItem Header="{DynamicResource AddTracks}" IsEnabled="{Binding MusicManager.SelectedPlaylist.CanEdit}">
+                                        <MenuItem Header="{DynamicResource AddFiles}" Command="{Binding AddFilesToPlaylist}" InputGestureText="{DynamicResource Ins}"/>
+                                        <MenuItem Header="{DynamicResource AddDirectories}" Command="{Binding AddFolderToPlaylist}" InputGestureText="{DynamicResource CtrlIns}"/>
+                                    </MenuItem>
+                                    <Separator />
+                                    <MenuItem Header="{DynamicResource Queue}">
+                                        <MenuItem Header="{DynamicResource AddToQueue}" Command="{Binding MusicManager.Commands.AddTrackToQueue}" InputGestureText="Q"/>
+                                        <MenuItem Header="{DynamicResource RemoveFromQueue}" Command="{Binding MusicManager.Commands.RemoveFromQueue}" InputGestureText="Alt+Q"/>
+                                        <MenuItem Header="{DynamicResource ClearQueue}" Command="{Binding MusicManager.Commands.ClearQueue}" IsEnabled="{Binding MusicManager.Queue.HasTracks}"/>
+                                        <Separator />
+                                        <MenuItem Header="{DynamicResource QueueManager}" Command="{Binding OpenQueueManager}" InputGestureText="{DynamicResource CtrlQ}"/>
+                                    </MenuItem>
+                                    <Separator />
+                                    
+                                    <MenuItem Header="{DynamicResource TrackInformation}" Command="{Binding OpenTrackInformation}" InputGestureText="F4"/>
+                                    <MenuItem Header="{DynamicResource Download}" Command="{Binding OpenTagEditor}" InputGestureText="F3"/>
+                                    <MenuItem Header="{DynamicResource OpenUrl}" Command="{Binding MusicManager.Commands.OpenTrackLocation}" InputGestureText="Alt+O"/>
                                     <Separator />
                                     <MenuItem Header="{DynamicResource Remove}" Command="{Binding RemoveSelectedTracks}" InputGestureText="{DynamicResource Del}"/>
                                 </ContextMenu>
@@ -173,13 +197,18 @@
                                     <Setter Property="HorizontalContentAlignment" Value="Stretch" />
                                     <Setter Property="Border.BorderThickness" Value="0,0,0,0.5" />
                                     <Setter Property="Border.BorderBrush" Value="LightGray" />
-                                    <Setter Property="ContextMenu" Value="{StaticResource ItemContextMenu}"/>
                                     <Setter Property="LayoutTransform">
                                         <Setter.Value>
                                             <ScaleTransform x:Name="transform" />
                                         </Setter.Value>
                                     </Setter>
                                     <Style.Triggers>
+                                        <DataTrigger Binding="{Binding TrackType}" Value="File">
+                                            <Setter Property="ContextMenu" Value="{StaticResource FileContextMenu}"/>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding TrackType}" Value="Stream">
+                                            <Setter Property="ContextMenu" Value="{StaticResource StreamContextMenu}"/>
+                                        </DataTrigger>
                                         <Trigger Property="jas:ListViewItemDragState.IsBeingDragged" Value="True">
                                             <Setter Property="FontWeight" Value="DemiBold" />
                                         </Trigger>
@@ -428,7 +457,7 @@
                     </Grid>
                 </Grid>
             </TabItem>
-            <TabItem Header="{DynamicResource Settings}" xmlns:settingsconverter="clr-namespace:Hurricane.Settings.Converter" xmlns:tkt="http://schemas.xceed.com/wpf/xaml/toolkit">
+            <TabItem Header="{DynamicResource Settings}">
                 <Grid DataContext="{x:Static viewmodels:SettingsViewModel.Instance}">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="25"/>
@@ -438,6 +467,81 @@
                         <Button Content="{DynamicResource Apply}" HorizontalAlignment="Right" Width="150" Margin="0,0,10,0" Command="{Binding ApplyChanges}" IsEnabled="{Binding CanApply}"/>
                     </Grid>
                     <userControls:SettingsView Grid.Row="1"/>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Online" Visibility="Collapsed">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBox Text="{Binding TrackSearcher.SearchText,UpdateSourceTrigger=PropertyChanged}" controls:TextBoxHelper.ClearTextButton="True" Grid.Column="1">
+                            <TextBox.InputBindings>
+                                <KeyBinding Key="Enter" Command="{Binding TrackSearcher.SearchCommand}"/>
+                            </TextBox.InputBindings>
+                        </TextBox>
+                    </Grid>
+                    <ListView Grid.Row="1" Margin="0,5,0,0" ItemsSource="{Binding TrackSearcher.Results}" ctrl:ListViewLayoutManager.Enabled="True">
+                        <ListView.Resources>
+                            <Style TargetType="GridViewColumnHeader">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                            </Style>
+                            <converter:FormatLargeNumber x:Key="FormatLargeNumber"/>
+                        </ListView.Resources>
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn Header="Thumbnail" Width="85">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <extensions:TrackImagePreseter Track="{Binding Representer,Mode=OneWay}" Height="75" Width="75"/>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                                <GridViewColumn Header="Title" ctrl:ProportionalColumn.Width="1">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <StackPanel Orientation="Vertical">
+                                                <TextBlock Text="{Binding Title}"/>
+                                                <TextBlock Text="{Binding Uploader}"/>
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                                <GridViewColumn Header="Duration" Width="100" DisplayMemberBinding="{Binding Duration,Converter={StaticResource FormatTimespan}}"/>
+                                <GridViewColumn Header="Information" Width="200">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Text="{Binding Views,Converter={StaticResource FormatLargeNumber}}" Margin="0,0,5,0"/>
+                                                <TextBlock Text="{DynamicResource Views}"/>
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                                <GridViewColumn Header="Release year" Width="60">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding ReleaseYear}"/>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                                <GridViewColumn Header="Social Icon" Width="40">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Viewbox Height="20" Width="20">
+                                                <Path Fill="{DynamicResource BlackBrush}" Data="{Binding ProviderVector}" HorizontalAlignment="Center"/>
+                                            </Viewbox>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
                 </Grid>
             </TabItem>
         </TabControl>

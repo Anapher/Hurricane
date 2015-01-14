@@ -228,4 +228,9 @@
     <system:String x:Key="PreferFavoriteDescription">Suosikkeja sekoitetaan kaksinkertainen todennäköisyys.</system:String>
     <system:String x:Key="ColorTheme">väriteema</system:String>
     <system:String x:Key="TrimTracknameDescription">Otsikon tasalla ja laatua pois. Tämä voi lisätä osumatarkkuus.</system:String>
+
+    <!-- 0.3.0 -->
+    <system:String x:Key="OpenUrl">Open url</system:String>
+    <system:String x:Key="Download">Download</system:String>
+    <system:String x:Key="Views">Views</system:String>
 </ResourceDictionary>

@@ -6,6 +6,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 using System.Xml.Serialization;
+using Hurricane.Music.Track;
 using Hurricane.Settings;
 using Hurricane.Utilities;
 
@@ -13,13 +14,15 @@ namespace Hurricane.Music.MusicDatabase
 {
     class LastfmAPI
     {
-        public async static Task<BitmapImage> GetImage(string tracktitle, string artist, ImageQuality imagequality, bool saveimage, DirectoryInfo directory, Track t, bool trimtrackname)
+        public async static Task<BitmapImage> GetImage(ImageQuality imagequality, bool saveimage, DirectoryInfo directory, PlayableBase track, bool trimtrackname)
         {
             string apikey = SensitiveInformation.LastfmAPIKey;
 
-            if (trimtrackname) tracktitle = TrimTrackTitle(tracktitle);
+            string _title = track.Title;
+            string _artist = track.Artist;
+            if (trimtrackname) _title = TrimTrackTitle(track.Title);
 
-            string url = Uri.EscapeUriString(string.Format("http://ws.audioscrobbler.com/2.0/?method=track.search&track={0}{1}&api_key={2}", GeneralHelper.EscapeTitleName(tracktitle), !string.IsNullOrEmpty(artist) ? "&artist=" + GeneralHelper.EscapeArtistName(artist) : string.Empty, apikey));
+            string url = Uri.EscapeUriString(string.Format("http://ws.audioscrobbler.com/2.0/?method=track.search&track={0}{1}&api_key={2}", GeneralHelper.EscapeTitleName(_title), !string.IsNullOrEmpty(_artist) ? "&artist=" + GeneralHelper.EscapeArtistName(_artist) : string.Empty, apikey));
             using (WebClient web = new WebClient() { Proxy = null })
             {
                 string result = await web.DownloadStringTaskAsync(new Uri(url));
@@ -43,16 +46,14 @@ namespace Hurricane.Music.MusicDatabase
 
                                 if (imageurl != null && !imageurl.EndsWith("default_album_medium.png") && !imageurl.EndsWith("[unknown].png")) //We don't want the default album art
                                 {
-                                    BitmapImage img = await DownloadImage(web,imageurl);
+                                    BitmapImage img = await ImageHelper.DownloadImage(web,imageurl);
                                     string album;
                                     if (string.IsNullOrEmpty(trackinfo.track.album.title))
                                     {
-                                        album = string.IsNullOrEmpty(t.Album) ? tracktitle : t.Album;
+                                        album = string.IsNullOrEmpty(track.Album) ? _title : track.Album;
                                     }
-                                    else { album = trackinfo.track.album.title; t.Album = trackinfo.track.album.title; }
-                                    if (saveimage) await SaveImage(img, album, directory.FullName);
-                                    if (string.IsNullOrEmpty(t.Artist) && trackinfo.track.artist != null && !string.IsNullOrEmpty(trackinfo.track.artist.name))
-                                    { t.Artist = trackinfo.track.artist.name; if (!string.IsNullOrEmpty(trackinfo.track.name))  t.Title = trackinfo.track.name; }
+                                    else { album = trackinfo.track.album.title; track.Album = trackinfo.track.album.title; }
+                                    if (saveimage) await ImageHelper.SaveImage(img, album, directory.FullName);
                                     
                                     return img;
                                 }
@@ -62,7 +63,7 @@ namespace Hurricane.Music.MusicDatabase
                             {
                                 foreach (var file in directory.GetFiles("*.png"))
                                 {
-                                    if (GeneralHelper.EscapeFilename(t.Artist).ToLower() == Path.GetFileNameWithoutExtension(file.FullName).ToLower())
+                                    if (GeneralHelper.EscapeFilename(_artist).ToLower() == Path.GetFileNameWithoutExtension(file.FullName).ToLower())
                                     {
                                         return new BitmapImage(new Uri(file.FullName));
                                     }
@@ -77,9 +78,9 @@ namespace Hurricane.Music.MusicDatabase
                             {
                                 url = string.Format("http://ws.audioscrobbler.com/2.0/?method=artist.getinfo&artist={0}&api_key={1}", trackinfo.track.artist.name, apikey);
                             }
-                            else if(!string.IsNullOrEmpty(artist))
+                            else if(!string.IsNullOrEmpty(_artist))
                             {
-                                url = string.Format("http://ws.audioscrobbler.com/2.0/?method=artist.getinfo&artist={0}&autocorrect=1&api_key={1}", artist, apikey);
+                                url = string.Format("http://ws.audioscrobbler.com/2.0/?method=artist.getinfo&artist={0}&autocorrect=1&api_key={1}", _artist, apikey);
                             }
                             if (string.IsNullOrEmpty(url)) return null;
                             result = await web.DownloadStringTaskAsync(Uri.EscapeUriString(url));
@@ -92,14 +93,14 @@ namespace Hurricane.Music.MusicDatabase
                                     if (imageurl == null) return null;
                                     if (!imageurl.EndsWith("default_album_medium.png") && !imageurl.EndsWith("[unknown].png")) //We don't want the default album art
                                     {
-                                        BitmapImage img = await DownloadImage(web, imageurl);
+                                        BitmapImage img = await ImageHelper.DownloadImage(web, imageurl);
                                         string artistname;
                                         if (string.IsNullOrEmpty(artistinfo.artist.name))
                                         {
-                                            artistname = string.IsNullOrEmpty(t.Artist) ? tracktitle : t.Artist;
+                                            artistname = string.IsNullOrEmpty(_artist) ? track.Title : _artist;
                                         }
-                                        else { artistname = artistinfo.artist.name; t.Artist = artistinfo.artist.name; }
-                                        if (saveimage) await SaveImage(img, artistname, directory.FullName);
+                                        else { artistname = artistinfo.artist.name; }
+                                        if (saveimage) await ImageHelper.SaveImage(img, artistname, directory.FullName);
 
                                         return img;
                                     }
@@ -111,31 +112,6 @@ namespace Hurricane.Music.MusicDatabase
             }
 
             return null;
-        }
-
-        protected static async Task SaveImage(BitmapImage img, string filename, string directory)
-        {
-            await Task.Run(() =>
-            {
-                PngBitmapEncoder encoder = new PngBitmapEncoder();
-                string path = Path.Combine(directory, GeneralHelper.EscapeFilename(filename) + ".png");
-                encoder.Frames.Add(BitmapFrame.Create(img));
-                using (FileStream filestream = new FileStream(path, FileMode.Create))
-                    encoder.Save(filestream);
-            });
-        }
-
-        protected async static Task<BitmapImage> DownloadImage(WebClient web, string url)
-        {
-            using (MemoryStream mr = new MemoryStream(await web.DownloadDataTaskAsync(url)))
-            {
-                BitmapImage bitmap = new BitmapImage();
-                bitmap.BeginInit();
-                bitmap.CacheOption = BitmapCacheOption.OnLoad;
-                bitmap.StreamSource = mr;
-                bitmap.EndInit();
-                return bitmap;
-            }
         }
 
         protected static string GetImageLink(lfmArtistImage[] image,ImageQuality quality)

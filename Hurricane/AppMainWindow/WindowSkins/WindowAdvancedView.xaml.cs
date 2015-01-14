@@ -2,9 +2,8 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using System.Windows.Media.Animation;
 using Hurricane.Music;
-using Hurricane.Music.MusicDatabase.EventArgs;
+using Hurricane.Music.Track;
 using Hurricane.Resources.Styles.DragDropListView.ServiceProviders.UI;
 using Hurricane.ViewModels;
 
@@ -18,7 +17,7 @@ namespace Hurricane.AppMainWindow.WindowSkins
         public WindowAdvancedView()
         {
             InitializeComponent();
-            new ListViewDragDropManager<Track>(this.listview) {ShowDragAdorner = true};
+            new ListViewDragDropManager<PlayableBase>(this.listview) { ShowDragAdorner = true };
 
             this.Configuration = new WindowSkinConfiguration()
             {

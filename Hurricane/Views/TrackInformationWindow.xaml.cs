@@ -3,6 +3,7 @@ using System.IO;
 using System.Windows;
 using System.Windows.Media.Imaging;
 using Hurricane.Music;
+using Hurricane.Music.Track;
 using Hurricane.ViewModelBase;
 using Hurricane.Views.UserControls;
 using MahApps.Metro.Controls;
@@ -15,7 +16,7 @@ namespace Hurricane.Views
     public partial class TrackInformationWindow : MetroWindow
     {
         private BitmapImage image;
-        public TrackInformationWindow(Track track)
+        public TrackInformationWindow(PlayableBase track)
         {
             this.CurrentTrack = track;
             InitializeComponent();
@@ -26,7 +27,7 @@ namespace Hurricane.Views
                 if (CurrentTrack.Image == null)
                 {
                     CurrentTrack.ImageLoadComplete +=
-                        (s, e) => { if (CurrentTrack.Image != null) image = CurrentTrack.Image.Clone(); };
+                        (s, e) => { if (CurrentTrack.Image != null) Dispatcher.Invoke(() => image = CurrentTrack.Image.Clone()); };
                     return;
                 }
             }
@@ -34,7 +35,7 @@ namespace Hurricane.Views
             if (CurrentTrack.Image != null) image = CurrentTrack.Image.Clone();
         }
 
-        public Track CurrentTrack { get; set; }
+        public PlayableBase CurrentTrack { get; set; }
 
         private RelayCommand _saveImage;
         public RelayCommand SaveImage

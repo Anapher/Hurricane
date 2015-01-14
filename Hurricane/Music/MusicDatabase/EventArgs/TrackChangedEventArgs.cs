@@ -1,10 +1,12 @@
-﻿namespace Hurricane.Music.MusicDatabase.EventArgs
+﻿using Hurricane.Music.Track;
+
+namespace Hurricane.Music.MusicDatabase.EventArgs
 {
     public class TrackChangedEventArgs : System.EventArgs
     {
-        public Track NewTrack { get; protected set; }
+        public PlayableBase NewTrack { get; protected set; }
 
-        public TrackChangedEventArgs(Track newtrack)
+        public TrackChangedEventArgs(PlayableBase newtrack)
         {
             NewTrack = newtrack;
         }

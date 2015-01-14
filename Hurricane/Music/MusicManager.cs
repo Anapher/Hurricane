@@ -5,6 +5,7 @@ using System.Linq;
 using Hurricane.Music.API;
 using Hurricane.Music.Data;
 using Hurricane.Music.MusicDatabase.EventArgs;
+using Hurricane.Music.Track;
 using Hurricane.Notification;
 using Hurricane.Settings;
 using Hurricane.ViewModelBase;
@@ -14,8 +15,8 @@ namespace Hurricane.Music
     class MusicManager : PropertyChangedBase, IDisposable
     {
         #region Public Properties
-        private Track _selectedtrack;
-        public Track SelectedTrack
+        private PlayableBase _selectedtrack;
+        public PlayableBase SelectedTrack
         {
             get { return _selectedtrack; }
             set
@@ -140,7 +141,7 @@ namespace Hurricane.Music
             if (HurricaneSettings.Instance.Config.ApiIsEnabled) ApiServer.StartListening();
         }
 
-        public void LoadFromSettings()
+        public async void LoadFromSettings()
         {
             HurricaneSettings settings = HurricaneSettings.Instance;
             Playlists = settings.Playlists.Playlists;
@@ -159,10 +160,10 @@ namespace Hurricane.Music
 
             if (config.LastTrackIndex > -1)
             {
-                Track t = CurrentPlaylist.Tracks[config.LastTrackIndex];
+                PlayableBase t = CurrentPlaylist.Tracks[config.LastTrackIndex];
                 if (t.TrackExists)
                 {
-                    CSCoreEngine.OpenTrack(t);
+                    await CSCoreEngine.OpenTrack(t);
                     CSCoreEngine.Position = config.TrackPosition;
                     CSCoreEngine.OnPropertyChanged("Position");
                 }
@@ -188,11 +189,11 @@ namespace Hurricane.Music
         #endregion
 
         #region Event Handler
-        void CSCoreEngine_TrackFinished(object sender, EventArgs e)
+        async void CSCoreEngine_TrackFinished(object sender, EventArgs e)
         {
             if (IsLoopEnabled)
             {
-                CSCoreEngine.OpenTrack(CSCoreEngine.CurrentTrack);
+                await CSCoreEngine.OpenTrack(CSCoreEngine.CurrentTrack);
                 CSCoreEngine.TogglePlayPause();
             }
             else
@@ -221,18 +222,18 @@ namespace Hurricane.Music
             playlist.LoadList();
         }
 
-        public void PlayTrack(Track track, IPlaylist playlist)
+        public async void PlayTrack(PlayableBase track, IPlaylist playlist)
         {
             CSCoreEngine.StopPlayback();
-            CSCoreEngine.OpenTrack(track);
+            await CSCoreEngine.OpenTrack(track);
             CSCoreEngine.TogglePlayPause();
             CurrentPlaylist = playlist;
         }
 
-        public void GoForward()
+        public async void GoForward()
         {
             if (CurrentPlaylist == null || CurrentPlaylist.Tracks.Count == 0) return;
-            Track nexttrack;
+            PlayableBase nexttrack;
 
             if (Queue.HasTracks)
             {
@@ -267,7 +268,7 @@ namespace Hurricane.Music
                 nexttrack = CurrentPlaylist.Tracks[nexttrackindex];
             }
 
-            CSCoreEngine.OpenTrack(nexttrack);
+            await CSCoreEngine.OpenTrack(nexttrack);
             CSCoreEngine.TogglePlayPause();
         }
 
@@ -275,7 +276,7 @@ namespace Hurricane.Music
         {
             int counter = 0;
             bool result = false;
-            foreach (Track t in list.Tracks)
+            foreach (PlayableBase t in list.Tracks)
             {
                 t.RefreshTrackExists();
                 if (t.TrackExists) { counter++; if (counter == 2) result = true; } //Don't cancel because all tracks need to refresh
@@ -284,10 +285,10 @@ namespace Hurricane.Music
         }
 
         private bool _openedTrackWithStandardBackward;
-        public void GoBackward()
+        public async void GoBackward()
         {
             if (CurrentPlaylist == null || CurrentPlaylist.Tracks.Count == 0) return;
-            Track newtrack;
+            PlayableBase newtrack;
             if (Lasttracks.Count > 1) //Check if there are more than two tracks, because the current track is the last one in the list
             {
                 Lasttracks.Remove(Lasttracks.Last(x => x.Track == CSCoreEngine.CurrentTrack));
@@ -316,7 +317,7 @@ namespace Hurricane.Music
             }
 
             CSCoreEngine.StopPlayback();
-            CSCoreEngine.OpenTrack(newtrack);
+            await CSCoreEngine.OpenTrack(newtrack);
             CSCoreEngine.TogglePlayPause();
         }
 

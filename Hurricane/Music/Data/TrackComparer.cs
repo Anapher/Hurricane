@@ -1,32 +1,18 @@
 ﻿using System.Collections.Generic;
-using Hurricane.Utilities;
+using Hurricane.Music.Track;
 
-namespace Hurricane.Music
+namespace Hurricane.Music.Data
 {
-    class TrackComparer : IEqualityComparer<Track>
+    class TrackComparer : IEqualityComparer<PlayableBase>
     {
         public Dictionary<string, string> FileHashes { get; set; }
-        public bool Equals(Track x, Track y)
+        public bool Equals(PlayableBase x, PlayableBase y)
         {
-            if (x == null || y == null || !x.TrackExists || !y.TrackExists) return false; //would crash if it needs to compute the hash
-            return x.TrackInformation.Length == y.TrackInformation.Length && GetHash(x.TrackInformation.FullName) == GetHash(y.TrackInformation.FullName);
+            if (x == null || y == null) return false; //would crash if it needs to compute the hash
+            return x.Equals(y);
         }
 
-        protected string GetHash(string path)
-        {
-            if (FileHashes.ContainsKey(path))
-            {
-                return FileHashes[path];
-            }
-            else
-            {
-                string hash = GeneralHelper.FileToMD5Hash(path);
-                FileHashes.Add(path, hash);
-                return hash;
-            }
-        }
-
-        public int GetHashCode(Track track)
+        public int GetHashCode(PlayableBase track)
         {
             //Check whether the object is null 
             if (ReferenceEquals(track, null)) return 0;
@@ -39,11 +25,6 @@ namespace Hurricane.Music
 
             //Calculate the hash code for the product. 
             return hashProductName ^ hashProductCode;
-        }
-
-        public TrackComparer()
-        {
-            FileHashes = new Dictionary<string, string>();
         }
     }
 }

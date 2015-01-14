@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
+using Hurricane.Music.Track;
 
 namespace Hurricane.Music.Data
 {
@@ -14,21 +13,21 @@ namespace Hurricane.Music.Data
            foreach (var playlist in playlists)
            {
                foreach (var track in playlist.Tracks.Where(track => track.IsFavorite))
-                   this.Tracks.Add(track);
+                   Tracks.Add(track);
            }
        }
 
-       public override void AddTrack(Track track)
+       public override void AddTrack(PlayableBase track)
        {
            track.IsFavorite = true;
-           this.Tracks.Add(track);
-           this.ShuffleList.Add(track);
+           Tracks.Add(track);
+           ShuffleList.Add(track);
        }
 
-       public override void RemoveTrack(Track track)
+       public override void RemoveTrack(PlayableBase track)
        {
            track.IsFavorite = false;
-           this.Tracks.Remove(track);
+           Tracks.Remove(track);
            RemoveFromShuffleList(track);
        }
 
@@ -40,7 +39,7 @@ namespace Hurricane.Music.Data
 
        public override void Clear()
        {
-           foreach (var track in this.Tracks)
+           foreach (var track in Tracks)
            {
                track.IsFavorite = false;
            }

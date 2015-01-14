@@ -78,7 +78,7 @@
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Newtonsoft.Json.6.0.7\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\packages\Newtonsoft.Json.6.0.8\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="policy.2.0.taglib-sharp">
       <HintPath>..\packages\taglib.2.1.0.0\lib\policy.2.0.taglib-sharp.dll</HintPath>
@@ -86,6 +86,9 @@
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Net" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Net.Http.WebRequest" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
@@ -132,6 +135,7 @@
     <Compile Include="Extensions\AnimatedStackPanel.cs" />
     <Compile Include="Extensions\Converter\CollapsedOnNullValue.cs" />
     <Compile Include="Extensions\Converter\FalseOnNullValue.cs" />
+    <Compile Include="Extensions\Converter\FormatLargeNumber.cs" />
     <Compile Include="Extensions\Converter\FormatTimespan.cs" />
     <Compile Include="Extensions\Converter\PlaceholderConverter.cs" />
     <Compile Include="Extensions\Converter\TimeSpanProgressConverter.cs" />
@@ -169,6 +173,7 @@
     <Compile Include="Music\AsyncTrackLoader.cs" />
     <Compile Include="Music\Data\AudioDevice.cs" />
     <Compile Include="Music\Data\FavoriteList.cs" />
+    <Compile Include="Music\Data\IRepresentable.cs" />
     <Compile Include="Music\Data\SoundOutRepresenter.cs" />
     <Compile Include="Music\Equalizer\EqualizerBand.cs" />
     <Compile Include="Music\Data\IPlaylist.cs" />
@@ -187,6 +192,21 @@
     <Compile Include="Music\QueueManager.cs" />
     <Compile Include="Music\Data\TrackComparer.cs" />
     <Compile Include="Music\Data\TrackPlaylistPair.cs" />
+    <Compile Include="Music\Track\LocalTrack.cs" />
+    <Compile Include="Music\Track\PlayableBase.cs" />
+    <Compile Include="Music\Track\SoundCloudApi\SoundCloudApi.cs" />
+    <Compile Include="Music\Track\SoundCloudApi\ApiResult.cs" />
+    <Compile Include="Music\Track\SoundCloudApi\SoundCloudWebTrackResult.cs" />
+    <Compile Include="Music\Track\SoundCloudTrack.cs" />
+    <Compile Include="Music\Track\StreamableBase.cs" />
+    <Compile Include="Music\Track\TrackSearcher.cs" />
+    <Compile Include="Music\Track\TrackSearchResult.cs" />
+    <Compile Include="Music\Track\WebTrackResultBase.cs" />
+    <Compile Include="Music\Track\YouTubeApi\ApiResult.cs" />
+    <Compile Include="Music\Track\YouTubeApi\SingleVideoSearchResult.cs" />
+    <Compile Include="Music\Track\YouTubeApi\YouTubeApi.cs" />
+    <Compile Include="Music\Track\YouTubeApi\YouTubeWebTrackResult.cs" />
+    <Compile Include="Music\Track\YouTubeTrack.cs" />
     <Compile Include="Music\VolumeFading.cs" />
     <Compile Include="Notification\NotificationService.cs" />
     <Compile Include="Notification\Views\NotificationRightBottomWindow.xaml.cs">
@@ -226,6 +246,7 @@
     <Compile Include="Utilities\ActiveWindowHook.cs" />
     <Compile Include="Utilities\GeneralHelper.cs" />
     <Compile Include="Utilities\Keyboard.cs" />
+    <Compile Include="Utilities\LevenshteinDistance.cs" />
     <Compile Include="Utilities\Native\CopyDataStruct.cs" />
     <Compile Include="Utilities\Native\Message.cs" />
     <Compile Include="Utilities\Native\POINT.cs" />
@@ -516,7 +537,6 @@
     <Compile Include="Music\MusicDatabase\EventArgs\TrackChangedEventArgs.cs" />
     <Compile Include="Music\MusicManager.cs" />
     <Compile Include="Music\Data\Playlist.cs" />
-    <Compile Include="Music\Data\Track.cs" />
     <Compile Include="Music\Visualization\SampleAnalyser.cs" />
     <Compile Include="Resources\Styles\DragDropListView\DragAdorner.cs" />
     <Compile Include="Resources\Styles\DragDropListView\ListViewDragDropManager.cs" />

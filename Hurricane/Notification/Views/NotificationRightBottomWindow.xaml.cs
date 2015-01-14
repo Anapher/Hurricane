@@ -4,7 +4,7 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media.Animation;
-using Hurricane.Music;
+using Hurricane.Music.Track;
 
 namespace Hurricane.Notification.Views
 {
@@ -13,7 +13,7 @@ namespace Hurricane.Notification.Views
     /// </summary>
     public partial class NotificationRightBottomWindow : Window
     {
-        public NotificationRightBottomWindow(Track track, TimeSpan timestayopened)
+        public NotificationRightBottomWindow(PlayableBase track, TimeSpan timestayopened)
         {
             this.CurrentTrack = track;
             InitializeComponent();
@@ -62,6 +62,6 @@ namespace Hurricane.Notification.Views
             this.Close();
         }
 
-        public Track CurrentTrack { get; set; }
+        public PlayableBase CurrentTrack { get; set; }
     }
 }

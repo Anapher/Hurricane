@@ -248,4 +248,9 @@
     <system:String x:Key="PreferFavoriteDescription">In contrast to normal tracks, the chance that favorite tracks get chosen by shuffle is doubled.</system:String>
     <system:String x:Key="ColorTheme">Color theme</system:String>
     <system:String x:Key="TrimTracknameDescription">Unnecessary parts of the title like the year or quality will be removed which could improve the hit rate.</system:String>
+
+    <!-- 0.3.0 -->
+    <system:String x:Key="OpenUrl">Open url</system:String>
+    <system:String x:Key="Download">Download</system:String>
+    <system:String x:Key="Views">Views</system:String>
 </ResourceDictionary>

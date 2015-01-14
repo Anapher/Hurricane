@@ -9,6 +9,7 @@ using CSCore.Codecs;
 using Hurricane.Music;
 using Hurricane.Music.Data;
 using Hurricane.Music.MusicDatabase.EventArgs;
+using Hurricane.Music.Track;
 using Hurricane.Settings;
 using Hurricane.Utilities;
 using Hurricane.ViewModelBase;
@@ -29,7 +30,7 @@ namespace Hurricane.ViewModels
 
         private MainViewModel()
         {
-
+            TrackSearcher = new TrackSearcher();
         }
 
         private MainWindow _baseWindow;
@@ -104,7 +105,7 @@ namespace Hurricane.ViewModels
         public async void DragDropFiles(string[] files)
         {
             if (!MusicManager.SelectedPlaylist.CanEdit) return;
-            await ImportFiles(files.Where(file => Track.IsSupported(new FileInfo(file))).ToArray(), (Playlist)MusicManager.SelectedPlaylist);
+            await ImportFiles(files.Where(file => LocalTrack.IsSupported(new FileInfo(file))).ToArray(), (Playlist)MusicManager.SelectedPlaylist);
         }
 
         public void Closing()
@@ -128,7 +129,7 @@ namespace Hurricane.ViewModels
         {
             foreach (var playlist in MusicManager.Playlists)
             {
-                foreach (var track in playlist.Tracks.Where(track => track.Path == file.FullName))
+                foreach (var track in playlist.Tracks.Where(track => track.GetType() == typeof(LocalTrack) && ((LocalTrack)track).Path == file.FullName))
                 {
                     if (play) MusicManager.PlayTrack(track, playlist);
                     return;
@@ -173,7 +174,7 @@ namespace Hurricane.ViewModels
                 }
             }
 
-            await ImportFiles(new string[] { file.FullName }, selectedplaylist, (s, e) => OpenFile(file, play));
+            await ImportFiles(new[] { file.FullName }, selectedplaylist, (s, e) => OpenFile(file, play));
         }
 
         #endregion
@@ -300,7 +301,7 @@ namespace Hurricane.ViewModels
                     FolderImportWindow window = new FolderImportWindow { Owner = _baseWindow };
                     if (window.ShowDialog() != true) return;
                     DirectoryInfo di = new DirectoryInfo(window.SelectedPath);
-                    await ImportFiles((from fi in di.GetFiles("*.*", window.IncludeSubfolder ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly) where Track.IsSupported(fi) select fi.FullName).ToArray(), (Playlist)MusicManager.SelectedPlaylist);
+                    await ImportFiles((from fi in di.GetFiles("*.*", window.IncludeSubfolder ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly) where LocalTrack.IsSupported(fi) select fi.FullName).ToArray(), (Playlist)MusicManager.SelectedPlaylist);
                 }));
             }
         }
@@ -331,7 +332,7 @@ namespace Hurricane.ViewModels
             {
                 return _removeselectedtracks ?? (_removeselectedtracks = new RelayCommand(async parameter =>
                 {
-                    var tracks = ((IList) parameter).Cast<Track>().ToList();
+                    var tracks = ((IList)parameter).Cast<PlayableBase>().ToList();
                     if (tracks.Count == 0) return;
                     if (await _baseWindow.ShowMessage(tracks.Count > 1 ? string.Format(Application.Current.Resources["RemoveTracksMessage"].ToString(), tracks.Count) : string.Format(Application.Current.Resources["RemoveTrackMessage"].ToString(), tracks[0].Title), Application.Current.Resources["RemoveTracks"].ToString(), true, DialogMode.Single))
                     {
@@ -420,7 +421,9 @@ namespace Hurricane.ViewModels
         {
             get { return _opentageditor ?? (_opentageditor = new RelayCommand(parameter =>
             {
-                _baseWindow.OpenTagEditor(MusicManager.SelectedTrack);
+                var localtrack = MusicManager.SelectedTrack as LocalTrack;
+                if (localtrack == null) return;
+                _baseWindow.OpenTagEditor(localtrack);
             })); }
         }
 
@@ -469,6 +472,15 @@ namespace Hurricane.ViewModels
                 }
             })); }
         }
+
+        private RelayCommand _openOnlineSection;
+        public RelayCommand OpenOnlineSection
+        {
+            get { return _openOnlineSection ?? (_openOnlineSection = new RelayCommand(parameter =>
+            {
+                MainTabControlIndex = 3;
+            })); }
+        }
         #endregion
 
         #region Properties
@@ -489,6 +501,18 @@ namespace Hurricane.ViewModels
             set
             {
                 SetProperty(value, ref _updater);
+            }
+        }
+
+        public TrackSearcher TrackSearcher { get; set; }
+
+        private int _mainTabControlIndex;
+        public int MainTabControlIndex
+        {
+            get { return _mainTabControlIndex; }
+            set
+            {
+                SetProperty(value, ref _mainTabControlIndex);
             }
         }
 

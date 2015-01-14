@@ -1,19 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using Hurricane.Music;
+using Hurricane.Music.Data;
 
 namespace Hurricane.Extensions
 {
@@ -27,23 +14,22 @@ namespace Hurricane.Extensions
             InitializeComponent();
         }
 
-        public static readonly DependencyProperty TrackProperty = DependencyProperty.Register("Track", typeof(Track), typeof(TrackImagePreseter), new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, TrackChangedCallback));
+        public static readonly DependencyProperty TrackProperty = DependencyProperty.Register("Track", typeof(IRepresentable), typeof(TrackImagePreseter), new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, TrackChangedCallback));
 
         private static void TrackChangedCallback(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs dependencyPropertyChangedEventArgs)
         {
             var imagepresenter = (TrackImagePreseter) dependencyObject;
-            imagepresenter.TrackChanged((Track)dependencyPropertyChangedEventArgs.NewValue);
+            imagepresenter.TrackChanged((IRepresentable)dependencyPropertyChangedEventArgs.NewValue);
         }
 
-        protected void TrackChanged(Track newTrack)
+        protected void TrackChanged(IRepresentable newTrack)
         {
-            this.Track = newTrack;
             if(PropertyChanged != null)PropertyChanged(this, new PropertyChangedEventArgs("Track"));
         }
 
-        public Track Track
+        public IRepresentable Track
         {
-            get { return (Track)GetValue(TrackProperty); }
+            get { return (IRepresentable)GetValue(TrackProperty); }
             set { SetValue(TrackProperty, value); }
         }
 

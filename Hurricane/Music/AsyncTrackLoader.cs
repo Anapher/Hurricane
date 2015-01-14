@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using Hurricane.Music.Data;
+using Hurricane.Music.Track;
 
 namespace Hurricane.Music
 {
@@ -41,7 +39,7 @@ namespace Hurricane.Music
             havetocheck = false;
             foreach (var p in PlaylistsToCheck.ToList())
             {
-                foreach (var track in p.Tracks)
+                foreach (var track in p.Tracks.OfType<LocalTrack>())
                 {
                     if(track.IsChecked == false && !await track.CheckTrack()) p.RemoveTrack(track);
                 }

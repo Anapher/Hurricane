@@ -248,4 +248,9 @@
     <system:String x:Key="PreferFavoriteDescription">Favorisierte Tracks werden im Gegensatz zu normalen Tracks doppelt so wahrscheinlich bei zufälliger Wiedergabe ausgewählt.</system:String>
     <system:String x:Key="ColorTheme">Farbtheme</system:String>
     <system:String x:Key="TrimTracknameDescription">Aus dem Titel werden überflüssige Sachen wie das Datum oder die Qualität entfernt, was die Trefferquote erhöhen kann.</system:String>
+
+    <!-- 0.3.0 -->
+    <system:String x:Key="OpenUrl">Url öffnen</system:String>
+    <system:String x:Key="Download">Herunterladen</system:String>
+    <system:String x:Key="Views">Aufrufe</system:String>
 </ResourceDictionary>

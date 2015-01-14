@@ -45,7 +45,7 @@ namespace Hurricane.Views.Test
                 Utilities.HookManager.MouseHook.HookManager.MouseMove += HookManager_MouseMove;
                 CurrentStep = Steps.StepOne;
             }
-            catch (Exception ex)
+            catch
             {
                 txtStatus.Text = "Oh, looks like we found the exception. Please submit the log to the programmer";
             }

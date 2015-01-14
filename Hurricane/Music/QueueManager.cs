@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Xml.Serialization;
 using Hurricane.Music.Data;
+using Hurricane.Music.Track;
 
 namespace Hurricane.Music
 {
@@ -30,7 +31,7 @@ namespace Hurricane.Music
             RefreshDuration();
         }
 
-        public void AddTrack(Track track, IPlaylist playlist)
+        public void AddTrack(PlayableBase track, IPlaylist playlist)
         {
             Add(new TrackRepresenter(track));
             TrackPlaylists.Add(new TrackPlaylistPair(track, playlist));
@@ -38,18 +39,16 @@ namespace Hurricane.Music
             RefreshDuration();
         }
 
-        protected TrackRepresenter GetTrackRepresenter(Track t)
+        protected TrackRepresenter GetTrackRepresenter(PlayableBase t)
         {
-            var sequenz = this.Where((x) => x.Track == t);
-            if (!sequenz.Any()) return null;
-            return sequenz.First();
+            return this.FirstOrDefault(x => x.Track == t);
         }
 
-        public void RemoveTrack(Track track)
+        public void RemoveTrack(PlayableBase track)
         {
             var trackrepresentertoremove = GetTrackRepresenter(track);
             if (trackrepresentertoremove == null) return;
-            this.Remove(trackrepresentertoremove);
+            Remove(trackrepresentertoremove);
             TrackPlaylists.Remove(TrackPlaylists.First(x => x.Track == track));
             track.QueueID = null;
             RefreshQueuePositionIds();
@@ -78,12 +77,12 @@ namespace Hurricane.Music
             RefreshQueuePositionIds();
         }
 
-        public void MoveTrackDown(Track t, int count)
+        public void MoveTrackDown(PlayableBase t, int count)
         {
             MoveTrackDown(GetTrackRepresenter(t), count);
         }
 
-        public void MoveTrackUp(Track t, int count)
+        public void MoveTrackUp(PlayableBase t, int count)
         {
             MoveTrackUp(GetTrackRepresenter(t), count);
         }
@@ -98,19 +97,19 @@ namespace Hurricane.Music
             MoveTrackUp(t, 1);
         }
 
-        public void MoveTrackDown(Track t)
+        public void MoveTrackDown(PlayableBase t)
         {
             MoveTrackDown(GetTrackRepresenter(t), 1);
         }
 
-        public void MoveTrackUp(Track t)
+        public void MoveTrackUp(PlayableBase t)
         {
             MoveTrackUp(GetTrackRepresenter(t));
         }
 
         #endregion
 
-        public int IndexOf(Track t)
+        public int IndexOf(PlayableBase t)
         {
             return IndexOf(GetTrackRepresenter(t));
         }
@@ -136,10 +135,10 @@ namespace Hurricane.Music
                 this[i].Track.QueueID = (i + 1).ToString();
         }
 
-        public Tuple<Track, IPlaylist> PlayNextTrack()
+        public Tuple<PlayableBase, IPlaylist> PlayNextTrack()
         {
             if (!HasTracks) return null;
-            Track nexttrack = this.First().Track;
+            PlayableBase nexttrack = this.First().Track;
 
             var result = Tuple.Create(nexttrack, TrackPlaylists.First(x => x.Track == nexttrack).Playlist);
             RemoveTrack(nexttrack);
@@ -169,15 +168,15 @@ namespace Hurricane.Music
     [Serializable]
     public class TrackRepresenter
     {
-        private Track _track;
+        private PlayableBase _track;
         [XmlIgnore]
-        public Track Track
+        public PlayableBase Track
         {
             get { return _track; }
-            set { _track = value; TrackID = value.GenerateHash(); }
+            set { _track = value; }
         }
 
-        public string TrackID { get; set; }
+        public long TrackID { get; set; }
 
         public Playlist GetTrack(IEnumerable<Playlist> playlists)
         {
@@ -185,7 +184,7 @@ namespace Hurricane.Music
             {
                 foreach (var t in playlist.Tracks)
                 {
-                    if (t.GenerateHash() == TrackID)
+                    if (t.AuthenticationCode == TrackID)
                     {
                         Track = t;
                         return playlist;
@@ -199,7 +198,7 @@ namespace Hurricane.Music
         {
         }
 
-        public TrackRepresenter(Track t)
+        public TrackRepresenter(PlayableBase t)
         {
             Track = t;
         }

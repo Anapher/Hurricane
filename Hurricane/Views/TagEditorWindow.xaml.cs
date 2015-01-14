@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using Hurricane.Music;
+using Hurricane.Music.Track;
 using Hurricane.Views.UserControls;
 using MahApps.Metro.Controls;
 using TagLib;
@@ -15,7 +16,7 @@ namespace Hurricane.Views
     /// </summary>
     public partial class TagEditorWindow : MetroWindow, INotifyPropertyChanged
     {
-        public TagEditorWindow(Track track)
+        public TagEditorWindow(LocalTrack track)
         {
             this.TagFile = File.Create(track.Path);
             this.CurrentTrack = track;
@@ -25,7 +26,7 @@ namespace Hurricane.Views
             lstGenre.ItemsSource = genres;
         }
 
-        public Track CurrentTrack { get; set; }
+        public LocalTrack CurrentTrack { get; set; }
         public File TagFile { get; set; }
 
         #region Lyrics

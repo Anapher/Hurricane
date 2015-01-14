@@ -3,6 +3,7 @@ using System.Reflection;
 using System.Windows;
 using Hurricane.Music;
 using Hurricane.Music.MusicDatabase.EventArgs;
+using Hurricane.Music.Track;
 using Hurricane.Notification.Views;
 using Hurricane.Settings;
 using Hurricane.Utilities;
@@ -23,9 +24,9 @@ namespace Hurricane.Notification
         }
 
         private Window _lastwindow;
-        protected Track _lasttrack;
+        protected PlayableBase _lasttrack;
 
-        void TrackChanged(Track newtrack)
+        void TrackChanged(PlayableBase newtrack)
         {
             ConfigSettings config = HurricaneSettings.Instance.Config;
             if (config.DisableNotificationInGame && WindowHelper.WindowIsFullscreen(UnsafeNativeMethods.GetForegroundWindow())) return;
@@ -34,7 +35,7 @@ namespace Hurricane.Notification
             _lasttrack = newtrack;
         }
 
-        protected void ShowNotification(Track track, NotificationType type)
+        protected void ShowNotification(PlayableBase track, NotificationType type)
         {
             ConfigSettings config = HurricaneSettings.Instance.Config;
             if (config.Notification == NotificationType.None) return;
@@ -59,7 +60,7 @@ namespace Hurricane.Notification
 
         public void Test(NotificationType type)
         {
-            Track trackToUse = _lasttrack ?? new Track
+            PlayableBase trackToUse = _lasttrack ?? new LocalTrack
             {
                 Artist = "Alkaline",
                 Title = "Sample Track",

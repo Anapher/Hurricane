@@ -4,16 +4,16 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media.Animation;
-using Hurricane.Music;
+using Hurricane.Music.Track;
 
 namespace Hurricane.Notification.Views
 {
     /// <summary>
     /// Interaction logic for NotificationTopWindow.xaml
     /// </summary>
-    public partial class NotificationTopWindow : Window
+    public partial class NotificationTopWindow
     {
-        public NotificationTopWindow(Track track, TimeSpan timestayopened)
+        public NotificationTopWindow(PlayableBase track, TimeSpan timestayopened)
         {
             this.CurrentTrack = track;
             InitializeComponent();
@@ -60,6 +60,6 @@ namespace Hurricane.Notification.Views
             this.Close();
         }
 
-        public Track CurrentTrack { get; set; }
+        public PlayableBase CurrentTrack { get; set; }
     }
 }

@@ -1,7 +1,11 @@
 ﻿using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.IO;
+using System.Net;
+using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Media.Imaging;
 using Size = System.Drawing.Size;
 
 namespace Hurricane.Utilities
@@ -71,6 +75,32 @@ namespace Hurricane.Utilities
         public static Icon GetIconFromResource(string path)
         {
             return new Icon(Application.GetResourceStream(new Uri(string.Format("pack://application:,,,/Hurricane;component/{0}", path))).Stream);
+        }
+
+        public async static Task<BitmapImage> DownloadImage(WebClient web, string url)
+        {
+            using (MemoryStream mr = new MemoryStream(await web.DownloadDataTaskAsync(url)))
+            {
+                BitmapImage bitmap = new BitmapImage();
+                bitmap.BeginInit();
+                bitmap.CacheOption = BitmapCacheOption.OnLoad;
+                bitmap.StreamSource = mr;
+                bitmap.EndInit();
+                bitmap.Freeze();
+                return bitmap;
+            }
+        }
+
+        public static async Task SaveImage(BitmapImage img, string filename, string directory)
+        {
+            await Task.Run(() =>
+            {
+                var encoder = new PngBitmapEncoder();
+                string path = Path.Combine(directory, GeneralHelper.EscapeFilename(filename) + ".png");
+                encoder.Frames.Add(BitmapFrame.Create(img));
+                using (var filestream = new FileStream(path, FileMode.Create))
+                    encoder.Save(filestream);
+            });
         }
     }
 }

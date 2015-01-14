@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Hurricane.Music.Track;
 using Newtonsoft.Json;
 
 namespace Hurricane.Music.API
@@ -65,7 +66,7 @@ namespace Hurricane.Music.API
             };
         }
 
-        protected string TrackToString(Track track)
+        protected string TrackToString(PlayableBase track)
         {
             return JsonConvert.SerializeObject(new ShortTrack() { Title = track.Title, Artist = track.Artist, Album = track.Album, Duration = track.Duration, kbps = track.kbps.ToString(), kHz = track.kHz.ToString() });
         }

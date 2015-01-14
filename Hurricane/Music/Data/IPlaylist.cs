@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
+using Hurricane.Music.Track;
 
 namespace Hurricane.Music.Data
 {
@@ -7,17 +8,17 @@ namespace Hurricane.Music.Data
     {
         ICollectionView ViewSource { get; set; }
 
-        ObservableCollection<Track> Tracks { get; }
+        ObservableCollection<PlayableBase> Tracks { get; }
 
         string SearchText { get; set; }
         string Name { get; set; }
         bool CanEdit { get; }
         bool ContainsMissingTracks { get; }
 
-        Track GetRandomTrack(Track currentTrack);
+        PlayableBase GetRandomTrack(PlayableBase currentTrack);
 
-        void AddTrack(Track track);
-        void RemoveTrack(Track track);
+        void AddTrack(PlayableBase track);
+        void RemoveTrack(PlayableBase track);
         void Clear();
         void RemoveMissingTracks();
     }

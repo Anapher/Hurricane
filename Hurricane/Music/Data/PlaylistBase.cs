@@ -8,6 +8,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Data;
 using System.Xml.Serialization;
+using Hurricane.Music.Track;
 using Hurricane.ViewModelBase;
 
 namespace Hurricane.Music.Data
@@ -18,12 +19,12 @@ namespace Hurricane.Music.Data
 
         protected PlaylistBase()
         {
-            _tracks = new ObservableCollection<Track>();
+            _tracks = new ObservableCollection<PlayableBase>();
             _Random = new Random();
         }
 
-        protected ObservableCollection<Track> _tracks;
-        public ObservableCollection<Track> Tracks
+        protected ObservableCollection<PlayableBase> _tracks;
+        public ObservableCollection<PlayableBase> Tracks
         {
             get { return _tracks; }
         }
@@ -62,7 +63,7 @@ namespace Hurricane.Music.Data
                 {
                     if (e.Action != NotifyCollectionChangedAction.Move || e.NewItems == null || e.NewItems.Count <= 0)
                         return;
-                    var track = e.NewItems[0] as Track;
+                    var track = e.NewItems[0] as PlayableBase;
                     if (track == null) return;
                     track.IsAdded = true;
                     await Task.Delay(500);
@@ -70,7 +71,7 @@ namespace Hurricane.Music.Data
                 };
                 ViewSource = CollectionViewSource.GetDefaultView(Tracks);
                 ViewSource.Filter = (item) => string.IsNullOrWhiteSpace(SearchText) || item.ToString().ToUpper().Contains(SearchText.ToUpper());
-                ShuffleList = new List<Track>(Tracks);
+                ShuffleList = new List<PlayableBase>(Tracks);
             }
         }
 
@@ -79,12 +80,12 @@ namespace Hurricane.Music.Data
         #region Shuffle
 
         [XmlIgnore]
-        public List<Track> ShuffleList { get; set; }
+        public List<PlayableBase> ShuffleList { get; set; }
 
         private bool _addedFavoriteTracksTwoTimes;
         protected void CreateShuffleList()
         {
-            this.ShuffleList = new List<Track>(this.Tracks);
+            this.ShuffleList = new List<PlayableBase>(this.Tracks);
             if (Settings.HurricaneSettings.Instance.Config.ShufflePreferFavoritTracks)
             {
                 ShuffleList.AddRange(this.Tracks.Where(x => x.IsFavorite));
@@ -96,13 +97,13 @@ namespace Hurricane.Music.Data
             }
         }
 
-        protected void RemoveFromShuffleList(Track track)
+        protected void RemoveFromShuffleList(PlayableBase track)
         {
             ShuffleList.Remove(track);
             if (_addedFavoriteTracksTwoTimes) ShuffleList.Remove(track);
         }
 
-        public Track GetRandomTrack(Track currentTrack)
+        public PlayableBase GetRandomTrack(PlayableBase currentTrack)
         {
             if (Tracks.Count == 0) return null;
 
@@ -131,16 +132,16 @@ namespace Hurricane.Music.Data
 
         #endregion
 
-        public abstract void AddTrack(Track track);
+        public abstract void AddTrack(PlayableBase track);
 
-        public abstract void RemoveTrack(Track track);
+        public abstract void RemoveTrack(PlayableBase track);
 
         public abstract string Name { get; set; }
 
         public async Task<int> RemoveDuplicates()
         {
             int counter = this.Tracks.Count;
-            List<Track> noduplicates = null;
+            List<PlayableBase> noduplicates = null;
             await Task.Run(() => noduplicates = Tracks.Distinct(new TrackComparer()).ToList());
 
             if (noduplicates.Count > 0 && noduplicates.Count != this.Tracks.Count)
@@ -172,7 +173,7 @@ namespace Hurricane.Music.Data
         {
             for (int i = Tracks.Count - 1; i > -1; i--)
             {
-                Track t = Tracks[i];
+                PlayableBase t = Tracks[i];
                 if (!t.TrackExists) RemoveTrack(t);
             }
             OnPropertyChanged("ContainsMissingTracks");

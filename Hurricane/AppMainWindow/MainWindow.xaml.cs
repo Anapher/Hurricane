@@ -15,6 +15,7 @@ using Hurricane.AppMainWindow.WindowSkins;
 using Hurricane.MagicArrow.DockManager;
 using Hurricane.Music;
 using Hurricane.Music.MusicDatabase.EventArgs;
+using Hurricane.Music.Track;
 using Hurricane.Settings;
 using Hurricane.Settings.Themes;
 using Hurricane.Utilities;
@@ -431,13 +432,13 @@ namespace Hurricane
             if (_equalizerIsOpen) { _equalizerWindow.Close(); _equalizerIsOpen = false; }
         }
 
-        public void OpenTrackInformations(Track track)
+        public void OpenTrackInformations(PlayableBase track)
         {
             TrackInformationWindow trackInformationWindow = new TrackInformationWindow(track) { Owner = this, WindowStartupLocation = this.HostedWindow.Configuration.ShowFullscreenDialogs ? WindowStartupLocation.CenterOwner : WindowStartupLocation.CenterScreen };
             trackInformationWindow.ShowDialog();
         }
 
-        public void OpenTagEditor(Track track)
+        public void OpenTagEditor(LocalTrack track)
         {
             TagEditorWindow tagEditorWindow = new TagEditorWindow(track) { Owner = this, WindowStartupLocation = this.HostedWindow.Configuration.ShowFullscreenDialogs ? WindowStartupLocation.CenterOwner : WindowStartupLocation.CenterScreen };
             tagEditorWindow.ShowDialog();

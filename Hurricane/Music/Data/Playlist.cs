@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Threading;
 using Hurricane.Music.MusicDatabase.EventArgs;
+using Hurricane.Music.Track;
 
 namespace Hurricane.Music.Data
 {
@@ -30,7 +29,7 @@ namespace Hurricane.Music.Data
                 if (fi.Exists)
                 {
                     if (progresschanged != null) progresschanged(this, new TrackImportProgressChangedEventArgs(i, paths.Length, fi.Name));
-                    Track t = new Track { Path = fi.FullName };
+                    var t = new LocalTrack() { Path = fi.FullName };
                     if (!await t.LoadInformation()) continue;
                     t.TimeAdded = DateTime.Now;
                     AddTrack(t);
@@ -46,7 +45,7 @@ namespace Hurricane.Music.Data
 
         public async Task ReloadTrackInformation(EventHandler<TrackImportProgressChangedEventArgs> progresschanged)
         {
-            foreach (Track t in Tracks)
+            foreach (PlayableBase t in Tracks)
             {
                 if (progresschanged != null) progresschanged(this, new TrackImportProgressChangedEventArgs(Tracks.IndexOf(t), Tracks.Count, t.ToString()));
                 if (t.TrackExists)
@@ -56,7 +55,7 @@ namespace Hurricane.Music.Data
             }
         }
 
-        public override void AddTrack(Track track)
+        public override void AddTrack(PlayableBase track)
         {
             Tracks.Add(track);
             ShuffleList.Add(track);
@@ -71,14 +70,14 @@ namespace Hurricane.Music.Data
             tmr.Start();
         }
 
-        public override void RemoveTrack(Track track)
+        public override void RemoveTrack(PlayableBase track)
         {
             ShuffleList.Remove(track);
             track.IsRemoving = true;
             DispatcherTimer tmr = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(500) };
             tmr.Tick += (s, e) =>
             {
-                this.Tracks.Remove(track);
+                Tracks.Remove(track);
                 tmr.Stop();
                 track.IsRemoving = false; //The track could be also in another playlist
             };

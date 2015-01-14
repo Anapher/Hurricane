@@ -1,16 +1,15 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using Hurricane.Music;
+using Hurricane.Music.Track;
 using Hurricane.Resources.Styles.DragDropListView.ServiceProviders.UI;
 using Hurricane.Utilities;
 using Hurricane.ViewModels;
-using Track = Hurricane.Music.Track;
 
 namespace Hurricane.AppMainWindow.WindowSkins
 {
@@ -22,8 +21,8 @@ namespace Hurricane.AppMainWindow.WindowSkins
         public WindowSmartView()
         {
             InitializeComponent();
-            new ListViewDragDropManager<Track>(listview) {ShowDragAdorner = true};
-            this.Configuration = new WindowSkinConfiguration()
+            new ListViewDragDropManager<PlayableBase>(listview) {ShowDragAdorner = true};
+            Configuration = new WindowSkinConfiguration()
             {
                 MaxHeight = WpfScreen.MaxHeight,
                 MaxWidth = 300,
@@ -41,24 +40,20 @@ namespace Hurricane.AppMainWindow.WindowSkins
         #region CurrentTrackAnimation
         private void Grid_MouseEnter(object sender, MouseEventArgs e)
         {
-            Grid grid = sender as Grid;
-            if (grid == null) return;
-            CurrentTrackAnimation(grid, txtCurrentTrack, polyplay, true);
+            CurrentTrackAnimation(txtCurrentTrack, polyplay, true);
         }
 
         private void Grid_MouseLeave(object sender, MouseEventArgs e)
         {
-            Grid grid = sender as Grid;
-            if (grid == null) return;
-            CurrentTrackAnimation(grid, txtCurrentTrack, polyplay, false);
+            CurrentTrackAnimation(txtCurrentTrack, polyplay, false);
         }
 
-        private void CurrentTrackAnimation(Grid grid, TextBlock txt, Polygon poly, bool inAnimate)
+        private void CurrentTrackAnimation(TextBlock txt, Polygon poly, bool inAnimate)
         {
             Storyboard story = new Storyboard();
 
             ColorAnimation coloranimation2 = new ColorAnimation(inAnimate ? ((SolidColorBrush)Application.Current.Resources["AccentColorBrush"]).Color : (Color)Application.Current.Resources["BlackColor"], TimeSpan.FromMilliseconds(250));
-            Storyboard.SetTarget(coloranimation2, txtCurrentTrack);
+            Storyboard.SetTarget(coloranimation2, txt);
             Storyboard.SetTargetProperty(coloranimation2, new PropertyPath("Foreground.Color"));
 
             ThicknessAnimation thicknessanimation = new ThicknessAnimation(inAnimate ? new Thickness(3, 2, -3, 0) : new Thickness(0, 2, 0, 0), TimeSpan.FromMilliseconds(250));

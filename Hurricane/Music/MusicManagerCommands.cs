@@ -35,7 +35,8 @@ namespace Hurricane.Music
             {
                 return _opentracklocation ?? (_opentracklocation = new RelayCommand(parameter =>
                 {
-                    Process.Start("explorer.exe", "/select, \"" + Musicmanager.SelectedTrack.Path + "\"");
+                    if (Musicmanager.SelectedTrack != null)
+                        Musicmanager.SelectedTrack.OpenTrackLocation();
                 }));
             }
         }
@@ -82,7 +83,7 @@ namespace Hurricane.Music
         {
             get
             {
-                return _toggleplaypause ?? (_toggleplaypause = new RelayCommand(parameter =>
+                return _toggleplaypause ?? (_toggleplaypause = new RelayCommand(async parameter =>
                 {
                     if (Musicmanager.CSCoreEngine.CurrentTrack != null)
                     {
@@ -91,13 +92,13 @@ namespace Hurricane.Music
                     }
                     if (Musicmanager.SelectedTrack != null)
                     {
-                        Musicmanager.CSCoreEngine.OpenTrack(Musicmanager.SelectedTrack);
+                        await Musicmanager.CSCoreEngine.OpenTrack(Musicmanager.SelectedTrack);
                         Musicmanager.CSCoreEngine.TogglePlayPause();
                         return;
                     }
                     if (Musicmanager.SelectedPlaylist.Tracks.Count > 0)
                     {
-                        Musicmanager.CSCoreEngine.OpenTrack(Musicmanager.SelectedPlaylist.Tracks[0]);
+                        await Musicmanager.CSCoreEngine.OpenTrack(Musicmanager.SelectedPlaylist.Tracks[0]);
                         Musicmanager.CSCoreEngine.TogglePlayPause();
                     }
                 }));
