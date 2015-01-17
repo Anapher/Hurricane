@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Xml.Serialization;
 using Hurricane.Music.Data;
+using Hurricane.Music.Playlist;
 using Hurricane.Music.Track;
 
 namespace Hurricane.Music
@@ -20,7 +21,7 @@ namespace Hurricane.Music
             TrackPlaylists = new ObservableCollection<TrackPlaylistPair>();
         }
 
-        public void Initialize(IEnumerable<Playlist> playlists)
+        public void Initialize(IEnumerable<NormalPlaylist> playlists)
         {
             foreach (var item in this)
             {
@@ -178,7 +179,7 @@ namespace Hurricane.Music
 
         public long TrackID { get; set; }
 
-        public Playlist GetTrack(IEnumerable<Playlist> playlists)
+        public NormalPlaylist GetTrack(IEnumerable<NormalPlaylist> playlists)
         {
             foreach (var playlist in playlists)
             {

@@ -4,11 +4,11 @@ using System.Linq;
 using System.Windows;
 using Hurricane.Music.Track;
 
-namespace Hurricane.Music.Data
+namespace Hurricane.Music.Playlist
 {
    public class FavoriteList : PlaylistBase
     {
-       public void Initalize(IEnumerable<Playlist> playlists)
+       public void Initalize(IEnumerable<NormalPlaylist> playlists)
        {
            foreach (var playlist in playlists)
            {

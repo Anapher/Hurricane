@@ -2,8 +2,10 @@
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media.Animation;
 using System.Windows.Shell;
@@ -41,7 +43,6 @@ namespace Hurricane
 
         protected IWindowSkin advancedwindowskin;
         public IWindowSkin AdvancedWindowSkin { get { return advancedwindowskin ?? (advancedwindowskin = new WindowAdvancedView()); } }
-
 
         #region Constructor & Load
 
@@ -90,7 +91,7 @@ namespace Hurricane
                 }
                 else
                 {
-                    this.WindowStartupLocation = WindowStartupLocation.CenterScreen;
+                    WindowStartupLocation = WindowStartupLocation.CenterScreen;
                 }
             }
 
@@ -192,7 +193,7 @@ namespace Hurricane
             ShowMinButton = skin.Configuration.ShowWindowControls;
             ShowMaxRestoreButton = skin.Configuration.ShowWindowControls;
             ShowCloseButton = skin.Configuration.ShowWindowControls;
-
+            
             Content = skin;
             HostedWindow = skin;
             if (MainViewModel.Instance.MusicManager != null) skin.RegisterSoundPlayer(MainViewModel.Instance.MusicManager.CSCoreEngine);
@@ -442,6 +443,63 @@ namespace Hurricane
         {
             TagEditorWindow tagEditorWindow = new TagEditorWindow(track) { Owner = this, WindowStartupLocation = this.HostedWindow.Configuration.ShowFullscreenDialogs ? WindowStartupLocation.CenterOwner : WindowStartupLocation.CenterScreen };
             tagEditorWindow.ShowDialog();
+        }
+
+        #endregion
+
+        #region Themes
+
+        public async Task MoveOut()
+        {
+            var outanimation = new ThicknessAnimation(new Thickness(0), new Thickness(-100, 0, 100, 0),
+                TimeSpan.FromMilliseconds(500));
+            var fadeanimation = new DoubleAnimation(1, 0, TimeSpan.FromMilliseconds(500));
+            var control = (DependencyObject) HostedWindow;
+
+            Storyboard.SetTarget(outanimation, control);
+            Storyboard.SetTarget(fadeanimation, control);
+
+            Storyboard.SetTargetProperty(outanimation, new PropertyPath(MarginProperty));
+            Storyboard.SetTargetProperty(fadeanimation, new PropertyPath(OpacityProperty));
+
+            var story = new Storyboard();
+            story.Children.Add(outanimation);
+            story.Children.Add(fadeanimation);
+            var handler = new AutoResetEvent(false);
+            story.Completed += (s, e) => handler.Set();
+            story.Begin(this);
+            await Task.Run(() => handler.WaitOne());
+            handler.Dispose();
+        }
+
+        public async Task ResetAndMoveIn()
+        {
+            smartwindowskin.DisableWindow();
+            advancedwindowskin.DisableWindow();
+            bool _isadvancedwindow = HostedWindow != smartwindowskin;
+            smartwindowskin = new WindowSmartView();
+            advancedwindowskin = new WindowAdvancedView();
+            ApplyHostWindow(_isadvancedwindow ? advancedwindowskin : smartwindowskin, false);
+
+            var outanimation = new ThicknessAnimation(new Thickness(-100, 0, 100, 0), new Thickness(0),
+    TimeSpan.FromMilliseconds(500));
+            var fadeanimation = new DoubleAnimation(0, 1, TimeSpan.FromMilliseconds(500));
+            var control = (DependencyObject)HostedWindow;
+
+            Storyboard.SetTarget(outanimation, control);
+            Storyboard.SetTarget(fadeanimation, control);
+
+            Storyboard.SetTargetProperty(outanimation, new PropertyPath(MarginProperty));
+            Storyboard.SetTargetProperty(fadeanimation, new PropertyPath(OpacityProperty));
+
+            var story = new Storyboard();
+            story.Children.Add(outanimation);
+            story.Children.Add(fadeanimation);
+            var handler = new AutoResetEvent(false);
+            story.Completed += (s, e) => handler.Set();
+            story.Begin(this);
+            await Task.Run(() => handler.WaitOne());
+            handler.Dispose();
         }
 
         #endregion

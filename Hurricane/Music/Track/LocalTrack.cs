@@ -171,7 +171,7 @@ namespace Hurricane.Music.Track
                 using (File file = File.Create(Path))
                 {
                     if (file.Tag.Pictures != null && file.Tag.Pictures.Any())
-                    {  Image = GeneralHelper.ByteArrayToBitmapImage(file.Tag.Pictures.First().Data.ToArray()); Image.Freeze();}
+                    { Image = GeneralHelper.ByteArrayToBitmapImage(file.Tag.Pictures.First().Data.ToArray()); }
                 }
             }
             catch (Exception)
@@ -195,7 +195,6 @@ namespace Hurricane.Music.Track
                     }
                 }
             }
-
             IsLoadingImage = false;
             OnImageLoadComplete();
         }

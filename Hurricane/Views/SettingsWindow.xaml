@@ -18,7 +18,7 @@
         </Grid.RowDefinitions>
         <TabControl x:Name="TabControl">
             <TabItem>
-                <userControls:SettingsView ShowAbout="False"/>
+                <userControls:SettingsView ShowAbout="False" Margin="-5"/>
             </TabItem>
             <TabItem>
                 <userControls:AboutView />

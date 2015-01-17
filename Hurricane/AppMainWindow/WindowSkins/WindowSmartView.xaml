@@ -16,6 +16,7 @@
                 <ResourceDictionary Source="/Resources/Styles/MetroWindowStyle.xaml"/>
                 <ResourceDictionary Source="/Resources/Styles/FavoriteToggleButton.xaml"/>
                 <ResourceDictionary Source="/Resources/Styles/RoundButtons.xaml"/>
+                <ResourceDictionary Source="/Resources/Styles/VectorMenuItem.xaml"/>
             </ResourceDictionary.MergedDictionaries>
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
         </ResourceDictionary>
@@ -33,22 +34,22 @@
                         <ColumnDefinition Width="auto"/>
                     </Grid.ColumnDefinitions>
                     <StackPanel Orientation="Horizontal">
-                        <Button Width="28" Height="28" Focusable="False" Margin="5,2,0,0" Command="{Binding OpenSettings}" Background="{DynamicResource WhiteBrush}">
+                        <Button Width="28" Height="28" Focusable="False" Margin="5,2,0,0" Command="{Binding OpenSettings}" Background="{StaticResource WhiteBrush}">
                             <Button.Style>
                                 <Style TargetType="Button" BasedOn="{StaticResource {x:Static ToolBar.ButtonStyleKey}}">
                                     <Setter Property="BorderThickness" Value="0"/>
                                     <Setter Property="Template">
                                         <Setter.Value>
                                             <ControlTemplate TargetType="Button">
-                                                <Grid Background="{DynamicResource WhiteBrush}">
-                                                    <Path x:Name="img" Stretch="UniformToFill" Stroke="{DynamicResource BlackBrush}" Width="20" Height="20" Data="M31.229,17.736c0.064-0.571,0.104-1.148,0.104-1.736s-0.04-1.166-0.104-1.737l-4.377-1.557c-0.218-0.716-0.504-1.401-0.851-2.05l1.993-4.192c-0.725-0.91-1.549-1.734-2.458-2.459l-4.193,1.994c-0.647-0.347-1.334-0.632-2.049-0.849l-1.558-4.378C17.165,0.708,16.588,0.667,16,0.667s-1.166,0.041-1.737,0.105L12.707,5.15c-0.716,0.217-1.401,0.502-2.05,0.849L6.464,4.005C5.554,4.73,4.73,5.554,4.005,6.464l1.994,4.192c-0.347,0.648-0.632,1.334-0.849,2.05l-4.378,1.557C0.708,14.834,0.667,15.412,0.667,16s0.041,1.165,0.105,1.736l4.378,1.558c0.217,0.715,0.502,1.401,0.849,2.049l-1.994,4.193c0.725,0.909,1.549,1.733,2.459,2.458l4.192-1.993c0.648,0.347,1.334,0.633,2.05,0.851l1.557,4.377c0.571,0.064,1.148,0.104,1.737,0.104c0.588,0,1.165-0.04,1.736-0.104l1.558-4.377c0.715-0.218,1.399-0.504,2.049-0.851l4.193,1.993c0.909-0.725,1.733-1.549,2.458-2.458l-1.993-4.193c0.347-0.647,0.633-1.334,0.851-2.049L31.229,17.736zM16,20.871c-2.69,0-4.872-2.182-4.872-4.871c0-2.69,2.182-4.872,4.872-4.872c2.689,0,4.871,2.182,4.871,4.872C20.871,18.689,18.689,20.871,16,20.871z"/>
+                                                <Grid Background="{StaticResource WhiteBrush}">
+                                                    <Path x:Name="img" Stretch="UniformToFill" Stroke="{StaticResource BlackBrush}" Width="20" Height="20" Data="M31.229,17.736c0.064-0.571,0.104-1.148,0.104-1.736s-0.04-1.166-0.104-1.737l-4.377-1.557c-0.218-0.716-0.504-1.401-0.851-2.05l1.993-4.192c-0.725-0.91-1.549-1.734-2.458-2.459l-4.193,1.994c-0.647-0.347-1.334-0.632-2.049-0.849l-1.558-4.378C17.165,0.708,16.588,0.667,16,0.667s-1.166,0.041-1.737,0.105L12.707,5.15c-0.716,0.217-1.401,0.502-2.05,0.849L6.464,4.005C5.554,4.73,4.73,5.554,4.005,6.464l1.994,4.192c-0.347,0.648-0.632,1.334-0.849,2.05l-4.378,1.557C0.708,14.834,0.667,15.412,0.667,16s0.041,1.165,0.105,1.736l4.378,1.558c0.217,0.715,0.502,1.401,0.849,2.049l-1.994,4.193c0.725,0.909,1.549,1.733,2.459,2.458l4.192-1.993c0.648,0.347,1.334,0.633,2.05,0.851l1.557,4.377c0.571,0.064,1.148,0.104,1.737,0.104c0.588,0,1.165-0.04,1.736-0.104l1.558-4.377c0.715-0.218,1.399-0.504,2.049-0.851l4.193,1.993c0.909-0.725,1.733-1.549,2.458-2.458l-1.993-4.193c0.347-0.647,0.633-1.334,0.851-2.049L31.229,17.736zM16,20.871c-2.69,0-4.872-2.182-4.872-4.871c0-2.69,2.182-4.872,4.872-4.872c2.689,0,4.871,2.182,4.871,4.872C20.871,18.689,18.689,20.871,16,20.871z"/>
                                                 </Grid>
                                                 <ControlTemplate.Triggers>
                                                     <Trigger Property="IsMouseOver" Value="True">
-                                                        <Setter TargetName="img" Property="Stroke" Value="{DynamicResource GrayBrush5}"/>
+                                                        <Setter TargetName="img" Property="Stroke" Value="{StaticResource GrayBrush5}"/>
                                                     </Trigger>
                                                     <Trigger Property="IsPressed" Value="True">
-                                                        <Setter TargetName="img" Property="Stroke" Value="{DynamicResource GrayBrush7}"/>
+                                                        <Setter TargetName="img" Property="Stroke" Value="{StaticResource GrayBrush7}"/>
                                                     </Trigger>
                                                 </ControlTemplate.Triggers>
                                             </ControlTemplate>
@@ -80,7 +81,7 @@
                 <converter:CollapsedOnNullValue x:Key="CollapsedOnNullValue"/>
             </Grid.Resources>
             <Grid>
-                <Button Background="{DynamicResource NormalColorBrush}" Height="30" Visibility="{Binding Updater.UpdateFound,Converter={StaticResource BooleanToVisibilityConverter}}" ex:VisibilityAnimation.AnimationType="Fade" Command="{Binding OpenUpdater}">
+                <Button Background="{StaticResource NormalColorBrush}" Height="30" Visibility="{Binding Updater.UpdateFound,Converter={StaticResource BooleanToVisibilityConverter}}" ex:VisibilityAnimation.AnimationType="Fade" Command="{Binding OpenUpdater}">
                     <Button.Resources>
                         <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/FlatButton.xaml" />
                     </Button.Resources>
@@ -89,8 +90,8 @@
                 </Button>
             </Grid>
             <DockPanel Grid.Row="1" Margin="5,5,0,0" Visibility="{Binding MusicManager.CSCoreEngine.CurrentTrack,Converter={StaticResource CollapsedOnNullValue}}">
-                <Polygon Points="0,0 8,5, 0,10" Stroke="{DynamicResource AccentColorBrush}" StrokeThickness="2" VerticalAlignment="Center" Margin="0,2,0,0" x:Name="polyplay"/>
-                <Grid Margin="5,0,5,0" VerticalAlignment="Center" MouseEnter="Grid_MouseEnter" MouseLeave="Grid_MouseLeave" Background="{DynamicResource WhiteBrush}">
+                <Polygon Points="0,0 8,5, 0,10" Stroke="{StaticResource AccentColorBrush}" StrokeThickness="2" VerticalAlignment="Center" Margin="0,2,0,0" x:Name="polyplay"/>
+                <Grid Margin="5,0,5,0" VerticalAlignment="Center" MouseEnter="Grid_MouseEnter" MouseLeave="Grid_MouseLeave" Background="{StaticResource WhiteBrush}">
                     <TextBlock Text="{Binding MusicManager.CSCoreEngine.CurrentTrack}" TextTrimming="CharacterEllipsis" x:Name="txtCurrentTrack" Margin="1" Foreground="{StaticResource BlackBrush}">
                         <TextBlock.InputBindings>
                             <MouseBinding Command="{Binding MusicManager.Commands.JumpToPlayingTrack}" MouseAction="LeftClick"/>
@@ -209,17 +210,17 @@
                     <StackPanel Orientation="Horizontal">
                         <StackPanel.Resources>
                             <Style TargetType="Path" x:Key="TogglePath">
-                                <Setter Property="Fill" Value="{DynamicResource BlackBrush}"/>
+                                <Setter Property="Fill" Value="{StaticResource BlackBrush}"/>
                                 <Style.Triggers>
                                     <DataTrigger Binding="{Binding IsChecked,RelativeSource={RelativeSource AncestorType=ToggleButton}}" Value="True">
-                                        <Setter Property="Fill" Value="{DynamicResource GrayBrush10}"/>
+                                        <Setter Property="Fill" Value="{StaticResource GrayBrush10}"/>
                                     </DataTrigger>
                                 </Style.Triggers>
                             </Style>
                         </StackPanel.Resources>
                         <Button Width="24" Height="24" Focusable="False" Command="{Binding OpenEqualizer}">
                             <Viewbox Width="14" Height="14" Stretch="Fill">
-                                <Path Data="{StaticResource VectorEqualizer}" Fill="{DynamicResource BlackBrush}"/>
+                                <Path Data="{StaticResource VectorEqualizer}" Fill="{StaticResource BlackBrush}"/>
                             </Viewbox>
                         </Button>
                         <ToggleButton Width="24" Height="24" Focusable="False" Margin="5,0,0,0" x:Name="tbtn_random" IsChecked="{Binding MusicManager.IsShuffleEnabled}">
@@ -260,7 +261,7 @@
                             </EventTrigger>
                         </ComboBox.Triggers>
                     </ComboBox>
-                    <TextBlock Grid.Column="1" Text="{DynamicResource Favorites}" VerticalAlignment="Center" Margin="8,0,0,0">
+                    <TextBlock Grid.Column="1" Text="{StaticResource Favorites}" VerticalAlignment="Center" Margin="8,0,0,0">
                         <TextBlock.Style>
                             <Style TargetType="TextBlock">
                                 <Setter Property="Visibility" Value="Collapsed"/>
@@ -274,87 +275,11 @@
                         </TextBlock.Style>
                     </TextBlock>
                     <Menu Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Center">
-                        <MenuItem VerticalAlignment="Center" Height="25">
-                            <MenuItem.Style>
-                                <Style TargetType="MenuItem">
-                                    <Setter Property="Template">
-                                        <Setter.Value>
-                                            <ControlTemplate TargetType="MenuItem">
-                                                <Grid Background="{DynamicResource WhiteBrush}">
-                                                    <Viewbox Margin="2">
-                                                        <Path Data="{StaticResource VectorPlus}" Fill="{DynamicResource BlackBrush}" x:Name="plusPath"/>
-                                                    </Viewbox>
-                                                    <Popup x:Name="PART_Popup"
-                   AllowsTransparency="True"
-                   Focusable="False"
-                   HorizontalOffset="1"
-                   IsOpen="{Binding IsSubmenuOpen, RelativeSource={RelativeSource TemplatedParent}}"
-                   PopupAnimation="{DynamicResource {x:Static SystemParameters.MenuPopupAnimationKey}}"
-                   Placement="Bottom"
-                   VerticalOffset="-1">
-                                                        <Grid>
-                                                            <Rectangle x:Name="LayoutRoot"
-                               Fill="{TemplateBinding Background}" />
-                                                            <ContentControl x:Name="SubMenuBorder"
-                                    IsTabStop="False"
-                                    Template="{DynamicResource {ComponentResourceKey ResourceId=SubmenuContent, TypeInTargetAssembly={x:Type FrameworkElement}}}">
-                                                                <ScrollViewer x:Name="SubMenuScrollViewer"
-                                      CanContentScroll="True"
-                                      Style="{DynamicResource {ComponentResourceKey ResourceId=MenuScrollViewer, TypeInTargetAssembly={x:Type FrameworkElement}}}">
-                                                                    <ItemsPresenter x:Name="ItemsPresenter"
-                                            KeyboardNavigation.DirectionalNavigation="Cycle"
-                                            Grid.IsSharedSizeScope="True"
-                                            Margin="0"
-                                            SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
-                                            KeyboardNavigation.TabNavigation="Cycle" />
-                                                                </ScrollViewer>
-                                                            </ContentControl>
-                                                        </Grid>
-                                                    </Popup>
-                                                </Grid>
-                                                <ControlTemplate.Triggers>
-                                                    <Trigger Property="IsMouseOver" Value="True">
-                                                        <Trigger.EnterActions>
-                                                            <BeginStoryboard>
-                                                                <Storyboard>
-                                                                    <ColorAnimation Duration="0:0:0.2" To="{StaticResource AccentColor}" Storyboard.TargetName="plusPath" Storyboard.TargetProperty="(Path.Fill).(SolidColorBrush.Color)"/>
-                                                                </Storyboard>
-                                                            </BeginStoryboard>
-                                                        </Trigger.EnterActions>
-                                                        <Trigger.ExitActions>
-                                                            <BeginStoryboard>
-                                                                <Storyboard>
-                                                                    <ColorAnimation Duration="0:0:0.2" To="{StaticResource BlackColor}" Storyboard.TargetName="plusPath" Storyboard.TargetProperty="(Path.Fill).(SolidColorBrush.Color)"/>
-                                                                </Storyboard>
-                                                            </BeginStoryboard>
-                                                        </Trigger.ExitActions>
-                                                    </Trigger>
-                                                    <Trigger Property="IsSubmenuOpen" Value="True">
-                                                        <Trigger.EnterActions>
-                                                            <BeginStoryboard>
-                                                                <Storyboard>
-                                                                    <ColorAnimation Duration="0:0:0.2" FillBehavior="HoldEnd" To="{StaticResource AccentColor2}" Storyboard.TargetName="plusPath" Storyboard.TargetProperty="(Path.Fill).(SolidColorBrush.Color)"/>
-                                                                </Storyboard>
-                                                            </BeginStoryboard>
-                                                        </Trigger.EnterActions>
-                                                        <Trigger.ExitActions>
-                                                            <BeginStoryboard>
-                                                                <Storyboard>
-                                                                    <ColorAnimation Duration="0:0:0.2" FillBehavior="Stop" To="{StaticResource BlackColor}" Storyboard.TargetName="plusPath" Storyboard.TargetProperty="(Path.Fill).(SolidColorBrush.Color)"/>
-                                                                </Storyboard>
-                                                            </BeginStoryboard>
-                                                        </Trigger.ExitActions>
-                                                    </Trigger>
-                                                </ControlTemplate.Triggers>
-                                            </ControlTemplate>
-                                        </Setter.Value>
-                                    </Setter>
-                                </Style>
-                            </MenuItem.Style>
+                        <ex:VectorMenuItem Style="{StaticResource VectorMenuItem}" VectorGraphic="{StaticResource VectorPlus}" VerticalAlignment="Center" Height="25" Background="{StaticResource WhiteBrush}">
                             <MenuItem Header="{DynamicResource NewPlaylist}" Command="{Binding AddNewPlaylist}">
                                 <MenuItem.Icon>
                                     <Viewbox Stretch="Uniform">
-                                        <Path Data="{StaticResource VectorAdd}" Fill="{DynamicResource BlackBrush}"/>
+                                        <Path Data="{StaticResource VectorAdd}" Fill="{StaticResource BlackBrush}"/>
                                     </Viewbox>
                                 </MenuItem.Icon>
                             </MenuItem>
@@ -362,14 +287,14 @@
                             <MenuItem Header="{DynamicResource AddFiles}" Command="{Binding AddFilesToPlaylist}" IsEnabled="{Binding MusicManager.SelectedPlaylist.CanEdit}">
                                 <MenuItem.Icon>
                                     <Viewbox Stretch="Uniform" Height="16" Width="16">
-                                        <Path Data="{StaticResource VectorAddFile}" Fill="{DynamicResource BlackBrush}"/>
+                                        <Path Data="{StaticResource VectorAddFile}" Fill="{StaticResource BlackBrush}"/>
                                     </Viewbox>
                                 </MenuItem.Icon>
                             </MenuItem>
                             <MenuItem Header="{DynamicResource AddDirectories}" Command="{Binding AddFolderToPlaylist}" IsEnabled="{Binding MusicManager.SelectedPlaylist.CanEdit}">
                                 <MenuItem.Icon>
                                     <Viewbox Stretch="Uniform" Height="16" Width="16">
-                                        <Path Data="{StaticResource VectorAddFolder}" Fill="{DynamicResource BlackBrush}"/>
+                                        <Path Data="{StaticResource VectorAddFolder}" Fill="{StaticResource BlackBrush}"/>
                                     </Viewbox>
                                 </MenuItem.Icon>
                             </MenuItem>
@@ -377,14 +302,14 @@
                             <MenuItem Header="{DynamicResource RenamePlaylist}" Command="{Binding RenamePlaylist}" IsEnabled="{Binding MusicManager.SelectedPlaylist.CanEdit}">
                                 <MenuItem.Icon>
                                     <Viewbox Stretch="Uniform" Height="16" Width="16">
-                                        <Path Data="{StaticResource VectorRename}" Stroke="{DynamicResource BlackBrush}" Fill="{DynamicResource BlackBrush}"/>
+                                        <Path Data="{StaticResource VectorRename}" Stroke="{StaticResource BlackBrush}" Fill="{StaticResource BlackBrush}"/>
                                     </Viewbox>
                                 </MenuItem.Icon>
                             </MenuItem>
                             <MenuItem Header="{DynamicResource RemovePlaylist}" Command="{Binding RemovePlaylist}" IsEnabled="{Binding MusicManager.SelectedPlaylist.CanEdit}">
                                 <MenuItem.Icon>
                                     <Viewbox Stretch="Uniform" Height="16" Width="13">
-                                        <Path Data="{StaticResource VectorDelete}" Stroke="{DynamicResource BlackBrush}"/>
+                                        <Path Data="{StaticResource VectorDelete}" Stroke="{StaticResource BlackBrush}"/>
                                     </Viewbox>
                                 </MenuItem.Icon>
                             </MenuItem>
@@ -392,14 +317,14 @@
                             <MenuItem Header="{DynamicResource ReloadTrackInfo}" Command="{Binding ReloadTrackInformation}">
                                 <MenuItem.Icon>
                                     <Viewbox Stretch="Uniform" Height="16" Width="13">
-                                        <Path Data="{StaticResource VectorRefresh}" Fill="{DynamicResource BlackBrush}"/>
+                                        <Path Data="{StaticResource VectorRefresh}" Fill="{StaticResource BlackBrush}"/>
                                     </Viewbox>
                                 </MenuItem.Icon>
                             </MenuItem>
                             <MenuItem Header="{DynamicResource RemoveTracks}" IsEnabled="{Binding MusicManager.SelectedPlaylist.CanEdit}">
                                 <MenuItem.Icon>
                                     <Viewbox Stretch="Uniform">
-                                        <Path Data="{StaticResource VectorRemove}" Fill="{DynamicResource BlackBrush}"/>
+                                        <Path Data="{StaticResource VectorRemove}" Fill="{StaticResource BlackBrush}"/>
                                     </Viewbox>
                                 </MenuItem.Icon>
                                 <MenuItem Header="{DynamicResource RemoveMissingTracks}" Command="{Binding RemoveMissingTracks}" IsEnabled="{Binding MusicManager.SelectedPlaylist.ContainsMissingTracks}"/>
@@ -407,16 +332,11 @@
                                 <Separator />
                                 <MenuItem Header="{DynamicResource RemoveAllTracks}" Command="{Binding ClearSelectedPlaylist}"/>
                             </MenuItem>
-                        </MenuItem>
+                        </ex:VectorMenuItem>
                     </Menu>
                 </Grid>
-                <ListView ItemsSource="{Binding MusicManager.SelectedPlaylist.ViewSource}" SelectionMode="Extended" Grid.Row="1" Drop="listview_Drop" DragEnter="listview_DragEnter" x:Name="listview" SelectedItem="{Binding MusicManager.SelectedTrack}" ScrollViewer.VerticalScrollBarVisibility="Visible" Margin="0,5,-1,0" HorizontalContentAlignment="Stretch" ScrollViewer.HorizontalScrollBarVisibility="Disabled" SelectionChanged="listview_SelectionChanged" IsSynchronizedWithCurrentItem="True">
-                    <ListView.Style>
-                        <Style TargetType="{x:Type ListView}">
-                            <Setter Property="VirtualizingStackPanel.IsVirtualizing" Value="True"/>
-                            <Setter Property="VirtualizingStackPanel.VirtualizationMode" Value="Recycling"/>
-                        </Style>
-                    </ListView.Style>
+                <ListView ItemsSource="{Binding MusicManager.SelectedPlaylist.ViewSource}" SelectionMode="Extended" Grid.Row="1" Drop="listview_Drop" DragEnter="listview_DragEnter" x:Name="listview" SelectedItem="{Binding MusicManager.SelectedTrack}" ScrollViewer.VerticalScrollBarVisibility="Visible"
+                          Margin="0,5,-1,0" HorizontalContentAlignment="Stretch" ScrollViewer.HorizontalScrollBarVisibility="Disabled" SelectionChanged="listview_SelectionChanged" IsSynchronizedWithCurrentItem="True" Style="{StaticResource VisualizingListView}">
                     <ListView.InputBindings>
                         <KeyBinding Key="Delete" Command="{Binding RemoveSelectedTracks}" CommandParameter="{Binding ElementName=listview,Path=SelectedItems}"/>
                         <KeyBinding Key="Enter" Command="{Binding MusicManager.Commands.PlaySelectedTrack}"/>
@@ -436,7 +356,7 @@
                             <MenuItem Header="{DynamicResource Play}" Command="{Binding MusicManager.Commands.PlaySelectedTrack}" IsEnabled="{Binding MusicManager.SelectedTrack.TrackExists}" InputGestureText="Enter">
                                 <MenuItem.Icon>
                                     <Viewbox Stretch="Uniform" Width="16" Height="16">
-                                        <Path Fill="{DynamicResource BlackBrush}" Data="{StaticResource VectorPlay}"/>
+                                        <Path Fill="{StaticResource BlackBrush}" Data="{StaticResource VectorPlay}"/>
                                     </Viewbox>
                                 </MenuItem.Icon>
                             </MenuItem>
@@ -445,14 +365,14 @@
                                 <MenuItem Header="{DynamicResource AddFiles}" Command="{Binding AddFilesToPlaylist}" InputGestureText="{DynamicResource Ins}">
                                     <MenuItem.Icon>
                                         <Viewbox Stretch="Uniform" Height="16" Width="16">
-                                            <Path Fill="{DynamicResource BlackBrush}" Data="{StaticResource VectorAddFile}"/>
+                                            <Path Fill="{StaticResource BlackBrush}" Data="{StaticResource VectorAddFile}"/>
                                         </Viewbox>
                                     </MenuItem.Icon>
                                 </MenuItem>
                                 <MenuItem Header="{DynamicResource AddDirectories}" Command="{Binding AddFolderToPlaylist}" InputGestureText="{DynamicResource CtrlIns}">
                                     <MenuItem.Icon>
                                         <Viewbox Stretch="Uniform" Height="16" Width="16">
-                                            <Path Fill="{DynamicResource BlackBrush}" Data="{StaticResource VectorAddFolder}"/>
+                                            <Path Fill="{StaticResource BlackBrush}" Data="{StaticResource VectorAddFolder}"/>
                                         </Viewbox>
                                     </MenuItem.Icon>
                                 </MenuItem>
@@ -470,21 +390,21 @@
                             <MenuItem Header="{DynamicResource TagEditor}" Command="{Binding OpenTagEditor}" IsEnabled="{Binding MusicManager.SelectedTrack.TrackExists}" InputGestureText="F3">
                                 <MenuItem.Icon>
                                     <Viewbox Width="16" Height="16" Stretch="Uniform">
-                                        <Path Fill="{DynamicResource BlackBrush}" Data="{StaticResource VectorEditor}"/>
+                                        <Path Fill="{StaticResource BlackBrush}" Data="{StaticResource VectorEditor}"/>
                                     </Viewbox>
                                 </MenuItem.Icon>
                             </MenuItem>
                             <MenuItem Header="{DynamicResource FileLocation}" Command="{Binding MusicManager.Commands.OpenTrackLocation}" InputGestureText="Alt+O" IsEnabled="{Binding MusicManager.SelectedTrack.TrackExists}">
                                 <MenuItem.Icon>
                                     <Viewbox Stretch="Uniform" Width="16" Height="16">
-                                        <Path Fill="{DynamicResource BlackBrush}" Data="{StaticResource VectorFolder}"></Path>
+                                        <Path Fill="{StaticResource BlackBrush}" Data="{StaticResource VectorFolder}"></Path>
                                     </Viewbox>
                                 </MenuItem.Icon>
                             </MenuItem>
                             <Separator />
                             <MenuItem Header="{DynamicResource Remove}" Command="{Binding RemoveSelectedTracks}" InputGestureText="{DynamicResource Del}">
                                 <MenuItem.Icon>
-                                    <Path Height="16" Width="16" Fill="{DynamicResource BlackBrush}" Data="{StaticResource VectorRemove}"/>
+                                    <Path Height="16" Width="16" Fill="{StaticResource BlackBrush}" Data="{StaticResource VectorRemove}"/>
                                 </MenuItem.Icon>
                             </MenuItem>
                         </ContextMenu>
@@ -543,7 +463,7 @@
                                 <Grid.Resources>
                                     <converter:TrueFalseValueConverter TrueValue="2" FalseValue="0" x:Key="TrueFalseValueConverter"/>
                                 </Grid.Resources>
-                                <Border BorderBrush="{DynamicResource LightColorBrush}" BorderThickness="{Binding IsPlaying,Converter={StaticResource TrueFalseValueConverter}}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="-4">
+                                <Border BorderBrush="{StaticResource LightColorBrush}" BorderThickness="{Binding IsPlaying,Converter={StaticResource TrueFalseValueConverter}}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="-4">
                                     <StackPanel Orientation="Vertical" Margin="3">
                                         <Grid>
                                             <Grid.ColumnDefinitions>
@@ -574,7 +494,7 @@
                                             <TextBlock Text=" :: "/>
                                             <TextBlock Text="{Binding kbps}"/>
                                             <TextBlock Text=" kbps"/>
-                                            <ToggleButton IsChecked="{Binding IsFavorite}" Foreground="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem},Path=IsSelected,Converter={StaticResource TrueFalseValueConverter}}" Background="{DynamicResource BlackBrush}" DockPanel.Dock="Right" Width="12" Height="12" Margin="0,4,0,0">
+                                            <ToggleButton IsChecked="{Binding IsFavorite}" Foreground="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem},Path=IsSelected,Converter={StaticResource TrueFalseValueConverter}}" Background="{StaticResource BlackBrush}" DockPanel.Dock="Right" Width="12" Height="12" Margin="0,4,0,0">
                                                 <ToggleButton.Style>
                                                     <Style TargetType="ToggleButton" BasedOn="{StaticResource FavoriteToggleButton}">
                                                         <Setter Property="Visibility" Value="Hidden"/>

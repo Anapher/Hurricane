@@ -1,21 +1,22 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Xml.Serialization;
-using Hurricane.Music;
-using Hurricane.Music.Data;
+using Hurricane.Music.Playlist;
 
 namespace Hurricane.Settings
 {
-    [XmlType(TypeName = "Playlists")]
+    [Serializable, XmlType(TypeName = "Playlists")]
     public class PlaylistSettings : SettingsBase
     {
-        protected const string Filename = "Playlists.xml";
+        protected const string Filename = "playlists.xml";
 
-        public ObservableCollection<Playlist> Playlists { get; set; }
+        [XmlElement("List")]
+        public ObservableCollection<NormalPlaylist> Playlists { get; set; }
 
         public override void SetStandardValues()
         {
-            Playlists = new ObservableCollection<Playlist> { new Playlist() { Name = "Default" } };
+            Playlists = new ObservableCollection<NormalPlaylist> { new NormalPlaylist() { Name = "Default" } };
         }
 
         public override void Save(string programPath)

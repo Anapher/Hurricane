@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -8,10 +7,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Data;
 using System.Xml.Serialization;
+using Hurricane.Music.Data;
 using Hurricane.Music.Track;
 using Hurricane.ViewModelBase;
 
-namespace Hurricane.Music.Data
+namespace Hurricane.Music.Playlist
 {
     public abstract class PlaylistBase : PropertyChangedBase, IPlaylist
     {

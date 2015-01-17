@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Hurricane.Music.Playlist;
 using Hurricane.Music.Track.SoundCloudApi;
 using Hurricane.Music.Track.YouTubeApi;
 using Hurricane.Utilities;
@@ -11,7 +12,7 @@ using Hurricane.ViewModelBase;
 
 namespace Hurricane.Music.Track
 {
-    public class TrackSearcher
+    class TrackSearcher : PropertyChangedBase
     {
         public string SearchText { get; set; }
         public ObservableCollection<WebTrackResultBase> Results { get; set; }
@@ -20,9 +21,39 @@ namespace Hurricane.Music.Track
         public bool LoadFromYouTube { get; set; }
 
         private readonly AutoResetEvent cancelWaiter;
-        private bool _IsRunning;
+        private bool _IsSearching; //Difference between _IsRunning and IsSearching: _IsRunning is also true if pictures are downloading
         private bool _canceled;
 
+        private bool _isLoading;
+        public bool IsLoading
+        {
+            get { return _isLoading; }
+            set
+            {
+                SetProperty(value, ref _isLoading);
+            }
+        }
+
+        private bool _nothingFound;
+        public bool NothingFound
+        {
+            get { return _nothingFound; }
+            set
+            {
+                SetProperty(value, ref _nothingFound);
+            }
+        }
+
+        private WebTrackResultBase _selectedTrack;
+        public WebTrackResultBase SelectedTrack
+        {
+            get { return _selectedTrack; }
+            set
+            {
+                SetProperty(value, ref _selectedTrack);
+            }
+        }
+        
         private RelayCommand _searchCommand;
         public RelayCommand SearchCommand
         {
@@ -30,13 +61,14 @@ namespace Hurricane.Music.Track
             {
                 return _searchCommand ?? (_searchCommand = new RelayCommand(async parameter =>
                 {
-                    if (_IsRunning)
+                    IsLoading = true;
+                    if (_IsSearching)
                     {
                         _canceled = true;
                         await Task.Run(() => cancelWaiter.WaitOne());
                     }
 
-                    _IsRunning = true;
+                    _IsSearching = true;
                     Task<List<SoundCloudWebTrackResult>> tSoundCloud = null;
                     Task<List<YouTubeWebTrackResult>> tYouTube = null;
 
@@ -59,26 +91,71 @@ namespace Hurricane.Music.Track
                         result.ForEach(x => list.Add(x));
                     }
 
+                    NothingFound = list.Count == 0;
                     SortResults(list);
+                    
+                    IsLoading = false;
 
                     foreach (var track in Results)
                     {
                         await track.DownloadImage();
                         if (CheckForCanceled()) return;
                     }
-                    _IsRunning = false;
+                    _IsSearching = false;
                 }));
             }
         }
 
+        private RelayCommand _playSelectedTrack;
+        public RelayCommand PlaySelectedTrack
+        {
+            get { return _playSelectedTrack ?? (_playSelectedTrack = new RelayCommand(async parameter =>
+            {
+                if (SelectedTrack == null) return;
+                IsLoading = true;
+                await _manager.CSCoreEngine.OpenTrack(await SelectedTrack.ToPlayable());
+                IsLoading = false;
+                _manager.CSCoreEngine.TogglePlayPause();
+            })); }
+        }
+
+        private RelayCommand _addToPlaylist;
+        public RelayCommand AddToPlaylist
+        {
+            get
+            {
+                return _addToPlaylist ?? (_addToPlaylist = new RelayCommand(async parameter =>
+                {
+                    var playlist = parameter as IPlaylist;
+                    if (playlist == null) return;
+                    IsLoading = true;
+                    var track = await SelectedTrack.ToPlayable();
+                    playlist.AddTrack(track);
+                    IsLoading = false;
+                    ViewModels.MainViewModel.Instance.MainTabControlIndex = 0;
+                    _manager.SelectedPlaylist = playlist;
+                    _manager.SelectedTrack = track;
+                }));
+            }
+        }
+            
+        private RelayCommand _downloadTrack;
+        public RelayCommand DownloadTrack
+        {
+            get { return _downloadTrack ?? (_downloadTrack = new RelayCommand(parameter =>
+            {
+                _manager.DownloadManager.AddEntry(SelectedTrack.GetDownloadUrl(), SelectedTrack.Title);
+                _manager.DownloadManager.IsOpen = true;
+            })); }
+        }
+
         private bool CheckForCanceled()
         {
-            Debug.Print(_canceled.ToString());
             if (_canceled)
             {
                 cancelWaiter.Set();
                 _canceled = false;
-                _IsRunning = false;
+                _IsSearching = false;
                 return true;
             }
             return false;
@@ -93,12 +170,14 @@ namespace Hurricane.Music.Track
             }
         }
 
-        public TrackSearcher()
+        private MusicManager _manager;
+        public TrackSearcher(MusicManager manager)
         {
             Results = new ObservableCollection<WebTrackResultBase>();
             LoadFromSoundCloud = true;
             LoadFromYouTube = true;
             cancelWaiter = new AutoResetEvent(false);
+            _manager = manager;
         }
     }
 }

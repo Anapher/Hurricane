@@ -4,7 +4,9 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using Hurricane.Music.API;
 using Hurricane.Music.Data;
+using Hurricane.Music.Download;
 using Hurricane.Music.MusicDatabase.EventArgs;
+using Hurricane.Music.Playlist;
 using Hurricane.Music.Track;
 using Hurricane.Notification;
 using Hurricane.Settings;
@@ -67,8 +69,8 @@ namespace Hurricane.Music
             }
         }
 
-        private ObservableCollection<Playlist> _playlists;
-        public ObservableCollection<Playlist> Playlists
+        private ObservableCollection<NormalPlaylist> _playlists;
+        public ObservableCollection<NormalPlaylist> Playlists
         {
             get { return _playlists; }
             set
@@ -97,6 +99,8 @@ namespace Hurricane.Music
         public QueueManager Queue { get; set; }
 
         public TcpServer ApiServer { get; set; }
+
+        public DownloadManager DownloadManager { get; set; }
 
         protected FavoriteList favoritePlaylist;
         public FavoriteList FavoritePlaylist
@@ -127,7 +131,7 @@ namespace Hurricane.Music
         public MusicManager()
         {
             CSCoreEngine = new CSCoreEngine();
-            Playlists = new ObservableCollection<Playlist>();
+            Playlists = new ObservableCollection<NormalPlaylist>();
             CSCoreEngine.TrackFinished += CSCoreEngine_TrackFinished;
             CSCoreEngine.TrackChanged += CSCoreEngine_TrackChanged;
             Notification = new NotificationService(CSCoreEngine);
@@ -139,6 +143,7 @@ namespace Hurricane.Music
 
             ApiServer = new TcpServer(this);
             if (HurricaneSettings.Instance.Config.ApiIsEnabled) ApiServer.StartListening();
+            DownloadManager = new DownloadManager();
         }
 
         public async void LoadFromSettings()
@@ -158,6 +163,21 @@ namespace Hurricane.Music
                 CurrentPlaylist = IndexToPlaylist(config.LastPlaylistIndex);
             }
 
+            SelectedPlaylist = IndexToPlaylist(config.SelectedPlaylist);
+
+            if (config.SelectedTrack > -1)
+            {
+                SelectedTrack = SelectedPlaylist.Tracks[config.SelectedTrack];
+            }
+            IsLoopEnabled = config.IsLoopEnabled;
+            IsShuffleEnabled = config.IsShuffleEnabled;
+            foreach (NormalPlaylist lst in Playlists)
+            {
+                lst.LoadList();
+            }
+            favoritePlaylist.LoadList();
+            if (config.Queue != null) { Queue = config.Queue; Queue.Initialize(Playlists); }
+
             if (config.LastTrackIndex > -1)
             {
                 PlayableBase t = CurrentPlaylist.Tracks[config.LastTrackIndex];
@@ -169,20 +189,6 @@ namespace Hurricane.Music
                 }
             }
 
-            SelectedPlaylist = IndexToPlaylist(config.SelectedPlaylist);
-
-            if (config.SelectedTrack > -1)
-            {
-                SelectedTrack = SelectedPlaylist.Tracks[config.SelectedTrack];
-            }
-            IsLoopEnabled = config.IsLoopEnabled;
-            IsShuffleEnabled = config.IsShuffleEnabled;
-            foreach (Playlist lst in Playlists)
-            {
-                lst.LoadList();
-            }
-            favoritePlaylist.LoadList();
-            if (config.Queue != null) { Queue = config.Queue; Queue.Initialize(Playlists); }
             AsyncTrackLoader.Instance.RunAsync(Playlists.ToList());
            
         }
@@ -217,7 +223,7 @@ namespace Hurricane.Music
         #endregion
 
         #region Public Methods
-        public void RegisterPlaylist(Playlist playlist)
+        public void RegisterPlaylist(NormalPlaylist playlist)
         {
             playlist.LoadList();
         }
@@ -356,7 +362,7 @@ namespace Hurricane.Music
 
         public int PlaylistToIndex(IPlaylist playlist)
         {
-            if (playlist is Playlist) return Playlists.IndexOf((Playlist)playlist);
+            if (playlist is NormalPlaylist) return Playlists.IndexOf((NormalPlaylist)playlist);
             if (playlist is FavoriteList) return -1;
             return -10;
         }
@@ -373,6 +379,7 @@ namespace Hurricane.Music
             {
                 CSCoreEngine.Dispose();
                 ApiServer.Dispose();
+                DownloadManager.Dispose();
             }
         }
 

@@ -7,6 +7,7 @@ using System.Windows;
 using System.Xml.Serialization;
 using Hurricane.MagicArrow.DockManager;
 using Hurricane.Music;
+using Hurricane.Music.Download;
 using Hurricane.Notification;
 using Hurricane.Settings.Themes;
 
@@ -67,6 +68,10 @@ namespace Hurricane.Settings
         public bool SaveCoverLocal { get; set; }
         public bool TrimTrackname { get; set; }
 
+        //Download
+        public string DownloadDirectory { get; set; }
+        public bool DownloadAddTags { get; set; }
+
         private List<LanguageInfo> _languages;
         [XmlIgnore]
         public List<LanguageInfo> Languages
@@ -123,6 +128,8 @@ namespace Hurricane.Settings
             Latency = 100;
             IsCrossfadeEnabled = false;
             CrossfadeDuration = 6;
+            DownloadDirectory = Path.Combine(HurricaneSettings.Instance.BaseDirectory, "Downloads");
+            DownloadAddTags = true;
         }
 
         public ConfigSettings()

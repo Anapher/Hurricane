@@ -253,4 +253,8 @@
     <system:String x:Key="OpenUrl">Open url</system:String>
     <system:String x:Key="Download">Download</system:String>
     <system:String x:Key="Views">Views</system:String>
+    <system:String x:Key="NothingFound">No results found</system:String>
+    <system:String x:Key="NoTracksFound">No tracks found</system:String>
+    <system:String x:Key="AddToPlaylist">Add to playlist</system:String>
+    <system:String x:Key="Downloads">Downloads</system:String>
 </ResourceDictionary>

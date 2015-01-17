@@ -8,6 +8,22 @@
         DataContext="{x:Static viewmodels:MainViewModel.Instance}"
         Title="Hurricane" SizeToContent="Manual" x:Name="window" Icon="/Resources/App/icon.ico"
         IsWindowDraggable="False" GlowBrush="{DynamicResource AccentColorBrush}" ShowIconOnTitleBar="False" Height="400" Width="500">
+    <controls:MetroWindow.Flyouts>
+        <controls:FlyoutsControl>
+            <controls:Flyout IsOpen="{Binding MusicManager.DownloadManager.IsOpen}" Position="Right" Width="300" Header="{DynamicResource Downloads}" Theme="Adapt">
+                <ItemsControl ItemsSource="{Binding MusicManager.DownloadManager.Entries}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Vertical" Margin="5">
+                                <TextBlock Text="{Binding Trackname}" FontSize="16"/>
+                                <controls:MetroProgressBar Value="{Binding Progress}" IsIndeterminate="{Binding IsWaiting}" Margin="0,5,0,0"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </controls:Flyout>
+        </controls:FlyoutsControl>
+    </controls:MetroWindow.Flyouts>
     <Window.Resources>
         <converter:TrueFalseValueConverter x:Key="PlayPauseConverter" TrueValue="pack://application:,,,/Hurricane;component/Resources/MediaIcons/ThumbButtons/pause.png" FalseValue="pack://application:,,,/Hurricane;component/Resources/MediaIcons/ThumbButtons/play.png"/>
     </Window.Resources>

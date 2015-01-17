@@ -39,6 +39,7 @@ namespace Hurricane.Music.Track
             ArtworkUrl = result.artwork_url != null ? result.artwork_url.Replace("large.jpg", "{0}.jpg") : string.Empty;
             Artist = result.user.username;
             Genres = result.genre;
+            SoundCloudID = result.id;
 
             using (var soundSource = await GetSoundSource())
             {

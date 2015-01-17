@@ -3,16 +3,17 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using System.Windows.Threading;
+using System.Xml.Serialization;
 using Hurricane.Music.MusicDatabase.EventArgs;
 using Hurricane.Music.Track;
 
-namespace Hurricane.Music.Data
+namespace Hurricane.Music.Playlist
 {
-    [Serializable]
-    public class Playlist : PlaylistBase
+    [Serializable, XmlType(TypeName = "Playlist")]
+    public class NormalPlaylist : PlaylistBase
     {
-        private String _name;
-        public override String Name
+        private string _name;
+        public override string Name
         {
             get { return _name; }
             set
@@ -35,7 +36,7 @@ namespace Hurricane.Music.Data
                     AddTrack(t);
                 }
             }
-            AsyncTrackLoader.Instance.RunAsync(new List<Playlist> {this});
+            AsyncTrackLoader.Instance.RunAsync(new List<NormalPlaylist> {this});
         }
 
         public async Task AddFiles(params string[] paths)

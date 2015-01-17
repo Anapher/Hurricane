@@ -17,13 +17,12 @@ namespace Hurricane.Music.MusicDatabase
             if (string.IsNullOrEmpty(track.Album)) return null;
             if (di.Exists)
             {
+                // ReSharper disable once LoopCanBeConvertedToQuery
                 foreach (var item in di.GetFiles("*.png"))
                 {
                     if (GeneralHelper.EscapeFilename(track.Album).ToLower() == Path.GetFileNameWithoutExtension(item.FullName).ToLower())
                     {
-                        var img = new BitmapImage(new Uri(item.FullName));
-                        img.Freeze();
-                        return img;
+                        return new BitmapImage(new Uri(item.FullName));
                     }
                 }
             }

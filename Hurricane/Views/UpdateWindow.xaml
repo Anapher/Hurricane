@@ -43,7 +43,9 @@
                 </Grid.ColumnDefinitions>
                 <controls:MetroProgressBar VerticalAlignment="Center" Value="{Binding ElementName=window,Path=UpdateService.ProgressState}" Foreground="{StaticResource NormalColorBrush}"/>
                 <Button Style="{DynamicResource MetroCircleButtonStyle}" Width="24" Height="24" Grid.Column="1" x:Name="btncancel" Click="btncancel_Click">
-                    <Viewbox Child="{StaticResource VectorX}" Width="6" Height="6" Stretch="UniformToFill"/>
+                    <Viewbox Width="6" Height="6" Stretch="UniformToFill">
+                        <Path Data="{StaticResource VectorX}"/>
+                    </Viewbox>
                 </Button>
             </Grid>
             <Button Content="{StaticResource Update}" Margin="10" Click="Button_Click"/>

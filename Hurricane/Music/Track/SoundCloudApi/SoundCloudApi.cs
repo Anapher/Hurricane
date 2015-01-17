@@ -58,7 +58,8 @@ namespace Hurricane.Music.Track.SoundCloudApi
                     Uploader = x.user.username,
                     Result = x,
                     Views = x.playback_count,
-                    ImageUrl = x.artwork_url
+                    ImageUrl = x.artwork_url,
+                    Url = x.permalink_url
                 }).ToList();
             }
         }

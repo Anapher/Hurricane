@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Hurricane.Music.Data;
+using Hurricane.Music.Playlist;
 using Hurricane.Music.Track;
 
 namespace Hurricane.Music
@@ -17,15 +17,15 @@ namespace Hurricane.Music
 
         private AsyncTrackLoader()
         {
-            PlaylistsToCheck = new List<Playlist>();
+            PlaylistsToCheck = new List<NormalPlaylist>();
         }
 
         private bool _isrunning;
 
-        public List<Playlist> PlaylistsToCheck { get; set; }
+        public List<NormalPlaylist> PlaylistsToCheck { get; set; }
 
         private bool havetocheck;
-        public void RunAsync(List<Playlist> lst)
+        public void RunAsync(List<NormalPlaylist> lst)
         {
             PlaylistsToCheck.AddRange(lst.Where(p => !PlaylistsToCheck.Contains(p))); //We only add tracks which aren't already in our queue
             havetocheck = true;

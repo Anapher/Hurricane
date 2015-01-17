@@ -86,9 +86,6 @@
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
-    <Reference Include="System.Net" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Net.Http.WebRequest" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
@@ -131,8 +128,10 @@
     <Compile Include="AppMainWindow\Messages\MessageDialog.cs" />
     <Compile Include="AppMainWindow\Messages\MessageManager.cs" />
     <Compile Include="AppMainWindow\Messages\ProgressDialog.cs" />
+    <Compile Include="Extensions\AnimatedFrameworkElement.cs" />
     <Compile Include="Extensions\AnimatedListView.cs" />
     <Compile Include="Extensions\AnimatedStackPanel.cs" />
+    <Compile Include="Extensions\ControlDoubleClick.cs" />
     <Compile Include="Extensions\Converter\CollapsedOnNullValue.cs" />
     <Compile Include="Extensions\Converter\FalseOnNullValue.cs" />
     <Compile Include="Extensions\Converter\FormatLargeNumber.cs" />
@@ -144,7 +143,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Extensions\Converter\TimespanToMinutesSecounds.cs" />
+    <Compile Include="Extensions\GridViewSort.cs" />
     <Compile Include="Extensions\ImageFromFont.cs" />
+    <Compile Include="Extensions\VectorMenuItem.cs" />
     <Compile Include="Extensions\ListViewLayoutManager\ConverterGridViewColumn.cs" />
     <Compile Include="Extensions\ListViewLayoutManager\FixedColumn.cs" />
     <Compile Include="Extensions\ListViewLayoutManager\ImageGridViewColumn.cs" />
@@ -172,11 +173,13 @@
     </Compile>
     <Compile Include="Music\AsyncTrackLoader.cs" />
     <Compile Include="Music\Data\AudioDevice.cs" />
-    <Compile Include="Music\Data\FavoriteList.cs" />
+    <Compile Include="Music\Download\DownloadEntry.cs" />
+    <Compile Include="Music\Download\DownloadManager.cs" />
+    <Compile Include="Music\Playlist\FavoriteList.cs" />
     <Compile Include="Music\Data\IRepresentable.cs" />
     <Compile Include="Music\Data\SoundOutRepresenter.cs" />
     <Compile Include="Music\Equalizer\EqualizerBand.cs" />
-    <Compile Include="Music\Data\IPlaylist.cs" />
+    <Compile Include="Music\Playlist\IPlaylist.cs" />
     <Compile Include="Music\MusicDatabase\EventArgs\EqualizerChangedEventArgs.cs" />
     <Compile Include="Music\Equalizer\EqualizerSettings.cs" />
     <Compile Include="Music\MusicDatabase\EventArgs\PlaybackStateChangedEventArgs.cs" />
@@ -188,7 +191,7 @@
     <Compile Include="Music\MusicDatabase\MusicCoverManager.cs" />
     <Compile Include="Music\MusicDatabase\track.cs" />
     <Compile Include="Music\MusicManagerCommands.cs" />
-    <Compile Include="Music\Data\PlaylistBase.cs" />
+    <Compile Include="Music\Playlist\PlaylistBase.cs" />
     <Compile Include="Music\QueueManager.cs" />
     <Compile Include="Music\Data\TrackComparer.cs" />
     <Compile Include="Music\Data\TrackPlaylistPair.cs" />
@@ -369,6 +372,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Resources\Styles\VectorMenuItem.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Resources\Styles\MetroWindowStyle.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -536,7 +543,7 @@
     <Compile Include="Music\CSCoreEngine.cs" />
     <Compile Include="Music\MusicDatabase\EventArgs\TrackChangedEventArgs.cs" />
     <Compile Include="Music\MusicManager.cs" />
-    <Compile Include="Music\Data\Playlist.cs" />
+    <Compile Include="Music\Playlist\NormalPlaylist.cs" />
     <Compile Include="Music\Visualization\SampleAnalyser.cs" />
     <Compile Include="Resources\Styles\DragDropListView\DragAdorner.cs" />
     <Compile Include="Resources\Styles\DragDropListView\ListViewDragDropManager.cs" />

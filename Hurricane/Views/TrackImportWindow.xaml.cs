@@ -1,6 +1,5 @@
 ﻿using System.Collections.ObjectModel;
-using Hurricane.Music;
-using Hurricane.Music.Data;
+using Hurricane.Music.Playlist;
 using MahApps.Metro.Controls;
 
 namespace Hurricane.Views
@@ -10,7 +9,7 @@ namespace Hurricane.Views
     /// </summary>
     public partial class TrackImportWindow : MetroWindow
     {
-        public TrackImportWindow(ObservableCollection<Playlist> playlists, Playlist selectedplaylist, string trackname)
+        public TrackImportWindow(ObservableCollection<NormalPlaylist> playlists, NormalPlaylist selectedplaylist, string trackname)
         {
             this.Playlists = playlists;
             this.SelectedPlaylist = selectedplaylist;
@@ -18,8 +17,8 @@ namespace Hurricane.Views
             InitializeComponent();
         }
 
-        public Playlist SelectedPlaylist { get; set; }
-        public ObservableCollection<Playlist> Playlists { get; set; }
+        public NormalPlaylist SelectedPlaylist { get; set; }
+        public ObservableCollection<NormalPlaylist> Playlists { get; set; }
         public string Trackname { get; set; }
         public bool RememberChoice { get; set; }
         public bool RememberAlsoAfterRestart { get; set; }

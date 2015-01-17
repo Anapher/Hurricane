@@ -16,6 +16,12 @@
             </ResourceDictionary.MergedDictionaries>
             
             <SolidColorBrush x:Key="SpectrumAnalyzerBrush" Color="Blue"/>
+            
+            <Style TargetType="{x:Type ListView}" x:Key="VisualizingListView">
+                <Setter Property="VirtualizingStackPanel.IsVirtualizing" Value="True"/>
+                <Setter Property="VirtualizingStackPanel.VirtualizationMode" Value="Recycling"/>
+                <Setter Property="VirtualizingStackPanel.IsVirtualizingWhenGrouping" Value="True"/>
+            </Style>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

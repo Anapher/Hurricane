@@ -2,7 +2,7 @@
 using System.ComponentModel;
 using Hurricane.Music.Track;
 
-namespace Hurricane.Music.Data
+namespace Hurricane.Music.Playlist
 {
     public interface IPlaylist
     {

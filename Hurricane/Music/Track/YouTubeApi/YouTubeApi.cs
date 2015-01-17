@@ -23,7 +23,7 @@ namespace Hurricane.Music.Track.YouTubeApi
                     GeneralHelper.EscapeTitleName(searchText));
                 var resultstr = await web.DownloadStringTaskAsync(link);
                 var result = JsonConvert.DeserializeObject<ApiResult>(resultstr);
-                if (result.feed.entry.Count == 0) return new List<YouTubeWebTrackResult>();
+                if (result.feed == null || result.feed.entry == null || result.feed.entry.Count == 0) return new List<YouTubeWebTrackResult>();
                 return result.feed.entry.Select(x => new YouTubeWebTrackResult
                 {
                     Duration = TimeSpan.FromSeconds(int.Parse(x.MediaGroup.Duration.seconds)),
@@ -32,7 +32,8 @@ namespace Hurricane.Music.Track.YouTubeApi
                     Result = x,
                     ReleaseYear = (uint)DateTime.Parse(x.published.Date).Year,
                     ImageUrl = x.MediaGroup.Thumbnails.First().url,
-                    Views = x.Statistics != null ? int.Parse(x.Statistics.viewCount) : 0
+                    Views = x.Statistics != null ? int.Parse(x.Statistics.viewCount) : 0,
+                    Url = x.link.First().href
                 }).ToList();
             }
         }

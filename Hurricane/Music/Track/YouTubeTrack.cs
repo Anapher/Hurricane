@@ -25,7 +25,7 @@ namespace Hurricane.Music.Track
         {
             var youtubeMatch = Regex.Match(YouTubeLink, @"youtu(?:\.be|be\.com)/(?:.*v(?:/|=)|(?:.*/)?)([a-zA-Z0-9-_]+)");
             if (!youtubeMatch.Success) return false;
-            YouTubeId = youtubeMatch.Groups[0].Value;
+            YouTubeId = youtubeMatch.Groups[youtubeMatch.Groups.Count - 1].Value;
             using (var client = new WebClient {Proxy = null})
             {
                 return await LoadInformation(JsonConvert.DeserializeObject<SingleVideoSearchResult>(await client.DownloadStringTaskAsync(string.Format("http://gdata.youtube.com/feeds/api/videos/{0}?v=2&alt=jsonc", YouTubeId))));
@@ -84,6 +84,7 @@ namespace Hurricane.Music.Track
             Process.Start(YouTubeLink);
         }
 
+        private bool _tryagain;
         public async override Task<IWaveSource> GetSoundSource()
         {
             using (var p = new Process()
@@ -100,6 +101,12 @@ namespace Hurricane.Music.Track
             {
                 p.Start();
                 var url = await p.StandardOutput.ReadToEndAsync();
+                if (string.IsNullOrEmpty(url))
+                {
+                    if (_tryagain) throw new Exception(url);
+                    _tryagain = true;
+                    return await GetSoundSource();
+                }
                 if (!url.ToLower().StartsWith("error"))
                 {
                     return await Task.Run(() => CodecFactory.Instance.GetCodec(new Uri(url)));

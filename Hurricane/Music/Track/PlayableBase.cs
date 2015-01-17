@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 using System.Xml.Serialization;
@@ -12,7 +9,7 @@ using Hurricane.ViewModelBase;
 
 namespace Hurricane.Music.Track
 {
-    [Serializable, XmlInclude(typeof(LocalTrack)), XmlInclude(typeof(SoundCloudTrack))]
+    [Serializable, XmlInclude(typeof(LocalTrack)), XmlInclude(typeof(SoundCloudTrack)), XmlInclude(typeof(YouTubeTrack)), XmlType(TypeName = "Playable")]
     public abstract class PlayableBase : PropertyChangedBase, IEquatable<PlayableBase>, IRepresentable
     {
         #region Events
@@ -81,6 +78,7 @@ namespace Hurricane.Music.Track
             get { return _image; }
             set
             {
+                if (value != null && !value.IsFrozen) value.Freeze(); //The image has to be thread save
                 SetProperty(value, ref _image);
             }
         }

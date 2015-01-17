@@ -13,6 +13,7 @@ using Hurricane.Settings.Themes;
 using Hurricane.Utilities;
 using Hurricane.ViewModelBase;
 using Hurricane.Views;
+using System.Threading.Tasks;
 
 namespace Hurricane.ViewModels
 {
@@ -54,15 +55,26 @@ namespace Hurricane.ViewModels
         {
             get
             {
-                return _applychanges ?? (_applychanges = new RelayCommand(parameter =>
+                return _applychanges ?? (_applychanges = new RelayCommand(async parameter =>
                 {
                     ConfigSettings original = HurricaneSettings.Instance.Config;
                     HurricaneSettings.Instance.Config = Config;
                     if (Config.SoundOutDeviceID != original.SoundOutDeviceID || Config.SoundOutMode != original.SoundOutMode) { MusicManager.CSCoreEngine.UpdateSoundOut(); }
                     if (original.Language != Config.Language) { Config.LoadLanguage(); }
                     if (Config.Theme.UseCustomSpectrumAnalyzerColor && string.IsNullOrEmpty(Config.Theme.SpectrumAnalyzerHexColor)) Config.Theme.SpectrumAnalyzerColor = Colors.Black;
-                    if (original.Theme != Config.Theme) { Config.Theme.LoadTheme(); }
-                    if (original.Theme.BaseTheme != Config.Theme.BaseTheme) Config.Theme.LoadBaseTheme();
+
+                    if (original.Theme != Config.Theme || original.Theme.BaseTheme != Config.Theme.BaseTheme)
+                    {
+                        var window = Application.Current.MainWindow as MainWindow;
+                        if (window != null)
+                        {
+                            await window.MoveOut();
+                            if (original.Theme != Config.Theme) { await Task.Run(() => Config.Theme.LoadTheme()); }
+                            if (original.Theme.BaseTheme != Config.Theme.BaseTheme){await Task.Run(() => Config.Theme.LoadBaseTheme());}
+                            await window.ResetAndMoveIn();
+                        }
+                    }
+
                     if (original.ApiIsEnabled != Config.ApiIsEnabled) { if (Config.ApiIsEnabled) { ApiServer.StartListening(); } else { ApiServer.StopListening(); } }
                     Config = ObjectCopier.Clone(HurricaneSettings.Instance.Config);
                     OnPropertyChanged("CanApply");

@@ -11,6 +11,7 @@
              xmlns:jas="clr-namespace:Hurricane.Resources.Styles.DragDropListView.ServiceProviders.UI"
              xmlns:ctrl="clr-namespace:Hurricane.Extensions.ListViewLayoutManager"
              xmlns:userControls="clr-namespace:Hurricane.Views.UserControls"
+             xmlns:track="clr-namespace:Hurricane.Music.Track"
              mc:Ignorable="d"
              d:DesignHeight="500" d:DesignWidth="1000" DataContext="{x:Static viewmodels:MainViewModel.Instance}">
     <UserControl.Resources>
@@ -19,6 +20,7 @@
                 <ResourceDictionary Source="/Resources/Styles/AdvancedTimelineSlider.xaml"/>
                 <ResourceDictionary Source="/Resources/Styles/RoundButtons.xaml"/>
                 <ResourceDictionary Source="/Resources/Styles/FavoriteToggleButton.xaml"/>
+                <ResourceDictionary Source="/Resources/Styles/VectorMenuItem.xaml"/>
             </ResourceDictionary.MergedDictionaries>
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
             <converter:FormatTimespan x:Key="FormatTimespan"/>
@@ -42,7 +44,7 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
-        <Grid MouseLeftButtonDown="Titlebar_MouseLeftButtonDown" MouseLeftButtonUp="Titlebar_MouseLeftButtonUp" MouseMove="Titlebar_OnMouseMove" Background="{DynamicResource WhiteColorBrush}">
+        <Grid MouseLeftButtonDown="Titlebar_MouseLeftButtonDown" MouseLeftButtonUp="Titlebar_MouseLeftButtonUp" MouseMove="Titlebar_OnMouseMove" Background="{StaticResource WhiteColorBrush}">
             <TextBlock Text="Hurricane" Foreground="#FFAAAAAA" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Center"/>
         </Grid>
         <TabControl Grid.Row="1" SelectedIndex="{Binding MainTabControlIndex}">
@@ -81,7 +83,7 @@
                         <MenuItem Header="Online" Command="{Binding OpenOnlineSection}"/>
                     </Menu>
                     <TextBox Grid.Column="5" Margin="0,0,10,0" x:Name="txtSearch" VerticalAlignment="Center" controls:TextBoxHelper.ClearTextButton="True" HorizontalAlignment="Right" Width="200" controls:TextBoxHelper.Watermark="{StaticResource Search}" Text="{Binding MusicManager.SelectedPlaylist.SearchText,UpdateSourceTrigger=PropertyChanged}"/>
-                    <ListBox Grid.Row="1" ItemsSource="{Binding MusicManager.Playlists}" DisplayMemberPath="Name" SelectedItem="{Binding MusicManager.SelectedPlaylist}" Margin="5">
+                    <ListBox ItemsSource="{Binding MusicManager.Playlists}" Grid.Row="1" DisplayMemberPath="Name" SelectedItem="{Binding MusicManager.SelectedPlaylist}" Margin="5">
                         <ListBox.InputBindings>
                             <KeyBinding Key="Delete" Command="{Binding RemovePlaylist}"/>
                         </ListBox.InputBindings>
@@ -103,253 +105,260 @@
                             <RowDefinition Height="auto"/>
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
-                        <extensions:AnimatedListView SelectionMode="Extended" Grid.Row="1" ItemsSource="{Binding MusicManager.SelectedPlaylist.ViewSource}" SelectedItem="{Binding MusicManager.SelectedTrack}" BorderThickness="0" Margin="5,0,5,0" SelectionChanged="ListView_SelectionChanged"
-                                  DragEnter="ListView_DragEnter" Drop="ListView_Drop" x:Name="listview" ctrl:ListViewLayoutManager.Enabled="True">
-                            <ListView.Resources>
-                                <ContextMenu x:Key="FileContextMenu" DataContext="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}, Path=DataContext}">
-                                    <MenuItem Header="{DynamicResource Play}" Command="{Binding MusicManager.Commands.PlaySelectedTrack}" IsEnabled="{Binding MusicManager.SelectedTrack.TrackExists}" InputGestureText="Enter"/>
-                                    <Separator />
-                                    <MenuItem Header="{DynamicResource AddTracks}" IsEnabled="{Binding MusicManager.SelectedPlaylist.CanEdit}">
-                                        <MenuItem Header="{DynamicResource AddFiles}" Command="{Binding AddFilesToPlaylist}" InputGestureText="{DynamicResource Ins}"/>
-                                        <MenuItem Header="{DynamicResource AddDirectories}" Command="{Binding AddFolderToPlaylist}" InputGestureText="{DynamicResource CtrlIns}"/>
-                                    </MenuItem>
-                                    <Separator />
-                                    <MenuItem Header="{DynamicResource Queue}">
-                                        <MenuItem Header="{DynamicResource AddToQueue}" Command="{Binding MusicManager.Commands.AddTrackToQueue}" InputGestureText="Q"/>
-                                        <MenuItem Header="{DynamicResource RemoveFromQueue}" Command="{Binding MusicManager.Commands.RemoveFromQueue}" InputGestureText="Alt+Q"/>
-                                        <MenuItem Header="{DynamicResource ClearQueue}" Command="{Binding MusicManager.Commands.ClearQueue}" IsEnabled="{Binding MusicManager.Queue.HasTracks}"/>
+                        <Grid Margin="5,0,5,0" Grid.Row="1">
+                            <extensions:AnimatedListView SelectionMode="Extended" ItemsSource="{Binding MusicManager.SelectedPlaylist.ViewSource}" SelectedItem="{Binding MusicManager.SelectedTrack}" BorderThickness="0" SelectionChanged="ListView_SelectionChanged"
+                                  DragEnter="ListView_DragEnter" Drop="ListView_Drop" x:Name="listview" ctrl:ListViewLayoutManager.Enabled="True" Style="{StaticResource VisualizingListView}">
+                                <ListView.Resources>
+                                    <ContextMenu x:Key="FileContextMenu" DataContext="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}, Path=DataContext}">
+                                        <MenuItem Header="{DynamicResource Play}" Command="{Binding MusicManager.Commands.PlaySelectedTrack}" IsEnabled="{Binding MusicManager.SelectedTrack.TrackExists}" InputGestureText="Enter"/>
                                         <Separator />
-                                        <MenuItem Header="{DynamicResource QueueManager}" Command="{Binding OpenQueueManager}" InputGestureText="{DynamicResource CtrlQ}"/>
-                                    </MenuItem>
-                                    <Separator />
-                                    <MenuItem Header="{DynamicResource TrackInformation}" Command="{Binding OpenTrackInformation}" IsEnabled="{Binding MusicManager.SelectedTrack.TrackExists}" InputGestureText="F4"/>
-                                    <MenuItem Header="{DynamicResource TagEditor}" Command="{Binding OpenTagEditor}" IsEnabled="{Binding MusicManager.SelectedTrack.TrackExists}" InputGestureText="F3"/>
-                                    <MenuItem Header="{DynamicResource FileLocation}" Command="{Binding MusicManager.Commands.OpenTrackLocation}" InputGestureText="Alt+O" IsEnabled="{Binding MusicManager.SelectedTrack.TrackExists}"/>
-                                    <Separator />
-                                    <MenuItem Header="{DynamicResource Remove}" Command="{Binding RemoveSelectedTracks}" InputGestureText="{DynamicResource Del}"/>
-                                </ContextMenu>
-                                <ContextMenu x:Key="StreamContextMenu" DataContext="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}, Path=DataContext}">
-                                    <MenuItem Header="{DynamicResource Play}" Command="{Binding MusicManager.Commands.PlaySelectedTrack}" InputGestureText="Enter"/>
-                                    <Separator />
-                                    <MenuItem Header="{DynamicResource AddTracks}" IsEnabled="{Binding MusicManager.SelectedPlaylist.CanEdit}">
-                                        <MenuItem Header="{DynamicResource AddFiles}" Command="{Binding AddFilesToPlaylist}" InputGestureText="{DynamicResource Ins}"/>
-                                        <MenuItem Header="{DynamicResource AddDirectories}" Command="{Binding AddFolderToPlaylist}" InputGestureText="{DynamicResource CtrlIns}"/>
-                                    </MenuItem>
-                                    <Separator />
-                                    <MenuItem Header="{DynamicResource Queue}">
-                                        <MenuItem Header="{DynamicResource AddToQueue}" Command="{Binding MusicManager.Commands.AddTrackToQueue}" InputGestureText="Q"/>
-                                        <MenuItem Header="{DynamicResource RemoveFromQueue}" Command="{Binding MusicManager.Commands.RemoveFromQueue}" InputGestureText="Alt+Q"/>
-                                        <MenuItem Header="{DynamicResource ClearQueue}" Command="{Binding MusicManager.Commands.ClearQueue}" IsEnabled="{Binding MusicManager.Queue.HasTracks}"/>
+                                        <MenuItem Header="{DynamicResource AddTracks}" IsEnabled="{Binding MusicManager.SelectedPlaylist.CanEdit}">
+                                            <MenuItem Header="{DynamicResource AddFiles}" Command="{Binding AddFilesToPlaylist}" InputGestureText="{DynamicResource Ins}"/>
+                                            <MenuItem Header="{DynamicResource AddDirectories}" Command="{Binding AddFolderToPlaylist}" InputGestureText="{DynamicResource CtrlIns}"/>
+                                        </MenuItem>
                                         <Separator />
-                                        <MenuItem Header="{DynamicResource QueueManager}" Command="{Binding OpenQueueManager}" InputGestureText="{DynamicResource CtrlQ}"/>
-                                    </MenuItem>
-                                    <Separator />
-                                    
-                                    <MenuItem Header="{DynamicResource TrackInformation}" Command="{Binding OpenTrackInformation}" InputGestureText="F4"/>
-                                    <MenuItem Header="{DynamicResource Download}" Command="{Binding OpenTagEditor}" InputGestureText="F3"/>
-                                    <MenuItem Header="{DynamicResource OpenUrl}" Command="{Binding MusicManager.Commands.OpenTrackLocation}" InputGestureText="Alt+O"/>
-                                    <Separator />
-                                    <MenuItem Header="{DynamicResource Remove}" Command="{Binding RemoveSelectedTracks}" InputGestureText="{DynamicResource Del}"/>
-                                </ContextMenu>
-                                <Style TargetType="TextBlock" x:Key="ListTextBlockStyle">
-                                    <Setter Property="Foreground" Value="{DynamicResource BlackBrush}"/>
-                                    <Style.Triggers>
-                                        <MultiDataTrigger>
-                                            <MultiDataTrigger.Conditions>
-                                                <Condition Binding="{Binding RelativeSource={RelativeSource AncestorType={x:Type ListViewItem}}, Path=IsSelected}" Value="False"/>
-                                                <Condition Binding="{Binding IsPlaying}" Value="True"/>
-                                            </MultiDataTrigger.Conditions>
-                                            <Setter Property="Foreground" Value="{DynamicResource NormalColorBrush}"/>
-                                        </MultiDataTrigger>
-                                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType={x:Type ListViewItem}}, Path=IsSelected}" Value="True">
-                                            <Setter Property="Foreground" Value="{DynamicResource AccentSelectedColorBrush}"/>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                                <Style TargetType="{x:Type GridViewColumnHeader}">
-                                    <Setter Property="Visibility" Value="Collapsed" />
-                                </Style>
-                                <converter:TrueFalseValueConverter x:Key="TrueFalseValueConverter" FalseValue="#FFB4B4B4" TrueValue="White"/>
-                            </ListView.Resources>
-                            <ListView.InputBindings>
-                                <KeyBinding Key="Delete" Command="{Binding RemoveSelectedTracks}" CommandParameter="{Binding ElementName=listview,Path=SelectedItems}"/>
-                                <KeyBinding Key="Enter" Command="{Binding MusicManager.Commands.PlaySelectedTrack}"/>
-                                <KeyBinding Key="O" Modifiers="Alt" Command="{Binding MusicManager.Commands.OpenTrackLocation}"/>
-                                <KeyBinding Key="Space" Command="{Binding MusicManager.Commands.TogglePlayPause}"/>
-                                <KeyBinding Key="Q" Command="{Binding MusicManager.Commands.AddTrackToQueue}"/>
-                                <KeyBinding Key="Q" Modifiers="Alt" Command="{Binding MusicManager.Commands.RemoveFromQueue}"/>
-                                <KeyBinding Key="Q" Modifiers="Control" Command="{Binding OpenQueueManager}"/>
-                                <KeyBinding Key="Insert" Command="{Binding AddFilesToPlaylist}"/>
-                                <KeyBinding Key="Insert" Modifiers="Control" Command="{Binding AddFolderToPlaylist}"/>
-                                <KeyBinding Key="F4" Command="{Binding OpenTrackInformation}"/>
-                                <KeyBinding Key="F3" Command="{Binding OpenTagEditor}"/>
-                            </ListView.InputBindings>
-                            <ListView.Style>
-                                <Style TargetType="{x:Type ListView}">
-                                    <Setter Property="VirtualizingStackPanel.IsVirtualizing" Value="True"/>
-                                    <Setter Property="VirtualizingStackPanel.VirtualizationMode" Value="Recycling"/>
-                                </Style>
-                            </ListView.Style>
-                            <ListView.ItemContainerStyle>
-                                <Style TargetType="ListViewItem" BasedOn="{StaticResource MetroListViewItem}">
-                                    <EventSetter Event="MouseDoubleClick" Handler="ListViewItem_MouseDoubleClick"></EventSetter>
-                                    <Setter Property="Padding" Value="0,4" />
-                                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-                                    <Setter Property="Border.BorderThickness" Value="0,0,0,0.5" />
-                                    <Setter Property="Border.BorderBrush" Value="LightGray" />
-                                    <Setter Property="LayoutTransform">
-                                        <Setter.Value>
-                                            <ScaleTransform x:Name="transform" />
-                                        </Setter.Value>
-                                    </Setter>
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding TrackType}" Value="File">
-                                            <Setter Property="ContextMenu" Value="{StaticResource FileContextMenu}"/>
-                                        </DataTrigger>
-                                        <DataTrigger Binding="{Binding TrackType}" Value="Stream">
-                                            <Setter Property="ContextMenu" Value="{StaticResource StreamContextMenu}"/>
-                                        </DataTrigger>
-                                        <Trigger Property="jas:ListViewItemDragState.IsBeingDragged" Value="True">
-                                            <Setter Property="FontWeight" Value="DemiBold" />
-                                        </Trigger>
-                                        <Trigger Property="jas:ListViewItemDragState.IsUnderDragCursor" Value="True">
-                                            <Setter Property="Background" Value="#7FD3D3D3" />
-                                        </Trigger>
-                                        <DataTrigger Binding="{Binding TrackExists}" Value="False">
-                                            <Setter Property="Background" Value="#FFF2F2F2"/>
-                                        </DataTrigger>
-                                        <DataTrigger Binding="{Binding IsRemoving}" Value="True">
-                                            <DataTrigger.EnterActions>
-                                                <BeginStoryboard>
-                                                    <Storyboard>
-                                                        <ThicknessAnimation To="-40,0,40,0" Duration="0:0:0.5" Storyboard.TargetProperty="Margin"/>
-                                                        <DoubleAnimation To="0" Duration="0:0:0.5" Storyboard.TargetProperty="Opacity"/>
-                                                    </Storyboard>
-                                                </BeginStoryboard>
-                                            </DataTrigger.EnterActions>
-                                        </DataTrigger>
-                                        <DataTrigger Binding="{Binding IsAdded}" Value="True">
-                                            <DataTrigger.EnterActions>
-                                                <BeginStoryboard>
-                                                    <Storyboard>
-                                                        <ThicknessAnimation From="-40,0,40,0" To="0" Duration="0:0:0.5" Storyboard.TargetProperty="Margin" FillBehavior="Stop"/>
-                                                        <DoubleAnimation From="0" To="1" Duration="0:0:0.5" Storyboard.TargetProperty="Opacity" FillBehavior="Stop"/>
-                                                    </Storyboard>
-                                                </BeginStoryboard>
-                                            </DataTrigger.EnterActions>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </ListView.ItemContainerStyle>
-                            <ListView.View>
-                                <GridView>
-                                    <GridViewColumn Width="27">
-                                        <GridViewColumn.CellTemplate>
-                                            <DataTemplate>
-                                                <Grid Margin="5,0,0,0" Width="10">
-                                                    <TextBlock Text="{Binding QueueID}" HorizontalAlignment="Center"/>
-                                                    <!--We dont have to hide it because it gets automatically null-->
-                                                    <Viewbox Width="12" Height="12">
-                                                        <Path Data="{StaticResource VectorPlay}">
-                                                            <Path.Style>
+                                        <MenuItem Header="{DynamicResource Queue}">
+                                            <MenuItem Header="{DynamicResource AddToQueue}" Command="{Binding MusicManager.Commands.AddTrackToQueue}" InputGestureText="Q"/>
+                                            <MenuItem Header="{DynamicResource RemoveFromQueue}" Command="{Binding MusicManager.Commands.RemoveFromQueue}" InputGestureText="Alt+Q"/>
+                                            <MenuItem Header="{DynamicResource ClearQueue}" Command="{Binding MusicManager.Commands.ClearQueue}" IsEnabled="{Binding MusicManager.Queue.HasTracks}"/>
+                                            <Separator />
+                                            <MenuItem Header="{DynamicResource QueueManager}" Command="{Binding OpenQueueManager}" InputGestureText="{DynamicResource CtrlQ}"/>
+                                        </MenuItem>
+                                        <Separator />
+                                        <MenuItem Header="{DynamicResource TrackInformation}" Command="{Binding OpenTrackInformation}" IsEnabled="{Binding MusicManager.SelectedTrack.TrackExists}" InputGestureText="F4"/>
+                                        <MenuItem Header="{DynamicResource TagEditor}" Command="{Binding OpenTagEditor}" IsEnabled="{Binding MusicManager.SelectedTrack.TrackExists}" InputGestureText="F3"/>
+                                        <MenuItem Header="{DynamicResource FileLocation}" Command="{Binding MusicManager.Commands.OpenTrackLocation}" InputGestureText="Alt+O" IsEnabled="{Binding MusicManager.SelectedTrack.TrackExists}"/>
+                                        <Separator />
+                                        <MenuItem Header="{DynamicResource Remove}" Command="{Binding RemoveSelectedTracks}" InputGestureText="{DynamicResource Del}"/>
+                                    </ContextMenu>
+                                    <ContextMenu x:Key="StreamContextMenu" DataContext="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}, Path=DataContext}">
+                                        <MenuItem Header="{DynamicResource Play}" Command="{Binding MusicManager.Commands.PlaySelectedTrack}" InputGestureText="Enter"/>
+                                        <Separator />
+                                        <MenuItem Header="{DynamicResource AddTracks}" IsEnabled="{Binding MusicManager.SelectedPlaylist.CanEdit}">
+                                            <MenuItem Header="{DynamicResource AddFiles}" Command="{Binding AddFilesToPlaylist}" InputGestureText="{DynamicResource Ins}"/>
+                                            <MenuItem Header="{DynamicResource AddDirectories}" Command="{Binding AddFolderToPlaylist}" InputGestureText="{DynamicResource CtrlIns}"/>
+                                        </MenuItem>
+                                        <Separator />
+                                        <MenuItem Header="{DynamicResource Queue}">
+                                            <MenuItem Header="{DynamicResource AddToQueue}" Command="{Binding MusicManager.Commands.AddTrackToQueue}" InputGestureText="Q"/>
+                                            <MenuItem Header="{DynamicResource RemoveFromQueue}" Command="{Binding MusicManager.Commands.RemoveFromQueue}" InputGestureText="Alt+Q"/>
+                                            <MenuItem Header="{DynamicResource ClearQueue}" Command="{Binding MusicManager.Commands.ClearQueue}" IsEnabled="{Binding MusicManager.Queue.HasTracks}"/>
+                                            <Separator />
+                                            <MenuItem Header="{DynamicResource QueueManager}" Command="{Binding OpenQueueManager}" InputGestureText="{DynamicResource CtrlQ}"/>
+                                        </MenuItem>
+                                        <Separator />
+
+                                        <MenuItem Header="{DynamicResource TrackInformation}" Command="{Binding OpenTrackInformation}" InputGestureText="F4"/>
+                                        <MenuItem Header="{DynamicResource Download}" Command="{Binding OpenTagEditor}" InputGestureText="F3"/>
+                                        <MenuItem Header="{DynamicResource OpenUrl}" Command="{Binding MusicManager.Commands.OpenTrackLocation}" InputGestureText="Alt+O"/>
+                                        <Separator />
+                                        <MenuItem Header="{DynamicResource Remove}" Command="{Binding RemoveSelectedTracks}" InputGestureText="{DynamicResource Del}"/>
+                                    </ContextMenu>
+                                    <Style TargetType="TextBlock" x:Key="ListTextBlockStyle">
+                                        <Setter Property="Foreground" Value="{StaticResource BlackBrush}"/>
+                                        <Style.Triggers>
+                                            <MultiDataTrigger>
+                                                <MultiDataTrigger.Conditions>
+                                                    <Condition Binding="{Binding RelativeSource={RelativeSource AncestorType={x:Type ListViewItem}}, Path=IsSelected}" Value="False"/>
+                                                    <Condition Binding="{Binding IsPlaying}" Value="True"/>
+                                                </MultiDataTrigger.Conditions>
+                                                <Setter Property="Foreground" Value="{StaticResource NormalColorBrush}"/>
+                                            </MultiDataTrigger>
+                                            <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType={x:Type ListViewItem}}, Path=IsSelected}" Value="True">
+                                                <Setter Property="Foreground" Value="{StaticResource AccentSelectedColorBrush}"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                    <Style TargetType="{x:Type GridViewColumnHeader}">
+                                        <Setter Property="Visibility" Value="Collapsed" />
+                                    </Style>
+                                    <converter:TrueFalseValueConverter x:Key="TrueFalseValueConverter" FalseValue="#FFB4B4B4" TrueValue="White"/>
+                                </ListView.Resources>
+                                <ListView.InputBindings>
+                                    <KeyBinding Key="Delete" Command="{Binding RemoveSelectedTracks}" CommandParameter="{Binding ElementName=listview,Path=SelectedItems}"/>
+                                    <KeyBinding Key="Enter" Command="{Binding MusicManager.Commands.PlaySelectedTrack}"/>
+                                    <KeyBinding Key="O" Modifiers="Alt" Command="{Binding MusicManager.Commands.OpenTrackLocation}"/>
+                                    <KeyBinding Key="Space" Command="{Binding MusicManager.Commands.TogglePlayPause}"/>
+                                    <KeyBinding Key="Q" Command="{Binding MusicManager.Commands.AddTrackToQueue}"/>
+                                    <KeyBinding Key="Q" Modifiers="Alt" Command="{Binding MusicManager.Commands.RemoveFromQueue}"/>
+                                    <KeyBinding Key="Q" Modifiers="Control" Command="{Binding OpenQueueManager}"/>
+                                    <KeyBinding Key="Insert" Command="{Binding AddFilesToPlaylist}"/>
+                                    <KeyBinding Key="Insert" Modifiers="Control" Command="{Binding AddFolderToPlaylist}"/>
+                                    <KeyBinding Key="F4" Command="{Binding OpenTrackInformation}"/>
+                                    <KeyBinding Key="F3" Command="{Binding OpenTagEditor}"/>
+                                </ListView.InputBindings>
+                                <ListView.ItemContainerStyle>
+                                    <Style TargetType="ListViewItem" BasedOn="{StaticResource MetroListViewItem}">
+                                        <EventSetter Event="MouseDoubleClick" Handler="ListViewItem_MouseDoubleClick"/>
+                                        <Setter Property="Padding" Value="0,4" />
+                                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                                        <Setter Property="Border.BorderThickness" Value="0,0,0,0.5" />
+                                        <Setter Property="Border.BorderBrush" Value="LightGray" />
+                                        <Setter Property="LayoutTransform">
+                                            <Setter.Value>
+                                                <ScaleTransform x:Name="transform" />
+                                            </Setter.Value>
+                                        </Setter>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding TrackType}" Value="File">
+                                                <Setter Property="ContextMenu" Value="{StaticResource FileContextMenu}"/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding TrackType}" Value="Stream">
+                                                <Setter Property="ContextMenu" Value="{StaticResource StreamContextMenu}"/>
+                                            </DataTrigger>
+                                            <Trigger Property="jas:ListViewItemDragState.IsBeingDragged" Value="True">
+                                                <Setter Property="FontWeight" Value="DemiBold" />
+                                            </Trigger>
+                                            <Trigger Property="jas:ListViewItemDragState.IsUnderDragCursor" Value="True">
+                                                <Setter Property="Background" Value="#7FD3D3D3" />
+                                            </Trigger>
+                                            <DataTrigger Binding="{Binding TrackExists}" Value="False">
+                                                <Setter Property="Background" Value="#FFF2F2F2"/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding IsRemoving}" Value="True">
+                                                <DataTrigger.EnterActions>
+                                                    <BeginStoryboard>
+                                                        <Storyboard>
+                                                            <ThicknessAnimation To="-40,0,40,0" Duration="0:0:0.5" Storyboard.TargetProperty="Margin"/>
+                                                            <DoubleAnimation To="0" Duration="0:0:0.5" Storyboard.TargetProperty="Opacity"/>
+                                                        </Storyboard>
+                                                    </BeginStoryboard>
+                                                </DataTrigger.EnterActions>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding IsAdded}" Value="True">
+                                                <DataTrigger.EnterActions>
+                                                    <BeginStoryboard>
+                                                        <Storyboard>
+                                                            <ThicknessAnimation From="-40,0,40,0" To="0" Duration="0:0:0.5" Storyboard.TargetProperty="Margin" FillBehavior="Stop"/>
+                                                            <DoubleAnimation From="0" To="1" Duration="0:0:0.5" Storyboard.TargetProperty="Opacity" FillBehavior="Stop"/>
+                                                        </Storyboard>
+                                                    </BeginStoryboard>
+                                                </DataTrigger.EnterActions>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </ListView.ItemContainerStyle>
+                                <ListView.View>
+                                    <GridView>
+                                        <GridViewColumn Width="27">
+                                            <GridViewColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <Grid Margin="5,0,0,0" Width="10">
+                                                        <TextBlock Text="{Binding QueueID}" HorizontalAlignment="Center"/>
+                                                        <!--We dont have to hide it because it gets automatically null-->
+                                                        <Viewbox Width="12" Height="12">
+                                                            <Path Data="{StaticResource VectorPlay}">
+                                                                <Path.Style>
+                                                                    <Style TargetType="Path">
+                                                                        <Setter Property="Fill" Value="{StaticResource AccentColorBrush}"/>
+                                                                        <Style.Triggers>
+                                                                            <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType={x:Type ListViewItem}}, Path=IsSelected}" Value="True">
+                                                                                <Setter Property="Fill" Value="White"/>
+                                                                            </DataTrigger>
+                                                                        </Style.Triggers>
+                                                                    </Style>
+                                                                </Path.Style>
+                                                            </Path>
+                                                            <Viewbox.Style>
+                                                                <Style TargetType="Viewbox">
+                                                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                                                    <Style.Triggers>
+                                                                        <MultiDataTrigger>
+                                                                            <MultiDataTrigger.Conditions>
+                                                                                <Condition Binding="{Binding IsPlaying}" Value="True"/>
+                                                                                <Condition Binding="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=DataContext.MusicManager.CSCoreEngine.IsPlaying}" Value="True"/>
+                                                                            </MultiDataTrigger.Conditions>
+                                                                            <Setter Property="Visibility" Value="Visible"/>
+                                                                            <MultiDataTrigger.EnterActions>
+                                                                                <BeginStoryboard>
+                                                                                    <Storyboard>
+                                                                                        <ThicknessAnimation From="-5,0,5,0" To="0" Duration="0:0:0.4" Storyboard.TargetProperty="Margin"/>
+                                                                                        <DoubleAnimation From="0.5" To="1" Duration="0:0:0.2" Storyboard.TargetProperty="Opacity"/>
+                                                                                    </Storyboard>
+                                                                                </BeginStoryboard>
+                                                                            </MultiDataTrigger.EnterActions>
+                                                                        </MultiDataTrigger>
+                                                                    </Style.Triggers>
+                                                                </Style>
+                                                            </Viewbox.Style>
+                                                        </Viewbox>
+                                                        <Viewbox Width="12" Height="12">
+                                                            <Path Data="{StaticResource VectorPause}"/>
+                                                            <Viewbox.Resources>
                                                                 <Style TargetType="Path">
-                                                                    <Setter Property="Fill" Value="{DynamicResource AccentColorBrush}"/>
+                                                                    <Setter Property="Fill" Value="{StaticResource AccentColorBrush}"/>
                                                                     <Style.Triggers>
                                                                         <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType={x:Type ListViewItem}}, Path=IsSelected}" Value="True">
                                                                             <Setter Property="Fill" Value="White"/>
                                                                         </DataTrigger>
                                                                     </Style.Triggers>
                                                                 </Style>
-                                                            </Path.Style>
-                                                        </Path>
-                                                        <Viewbox.Style>
-                                                            <Style TargetType="Viewbox">
-                                                                <Setter Property="Visibility" Value="Collapsed"/>
-                                                                <Style.Triggers>
-                                                                    <MultiDataTrigger>
-                                                                        <MultiDataTrigger.Conditions>
-                                                                            <Condition Binding="{Binding IsPlaying}" Value="True"/>
-                                                                            <Condition Binding="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=DataContext.MusicManager.CSCoreEngine.IsPlaying}" Value="True"/>
-                                                                        </MultiDataTrigger.Conditions>
-                                                                        <Setter Property="Visibility" Value="Visible"/>
-                                                                        <MultiDataTrigger.EnterActions>
-                                                                            <BeginStoryboard>
-                                                                                <Storyboard>
-                                                                                    <ThicknessAnimation From="-5,0,5,0" To="0" Duration="0:0:0.4" Storyboard.TargetProperty="Margin"/>
-                                                                                    <DoubleAnimation From="0.5" To="1" Duration="0:0:0.2" Storyboard.TargetProperty="Opacity"/>
-                                                                                </Storyboard>
-                                                                            </BeginStoryboard>
-                                                                        </MultiDataTrigger.EnterActions>
-                                                                    </MultiDataTrigger>
-                                                                </Style.Triggers>
-                                                            </Style>
-                                                        </Viewbox.Style>
-                                                    </Viewbox>
-                                                    <Viewbox Width="12" Height="12">
-                                                        <Path Data="{StaticResource VectorPause}"/>
-                                                        <Viewbox.Resources>
-                                                            <Style TargetType="Path">
-                                                                <Setter Property="Fill" Value="{DynamicResource AccentColorBrush}"/>
-                                                                <Style.Triggers>
-                                                                    <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType={x:Type ListViewItem}}, Path=IsSelected}" Value="True">
-                                                                        <Setter Property="Fill" Value="White"/>
-                                                                    </DataTrigger>
-                                                                </Style.Triggers>
-                                                            </Style>
-                                                        </Viewbox.Resources>
-                                                        <Viewbox.Style>
-                                                            <Style TargetType="Viewbox">
-                                                                <Setter Property="Visibility" Value="Collapsed"/>
-                                                                <Style.Triggers>
-                                                                    <MultiDataTrigger>
-                                                                        <MultiDataTrigger.Conditions>
-                                                                            <Condition Binding="{Binding IsPlaying}" Value="True"/>
-                                                                            <Condition Binding="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=DataContext.MusicManager.CSCoreEngine.IsPlaying}" Value="False"/>
-                                                                        </MultiDataTrigger.Conditions>
-                                                                        <Setter Property="Visibility" Value="Visible"/>
-                                                                        <MultiDataTrigger.EnterActions>
-                                                                            <BeginStoryboard>
-                                                                                <Storyboard>
-                                                                                    <DoubleAnimation From="0.8" To="1" Duration="0:0:0.3" Storyboard.TargetProperty="Opacity"/>
-                                                                                </Storyboard>
-                                                                            </BeginStoryboard>
-                                                                        </MultiDataTrigger.EnterActions>
-                                                                    </MultiDataTrigger>
-                                                                </Style.Triggers>
-                                                            </Style>
-                                                        </Viewbox.Style>
-                                                    </Viewbox>
-                                                </Grid>
-                                            </DataTemplate>
-                                        </GridViewColumn.CellTemplate>
-                                    </GridViewColumn>
-                                    <GridViewColumn ctrl:ProportionalColumn.Width="1" Header="hallo">
-                                        <GridViewColumn.CellTemplate>
+                                                            </Viewbox.Resources>
+                                                            <Viewbox.Style>
+                                                                <Style TargetType="Viewbox">
+                                                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                                                    <Style.Triggers>
+                                                                        <MultiDataTrigger>
+                                                                            <MultiDataTrigger.Conditions>
+                                                                                <Condition Binding="{Binding IsPlaying}" Value="True"/>
+                                                                                <Condition Binding="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=DataContext.MusicManager.CSCoreEngine.IsPlaying}" Value="False"/>
+                                                                            </MultiDataTrigger.Conditions>
+                                                                            <Setter Property="Visibility" Value="Visible"/>
+                                                                            <MultiDataTrigger.EnterActions>
+                                                                                <BeginStoryboard>
+                                                                                    <Storyboard>
+                                                                                        <DoubleAnimation From="0.8" To="1" Duration="0:0:0.3" Storyboard.TargetProperty="Opacity"/>
+                                                                                    </Storyboard>
+                                                                                </BeginStoryboard>
+                                                                            </MultiDataTrigger.EnterActions>
+                                                                        </MultiDataTrigger>
+                                                                    </Style.Triggers>
+                                                                </Style>
+                                                            </Viewbox.Style>
+                                                        </Viewbox>
+                                                    </Grid>
+                                                </DataTemplate>
+                                            </GridViewColumn.CellTemplate>
+                                        </GridViewColumn>
+                                        <GridViewColumn ctrl:ProportionalColumn.Width="1" Header="hallo">
+                                            <GridViewColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <Grid x:Name="Grid" Margin="10,0,0,0">
+                                                        <TextBlock Text="{Binding DisplayText}" Style="{StaticResource ListTextBlockStyle}" VerticalAlignment="Center" TextTrimming="CharacterEllipsis"/>
+                                                    </Grid>
+                                                </DataTemplate>
+                                            </GridViewColumn.CellTemplate>
+                                        </GridViewColumn>
+                                        <GridViewColumn Width="80">
+                                            <GridViewColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <ToggleButton Background="{StaticResource BlackBrush}" Foreground="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem},Path=IsSelected,Converter={StaticResource TrueFalseValueConverter}}" Style="{StaticResource FavoriteToggleButton}" Height="16" Width="16" HorizontalAlignment="Left" Margin="10,0,0,0" IsChecked="{Binding IsFavorite}"/>
+                                                </DataTemplate>
+                                            </GridViewColumn.CellTemplate>
+                                        </GridViewColumn>
+                                        <GridViewColumn Width="80">
+                                            <GridViewColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock Text="{Binding Duration}" Style="{StaticResource ListTextBlockStyle}" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                                </DataTemplate>
+                                            </GridViewColumn.CellTemplate>
+                                        </GridViewColumn>
+                                    </GridView>
+                                </ListView.View>
+                                <ListView.GroupStyle>
+                                    <GroupStyle>
+                                        <GroupStyle.HeaderTemplate>
                                             <DataTemplate>
-                                                <Grid x:Name="Grid" Margin="10,0,0,0">
-                                                    <TextBlock Text="{Binding DisplayText}" Style="{StaticResource ListTextBlockStyle}" VerticalAlignment="Center" TextTrimming="CharacterEllipsis"/>
-                                                </Grid>
+                                                <TextBlock Foreground="{StaticResource BlackBrush}" FontWeight="Bold" FontSize="14" Text="{Binding Name}"/>
                                             </DataTemplate>
-                                        </GridViewColumn.CellTemplate>
-                                    </GridViewColumn>
-                                    <GridViewColumn Width="80">
-                                        <GridViewColumn.CellTemplate>
-                                            <DataTemplate>
-                                                <ToggleButton Background="{DynamicResource BlackBrush}" Foreground="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem},Path=IsSelected,Converter={StaticResource TrueFalseValueConverter}}" Style="{StaticResource FavoriteToggleButton}" Height="16" Width="16" HorizontalAlignment="Left" Margin="10,0,0,0" IsChecked="{Binding IsFavorite}"/>
-                                            </DataTemplate>
-                                        </GridViewColumn.CellTemplate>
-                                    </GridViewColumn>
-                                    <GridViewColumn Width="60">
-                                        <GridViewColumn.CellTemplate>
-                                            <DataTemplate>
-                                                <TextBlock Text="{Binding Duration}" Style="{StaticResource ListTextBlockStyle}" VerticalAlignment="Center" Margin="0,0,10,0"/>
-                                            </DataTemplate>
-                                        </GridViewColumn.CellTemplate>
-                                    </GridViewColumn>
-                                </GridView>
-                            </ListView.View>
-                        </extensions:AnimatedListView>
+                                        </GroupStyle.HeaderTemplate>
+                                    </GroupStyle>
+                                </ListView.GroupStyle>
+                            </extensions:AnimatedListView>
+                            <TextBlock extensions:AnimatedFrameworkElement.AnimationTrigger="{Binding MusicManager.SelectedPlaylist}" Visibility="{Binding MusicManager.SelectedPlaylist.ViewSource.IsEmpty,Converter={StaticResource BooleanToVisibilityConverter}}" Text="{DynamicResource NoTracksFound}" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="16" FontWeight="Light"/>
+                        </Grid>
                     </Grid>
+                    
                     <Grid Grid.Column="3" Grid.Row="1" x:Name="girdcover" Visibility="{Binding MusicManager.CSCoreEngine.CurrentTrack,Converter={StaticResource CollapsedOnNullValue}}">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="1"/>
@@ -361,23 +370,33 @@
                         <Rectangle Width="1" Fill="Gray"/>
                         <StackPanel Orientation="Vertical" Margin="5" Grid.Column="1">
                             <extensions:TrackImagePreseter Track="{Binding MusicManager.CSCoreEngine.CurrentTrack}" Width="200" Height="200"/>
+                            <ContentControl Content="{Binding MusicManager.CSCoreEngine.CurrentTrack}">
+                                <ContentControl.Resources>
+                                    <DataTemplate DataType="{x:Type track:LocalTrack}">
+                                        <TextBlock Text="{Binding Name}" Foreground="Blue"/>
+                                    </DataTemplate>
+                                    <DataTemplate DataType="{x:Type track:StreamableBase}">
+                                        <TextBlock Text="{Binding Model}" Foreground="Red"/>
+                                    </DataTemplate>
+                                </ContentControl.Resources>
+                            </ContentControl>
                             <extensions:AnimatedStackPanel AnimationInterval="300" UpdateObject="{Binding MusicManager.CSCoreEngine.CurrentTrack}" Orientation="Vertical" Margin="10,10,0,0">
-                                <TextBlock Text="{Binding MusicManager.CSCoreEngine.CurrentTrack.Title}" Foreground="{DynamicResource NormalColorBrush}" TextWrapping="Wrap"/>
+                                <TextBlock Text="{Binding MusicManager.CSCoreEngine.CurrentTrack.Title}" Foreground="{StaticResource NormalColorBrush}" TextWrapping="Wrap"/>
                                 <TextBlock FontSize="22" FontFamily="Segoe UI Light" Style="{StaticResource AristTextBlock}" TextWrapping="Wrap"/>
-                                <ToggleButton Foreground="#FFB4B4B4" Background="{DynamicResource NormalColorBrush}" Style="{StaticResource FavoriteToggleButton}" Height="16" Width="16" HorizontalAlignment="Left" Margin="0,10,0,10" IsChecked="{Binding MusicManager.CSCoreEngine.CurrentTrack.IsFavorite}"/>
+                                <ToggleButton Foreground="#FFB4B4B4" Background="{StaticResource NormalColorBrush}" Style="{StaticResource FavoriteToggleButton}" Height="16" Width="16" HorizontalAlignment="Left" Margin="0,10,0,10" IsChecked="{Binding MusicManager.CSCoreEngine.CurrentTrack.IsFavorite}"/>
                                 <StackPanel Orientation="Horizontal" Margin="0,30,0,0">
                                     <TextBlock Text="{DynamicResource Bitrate}"/>
-                                    <TextBlock Text="{Binding MusicManager.CSCoreEngine.CurrentTrack.kbps}" Foreground="{DynamicResource NormalColorBrush}" Margin="5,0,0,0"/>
-                                    <TextBlock Text=" kbps" Foreground="{DynamicResource NormalColorBrush}"/>
+                                    <TextBlock Text="{Binding MusicManager.CSCoreEngine.CurrentTrack.kbps}" Foreground="{StaticResource NormalColorBrush}" Margin="5,0,0,0"/>
+                                    <TextBlock Text=" kbps" Foreground="{StaticResource NormalColorBrush}"/>
                                 </StackPanel>
                                 <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
                                     <TextBlock Text="{DynamicResource Samplerate}"/>
-                                    <TextBlock Text="{Binding MusicManager.CSCoreEngine.CurrentTrack.kHz}" Foreground="{DynamicResource NormalColorBrush}" Margin="5,0,0,0"/>
-                                    <TextBlock Text=" kHz" Foreground="{DynamicResource NormalColorBrush}"/>
+                                    <TextBlock Text="{Binding MusicManager.CSCoreEngine.CurrentTrack.kHz}" Foreground="{StaticResource NormalColorBrush}" Margin="5,0,0,0"/>
+                                    <TextBlock Text=" kHz" Foreground="{StaticResource NormalColorBrush}"/>
                                 </StackPanel>
                                 <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
                                     <TextBlock Text="{DynamicResource Format}"/>
-                                    <TextBlock Text="{Binding MusicManager.CSCoreEngine.CurrentTrack.Extension}" Foreground="{DynamicResource NormalColorBrush}" Margin="5,0,0,0"/>
+                                    <TextBlock Text="{Binding MusicManager.CSCoreEngine.CurrentTrack.Extension}" Foreground="{StaticResource NormalColorBrush}" Margin="5,0,0,0"/>
                                 </StackPanel>
                             </extensions:AnimatedStackPanel>
                         </StackPanel>
@@ -398,7 +417,7 @@
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
                         <extensions:AnimatedStackPanel AnimationInterval="300" UpdateObject="{Binding MusicManager.CSCoreEngine.CurrentTrack}" Orientation="Vertical">
-                            <TextBlock Text="{Binding MusicManager.CSCoreEngine.CurrentTrack.Title}" Foreground="{DynamicResource NormalColorBrush}" FontSize="14"/>
+                            <TextBlock Text="{Binding MusicManager.CSCoreEngine.CurrentTrack.Title}" Foreground="{StaticResource NormalColorBrush}" FontSize="14"/>
                             <TextBlock FontSize="32" Margin="0,5,0,0" FontFamily="Segoe UI Light" Style="{StaticResource AristTextBlock}" TextWrapping="Wrap"/>
                             <TextBlock Text="{Binding MusicManager.CSCoreEngine.CurrentTrack.Album}" Margin="0,5,0,0" FontSize="18" FontFamily="Segoe UI Light" Foreground="DarkGray">
                                 <TextBlock.Style>
@@ -411,7 +430,7 @@
                                     </Style>
                                 </TextBlock.Style>
                             </TextBlock>
-                            <ToggleButton Foreground="#FFB4B4B4" Background="{DynamicResource NormalColorBrush}" Style="{StaticResource FavoriteToggleButton}" Height="18" Width="18" HorizontalAlignment="Left" Margin="0,10,0,10" IsChecked="{Binding MusicManager.CSCoreEngine.CurrentTrack.IsFavorite}"/>
+                            <ToggleButton Foreground="#FFB4B4B4" Background="{StaticResource NormalColorBrush}" Style="{StaticResource FavoriteToggleButton}" Height="18" Width="18" HorizontalAlignment="Left" Margin="0,10,0,10" IsChecked="{Binding MusicManager.CSCoreEngine.CurrentTrack.IsFavorite}"/>
                         </extensions:AnimatedStackPanel>
                         <wpfsvl:SpectrumAnalyzer x:Name="spektrum1" Grid.Row="1" BarCount="50" Height="100" VerticalAlignment="Bottom" Focusable="False" Margin="0,0,0,10">
                             <wpfsvl:SpectrumAnalyzer.Style>
@@ -466,7 +485,7 @@
                     <Grid Grid.ColumnSpan="2">
                         <Button Content="{DynamicResource Apply}" HorizontalAlignment="Right" Width="150" Margin="0,0,10,0" Command="{Binding ApplyChanges}" IsEnabled="{Binding CanApply}"/>
                     </Grid>
-                    <userControls:SettingsView Grid.Row="1"/>
+                    <userControls:SettingsView Grid.Row="1" Margin="-5"/>
                 </Grid>
             </TabItem>
             <TabItem Header="Online" Visibility="Collapsed">
@@ -486,62 +505,106 @@
                             </TextBox.InputBindings>
                         </TextBox>
                     </Grid>
-                    <ListView Grid.Row="1" Margin="0,5,0,0" ItemsSource="{Binding TrackSearcher.Results}" ctrl:ListViewLayoutManager.Enabled="True">
-                        <ListView.Resources>
-                            <Style TargetType="GridViewColumnHeader">
-                                <Setter Property="Visibility" Value="Collapsed"/>
-                            </Style>
-                            <converter:FormatLargeNumber x:Key="FormatLargeNumber"/>
-                        </ListView.Resources>
-                        <ListView.View>
-                            <GridView>
-                                <GridViewColumn Header="Thumbnail" Width="85">
-                                    <GridViewColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <extensions:TrackImagePreseter Track="{Binding Representer,Mode=OneWay}" Height="75" Width="75"/>
-                                        </DataTemplate>
-                                    </GridViewColumn.CellTemplate>
-                                </GridViewColumn>
-                                <GridViewColumn Header="Title" ctrl:ProportionalColumn.Width="1">
-                                    <GridViewColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <StackPanel Orientation="Vertical">
-                                                <TextBlock Text="{Binding Title}"/>
-                                                <TextBlock Text="{Binding Uploader}"/>
-                                            </StackPanel>
-                                        </DataTemplate>
-                                    </GridViewColumn.CellTemplate>
-                                </GridViewColumn>
-                                <GridViewColumn Header="Duration" Width="100" DisplayMemberBinding="{Binding Duration,Converter={StaticResource FormatTimespan}}"/>
-                                <GridViewColumn Header="Information" Width="200">
-                                    <GridViewColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <StackPanel Orientation="Horizontal">
-                                                <TextBlock Text="{Binding Views,Converter={StaticResource FormatLargeNumber}}" Margin="0,0,5,0"/>
-                                                <TextBlock Text="{DynamicResource Views}"/>
-                                            </StackPanel>
-                                        </DataTemplate>
-                                    </GridViewColumn.CellTemplate>
-                                </GridViewColumn>
-                                <GridViewColumn Header="Release year" Width="60">
-                                    <GridViewColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <TextBlock Text="{Binding ReleaseYear}"/>
-                                        </DataTemplate>
-                                    </GridViewColumn.CellTemplate>
-                                </GridViewColumn>
-                                <GridViewColumn Header="Social Icon" Width="40">
-                                    <GridViewColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <Viewbox Height="20" Width="20">
-                                                <Path Fill="{DynamicResource BlackBrush}" Data="{Binding ProviderVector}" HorizontalAlignment="Center"/>
-                                            </Viewbox>
-                                        </DataTemplate>
-                                    </GridViewColumn.CellTemplate>
-                                </GridViewColumn>
-                            </GridView>
-                        </ListView.View>
-                    </ListView>
+                    <Grid Grid.Row="1" Margin="0,5,0,0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <ListView ItemsSource="{Binding TrackSearcher.Results}" ctrl:ListViewLayoutManager.Enabled="True" Style="{StaticResource VisualizingListView}" SelectedItem="{Binding TrackSearcher.SelectedTrack}"
+                                  extensions:GridViewSort.AutoSort="True">
+                            <ListView.Resources>
+                                <converter:FormatLargeNumber x:Key="FormatLargeNumber"/>
+                                <ContextMenu x:Key="ContextMenu" DataContext="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}, Path=DataContext}">
+                                    <MenuItem Header="{DynamicResource Play}" Command="{Binding TrackSearcher.PlaySelectedTrack}"/>
+                                    <Separator />
+                                    <MenuItem Header="{DynamicResource AddToPlaylist}" ItemsSource="{Binding MusicManager.Playlists}">
+                                        <MenuItem.ItemContainerStyle>
+                                            <Style TargetType="MenuItem" BasedOn="{StaticResource MetroMenuItem}">
+                                                <Setter Property="Header" Value="{Binding Name}"/>
+                                                <Setter Property="Command" Value="{Binding RelativeSource={RelativeSource AncestorType=ContextMenu},Path=DataContext.TrackSearcher.AddToPlaylist}"/>
+                                                <Setter Property="CommandParameter" Value="{Binding}"/>
+                                            </Style>
+                                        </MenuItem.ItemContainerStyle>
+                                    </MenuItem>
+                                    <MenuItem Header="{DynamicResource Download}" IsEnabled="{Binding RelativeSource={RelativeSource AncestorType=ContextMenu},Path=DataContext.TrackSearcher.SelectedTrack.CanDownload}" Command="{Binding RelativeSource={RelativeSource AncestorType=ContextMenu},Path=DataContext.TrackSearcher.DownloadTrack}"/>
+                                </ContextMenu>
+                            </ListView.Resources>
+                            <ListView.ItemContainerStyle>
+                                <Style TargetType="ListViewItem" BasedOn="{StaticResource MetroListViewItem}">
+                                    <Setter Property="extensions:ControlDoubleClick.Command" Value="{Binding RelativeSource={RelativeSource AncestorType=ListView},Path=DataContext.TrackSearcher.PlaySelectedTrack}"/>
+                                    <Setter Property="ContextMenu" Value="{StaticResource ContextMenu}"/>
+                                </Style>
+                            </ListView.ItemContainerStyle>
+                            <ListView.View>
+                                <GridView>
+                                    <GridViewColumn Header="{DynamicResource Track}" ctrl:ProportionalColumn.Width="1" extensions:GridViewSort.PropertyName="Title">
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <extensions:TrackImagePreseter Track="{Binding Representer,Mode=OneWay}" Height="55" Width="55"/>
+                                                    <StackPanel Orientation="Vertical" Grid.Column="1" VerticalAlignment="Center">
+                                                        <TextBlock Text="{Binding Title}"/>
+                                                        <TextBlock Text="{Binding Uploader}"/>
+                                                    </StackPanel>
+                                                </Grid>
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                    </GridViewColumn>
+                                    <GridViewColumn Header="{DynamicResource Duration}" ctrl:FixedColumn.Width="100" Width="100" DisplayMemberBinding="{Binding Duration,Converter={StaticResource FormatTimespan}}" extensions:GridViewSort.PropertyName="Duration"/>
+                                    <GridViewColumn Header="{DynamicResource Views}" ctrl:FixedColumn.Width="200" Width="200" extensions:GridViewSort.PropertyName="Views">
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock Text="{Binding Views,Converter={StaticResource FormatLargeNumber}}" Margin="0,0,5,0"/>
+                                                    <TextBlock Text="{DynamicResource Views}"/>
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                    </GridViewColumn>
+                                    <GridViewColumn Header="{DynamicResource Year}" ctrl:FixedColumn.Width="60" Width="60" extensions:GridViewSort.PropertyName="ReleaseYear">
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <TextBlock Text="{Binding ReleaseYear}"/>
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                    </GridViewColumn>
+                                    <GridViewColumn Header="Website" ctrl:FixedColumn.Width="80" Width="80" extensions:GridViewSort.PropertyName="ProviderName">
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <Viewbox Height="20" Width="20">
+                                                    <Grid>
+                                                        <Path Data="{Binding ProviderVector}">
+                                                            <Path.Style>
+                                                                <Style TargetType="Path">
+                                                                   <Style.Triggers>
+                                                                       <DataTrigger Binding="{Binding ProviderName}" Value="SoundCloud">
+                                                                            <Setter Property="Fill" Value="#FFFF3300"/>
+                                                                       </DataTrigger>
+                                                                        <DataTrigger Binding="{Binding ProviderName}" Value="YouTube">
+                                                                            <Setter Property="Fill" Value="{StaticResource BlackBrush}"/>
+                                                                        </DataTrigger>
+                                                                       <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem},Path=IsSelected}" Value="True">
+                                                                           <Setter Property="Fill" Value="White"/>
+                                                                       </DataTrigger>
+                                                                    </Style.Triggers>
+                                                                </Style>
+                                                            </Path.Style>
+                                                        </Path>
+                                                    </Grid>
+                                                </Viewbox>
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                    </GridViewColumn>
+                                </GridView>
+                            </ListView.View>
+                        </ListView>
+                        <ProgressBar VerticalAlignment="Bottom" IsIndeterminate="{Binding TrackSearcher.IsLoading}" Visibility="{Binding TrackSearcher.IsLoading,Converter={StaticResource BooleanToVisibilityConverter}}" Grid.Row="1"/>
+                        <TextBlock Grid.RowSpan="2" Visibility="{Binding TrackSearcher.NothingFound,Converter={StaticResource BooleanToVisibilityConverter}}" Text="{DynamicResource NothingFound}" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="16" FontWeight="Light"/>
+                    </Grid>
                 </Grid>
             </TabItem>
         </TabControl>
@@ -636,7 +699,7 @@
                 </DockPanel>
             </Grid>
         </Grid>
-        <Button Background="{DynamicResource NormalColorBrush}" Visibility="{Binding Updater.UpdateFound,Converter={StaticResource BooleanToVisibilityConverter}}" Height="30" Command="{Binding OpenUpdater}" Margin="10,40,15,10" Grid.RowSpan="2" VerticalAlignment="Top" HorizontalAlignment="Right">
+        <Button Background="{StaticResource NormalColorBrush}" Visibility="{Binding Updater.UpdateFound,Converter={StaticResource BooleanToVisibilityConverter}}" Height="30" Command="{Binding OpenUpdater}" Margin="10,40,15,10" Grid.RowSpan="2" VerticalAlignment="Top" HorizontalAlignment="Right">
             <Button.Resources>
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/FlatButton.xaml" />
             </Button.Resources>

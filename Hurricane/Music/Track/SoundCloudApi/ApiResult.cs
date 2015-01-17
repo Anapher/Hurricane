@@ -47,6 +47,7 @@
         public int comment_count { get; set; }
         public string attachments_uri { get; set; }
         public string policy { get; set; }
+        public string download_url { get; set; }
     }
 
     public class User
