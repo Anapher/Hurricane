@@ -2,6 +2,7 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:converter="clr-namespace:Hurricane.Extensions.Converter"
+        xmlns:track="clr-namespace:Hurricane.Music.Track"
         Title="HurricaneNotification" Height="75" Width="1920" Topmost="True" AllowsTransparency="True" WindowStyle="None" ShowInTaskbar="False" Focusable="False" Opacity="0.85" DataContext="{Binding ElementName=window,Path=CurrentTrack}" x:Name="window" ShowActivated="False" Top="0" Left="0">
     <Window.Triggers>
         <EventTrigger RoutedEvent="Loaded">
@@ -18,18 +19,6 @@
     </Window.Resources>
     <Grid>
         <Grid VerticalAlignment="Center" HorizontalAlignment="Left" Margin="10,5,0,5">
-            <Image Source="/Resources/GUI/music.png" RenderOptions.BitmapScalingMode="HighQuality" Width="70" Height="70">
-                <Image.Style>
-                    <Style TargetType="Image">
-                        <Setter Property="Visibility" Value="Hidden"/>
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding Image}" Value="{x:Null}">
-                                <Setter Property="Visibility" Value="Visible"/>
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </Image.Style>
-            </Image>
             <Image Source="{Binding Image}" Stretch="UniformToFill" Width="80" Height="80" RenderOptions.BitmapScalingMode="HighQuality">
                 <Image.Style>
                     <Style TargetType="Image">
@@ -45,22 +34,48 @@
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
             <StackPanel Orientation="Vertical" Margin="10,0,0,0">
                 <TextBlock Text="{Binding}" FontSize="30" FontWeight="Bold" FontFamily="Segoe UI Semibold" Foreground="{StaticResource TextColor}"/>
-                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,2,0,0">
-                    <StackPanel.Resources>
-                        <Style TargetType="TextBlock">
-                            <Setter Property="FontSize" Value="14"/>
-                            <Setter Property="Foreground" Value="{StaticResource TextColor}"/>
-                            <Setter Property="VerticalAlignment" Value="Center"/>
-                        </Style>
-                    </StackPanel.Resources>
-                    <TextBlock Text="{Binding Duration}" FontWeight="Bold" FontSize="16" VerticalAlignment="Center"/>
-                    <TextBlock Text=" - "/>
-                    <TextBlock Text="{Binding Extension}"/>
-                    <TextBlock Text=" :: "/>
-                    <TextBlock Text="{Binding kHz}"/>
-                    <TextBlock Text=" kHz :: "/>
-                    <TextBlock Text="{Binding TrackInformation.Length,Converter={StaticResource RoundSizeConverter}}"/>
-                </StackPanel>
+                <ContentControl Content="{Binding}" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,2,0,0">
+                    <ContentControl.Resources>
+                        <DataTemplate DataType="{x:Type track:LocalTrack}">
+                            <StackPanel Orientation="Horizontal">
+                                <StackPanel.Resources>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="FontSize" Value="14"/>
+                                        <Setter Property="Foreground" Value="{StaticResource TextColor}"/>
+                                        <Setter Property="VerticalAlignment" Value="Center"/>
+                                    </Style>
+                                </StackPanel.Resources>
+                                <TextBlock Text="{Binding Duration}" FontWeight="Bold" FontSize="16" VerticalAlignment="Center"/>
+                                <TextBlock Text=" - "/>
+                                <TextBlock Text="{Binding Extension}"/>
+                                <TextBlock Text=" :: "/>
+                                <TextBlock Text="{Binding kHz}"/>
+                                <TextBlock Text=" kHz :: "/>
+                                <TextBlock Text="{Binding TrackInformation.Length,Converter={StaticResource RoundSizeConverter}}"/>
+                            </StackPanel>
+                        </DataTemplate>
+                        <DataTemplate DataType="{x:Type track:StreamableBase}">
+                            <StackPanel Orientation="Horizontal">
+                                <StackPanel.Resources>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="FontSize" Value="14"/>
+                                        <Setter Property="Foreground" Value="{StaticResource TextColor}"/>
+                                        <Setter Property="VerticalAlignment" Value="Center"/>
+                                    </Style>
+                                </StackPanel.Resources>
+                                <TextBlock Text="{Binding Duration}" FontWeight="Bold" FontSize="16" Foreground="{StaticResource TextColor}"/>
+                                <TextBlock Text=" - "/>
+                                <Viewbox Height="16" Width="16" VerticalAlignment="Center">
+                                    <Path Data="{Binding ProviderVector}" Fill="{StaticResource TextColor}"/>
+                                </Viewbox>
+                                <TextBlock Text=" :: "/>
+                                <TextBlock Text="{Binding kHz}"/>
+                                <TextBlock Text=" kHz :: "/>
+                                <TextBlock Text="{Binding Uploader}"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ContentControl.Resources>
+                </ContentControl>
             </StackPanel>
         </StackPanel>
     </Grid>

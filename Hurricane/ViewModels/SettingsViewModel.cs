@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Windows;
@@ -58,25 +57,30 @@ namespace Hurricane.ViewModels
                 return _applychanges ?? (_applychanges = new RelayCommand(async parameter =>
                 {
                     ConfigSettings original = HurricaneSettings.Instance.Config;
-                    HurricaneSettings.Instance.Config = Config;
+                    
                     if (Config.SoundOutDeviceID != original.SoundOutDeviceID || Config.SoundOutMode != original.SoundOutMode) { MusicManager.CSCoreEngine.UpdateSoundOut(); }
                     if (original.Language != Config.Language) { Config.LoadLanguage(); }
                     if (Config.Theme.UseCustomSpectrumAnalyzerColor && string.IsNullOrEmpty(Config.Theme.SpectrumAnalyzerHexColor)) Config.Theme.SpectrumAnalyzerColor = Colors.Black;
 
-                    if (original.Theme != Config.Theme || original.Theme.BaseTheme != Config.Theme.BaseTheme)
+                    if (original.ApiIsEnabled != Config.ApiIsEnabled) { if (Config.ApiIsEnabled) { ApiServer.StartListening(); } else { ApiServer.StopListening(); } }
+
+                    bool haveToChangeColorTheme = !original.Theme.SelectedColorTheme.Equals(Config.Theme.SelectedColorTheme);
+                    bool haveToChangeBaseTheme = original.Theme.BaseTheme != Config.Theme.BaseTheme;
+
+                    PropertiesCopier.CopyProperties(Config, original, new List<string> { "Queue" });
+
+                    if (haveToChangeColorTheme || haveToChangeBaseTheme)
                     {
                         var window = Application.Current.MainWindow as MainWindow;
                         if (window != null)
                         {
                             await window.MoveOut();
-                            if (original.Theme != Config.Theme) { await Task.Run(() => Config.Theme.LoadTheme()); }
-                            if (original.Theme.BaseTheme != Config.Theme.BaseTheme){await Task.Run(() => Config.Theme.LoadBaseTheme());}
+                            if (haveToChangeColorTheme) { await Task.Run(() => Config.Theme.LoadTheme()); }
+                            if (haveToChangeBaseTheme) { await Task.Run(() => Config.Theme.LoadBaseTheme()); }
                             await window.ResetAndMoveIn();
                         }
                     }
 
-                    if (original.ApiIsEnabled != Config.ApiIsEnabled) { if (Config.ApiIsEnabled) { ApiServer.StartListening(); } else { ApiServer.StopListening(); } }
-                    Config = ObjectCopier.Clone(HurricaneSettings.Instance.Config);
                     OnPropertyChanged("CanApply");
                     CurrentLanguage = Config.Languages.First((x) => x.Code == Config.Language);
                     OnPropertyChanged("ApiState");

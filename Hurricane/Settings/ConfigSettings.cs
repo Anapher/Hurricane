@@ -69,8 +69,7 @@ namespace Hurricane.Settings
         public bool TrimTrackname { get; set; }
 
         //Download
-        public string DownloadDirectory { get; set; }
-        public bool DownloadAddTags { get; set; }
+        public DownloadManager Downloader { get; set; }
 
         private List<LanguageInfo> _languages;
         [XmlIgnore]
@@ -128,8 +127,7 @@ namespace Hurricane.Settings
             Latency = 100;
             IsCrossfadeEnabled = false;
             CrossfadeDuration = 6;
-            DownloadDirectory = Path.Combine(HurricaneSettings.Instance.BaseDirectory, "Downloads");
-            DownloadAddTags = true;
+            Downloader = new DownloadManager();
         }
 
         public ConfigSettings()

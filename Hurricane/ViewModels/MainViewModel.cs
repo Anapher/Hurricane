@@ -482,6 +482,18 @@ namespace Hurricane.ViewModels
                 MainTabControlIndex = 3;
             })); }
         }
+
+        private RelayCommand _openDownloadManager;
+        public RelayCommand OpenDownloadManager
+        {
+            get
+            {
+                return _openDownloadManager ?? (_openDownloadManager = new RelayCommand(parameter =>
+                {
+                    MusicManager.DownloadManager.IsOpen = true;
+                }));
+            }
+        }
         #endregion
 
         #region Properties

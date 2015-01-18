@@ -99,8 +99,16 @@ namespace Hurricane.Music
         public QueueManager Queue { get; set; }
 
         public TcpServer ApiServer { get; set; }
-
-        public DownloadManager DownloadManager { get; set; }
+        
+        private DownloadManager _downloadManager;
+        public DownloadManager DownloadManager
+        {
+            get { return _downloadManager; }
+            set
+            {
+                SetProperty(value, ref _downloadManager);
+            }
+        }
 
         protected FavoriteList favoritePlaylist;
         public FavoriteList FavoritePlaylist
@@ -154,6 +162,7 @@ namespace Hurricane.Music
             CSCoreEngine.EqualizerSettings = config.EqualizerSettings;
             CSCoreEngine.EqualizerSettings.Loaded();
             CSCoreEngine.Volume = config.Volume;
+            DownloadManager = config.Downloader;
 
             favoritePlaylist = new FavoriteList();
             favoritePlaylist.Initalize(this.Playlists);
@@ -231,6 +240,10 @@ namespace Hurricane.Music
         public async void PlayTrack(PlayableBase track, IPlaylist playlist)
         {
             CSCoreEngine.StopPlayback();
+            
+            if (Queue.HasTracks && Queue.FirstOrDefault(t => t.TrackID == track.AuthenticationCode) != null)
+                Queue.RemoveTrack(track);
+
             await CSCoreEngine.OpenTrack(track);
             CSCoreEngine.TogglePlayPause();
             CurrentPlaylist = playlist;

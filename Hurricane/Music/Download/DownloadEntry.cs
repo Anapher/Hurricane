@@ -23,8 +23,17 @@ namespace Hurricane.Music.Download
                 SetProperty(value, ref _progress);
             }
         }
+        
+        private bool _isDownloaded;
+        public bool IsDownloaded
+        {
+            get { return _isDownloaded; }
+            set
+            {
+                SetProperty(value, ref _isDownloaded);
+            }
+        }
 
-        public bool IsDownloaded { get; set; }
         public string DownloadUrl { get; set; }
         public string Filename { get; set; }
         public string Trackname { get; set; }

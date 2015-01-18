@@ -257,4 +257,6 @@
     <system:String x:Key="NoTracksFound">Es wurden keine Tracks gefunden</system:String>
     <system:String x:Key="AddToPlaylist">Zu Wiedergabeliste hinzufügen</system:String>
     <system:String x:Key="Downloads">Downloads</system:String>
+    <system:String x:Key="Platform">Plattform</system:String>
+    <system:String x:Key="Uploader">Uploader</system:String>
 </ResourceDictionary>

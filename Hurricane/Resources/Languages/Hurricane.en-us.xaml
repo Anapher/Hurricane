@@ -257,4 +257,6 @@
     <system:String x:Key="NoTracksFound">No tracks found</system:String>
     <system:String x:Key="AddToPlaylist">Add to playlist</system:String>
     <system:String x:Key="Downloads">Downloads</system:String>
+    <system:String x:Key="Platform">Platform</system:String>
+    <system:String x:Key="Uploader">Uploader</system:String>
 </ResourceDictionary>

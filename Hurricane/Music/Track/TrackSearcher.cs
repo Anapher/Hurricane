@@ -142,11 +142,14 @@ namespace Hurricane.Music.Track
         private RelayCommand _downloadTrack;
         public RelayCommand DownloadTrack
         {
-            get { return _downloadTrack ?? (_downloadTrack = new RelayCommand(parameter =>
+            get
             {
-                _manager.DownloadManager.AddEntry(SelectedTrack.GetDownloadUrl(), SelectedTrack.Title);
-                _manager.DownloadManager.IsOpen = true;
-            })); }
+                return _downloadTrack ?? (_downloadTrack = new RelayCommand(parameter =>
+                {
+                    _manager.DownloadManager.AddEntry(SelectedTrack.GetDownloadUrl(), SelectedTrack.GetFilename);
+                    _manager.DownloadManager.IsOpen = true;
+                }));
+            }
         }
 
         private bool CheckForCanceled()

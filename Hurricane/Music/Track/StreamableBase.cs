@@ -1,6 +1,5 @@
 ﻿using System.Threading.Tasks;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
 using CSCore;
 
 namespace Hurricane.Music.Track
@@ -12,6 +11,7 @@ namespace Hurricane.Music.Track
         public override abstract void OpenTrackLocation();
         public override abstract Task<IWaveSource> GetSoundSource();
         public override abstract bool Equals(PlayableBase other);
+        
 
         public override TrackType TrackType
         {
@@ -27,5 +27,6 @@ namespace Hurricane.Music.Track
         }
 
         public abstract GeometryGroup ProviderVector { get; }
+        public string Uploader { get; set; }
     }
 }

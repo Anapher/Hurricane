@@ -9,23 +9,86 @@
         Title="Hurricane" SizeToContent="Manual" x:Name="window" Icon="/Resources/App/icon.ico"
         IsWindowDraggable="False" GlowBrush="{DynamicResource AccentColorBrush}" ShowIconOnTitleBar="False" Height="400" Width="500">
     <controls:MetroWindow.Flyouts>
-        <controls:FlyoutsControl>
-            <controls:Flyout IsOpen="{Binding MusicManager.DownloadManager.IsOpen}" Position="Right" Width="300" Header="{DynamicResource Downloads}" Theme="Adapt">
-                <ItemsControl ItemsSource="{Binding MusicManager.DownloadManager.Entries}">
+        <controls:FlyoutsControl x:Name="flyoutControl"/>
+    </controls:MetroWindow.Flyouts>
+    <Window.Resources>
+        <converter:TrueFalseValueConverter x:Key="PlayPauseConverter" TrueValue="pack://application:,,,/Hurricane;component/Resources/MediaIcons/ThumbButtons/pause.png" FalseValue="pack://application:,,,/Hurricane;component/Resources/MediaIcons/ThumbButtons/play.png"/>
+        <controls:Flyout Background="{StaticResource BrightColorBrush}" Opacity="1" AnimateOpacity="True" IsOpen="{Binding MusicManager.DownloadManager.IsOpen}" Position="Right" Width="300" Header="{DynamicResource Downloads}" x:Key="DownloadFlyout">
+            <Grid Margin="10">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <DockPanel Margin="5,0,0,0">
+                    <Button Command="{Binding MusicManager.DownloadManager.OpenDownloadFolder}">
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="Button">
+                                            <StackPanel Orientation="Horizontal">
+                                                <Path Data="{StaticResource VectorFolder2}" Fill="{StaticResource BlackBrush}" x:Name="path">
+                                                    <Path.LayoutTransform>
+                                                        <ScaleTransform ScaleX="0.8" ScaleY="0.8"/>
+                                                    </Path.LayoutTransform>
+                                                </Path>
+                                                <TextBlock x:Name="txt" Text="{Binding MusicManager.DownloadManager.FolderName}" Foreground="{StaticResource BlackBrush}" Margin="5,0,0,0" VerticalAlignment="Center"/>
+                                            </StackPanel>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Trigger.EnterActions>
+                                                        <BeginStoryboard>
+                                                            <Storyboard>
+                                                                <ColorAnimation To="{StaticResource AccentColor}" Duration="0:0:0.2" Storyboard.TargetName="path" Storyboard.TargetProperty="(Path.Fill).(SolidColorBrush.Color)"/>
+                                                                <ColorAnimation To="{StaticResource AccentColor}" Duration="0:0:0.2" Storyboard.TargetName="txt" Storyboard.TargetProperty="(TextBlock.Foreground).(SolidColorBrush.Color)"/>
+                                                            </Storyboard>
+                                                        </BeginStoryboard>
+                                                    </Trigger.EnterActions>
+                                                    <Trigger.ExitActions>
+                                                        <BeginStoryboard>
+                                                            <Storyboard>
+                                                                <ColorAnimation To="{StaticResource BlackColor}" Duration="0:0:0.2" Storyboard.TargetName="path" Storyboard.TargetProperty="(Path.Fill).(SolidColorBrush.Color)"/>
+                                                                <ColorAnimation To="{StaticResource BlackColor}" Duration="0:0:0.2" Storyboard.TargetName="txt" Storyboard.TargetProperty="(TextBlock.Foreground).(SolidColorBrush.Color)"/>
+                                                            </Storyboard>
+                                                        </BeginStoryboard>
+                                                    </Trigger.ExitActions>
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                </DockPanel>
+                <ItemsControl ItemsSource="{Binding MusicManager.DownloadManager.Entries}" Grid.Row="1" Margin="0,10,0,0">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Vertical" Margin="5">
-                                <TextBlock Text="{Binding Trackname}" FontSize="16"/>
-                                <controls:MetroProgressBar Value="{Binding Progress}" IsIndeterminate="{Binding IsWaiting}" Margin="0,5,0,0"/>
+                                <Separator x:Name="Separator"/>
+                                <DockPanel Margin="0,10,0,0">
+                                    <Viewbox Width="15" Height="15" VerticalAlignment="Center" Margin="0,0,5,0">
+                                        <Path Data="{StaticResource VectorCheck}" Fill="{StaticResource BlackBrush}"/>
+                                        <Viewbox.Style>
+                                            <Style TargetType="Viewbox">
+                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding IsDownloaded}" Value="true">
+                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Viewbox.Style>
+                                    </Viewbox>
+                                    <TextBlock Text="{Binding Trackname}" TextTrimming="CharacterEllipsis" FontSize="16" VerticalAlignment="Center"/>
+                                </DockPanel>
+                                <controls:MetroProgressBar Value="{Binding Progress}" IsIndeterminate="{Binding IsWaiting}" VerticalAlignment="Center" Margin="0,5,0,0"/>
                             </StackPanel>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
-            </controls:Flyout>
-        </controls:FlyoutsControl>
-    </controls:MetroWindow.Flyouts>
-    <Window.Resources>
-        <converter:TrueFalseValueConverter x:Key="PlayPauseConverter" TrueValue="pack://application:,,,/Hurricane;component/Resources/MediaIcons/ThumbButtons/pause.png" FalseValue="pack://application:,,,/Hurricane;component/Resources/MediaIcons/ThumbButtons/play.png"/>
+            </Grid>
+        </controls:Flyout>
     </Window.Resources>
     <Window.TaskbarItemInfo>
         <TaskbarItemInfo x:Name="taskbarinfo" Description="{Binding MusicManager.CSCoreEngine.CurrentTrack}" ex:TaskbarItemInfoEx.Progress="{Binding MusicManager.CSCoreEngine.CurrentTrackPosition.TotalSeconds}" ex:TaskbarItemInfoEx.Maximum="{Binding MusicManager.CSCoreEngine.CurrentTrackLength.TotalSeconds}">

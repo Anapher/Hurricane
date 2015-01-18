@@ -202,6 +202,7 @@ namespace Hurricane.Music
         public TrackRepresenter(PlayableBase t)
         {
             Track = t;
+            TrackID = t.AuthenticationCode;
         }
     }
 }

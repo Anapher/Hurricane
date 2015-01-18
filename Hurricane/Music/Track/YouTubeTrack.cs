@@ -37,6 +37,7 @@ namespace Hurricane.Music.Track
             Year = (uint) DateTime.Parse(result.data.uploaded).Year;
             Title = result.data.title;
             Artist = result.data.uploader;
+            Uploader = result.data.uploader; //Because the user can change the artist
             ThumbnailUrl = result.data.thumbnail.hqDefault;
 
             using (var soundSource = await GetSoundSource())

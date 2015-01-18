@@ -70,7 +70,18 @@ namespace Hurricane.Music
 
         public long Position
         {
-            get { return SoundSource == null ? 0 : SoundSource.Position; }
+            get
+            {
+                if (SoundSource == null) return 0;
+                try
+                {
+                    return SoundSource.Position;
+                }
+                catch (Exception)
+                {
+                    return 0;
+                }
+            }
             set
             {
                 if (SoundSource != null)
@@ -144,6 +155,16 @@ namespace Hurricane.Music
         public IWaveSource SoundSource { get; protected set; }
 
         public ConfigSettings Settings { get { return HurricaneSettings.Instance.Config; } }
+
+        private bool _isLoading;
+        public bool IsLoading
+        {
+            get { return _isLoading; }
+            set
+            {
+                SetProperty(value, ref _isLoading);
+            }
+        }
         #endregion
 
         #region Members
@@ -194,6 +215,9 @@ namespace Hurricane.Music
         #region Public Methods
         public async Task OpenTrack(PlayableBase track)
         {
+            if (IsLoading) return;
+            
+            IsLoading = true;
             StopPlayback();
             if (CurrentTrack != null) { CurrentTrack.IsPlaying = false; CurrentTrack.Unload(); }
             if (SoundSource != null && !_Crossfade.IsCrossfading) { SoundSource.Dispose(); }
@@ -206,6 +230,7 @@ namespace Hurricane.Music
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
+                IsLoading = false;
                 return;
             }
             if (Settings.SampleRate == -1 && SoundSource.WaveFormat.SampleRate < 44100)
@@ -238,6 +263,7 @@ namespace Hurricane.Music
             track.LastTimePlayed = DateTime.Now;
             if (_Crossfade.IsCrossfading)
                 _fader.CrossfadeIn(_soundOut, Volume);
+            IsLoading = false;
             await Task.Run(() => track.Load());
         }
 

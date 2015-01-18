@@ -122,7 +122,7 @@ namespace Hurricane
 
                 AdvancedWindowSkin.MusicManagerEnabled(viewmodel.MusicManager);
                 SmartWindowSkin.MusicManagerEnabled(viewmodel.MusicManager);
-
+                ResetFlyout();
             }
             catch (Exception ex)
             {
@@ -500,6 +500,17 @@ namespace Hurricane
             story.Begin(this);
             await Task.Run(() => handler.WaitOne());
             handler.Dispose();
+            ResetFlyout();
+        }
+
+        private Flyout _oldFlyout;
+        private void ResetFlyout()
+        {
+            if (_oldFlyout != null) flyoutControl.Items.Remove(_oldFlyout);
+            var newflyout = (Flyout) Resources["DownloadFlyout"];
+            newflyout.Theme = HurricaneSettings.Instance.Config.Theme.BaseTheme == BaseTheme.Dark ? FlyoutTheme.Dark : FlyoutTheme.Light;
+            flyoutControl.Items.Add(newflyout);
+            _oldFlyout = newflyout;
         }
 
         #endregion

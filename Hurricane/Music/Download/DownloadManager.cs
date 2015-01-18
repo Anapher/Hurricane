@@ -1,18 +1,23 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Xml.Serialization;
 using Hurricane.Settings;
 using Hurricane.ViewModelBase;
 
 namespace Hurricane.Music.Download
 {
+    [Serializable]
     public class DownloadManager : PropertyChangedBase, IDisposable
     {
+        [XmlIgnore]
         public ObservableCollection<DownloadEntry> Entries { get; set; }
         
         private bool _isOpen;
+        [XmlIgnore]
         public bool IsOpen
         {
             get { return _isOpen; }
@@ -24,7 +29,8 @@ namespace Hurricane.Music.Download
 
         public void AddEntry(string url, string trackname)
         {
-            var downloadDirectory = new DirectoryInfo(HurricaneSettings.Instance.Config.DownloadDirectory);
+            HasEntries = true;
+            var downloadDirectory = new DirectoryInfo(DownloadDirectory);
             if (!downloadDirectory.Exists) downloadDirectory.Create();
             var entry = new DownloadEntry
             {
@@ -52,6 +58,11 @@ namespace Hurricane.Music.Download
 
                 foreach (var entry in Entries.Where(x => !x.IsDownloaded).ToList())
                 {
+                    if (_client == null)
+                    {
+                        _client = new WebClient { Proxy = null };
+                        _client.DownloadProgressChanged += _client_DownloadProgressChanged;
+                    }
                     entry.IsWaiting = false;
                     _currentEntry = entry;
                     await _client.DownloadFileTaskAsync(entry.DownloadUrl, entry.Filename);
@@ -69,17 +80,76 @@ namespace Hurricane.Music.Download
             if (_currentEntry != null) _currentEntry.Progress = e.ProgressPercentage;
         }
 
-        private readonly WebClient _client;
+        private WebClient _client;
         public DownloadManager()
         {
             Entries = new ObservableCollection<DownloadEntry>();
-            _client = new WebClient{Proxy = null};
-            _client.DownloadProgressChanged += _client_DownloadProgressChanged;
+            DownloadDirectory = "Downloads";
+            AddTagsToDownloads = true;
         }
 
         public void Dispose()
         {
-            _client.Dispose();
+            if (_client != null) _client.Dispose();
         }
+
+        #region Settings
+        
+        private string _downloadDirectory;
+        public string DownloadDirectory
+        {
+            get { return _downloadDirectory; }
+            set
+            {
+                if (SetProperty(value, ref _downloadDirectory))
+                {
+                    OnPropertyChanged("FolderName");
+                }
+            }
+        }
+        
+        private bool _addTagsToDownloads;
+        public bool AddTagsToDownloads
+        {
+            get { return _addTagsToDownloads; }
+            set
+            {
+                SetProperty(value, ref _addTagsToDownloads);
+            }
+        }
+
+        public string FolderName
+        {
+            get { return new DirectoryInfo(DownloadDirectory).Name; }
+        }
+
+        
+        private bool _hasEntries;
+        [XmlIgnore]
+        public bool HasEntries
+        {
+            get { return _hasEntries; }
+            set
+            {
+                SetProperty(value, ref _hasEntries);
+            }
+        }
+
+        #endregion
+
+        #region Commands
+        private RelayCommand _openDownloadFolder;
+        public RelayCommand OpenDownloadFolder
+        {
+            get
+            {
+                return _openDownloadFolder ?? (_openDownloadFolder = new RelayCommand(parameter =>
+                {
+                    Process.Start(new DirectoryInfo(DownloadDirectory).FullName);
+                }));
+            }
+        }
+
+        #endregion
     }
 }

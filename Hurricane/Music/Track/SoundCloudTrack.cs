@@ -40,6 +40,7 @@ namespace Hurricane.Music.Track
             Artist = result.user.username;
             Genres = result.genre;
             SoundCloudID = result.id;
+            Uploader = result.user.username;
 
             using (var soundSource = await GetSoundSource())
             {
