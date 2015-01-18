@@ -9,6 +9,7 @@ using CSCore;
 using CSCore.Codecs;
 using Hurricane.Settings;
 using System.Windows;
+using Hurricane.Music.Download;
 using Hurricane.Music.MusicDatabase;
 using Hurricane.Music.Track.YouTubeApi;
 using Newtonsoft.Json;
@@ -17,15 +18,22 @@ namespace Hurricane.Music.Track
 {
     public class YouTubeTrack : StreamableBase
     {
-        public string YouTubeLink { get; set; }
         public string YouTubeId { get; set; }
-        public string ThumbnailUrl { get; set; }
+
+        public string ThumbnailUrl
+        {
+            get { return string.Format("http://i.ytimg.com/vi/{0}/hqdefault.jpg", YouTubeId); }
+        }
+
+        public static string GetYouTubeIdFromLink(string YouTubeLink)
+        {
+            var youtubeMatch = Regex.Match(YouTubeLink, @"youtu(?:\.be|be\.com)/(?:.*v(?:/|=)|(?:.*/)?)([a-zA-Z0-9-_]+)");
+            if (!youtubeMatch.Success) return string.Empty;
+            return youtubeMatch.Groups[youtubeMatch.Groups.Count - 1].Value;
+        }
 
         public async override Task<bool> LoadInformation()
         {
-            var youtubeMatch = Regex.Match(YouTubeLink, @"youtu(?:\.be|be\.com)/(?:.*v(?:/|=)|(?:.*/)?)([a-zA-Z0-9-_]+)");
-            if (!youtubeMatch.Success) return false;
-            YouTubeId = youtubeMatch.Groups[youtubeMatch.Groups.Count - 1].Value;
             using (var client = new WebClient {Proxy = null})
             {
                 return await LoadInformation(JsonConvert.DeserializeObject<SingleVideoSearchResult>(await client.DownloadStringTaskAsync(string.Format("http://gdata.youtube.com/feeds/api/videos/{0}?v=2&alt=jsonc", YouTubeId))));
@@ -38,7 +46,6 @@ namespace Hurricane.Music.Track
             Title = result.data.title;
             Artist = result.data.uploader;
             Uploader = result.data.uploader; //Because the user can change the artist
-            ThumbnailUrl = result.data.thumbnail.hqDefault;
 
             using (var soundSource = await GetSoundSource())
             {
@@ -82,45 +89,20 @@ namespace Hurricane.Music.Track
 
         public override void OpenTrackLocation()
         {
-            Process.Start(YouTubeLink);
+            Process.Start(Link);
         }
 
-        private bool _tryagain;
         public async override Task<IWaveSource> GetSoundSource()
         {
-            using (var p = new Process()
-            {
-                StartInfo = new ProcessStartInfo
-                {
-                    CreateNoWindow = true,
-                    RedirectStandardOutput = true,
-                    UseShellExecute = false,
-                    FileName = Path.Combine(HurricaneSettings.Instance.BaseDirectory, "youtube-dl.exe"),
-                    Arguments = string.Format("-g {0}", YouTubeLink)
-                }
-            })
-            {
-                p.Start();
-                var url = await p.StandardOutput.ReadToEndAsync();
-                if (string.IsNullOrEmpty(url))
-                {
-                    if (_tryagain) throw new Exception(url);
-                    _tryagain = true;
-                    return await GetSoundSource();
-                }
-                if (!url.ToLower().StartsWith("error"))
-                {
-                    return await Task.Run(() => CodecFactory.Instance.GetCodec(new Uri(url)));
-                }
-                throw new Exception(url);
-            }
+            var streamUri = await youtube_dl.Instance.GetStreamUri(Link);
+            return await Task.Run(() => CodecFactory.Instance.GetCodec(streamUri));
         }
 
         public override bool Equals(PlayableBase other)
         {
             if (other == null) return false;
             if (GetType() != other.GetType()) return false;
-            return YouTubeLink == ((YouTubeTrack)other).YouTubeLink;
+            return Link == ((YouTubeTrack)other).Link;
         }
 
         private static GeometryGroup _geometryGroup;
@@ -137,6 +119,36 @@ namespace Hurricane.Music.Track
         public override GeometryGroup ProviderVector
         {
             get { return GetProviderVector(); }
+        }
+
+        public override string DownloadParameter
+        {
+            get { return Link; }
+        }
+
+        public override string DownloadFilename
+        {
+            get { return Utilities.GeneralHelper.EscapeFilename(Title) + ".m4a"; }
+        }
+
+        public override DownloadMethod DownloadMethod
+        {
+            get { return DownloadMethod.youtube_dl; }
+        }
+
+        public override bool CanDownload
+        {
+            get { return true; }
+        }
+
+        public override string Link
+        {
+            get { return string.Format("https://www.youtube.com/watch?v={0}", YouTubeId); }
+        }
+
+        public override string Website
+        {
+            get { return "https://www.youtube.com/"; }
         }
     }
 }

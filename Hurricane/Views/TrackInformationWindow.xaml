@@ -4,11 +4,40 @@
         xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
         xmlns:converter="clr-namespace:Hurricane.Extensions.Converter"
         xmlns:extensions="clr-namespace:Hurricane.Extensions"
+        xmlns:track="clr-namespace:Hurricane.Music.Track"
         Title="{StaticResource TrackInformation}" SizeToContent="Height" GlowBrush="{StaticResource AccentColorBrush}" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" Width="800" x:Name="window" ShowInTaskbar="False" DataContext="{Binding ElementName=window}">
     <Window.Resources>
         <converter:RoundSizeConverter x:Key="RoundSizeConverter"/>
         <converter:NeverIfDateIsNull x:Key="NeverIfDateIsNull"/>
         <converter:PlaceholderConverter x:Key="PlaceholderConverter"/>
+
+        <Style TargetType="Button" x:Key="TextButton">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <TextBlock Text="{TemplateBinding Content}" Foreground="{StaticResource BlackBrush}" x:Name="txt"/>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Trigger.EnterActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <ColorAnimation To="{StaticResource AccentColor}" Duration="0:0:0.2" Storyboard.TargetName="txt" Storyboard.TargetProperty="(TextBlock.Foreground).(SolidColorBrush.Color)"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </Trigger.EnterActions>
+                                <Trigger.ExitActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <ColorAnimation To="{StaticResource BlackColor}" Duration="0:0:0.2" Storyboard.TargetName="txt" Storyboard.TargetProperty="(TextBlock.Foreground).(SolidColorBrush.Color)"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </Trigger.ExitActions>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </Window.Resources>
     <Grid Margin="10">
         <Grid.RowDefinitions>
@@ -21,78 +50,189 @@
                 <ColumnDefinition Width="auto"/>
             </Grid.ColumnDefinitions>
             <StackPanel Orientation="Vertical">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="200"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                        <TextBlock Text="{StaticResource Filename}"/>
-                        <TextBlock Text=":"/>
-                    </StackPanel>
-                    <TextBlock Text="{Binding ElementName=window,Path=CurrentTrack.TrackInformation.Name}" Grid.Column="1"/>
-                </Grid>
-                <Grid Margin="0,5,0,0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="200"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                        <TextBlock Text="{StaticResource Folder}"/>
-                        <TextBlock Text=":"/>
-                    </StackPanel>
-                    <TextBlock Text="{Binding ElementName=window,Path=CurrentTrack.TrackInformation.Directory.FullName}" Grid.Column="1" TextWrapping="Wrap"/>
-                </Grid>
+                <ContentControl Content="{Binding CurrentTrack}">
+                    <ContentControl.Resources>
+                        <DataTemplate DataType="{x:Type track:LocalTrack}">
+                            <StackPanel Orientation="Vertical">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="200"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                        <TextBlock Text="{StaticResource Filename}"/>
+                                        <TextBlock Text=":"/>
+                                    </StackPanel>
+                                    <TextBlock Text="{Binding TrackInformation.Name}" Grid.Column="1"/>
+                                </Grid>
+                                <Grid Margin="0,5,0,0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="200"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                        <TextBlock Text="{StaticResource Folder}"/>
+                                        <TextBlock Text=":"/>
+                                    </StackPanel>
+                                    <TextBlock Text="{Binding TrackInformation.Directory.FullName}" Grid.Column="1" TextWrapping="Wrap"/>
+                                </Grid>
+                            </StackPanel>
+                        </DataTemplate>
+                        <DataTemplate DataType="{x:Type track:StreamableBase}">
+                            <StackPanel Orientation="Vertical">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="200"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                        <TextBlock Text="{StaticResource Url}"/>
+                                        <TextBlock Text=":"/>
+                                    </StackPanel>
+                                    <Button Content="{Binding Link}" Grid.Column="1" Command="{Binding OpenLinkCommand}" Style="{StaticResource TextButton}"/>
+                                </Grid>
+                                <Grid Margin="0,5,0,0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="200"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                        <TextBlock Text="{StaticResource Website}"/>
+                                        <TextBlock Text=":"/>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal" Grid.Column="1">
+                                        <Viewbox Width="16" Height="16">
+                                            <Path Data="{Binding ProviderVector}" Fill="{StaticResource BlackBrush}"/>
+                                        </Viewbox>
+                                        <Button Content="{Binding Website}" Command="{Binding OpenWebsiteCommand}" Style="{StaticResource TextButton}" Margin="5,0,0,0" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </Grid>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ContentControl.Resources>
+                </ContentControl>
                 <Separator Margin="0,10,0,10"/>
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="200"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                        <TextBlock Text="{StaticResource Format}"/>
-                        <TextBlock Text=":"/>
-                    </StackPanel>
-                    <TextBlock Text="{Binding ElementName=window,Path=CurrentTrack.Extension,Converter={StaticResource PlaceholderConverter}}" Grid.Column="1"/>
-                </Grid>
-                <Grid Margin="0,5,0,0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="200"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                        <TextBlock Text="{StaticResource Duration}"/>
-                        <TextBlock Text=":"/>
-                    </StackPanel>
-                    <TextBlock Text="{Binding ElementName=window,Path=CurrentTrack.Duration,Converter={StaticResource PlaceholderConverter}}" Grid.Column="1"/>
-                </Grid>
-                <Grid Margin="0,5,0,0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="200"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                        <TextBlock Text="{StaticResource Quality}"/>
-                        <TextBlock Text=":"/>
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal" Grid.Column="1">
-                        <TextBlock Text="{Binding ElementName=window,Path=CurrentTrack.kHz}"/>
-                        <TextBlock Text=" kHz, "/>
-                        <TextBlock Text="{Binding ElementName=window,Path=CurrentTrack.kbps}"/>
-                        <TextBlock Text=" kbps"/>
-                    </StackPanel>
-                </Grid>
-                <Grid Margin="0,5,0,0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="200"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                        <TextBlock Text="{StaticResource FileSize}"/>
-                        <TextBlock Text=":"/>
-                    </StackPanel>
-                    <TextBlock Text="{Binding ElementName=window,Path=CurrentTrack.TrackInformation.Length,Converter={StaticResource RoundSizeConverter}}" Grid.Column="1"/>
-                </Grid>
+                <ContentControl Content="{Binding CurrentTrack}">
+                    <ContentControl.Resources>
+                        <DataTemplate DataType="{x:Type track:LocalTrack}">
+                            <StackPanel Orientation="Vertical">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="200"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                        <TextBlock Text="{StaticResource Format}"/>
+                                        <TextBlock Text=":"/>
+                                    </StackPanel>
+                                    <TextBlock Text="{Binding Extension,Converter={StaticResource PlaceholderConverter}}" Grid.Column="1"/>
+                                </Grid>
+                                <Grid Margin="0,5,0,0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="200"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                        <TextBlock Text="{StaticResource Duration}"/>
+                                        <TextBlock Text=":"/>
+                                    </StackPanel>
+                                    <TextBlock Text="{Binding Duration,Converter={StaticResource PlaceholderConverter}}" Grid.Column="1"/>
+                                </Grid>
+                                <Grid Margin="0,5,0,0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="200"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                        <TextBlock Text="{StaticResource Quality}"/>
+                                        <TextBlock Text=":"/>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal" Grid.Column="1">
+                                        <TextBlock Text="{Binding kHz}"/>
+                                        <TextBlock Text=" kHz, "/>
+                                        <TextBlock Text="{Binding kbps}"/>
+                                        <TextBlock Text=" kbps"/>
+                                    </StackPanel>
+                                </Grid>
+                                <Grid Margin="0,5,0,0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="200"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                        <TextBlock Text="{StaticResource FileSize}"/>
+                                        <TextBlock Text=":"/>
+                                    </StackPanel>
+                                    <TextBlock Text="{Binding TrackInformation.Length,Converter={StaticResource RoundSizeConverter}}" Grid.Column="1"/>
+                                </Grid>
+                            </StackPanel>
+                        </DataTemplate>
+                        <DataTemplate DataType="{x:Type track:StreamableBase}">
+                            <StackPanel Orientation="Vertical">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="200"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                        <TextBlock Text="{StaticResource Downloadable}"/>
+                                        <TextBlock Text=":"/>
+                                    </StackPanel>
+                                    <TextBlock Grid.Column="1">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock">
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding CanDownload}" Value="true">
+                                                        <Setter Property="Text" Value="{StaticResource Yes}"></Setter>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding CanDownload}" Value="false">
+                                                        <Setter Property="Text" Value="{StaticResource No}"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+                                </Grid>
+                                <Grid Margin="0,5,0,0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="200"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                        <TextBlock Text="{StaticResource Duration}"/>
+                                        <TextBlock Text=":"/>
+                                    </StackPanel>
+                                    <TextBlock Text="{Binding Duration,Converter={StaticResource PlaceholderConverter}}" Grid.Column="1"/>
+                                </Grid>
+                                <Grid Margin="0,5,0,0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="200"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                        <TextBlock Text="{StaticResource Quality}"/>
+                                        <TextBlock Text=":"/>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal" Grid.Column="1">
+                                        <TextBlock Text="{Binding kHz}"/>
+                                        <TextBlock Text=" kHz"/>
+                                    </StackPanel>
+                                </Grid>
+                                <Grid Margin="0,5,0,0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="200"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                        <TextBlock Text="{StaticResource Uploader}"/>
+                                        <TextBlock Text=":"/>
+                                    </StackPanel>
+                                    <TextBlock Text="{Binding Uploader}" Grid.Column="1"/>
+                                </Grid>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ContentControl.Resources>
+                </ContentControl>
             </StackPanel>
             <extensions:TrackImagePreseter Track="{Binding ElementName=window,Path=CurrentTrack}" Height="136" Width="136" HorizontalAlignment="Left" Grid.Column="1">
                 <extensions:TrackImagePreseter.ContextMenu>

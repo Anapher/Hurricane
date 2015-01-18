@@ -50,16 +50,17 @@ namespace Hurricane.Music.Track.SoundCloudApi
             using (var web = new WebClient {Proxy = null})
             {
                 var results = JsonConvert.DeserializeObject<List<ApiResult>>(await web.DownloadStringTaskAsync(string.Format("https://api.soundcloud.com/tracks?q={0}&client_id={1}", Utilities.GeneralHelper.EscapeTitleName(searchText), SensitiveInformation.SoundCloudKey)));
-                return results.Select(x => new SoundCloudWebTrackResult
+                return results.Where(x => x.streamable).Select(x => new SoundCloudWebTrackResult
                 {
                     Duration = TimeSpan.FromMilliseconds(x.duration),
-                    ReleaseYear =  x.release_year != null ? uint.Parse(x.release_year.ToString()) : (uint)DateTime.Parse(x.created_at).Year,
+                    Year =  x.release_year != null ? uint.Parse(x.release_year.ToString()) : (uint)DateTime.Parse(x.created_at).Year,
                     Title = x.title,
                     Uploader = x.user.username,
                     Result = x,
                     Views = x.playback_count,
                     ImageUrl = x.artwork_url,
-                    Url = x.permalink_url
+                    Url = x.permalink_url,
+                    Genres = x.genre,
                 }).ToList();
             }
         }

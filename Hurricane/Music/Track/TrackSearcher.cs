@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -130,6 +130,7 @@ namespace Hurricane.Music.Track
                     if (playlist == null) return;
                     IsLoading = true;
                     var track = await SelectedTrack.ToPlayable();
+                    track.TimeAdded = DateTime.Now;
                     playlist.AddTrack(track);
                     IsLoading = false;
                     ViewModels.MainViewModel.Instance.MainTabControlIndex = 0;
@@ -146,7 +147,7 @@ namespace Hurricane.Music.Track
             {
                 return _downloadTrack ?? (_downloadTrack = new RelayCommand(parameter =>
                 {
-                    _manager.DownloadManager.AddEntry(SelectedTrack.GetDownloadUrl(), SelectedTrack.GetFilename);
+                    _manager.DownloadManager.AddEntry(SelectedTrack);
                     _manager.DownloadManager.IsOpen = true;
                 }));
             }

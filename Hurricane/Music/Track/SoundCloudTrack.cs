@@ -8,6 +8,7 @@ using System.Windows.Media;
 using CSCore;
 using CSCore.Codecs;
 using Exceptionless.Json;
+using Hurricane.Music.Download;
 using Hurricane.Music.MusicDatabase;
 using Hurricane.Music.Track.SoundCloudApi;
 using Hurricane.Settings;
@@ -19,6 +20,8 @@ namespace Hurricane.Music.Track
         public int SoundCloudID { get; set; }
         public string Url { get; set; }
         public string ArtworkUrl { get; set; }
+        public bool IsDownloadable { get; set; }
+        public bool Downloadable { get; set; }
 
         public async override Task<bool> LoadInformation()
         {
@@ -41,6 +44,7 @@ namespace Hurricane.Music.Track
             Genres = result.genre;
             SoundCloudID = result.id;
             Uploader = result.user.username;
+            Downloadable = result.downloadable;
 
             using (var soundSource = await GetSoundSource())
             {
@@ -121,6 +125,36 @@ namespace Hurricane.Music.Track
         public override GeometryGroup ProviderVector
         {
             get { return GetProviderVector(); }
+        }
+
+        public override string DownloadParameter
+        {
+            get { return SoundCloudID.ToString(); }
+        }
+
+        public override string DownloadFilename
+        {
+            get { return Utilities.GeneralHelper.EscapeFilename(Title) + ".mp3"; }
+        }
+
+        public override DownloadMethod DownloadMethod
+        {
+            get { return DownloadMethod.SoundCloud; }
+        }
+
+        public override bool CanDownload
+        {
+            get { return Downloadable; }
+        }
+
+        public override string Link
+        {
+            get { return Url; }
+        }
+
+        public override string Website
+        {
+            get { return "https://soundcloud.com/"; }
         }
     }
 }

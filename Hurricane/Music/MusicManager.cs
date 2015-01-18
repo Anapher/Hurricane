@@ -392,7 +392,6 @@ namespace Hurricane.Music
             {
                 CSCoreEngine.Dispose();
                 ApiServer.Dispose();
-                DownloadManager.Dispose();
             }
         }
 

@@ -239,4 +239,11 @@
     <system:String x:Key="Downloads">Downloads</system:String>
     <system:String x:Key="Platform">Platform</system:String>
     <system:String x:Key="Uploader">Uploader</system:String>
+    <system:String x:Key="UpdateYoutubedl">Update</system:String>
+    <system:String x:Key="UpdateYoutubedlMessage">Update youtube-dl to version {0}</system:String>
+    <system:String x:Key="Url">Url</system:String>
+    <system:String x:Key="Downloadable">Downloadable</system:String>
+    <system:String x:Key="Yes">Yes</system:String>
+    <system:String x:Key="No">No</system:String>
+    <system:String x:Key="AddTagsToDownloads">Add tags to downloads</system:String>
 </ResourceDictionary>

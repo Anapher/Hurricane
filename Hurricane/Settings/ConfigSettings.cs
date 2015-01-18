@@ -195,7 +195,9 @@ namespace Hurricane.Settings
                     CompareTwoValues(this.SoundOutMode, other.SoundOutMode) &&
                     CompareTwoValues(this.Latency, other.Latency) &&
                     CompareTwoValues(this.CrossfadeDuration, other.CrossfadeDuration) &&
-                    CompareTwoValues(this.IsCrossfadeEnabled, other.IsCrossfadeEnabled));
+                    CompareTwoValues(this.IsCrossfadeEnabled, other.IsCrossfadeEnabled) &&
+                    CompareTwoValues(this.Downloader.DownloadDirectory, other.Downloader.DownloadDirectory) &&
+                    CompareTwoValues(this.Downloader.AddTagsToDownloads, other.Downloader.AddTagsToDownloads));
         }
 
         protected bool CompareTwoValues(object v1, object v2)

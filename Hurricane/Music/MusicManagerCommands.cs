@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using Hurricane.Music.Track;
 using Hurricane.ViewModelBase;
 
 namespace Hurricane.Music
@@ -152,6 +153,21 @@ namespace Hurricane.Music
                 return _openFavorites ?? (_openFavorites = new RelayCommand(parameter =>
                 {
                     Musicmanager.FavoriteListIsSelected = !Musicmanager.FavoriteListIsSelected;
+                }));
+            }
+        }
+
+        private RelayCommand _downloadTrack;
+        public RelayCommand DownloadTrack
+        {
+            get
+            {
+                return _downloadTrack ?? (_downloadTrack = new RelayCommand(parameter =>
+                {
+                    var stream = Musicmanager.SelectedTrack as StreamableBase;
+                    if (stream == null || !stream.CanDownload) return;
+                    Musicmanager.DownloadManager.AddEntry(stream);
+                    Musicmanager.DownloadManager.IsOpen = true;
                 }));
             }
         }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 using System.Xml.Serialization;
@@ -10,7 +11,7 @@ using Hurricane.ViewModelBase;
 namespace Hurricane.Music.Track
 {
     [Serializable, XmlInclude(typeof(LocalTrack)), XmlInclude(typeof(SoundCloudTrack)), XmlInclude(typeof(YouTubeTrack)), XmlType(TypeName = "Playable")]
-    public abstract class PlayableBase : PropertyChangedBase, IEquatable<PlayableBase>, IRepresentable
+    public abstract class PlayableBase : PropertyChangedBase, IEquatable<PlayableBase>, IRepresentable, IMusicInformation
     {
         #region Events
         public event EventHandler ImageLoadComplete;
@@ -197,6 +198,29 @@ namespace Hurricane.Music.Track
         protected PlayableBase()
         {
             AuthenticationCode = DateTime.Now.Ticks;
+        }
+
+        TimeSpan IMusicInformation.Duration
+        {
+            get { return DurationTimespan; }
+            set
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public async Task<BitmapImage> GetImage()
+        {
+            if (Image == null)
+            {
+                using (var waiter = new AutoResetEvent(false))
+                {
+                    ImageLoadComplete += (s, e) => { waiter.Set(); };
+                    Load();
+                    await Task.Run(() => waiter.WaitOne(2000));
+                }
+            }
+            return Image;
         }
     }
 

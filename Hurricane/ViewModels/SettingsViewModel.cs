@@ -13,6 +13,7 @@ using Hurricane.Utilities;
 using Hurricane.ViewModelBase;
 using Hurricane.Views;
 using System.Threading.Tasks;
+using WPFFolderBrowser;
 
 namespace Hurricane.ViewModels
 {
@@ -113,7 +114,15 @@ namespace Hurricane.ViewModels
             set
             {
                 SetProperty(value, ref _selectedtab);
-                if (value == 3) OnPropertyChanged("ApiState");
+                switch (value)
+                {
+                    case 2:
+                        OnPropertyChanged("MusicManager");
+                        break;
+                    case 3:
+                        OnPropertyChanged("ApiState");
+                        break;
+                }
             }
         }
 
@@ -252,6 +261,28 @@ namespace Hurricane.ViewModels
                     {
                         theme.RefreshResource();
                         theme.ApplyTheme();
+                    }
+                }));
+            }
+        }
+
+        private RelayCommand _selectDownloadPath;
+        public RelayCommand SelectDownloadPath
+        {
+            get
+            {
+                return _selectDownloadPath ?? (_selectDownloadPath = new RelayCommand(parameter =>
+                {
+                    var directory = new DirectoryInfo(MusicManager.DownloadManager.DownloadDirectory);
+                    var folderBrowserDialog = new WPFFolderBrowserDialog
+                    {
+                        InitialDirectory = directory.Parent != null ? directory.Parent.FullName : directory.FullName
+                    };
+
+                    if (folderBrowserDialog.ShowDialog() == true)
+                    {
+                        MusicManager.DownloadManager.DownloadDirectory = folderBrowserDialog.FileName;
+                        StateChanged();
                     }
                 }));
             }

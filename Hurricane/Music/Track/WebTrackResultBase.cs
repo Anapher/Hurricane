@@ -9,12 +9,12 @@ using Hurricane.ViewModelBase;
 
 namespace Hurricane.Music.Track
 {
-    public abstract class WebTrackResultBase : PropertyChangedBase, IRepresentable
+    public abstract class WebTrackResultBase : PropertyChangedBase, IRepresentable, IDownloadable, IMusicInformation
     {
         public TimeSpan Duration { get; set; }
         public string Title { get; set; }
         public string Uploader { get; set; }
-        public uint ReleaseYear { get; set; }
+        public uint Year { get; set; }
         public string ImageUrl { get; set; }
         public int Views { get; set; }
         public abstract ProviderName ProviderName { get; }
@@ -43,9 +43,6 @@ namespace Hurricane.Music.Track
         public object Result { get; set; }
         public abstract Task<PlayableBase> ToPlayable();
         public abstract GeometryGroup ProviderVector { get; }
-        public abstract string GetDownloadUrl();
-        public abstract bool CanDownload { get; }
-        public abstract string GetFilename { get; }
 
         public IRepresentable Representer { get { return this; } }
 
@@ -72,6 +69,32 @@ namespace Hurricane.Music.Track
         {
             get { return _openUrl ?? (_openUrl = new RelayCommand(parameter => { Process.Start(Url); })); }
         }
+
+        public abstract string DownloadParameter { get; }
+
+        public abstract string DownloadFilename { get; }
+
+        public abstract Download.DownloadMethod DownloadMethod { get; }
+
+        public abstract bool CanDownload { get; }
+
+        public string Artist
+        {
+            get { return Uploader; }
+            set
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public async Task<BitmapImage> GetImage()
+        {
+            return Image;
+        }
+
+        public string Genres { get; set; }
+
+        public string Album { get; set; }
     }
 
     public enum ProviderName { SoundCloud, YouTube}

@@ -30,7 +30,7 @@ namespace Hurricane.Music.Track.YouTubeApi
                     Title = x.title.Name,
                     Uploader = x.author.First().name.Text,
                     Result = x,
-                    ReleaseYear = (uint)DateTime.Parse(x.published.Date).Year,
+                    Year = (uint)DateTime.Parse(x.published.Date).Year,
                     ImageUrl = x.MediaGroup.Thumbnails.First().url,
                     Views = x.Statistics != null ? int.Parse(x.Statistics.viewCount) : 0,
                     Url = x.link.First().href

@@ -176,6 +176,8 @@
     <Compile Include="Music\Data\AudioDevice.cs" />
     <Compile Include="Music\Download\DownloadEntry.cs" />
     <Compile Include="Music\Download\DownloadManager.cs" />
+    <Compile Include="Music\Download\SoundCloudDownloader.cs" />
+    <Compile Include="Music\Download\youtube-dl.cs" />
     <Compile Include="Music\Playlist\FavoriteList.cs" />
     <Compile Include="Music\Data\IRepresentable.cs" />
     <Compile Include="Music\Data\SoundOutRepresenter.cs" />
@@ -196,6 +198,8 @@
     <Compile Include="Music\QueueManager.cs" />
     <Compile Include="Music\Data\TrackComparer.cs" />
     <Compile Include="Music\Data\TrackPlaylistPair.cs" />
+    <Compile Include="Music\Track\IDownloadable.cs" />
+    <Compile Include="Music\Track\IMusicInformation.cs" />
     <Compile Include="Music\Track\LocalTrack.cs" />
     <Compile Include="Music\Track\PlayableBase.cs" />
     <Compile Include="Music\Track\SoundCloudApi\SoundCloudApi.cs" />

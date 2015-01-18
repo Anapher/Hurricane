@@ -3,15 +3,19 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Net;
+using System.Threading.Tasks;
+using System.Windows.Media.Imaging;
 using System.Xml.Serialization;
+using Hurricane.Music.Track;
 using Hurricane.Settings;
 using Hurricane.ViewModelBase;
+using TagLib;
+using TagLib.Flac;
 
 namespace Hurricane.Music.Download
 {
     [Serializable]
-    public class DownloadManager : PropertyChangedBase, IDisposable
+    public class DownloadManager : PropertyChangedBase
     {
         [XmlIgnore]
         public ObservableCollection<DownloadEntry> Entries { get; set; }
@@ -27,7 +31,7 @@ namespace Hurricane.Music.Download
             }
         }
 
-        public void AddEntry(string url, string trackname)
+        public void AddEntry<T>(T download) where T : IDownloadable, IMusicInformation
         {
             HasEntries = true;
             var downloadDirectory = new DirectoryInfo(DownloadDirectory);
@@ -35,9 +39,11 @@ namespace Hurricane.Music.Download
             var entry = new DownloadEntry
             {
                 IsWaiting = true,
-                DownloadUrl = url,
-                Filename = Path.Combine(downloadDirectory.FullName, Utilities.GeneralHelper.EscapeFilename(trackname)),
-                Trackname = trackname
+                Filename = Path.Combine(downloadDirectory.FullName, Utilities.GeneralHelper.EscapeFilename(download.DownloadFilename)),
+                Trackname = download.DownloadFilename,
+                DownloadParameter = download.DownloadParameter,
+                DownloadMethod = download.DownloadMethod,
+                MusicInformation = download
             };
             Entries.Add(entry);
             _hasToCheck = true;
@@ -46,7 +52,6 @@ namespace Hurricane.Music.Download
 
         private bool _isRunning;
         private bool _hasToCheck;
-        private DownloadEntry _currentEntry;
 
         private async void DownloadTracks()
         {
@@ -58,15 +63,18 @@ namespace Hurricane.Music.Download
 
                 foreach (var entry in Entries.Where(x => !x.IsDownloaded).ToList())
                 {
-                    if (_client == null)
-                    {
-                        _client = new WebClient { Proxy = null };
-                        _client.DownloadProgressChanged += _client_DownloadProgressChanged;
-                    }
                     entry.IsWaiting = false;
-                    _currentEntry = entry;
-                    await _client.DownloadFileTaskAsync(entry.DownloadUrl, entry.Filename);
+                    switch (entry.DownloadMethod)
+                    {
+                        case DownloadMethod.SoundCloud:
+                            await SoundCloudDownloader.DownloadSoundCloudTrack(entry.DownloadParameter, entry);
+                            break;
+                        case DownloadMethod.youtube_dl:
+                            await youtube_dl.Instance.DownloadYouTubeVideo(entry.DownloadParameter, entry);
+                            break;
+                    }
                     entry.IsDownloaded = true;
+                    if (AddTagsToDownloads) AddTags(entry.MusicInformation, entry.Filename);
                 }
 
                 _isRunning = false;
@@ -75,22 +83,37 @@ namespace Hurricane.Music.Download
             }
         }
 
-        void _client_DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
+        public async static void AddTags(IMusicInformation information, string path)
         {
-            if (_currentEntry != null) _currentEntry.Progress = e.ProgressPercentage;
+            var filepath = path;
+            var file = TagLib.File.Create(filepath);
+            file.Tag.Album = information.Album;
+            file.Tag.Performers = new[] { information.Artist };
+            file.Tag.Year = information.Year;
+            if (information.Genres != null)
+                file.Tag.Genres = information.Genres.Split(new[] {", "}, StringSplitOptions.None);
+            file.Tag.Title = information.Title;
+            var image = await information.GetImage();
+            if (image != null)
+            {
+                byte[] data;
+                JpegBitmapEncoder encoder = new JpegBitmapEncoder();
+                encoder.Frames.Add(BitmapFrame.Create(image));
+                using (MemoryStream ms = new MemoryStream())
+                {
+                    encoder.Save(ms);
+                    data = ms.ToArray();
+                }
+                file.Tag.Pictures = new IPicture[] { new TagLib.Picture(new ByteVector(data, data.Length)) };
+            }
+            await Task.Run(() => file.Save());
         }
 
-        private WebClient _client;
         public DownloadManager()
         {
             Entries = new ObservableCollection<DownloadEntry>();
-            DownloadDirectory = "Downloads";
+            DownloadDirectory = Path.Combine(HurricaneSettings.Instance.BaseDirectory, "Downloads");
             AddTagsToDownloads = true;
-        }
-
-        public void Dispose()
-        {
-            if (_client != null) _client.Dispose();
         }
 
         #region Settings

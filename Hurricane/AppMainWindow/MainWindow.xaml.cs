@@ -49,7 +49,7 @@ namespace Hurricane
         public MainWindow()
         {
             InitializeComponent();
-
+            this.HostedWindow = null;
             MagicArrow = new MagicArrow.MagicArrow();
             MagicArrow.Register(this);
             MagicArrow.MoveOut += (s, e) => { HideEqualizer(); HostedWindow.DisableWindow(); };
@@ -188,7 +188,13 @@ namespace Hurricane
                 Height = appstate.Height;
             }
 
-            if (skin == SmartWindowSkin) { Width = 300; Height = MagicArrow.DockManager.WindowHeight; }
+            if (skin == SmartWindowSkin)
+            {
+                Width = 300;
+                Height = MagicArrow.DockManager.WindowHeight;
+                if (MainViewModel.Instance.MusicManager != null)
+                    MainViewModel.Instance.MusicManager.DownloadManager.IsOpen = false;
+            }
 
             ShowMinButton = skin.Configuration.ShowWindowControls;
             ShowMaxRestoreButton = skin.Configuration.ShowWindowControls;
@@ -508,7 +514,7 @@ namespace Hurricane
         {
             if (_oldFlyout != null) flyoutControl.Items.Remove(_oldFlyout);
             var newflyout = (Flyout) Resources["DownloadFlyout"];
-            newflyout.Theme = HurricaneSettings.Instance.Config.Theme.BaseTheme == BaseTheme.Dark ? FlyoutTheme.Dark : FlyoutTheme.Light;
+            //newflyout.Theme = HurricaneSettings.Instance.Config.Theme.BaseTheme == BaseTheme.Dark ? FlyoutTheme.Dark : FlyoutTheme.Light;
             flyoutControl.Items.Add(newflyout);
             _oldFlyout = newflyout;
         }

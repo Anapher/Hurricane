@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 using System.Windows.Media;
-using Hurricane.Settings;
+using Hurricane.Music.Download;
 
 namespace Hurricane.Music.Track.SoundCloudApi
 {
@@ -24,19 +24,24 @@ namespace Hurricane.Music.Track.SoundCloudApi
             get { return SoundCloudTrack.GetProviderVector(); }
         }
 
-        public override string GetDownloadUrl()
-        {
-            return ((ApiResult)Result).download_url + "?client_id=" + SensitiveInformation.SoundCloudKey;
-        }
-
         public override bool CanDownload
         {
             get { return ((ApiResult)Result).downloadable && !string.IsNullOrEmpty(((ApiResult)Result).download_url); }
         }
 
-        public override string GetFilename
+        public override string DownloadParameter
+        {
+            get { return ((ApiResult)Result).id.ToString(); }
+        }
+
+        public override string DownloadFilename
         {
             get { return Utilities.GeneralHelper.EscapeFilename(Title) + ".mp3"; }
+        }
+
+        public override DownloadMethod DownloadMethod
+        {
+            get {; return DownloadMethod.SoundCloud; }
         }
     }
 }

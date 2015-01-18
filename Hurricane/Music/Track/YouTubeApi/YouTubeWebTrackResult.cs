@@ -1,6 +1,6 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using System.Windows.Media;
+using Hurricane.Music.Download;
 
 namespace Hurricane.Music.Track.YouTubeApi
 {
@@ -15,7 +15,7 @@ namespace Hurricane.Music.Track.YouTubeApi
         {
             var result = new YouTubeTrack
             {
-                YouTubeLink = Url
+                YouTubeId = YouTubeTrack.GetYouTubeIdFromLink(Url)
             };
             await result.LoadInformation();
             return result;
@@ -26,19 +26,24 @@ namespace Hurricane.Music.Track.YouTubeApi
             get { return YouTubeTrack.GetProviderVector(); }
         }
 
-        public override string GetDownloadUrl()
-        {
-            return "";
-        }
-
         public override bool CanDownload
         {
             get { return true; }
         }
 
-        public override string GetFilename
+        public override string DownloadParameter
         {
-            get { return Utilities.GeneralHelper.EscapeFilename(Title) + ".mp3"; }
+            get { return Url; }
+        }
+
+        public override string DownloadFilename
+        {
+            get { return Utilities.GeneralHelper.EscapeFilename(Title) + ".m4a"; }
+        }
+
+        public override DownloadMethod DownloadMethod
+        {
+            get {; return DownloadMethod.youtube_dl; }
         }
     }
 }
