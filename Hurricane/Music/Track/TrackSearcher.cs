@@ -69,30 +69,40 @@ namespace Hurricane.Music.Track
                     }
 
                     _IsSearching = true;
-                    Task<List<SoundCloudWebTrackResult>> tSoundCloud = null;
-                    Task<List<YouTubeWebTrackResult>> tYouTube = null;
 
-                    if (LoadFromSoundCloud)
-                        tSoundCloud = SoundCloudApi.SoundCloudApi.Search(SearchText);
-
-                    if (LoadFromYouTube)
-                        tYouTube = YouTubeApi.YouTubeApi.Search(SearchText);
-
-                    List<WebTrackResultBase> list = new List<WebTrackResultBase>();
-                    if (tSoundCloud != null)
+                    var specialYouTubeResult = await YouTubeApi.YouTubeApi.CheckForSpecialUrl(SearchText);
+                    if (specialYouTubeResult.Item1)
                     {
-                        var result = await tSoundCloud;
-                        result.ForEach(x => list.Add(x));
+                        SortResults(specialYouTubeResult.Item2);
                     }
-                    if (CheckForCanceled()) return;
-                    if (tYouTube != null)
+                    else
                     {
-                        var result = await tYouTube;
-                        result.ForEach(x => list.Add(x));
-                    }
+                        Task<List<SoundCloudWebTrackResult>> tSoundCloud = null;
+                        Task<List<YouTubeWebTrackResult>> tYouTube = null;
 
-                    NothingFound = list.Count == 0;
-                    SortResults(list);
+
+                        if (LoadFromSoundCloud)
+                            tSoundCloud = SoundCloudApi.SoundCloudApi.Search(SearchText);
+
+                        if (LoadFromYouTube)
+                            tYouTube = YouTubeApi.YouTubeApi.Search(SearchText);
+
+                        var list = new List<WebTrackResultBase>();
+                        if (tSoundCloud != null)
+                        {
+                            var result = await tSoundCloud;
+                            result.ForEach(x => list.Add(x));
+                        }
+                        if (CheckForCanceled()) return;
+                        if (tYouTube != null)
+                        {
+                            var result = await tYouTube;
+                            result.ForEach(x => list.Add(x));
+                        }
+
+                        NothingFound = list.Count == 0;
+                        SortResults(list); 
+                    }
                     
                     IsLoading = false;
 

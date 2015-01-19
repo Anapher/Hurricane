@@ -1,6 +1,7 @@
-﻿using System.Diagnostics;
-using Hurricane.Music.Track;
+﻿using Hurricane.Music.Track;
 using Hurricane.ViewModelBase;
+using System.Collections;
+using System.Linq;
 
 namespace Hurricane.Music
 {
@@ -106,14 +107,19 @@ namespace Hurricane.Music
             }
         }
 
-        private RelayCommand _addtracktoqueue;
-        public RelayCommand AddTrackToQueue
+        private RelayCommand _addtrackstoqueue;
+        public RelayCommand AddTracksToQueue
         {
             get
             {
-                return _addtracktoqueue ?? (_addtracktoqueue = new RelayCommand(parameter =>
+                return _addtrackstoqueue ?? (_addtrackstoqueue = new RelayCommand(parameter =>
                 {
-                    Musicmanager.Queue.AddTrack(Musicmanager.SelectedTrack, Musicmanager.SelectedPlaylist);
+                    if (parameter == null) return;
+                    var tracks = ((IList)parameter).Cast<PlayableBase>().ToList();
+                    foreach (var track in tracks.Where(x => !x.IsPlaying))
+                    {
+                        Musicmanager.Queue.AddTrack(track, Musicmanager.SelectedPlaylist);
+                    }
                     Musicmanager.OnPropertyChanged("Queue");
                 }));
             }

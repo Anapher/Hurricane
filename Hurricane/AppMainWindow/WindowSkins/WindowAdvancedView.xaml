@@ -120,7 +120,7 @@
                                         </MenuItem>
                                         <Separator />
                                         <MenuItem Header="{DynamicResource Queue}">
-                                            <MenuItem Header="{DynamicResource AddToQueue}" Command="{Binding MusicManager.Commands.AddTrackToQueue}" InputGestureText="Q"/>
+                                            <MenuItem Header="{DynamicResource AddToQueue}" Command="{Binding MusicManager.Commands.AddTracksToQueue}" CommandParameter="{Binding ElementName=listview,Path=SelectedItems}" InputGestureText="Q"/>
                                             <MenuItem Header="{DynamicResource RemoveFromQueue}" Command="{Binding MusicManager.Commands.RemoveFromQueue}" InputGestureText="Alt+Q"/>
                                             <MenuItem Header="{DynamicResource ClearQueue}" Command="{Binding MusicManager.Commands.ClearQueue}" IsEnabled="{Binding MusicManager.Queue.HasTracks}"/>
                                             <Separator />
@@ -142,9 +142,9 @@
                                         </MenuItem>
                                         <Separator />
                                         <MenuItem Header="{DynamicResource Queue}">
-                                            <MenuItem Header="{DynamicResource AddToQueue}" Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}, Path=DataContext.MusicManager.Commands.AddTrackToQueue}" InputGestureText="Q"/>
+                                            <MenuItem Header="{DynamicResource AddToQueue}" Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}, Path=DataContext.MusicManager.Commands.AddTracksToQueue}" CommandParameter="{Binding ElementName=listview,Path=SelectedItems}" InputGestureText="Q"/>
                                             <MenuItem Header="{DynamicResource RemoveFromQueue}" Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}, Path=DataContext.MusicManager.Commands.RemoveFromQueue}" InputGestureText="Alt+Q"/>
-                                            <MenuItem Header="{DynamicResource ClearQueue}" Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}, Path=DataContext.MusicManager.Commands.ClearQueue}" IsEnabled="{Binding MusicManager.Queue.HasTracks}"/>
+                                            <MenuItem Header="{DynamicResource ClearQueue}" Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}, Path=DataContext.MusicManager.Commands.ClearQueue}" IsEnabled="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}, Path=DataContext.MusicManager.Queue.HasTracks}"/>
                                             <Separator />
                                             <MenuItem Header="{DynamicResource QueueManager}" Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}, Path=DataContext.OpenQueueManager}" InputGestureText="{DynamicResource CtrlQ}"/>
                                         </MenuItem>
@@ -180,7 +180,7 @@
                                     <KeyBinding Key="Enter" Command="{Binding MusicManager.Commands.PlaySelectedTrack}"/>
                                     <KeyBinding Key="O" Modifiers="Alt" Command="{Binding MusicManager.Commands.OpenTrackLocation}"/>
                                     <KeyBinding Key="Space" Command="{Binding MusicManager.Commands.TogglePlayPause}"/>
-                                    <KeyBinding Key="Q" Command="{Binding MusicManager.Commands.AddTrackToQueue}"/>
+                                    <KeyBinding Key="Q" Command="{Binding MusicManager.Commands.AddTracksToQueue}" CommandParameter="{Binding ElementName=listview,Path=SelectedItems}"/>
                                     <KeyBinding Key="Q" Modifiers="Alt" Command="{Binding MusicManager.Commands.RemoveFromQueue}"/>
                                     <KeyBinding Key="Q" Modifiers="Control" Command="{Binding OpenQueueManager}"/>
                                     <KeyBinding Key="Insert" Command="{Binding AddFilesToPlaylist}"/>

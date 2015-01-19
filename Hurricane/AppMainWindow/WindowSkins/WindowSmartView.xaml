@@ -7,6 +7,7 @@
              xmlns:converter="clr-namespace:Hurricane.Extensions.Converter"
              xmlns:ex="clr-namespace:Hurricane.Extensions"
              xmlns:jas="clr-namespace:Hurricane.Resources.Styles.DragDropListView.ServiceProviders.UI"
+             xmlns:track="clr-namespace:Hurricane.Music.Track"
              DataContext="{x:Static viewmodels:MainViewModel.Instance}" Width="300" MinWidth="300" MaxWidth="300" MinHeight="400">
     <UserControl.Resources>
         <ResourceDictionary>
@@ -191,7 +192,7 @@
                         </Button>
                     </StackPanel>
                 </Grid>
-                <Grid>
+                <Grid x:Name="BaseControlGrid">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="auto"/>
                         <ColumnDefinition Width="*"/>
@@ -235,7 +236,37 @@
                         </ToggleButton>
                     </StackPanel>
                 </Grid>
-                <Slider VerticalAlignment="Bottom" IsMoveToPointEnabled="True" Margin="0,2,0,-2" Style="{StaticResource TimelineSlider}" Maximum="{Binding MusicManager.CSCoreEngine.TrackLength}" Value="{Binding MusicManager.CSCoreEngine.Position}"/>
+                <Grid Margin="0,8,0,5">
+                    <Slider Width="{Binding ElementName=BaseControlGrid,Path=ActualWidth}" VerticalAlignment="Bottom" HorizontalAlignment="Stretch" IsMoveToPointEnabled="True" Maximum="{Binding MusicManager.CSCoreEngine.TrackLength}" Value="{Binding MusicManager.CSCoreEngine.Position}">
+                        <Slider.Resources>
+                            <ResourceDictionary>
+                                <ResourceDictionary.MergedDictionaries>
+                                    <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/FlatSlider.xaml"></ResourceDictionary>
+                                </ResourceDictionary.MergedDictionaries>
+                            </ResourceDictionary>
+                        </Slider.Resources>
+                        <Slider.Style>
+                            <Style TargetType="Slider" BasedOn="{StaticResource FlatSlider}">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding MusicManager.CSCoreEngine.IsLoading}" Value="True">
+                                        <Setter Property="Visibility" Value="Hidden"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Slider.Style>
+                    </Slider>
+                    <controls:MetroProgressBar IsIndeterminate="{Binding MusicManager.CSCoreEngine.IsLoading}" Foreground="{StaticResource AccentColorBrush}">
+                        <controls:MetroProgressBar.Style>
+                            <Style TargetType="controls:MetroProgressBar">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding MusicManager.CSCoreEngine.IsLoading}" Value="False">
+                                        <Setter Property="Visibility" Value="Hidden"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </controls:MetroProgressBar.Style>
+                    </controls:MetroProgressBar>
+                </Grid>
             </StackPanel>
             <Grid Grid.Row="3">
                 <Grid.RowDefinitions>
@@ -342,7 +373,7 @@
                         <KeyBinding Key="Enter" Command="{Binding MusicManager.Commands.PlaySelectedTrack}"/>
                         <KeyBinding Key="O" Modifiers="Alt" Command="{Binding MusicManager.Commands.OpenTrackLocation}"/>
                         <KeyBinding Key="Space" Command="{Binding MusicManager.Commands.TogglePlayPause}"/>
-                        <KeyBinding Key="Q" Command="{Binding MusicManager.Commands.AddTrackToQueue}"/>
+                        <KeyBinding Key="Q" Command="{Binding MusicManager.Commands.AddTracksToQueue}" CommandParameter="{Binding ElementName=listview,Path=SelectedItems}"/>
                         <KeyBinding Key="Q" Modifiers="Alt" Command="{Binding MusicManager.Commands.RemoveFromQueue}"/>
                         <KeyBinding Key="Q" Modifiers="Control" Command="{Binding OpenQueueManager}"/>
                         <KeyBinding Key="Insert" Command="{Binding AddFilesToPlaylist}"/>
@@ -352,7 +383,7 @@
                     </ListView.InputBindings>
                     <ListView.Resources>
                         <converter:TrueFalseValueConverter x:Key="boldifplaying" FalseValue="Normal" TrueValue="Bold"/>
-                        <ContextMenu x:Key="ItemContextMenu" DataContext="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}, Path=DataContext}">
+                        <ContextMenu x:Key="FileContextMenu" DataContext="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}, Path=DataContext}">
                             <MenuItem Header="{DynamicResource Play}" Command="{Binding MusicManager.Commands.PlaySelectedTrack}" IsEnabled="{Binding MusicManager.SelectedTrack.TrackExists}" InputGestureText="Enter">
                                 <MenuItem.Icon>
                                     <Viewbox Stretch="Uniform" Width="16" Height="16">
@@ -379,7 +410,7 @@
                             </MenuItem>
                             <Separator />
                             <MenuItem Header="{DynamicResource Queue}">
-                                <MenuItem Header="{DynamicResource AddToQueue}" Command="{Binding MusicManager.Commands.AddTrackToQueue}" InputGestureText="Q"/>
+                                <MenuItem Header="{DynamicResource AddToQueue}" Command="{Binding MusicManager.Commands.AddTracksToQueue}" CommandParameter="{Binding ElementName=listview,Path=SelectedItems}" InputGestureText="Q"/>
                                 <MenuItem Header="{DynamicResource RemoveFromQueue}" Command="{Binding MusicManager.Commands.RemoveFromQueue}" InputGestureText="Alt+Q"/>
                                 <MenuItem Header="{DynamicResource ClearQueue}" Command="{Binding MusicManager.Commands.ClearQueue}" IsEnabled="{Binding MusicManager.Queue.HasTracks}"/>
                                 <Separator />
@@ -408,6 +439,27 @@
                                 </MenuItem.Icon>
                             </MenuItem>
                         </ContextMenu>
+                        <ContextMenu x:Key="StreamContextMenu">
+                            <MenuItem Header="{DynamicResource Play}" Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}, Path=DataContext.MusicManager.Commands.PlaySelectedTrack}" InputGestureText="Enter"/>
+                            <Separator />
+                            <MenuItem Header="{DynamicResource AddTracks}" IsEnabled="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}, Path=DataContext.MusicManager.SelectedPlaylist.CanEdit}">
+                                <MenuItem Header="{DynamicResource AddFiles}" Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}, Path=DataContext.AddFilesToPlaylist}" InputGestureText="{DynamicResource Ins}"/>
+                                <MenuItem Header="{DynamicResource AddDirectories}" Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}, Path=DataContext.AddFolderToPlaylist}" InputGestureText="{DynamicResource CtrlIns}"/>
+                            </MenuItem>
+                            <Separator />
+                            <MenuItem Header="{DynamicResource Queue}">
+                                <MenuItem Header="{DynamicResource AddToQueue}" Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}, Path=DataContext.MusicManager.Commands.AddTracksToQueue}" CommandParameter="{Binding ElementName=listview,Path=SelectedItems}" InputGestureText="Q"/>
+                                <MenuItem Header="{DynamicResource RemoveFromQueue}" Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}, Path=DataContext.MusicManager.Commands.RemoveFromQueue}" InputGestureText="Alt+Q"/>
+                                <MenuItem Header="{DynamicResource ClearQueue}" Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}, Path=DataContext.MusicManager.Commands.ClearQueue}" IsEnabled="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}, Path=DataContext.MusicManager.Queue.HasTracks}"/>
+                                <Separator />
+                                <MenuItem Header="{DynamicResource QueueManager}" Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}, Path=DataContext.OpenQueueManager}" InputGestureText="{DynamicResource CtrlQ}"/>
+                            </MenuItem>
+                            <Separator />
+                            <MenuItem Header="{DynamicResource TrackInformation}" Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}, Path=DataContext.OpenTrackInformation}" InputGestureText="F4"/>
+                            <MenuItem Header="{DynamicResource OpenUrl}" Command="{Binding OpenLinkCommand}" InputGestureText="Alt+O"/>
+                            <Separator />
+                            <MenuItem Header="{DynamicResource Remove}" Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}, Path=DataContext.RemoveSelectedTracks}" InputGestureText="{DynamicResource Del}"/>
+                        </ContextMenu>
                     </ListView.Resources>
                     <ListView.ItemContainerStyle>
                         <Style TargetType="ListViewItem" BasedOn="{StaticResource MetroListViewItem}">
@@ -415,13 +467,19 @@
                             <Setter Property="HorizontalContentAlignment" Value="Stretch" />
                             <Setter Property="Border.BorderThickness" Value="0,0,0,0.5" />
                             <Setter Property="Border.BorderBrush" Value="LightGray" />
-                            <Setter Property="ContextMenu" Value="{StaticResource ItemContextMenu}"/>
                             <Setter Property="LayoutTransform">
                                 <Setter.Value>
                                     <ScaleTransform x:Name="transform" />
                                 </Setter.Value>
                             </Setter>
                             <Style.Triggers>
+                                <DataTrigger Binding="{Binding TrackType}" Value="File">
+                                    <Setter Property="ContextMenu" Value="{StaticResource FileContextMenu}"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding TrackType}" Value="Stream">
+                                    <Setter Property="ContextMenu" Value="{StaticResource StreamContextMenu}"/>
+                                </DataTrigger>
+                                
                                 <Trigger Property="jas:ListViewItemDragState.IsBeingDragged" Value="True">
                                     <Setter Property="FontWeight" Value="DemiBold" />
                                 </Trigger>
@@ -487,13 +545,33 @@
                                                 </Style>
                                                 <converter:TrueFalseValueConverter x:Key="TrueFalseValueConverter" FalseValue="#FFB4B4B4" TrueValue="White"/>
                                             </DockPanel.Resources>
-                                            <TextBlock Text="{Binding Extension}"/>
-                                            <TextBlock Text=" :: "/>
-                                            <TextBlock Text="{Binding kHz}"/>
-                                            <TextBlock Text=" kHz"/>
-                                            <TextBlock Text=" :: "/>
-                                            <TextBlock Text="{Binding kbps}"/>
-                                            <TextBlock Text=" kbps"/>
+                                            <ContentControl Content="{Binding}">
+                                                <ContentControl.Resources>
+                                                    <DataTemplate DataType="{x:Type track:StreamableBase}">
+                                                        <StackPanel Orientation="Horizontal">
+                                                            <Viewbox Height="12" Width="12" VerticalAlignment="Center">
+                                                                <Path Data="{Binding ProviderVector}" Fill="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem},Path=Foreground}"/>
+                                                            </Viewbox>
+                                                            <TextBlock Text=" :: "/>
+                                                            <TextBlock Text="{Binding kHz}"/>
+                                                            <TextBlock Text=" kHz"/>
+                                                            <TextBlock Text=" :: "/>
+                                                            <TextBlock Text="{Binding Uploader}" MaxWidth="120" TextTrimming="CharacterEllipsis"/>
+                                                        </StackPanel>
+                                                    </DataTemplate>
+                                                    <DataTemplate DataType="{x:Type track:LocalTrack}">
+                                                        <StackPanel Orientation="Horizontal">
+                                                            <TextBlock Text="{Binding Extension}"/>
+                                                            <TextBlock Text=" :: "/>
+                                                            <TextBlock Text="{Binding kHz}"/>
+                                                            <TextBlock Text=" kHz"/>
+                                                            <TextBlock Text=" :: "/>
+                                                            <TextBlock Text="{Binding kbps}"/>
+                                                            <TextBlock Text=" kbps"/>
+                                                        </StackPanel>
+                                                    </DataTemplate>
+                                                </ContentControl.Resources>
+                                            </ContentControl>
                                             <ToggleButton IsChecked="{Binding IsFavorite}" Foreground="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem},Path=IsSelected,Converter={StaticResource TrueFalseValueConverter}}" Background="{StaticResource BlackBrush}" DockPanel.Dock="Right" Width="12" Height="12" Margin="0,4,0,0">
                                                 <ToggleButton.Style>
                                                     <Style TargetType="ToggleButton" BasedOn="{StaticResource FavoriteToggleButton}">
@@ -516,7 +594,6 @@
                         </DataTemplate>
                     </ListView.ItemTemplate>
                 </ListView>
-
                 <StackPanel Orientation="Vertical" Grid.Row="2" Margin="5,5,5,5">
                     <TextBox controls:TextBoxHelper.Watermark="{StaticResource Search}" Text="{Binding MusicManager.SelectedPlaylist.SearchText,UpdateSourceTrigger=PropertyChanged}"/>
                 </StackPanel>
