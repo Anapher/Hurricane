@@ -10,7 +10,7 @@ using CSCore.Codecs;
 using Exceptionless.Json;
 using Hurricane.Music.Download;
 using Hurricane.Music.MusicDatabase;
-using Hurricane.Music.Track.SoundCloudApi;
+using Hurricane.Music.Track.WebApi.SoundCloudApi;
 using Hurricane.Settings;
 
 namespace Hurricane.Music.Track
@@ -34,6 +34,14 @@ namespace Hurricane.Music.Track
 
         public async Task<bool> LoadInformation(ApiResult result)
         {
+            using (var soundSource = await GetSoundSource())
+            {
+                return LoadInformation(result, SoundSourceInfo.FromSoundSource(soundSource));
+            }
+        }
+
+        public bool LoadInformation(ApiResult result, SoundSourceInfo soundSourceInfo)
+        {
             if (!result.streamable) return false;
             Year = result.release_year != null
                 ? uint.Parse(result.release_year.ToString())
@@ -46,11 +54,9 @@ namespace Hurricane.Music.Track
             Uploader = result.user.username;
             Downloadable = result.downloadable;
 
-            using (var soundSource = await GetSoundSource())
-            {
-                kHz = soundSource.WaveFormat.SampleRate / 1000;
-                SetDuration(soundSource.GetLength());
-            }
+
+            kHz = soundSourceInfo.kHz;
+            SetDuration(soundSourceInfo.Duration);
             return true;
         }
 
@@ -64,17 +70,21 @@ namespace Hurricane.Music.Track
             {
                 var diAlbumCover = new DirectoryInfo(HurricaneSettings.Instance.CoverDirectory);
                 Image = MusicCoverManager.GetSoundCloudImage(this, diAlbumCover, HurricaneSettings.Instance.Config.DownloadAlbumCoverQuality, HurricaneSettings.Instance.Config.LoadAlbumCoverFromInternet);
+
+                if (Image == null)
+                    Image = MusicCoverManager.GetImage(this, diAlbumCover);
+
                 if (Image == null && HurricaneSettings.Instance.Config.LoadAlbumCoverFromInternet)
                 {
                     try
                     {
                         if (!string.IsNullOrEmpty(ArtworkUrl))
                         {
-                            Image = await SoundCloudApi.SoundCloudApi.LoadBitmapImage(this, HurricaneSettings.Instance.Config.DownloadAlbumCoverQuality, diAlbumCover);
+                            Image = await SoundCloudApi.LoadBitmapImage(this, HurricaneSettings.Instance.Config.DownloadAlbumCoverQuality, diAlbumCover);
                         }
-                        else
+                        if (Image == null)
                         {
-                            Image = await MusicCoverManager.LoadCoverFromWeb(this, diAlbumCover).ConfigureAwait(false);
+                            Image = await MusicCoverManager.LoadCoverFromWeb(this, diAlbumCover, Uploader != Artist).ConfigureAwait(false);
                         }
                     }
                     catch (WebException)

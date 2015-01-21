@@ -10,6 +10,7 @@ using Hurricane.Music;
 using Hurricane.Music.MusicDatabase.EventArgs;
 using Hurricane.Music.Playlist;
 using Hurricane.Music.Track;
+using Hurricane.Music.Track.WebApi;
 using Hurricane.Settings;
 using Hurricane.Utilities;
 using Hurricane.ViewModelBase;
@@ -45,7 +46,7 @@ namespace Hurricane.ViewModels
             MusicManager.CSCoreEngine.StartVisualization += CSCoreEngine_StartVisualization;
             MusicManager.CSCoreEngine.TrackChanged += CSCoreEngine_TrackChanged;
             MusicManager.LoadFromSettings();
-            TrackSearcher = new TrackSearcher(MusicManager);
+            TrackSearcher = new TrackSearcher(MusicManager, window);
 
             _keyboardListener = new KeyboardListener();
             _keyboardListener.KeyDown += KListener_KeyDown;

@@ -14,12 +14,12 @@ namespace Hurricane.Music.MusicDatabase
 {
     class LastfmAPI
     {
-        public async static Task<BitmapImage> GetImage(ImageQuality imagequality, bool saveimage, DirectoryInfo directory, PlayableBase track, bool trimtrackname)
+        public async static Task<BitmapImage> GetImage(ImageQuality imagequality, bool saveimage, DirectoryInfo directory, PlayableBase track, bool trimtrackname, bool UseArtist = true)
         {
             string apikey = SensitiveInformation.LastfmAPIKey;
 
             string _title = track.Title;
-            string _artist = track.Artist;
+            string _artist = UseArtist ? track.Artist : string.Empty;
             if (trimtrackname) _title = TrimTrackTitle(track.Title);
 
             string url = Uri.EscapeUriString(string.Format("http://ws.audioscrobbler.com/2.0/?method=track.search&track={0}{1}&api_key={2}", GeneralHelper.EscapeTitleName(_title), !string.IsNullOrEmpty(_artist) ? "&artist=" + GeneralHelper.EscapeArtistName(_artist) : string.Empty, apikey));
@@ -52,7 +52,7 @@ namespace Hurricane.Music.MusicDatabase
                                     {
                                         album = string.IsNullOrEmpty(track.Album) ? _title : track.Album;
                                     }
-                                    else { album = trackinfo.track.album.title; track.Album = trackinfo.track.album.title; }
+                                    else { album = trackinfo.track.album.title; }
                                     if (saveimage) await ImageHelper.SaveImage(img, album, directory.FullName);
                                     
                                     return img;
@@ -82,6 +82,7 @@ namespace Hurricane.Music.MusicDatabase
                             {
                                 url = string.Format("http://ws.audioscrobbler.com/2.0/?method=artist.getinfo&artist={0}&autocorrect=1&api_key={1}", _artist, apikey);
                             }
+
                             if (string.IsNullOrEmpty(url)) return null;
                             result = await web.DownloadStringTaskAsync(Uri.EscapeUriString(url));
                             using (StringReader srartist = new StringReader(result))

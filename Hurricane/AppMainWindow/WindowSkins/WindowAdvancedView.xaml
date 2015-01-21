@@ -12,6 +12,7 @@
              xmlns:ctrl="clr-namespace:Hurricane.Extensions.ListViewLayoutManager"
              xmlns:userControls="clr-namespace:Hurricane.Views.UserControls"
              xmlns:track="clr-namespace:Hurricane.Music.Track"
+             xmlns:system="clr-namespace:System;assembly=mscorlib"
              mc:Ignorable="d"
              d:DesignHeight="500" d:DesignWidth="1000" DataContext="{x:Static viewmodels:MainViewModel.Instance}">
     <UserControl.Resources>
@@ -527,33 +528,106 @@
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <TextBox Text="{Binding TrackSearcher.SearchText,UpdateSourceTrigger=PropertyChanged}" controls:TextBoxHelper.ClearTextButton="True" Grid.Column="1">
-                            <TextBox.InputBindings>
+                        <ComboBox Margin="0,0,5,0" Width="100" SelectedIndex="{Binding MusicManager.DownloadManager.SelectedService}">
+                            <ComboBoxItem Content="{DynamicResource All}"/>
+                            <ComboBoxItem Content="YouTube"/>
+                            <ComboBoxItem Content="SoundCloud"/>
+                        </ComboBox>
+                        <ComboBox Text="{Binding TrackSearcher.SearchText,UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding MusicManager.DownloadManager.Searches}" IsEditable="True" x:Name="txtSearchOnline" controls:TextBoxHelper.ClearTextButton="True" Grid.Column="1" ToolTipService.ShowDuration="12000">
+                            <ComboBox.InputBindings>
                                 <KeyBinding Key="Enter" Command="{Binding TrackSearcher.SearchCommand}"/>
-                            </TextBox.InputBindings>
-                        </TextBox>
+                            </ComboBox.InputBindings>
+                            <ComboBox.ToolTip>
+                                <ToolTip>
+                                    <StackPanel Orientation="Vertical">
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="{DynamicResource AllowedInputs}" FontSize="14"/>
+                                            <TextBlock Text=":" FontSize="14"/>
+                                        </StackPanel>
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="{DynamicResource Keyword}" FontWeight="Bold"/>
+                                            <TextBlock Text=" - "/>
+                                            <TextBlock Text="Eminem Beautiful" FontStyle="Italic"/>
+                                        </StackPanel>
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="{DynamicResource YouTubeVideoLink}" FontWeight="Bold"/>
+                                            <TextBlock Text=" - "/>
+                                            <TextBlock Text="https://www.youtube.com/watch?v=p7LdZ82kL7Q" FontStyle="Italic"/>
+                                        </StackPanel>
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="{DynamicResource YouTubePlaylistLink}" FontWeight="Bold"/>
+                                            <TextBlock Text=" - "/>
+                                            <TextBlock Text="https://www.youtube.com/playlist?list=PL55713C70BA91BD6E" FontStyle="Italic"/>
+                                        </StackPanel>
+                                    </StackPanel>
+                                </ToolTip>
+                            </ComboBox.ToolTip>
+                        </ComboBox>
                     </Grid>
                     <Grid Grid.Row="1" Margin="0,5,0,0">
                         <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
                             <RowDefinition Height="*"/>
                             <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
-                        <ListView ItemsSource="{Binding TrackSearcher.Results}" ctrl:ListViewLayoutManager.Enabled="True" Style="{StaticResource VisualizingListView}" SelectedItem="{Binding TrackSearcher.SelectedTrack}"
-                                  extensions:GridViewSort.AutoSort="True">
-                            <ListView.Resources>
-                                <converter:FormatLargeNumber x:Key="FormatLargeNumber"/>
-                                <ContextMenu x:Key="ContextMenu" DataContext="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}, Path=DataContext}">
-                                    <MenuItem Header="{DynamicResource Play}" Command="{Binding TrackSearcher.PlaySelectedTrack}"/>
-                                    <Separator />
-                                    <MenuItem Header="{DynamicResource AddToPlaylist}" ItemsSource="{Binding MusicManager.Playlists}">
+                        <Grid Height="69" Margin="0,3,0,3" Background="{StaticResource WhiteBrush}">
+                            <Grid.Resources>
+                                <ContextMenu x:Key="contextMenu">
+                                    <MenuItem Header="{DynamicResource AddToExistingPlaylist}" ItemsSource="{Binding MusicManager.Playlists}">
                                         <MenuItem.ItemContainerStyle>
                                             <Style TargetType="MenuItem" BasedOn="{StaticResource MetroMenuItem}">
                                                 <Setter Property="Header" Value="{Binding Name}"/>
-                                                <Setter Property="Command" Value="{Binding RelativeSource={RelativeSource AncestorType=ContextMenu},Path=DataContext.TrackSearcher.AddToPlaylist}"/>
+                                                <Setter Property="Command" Value="{Binding RelativeSource={RelativeSource AncestorType=ContextMenu},Path=DataContext.TrackSearcher.AddPlaylistToExisitingPlaylist}"/>
                                                 <Setter Property="CommandParameter" Value="{Binding}"/>
                                             </Style>
                                         </MenuItem.ItemContainerStyle>
                                     </MenuItem>
+                                    <MenuItem Header="{DynamicResource CreateNewPlaylist}" Command="{Binding TrackSearcher.AddPlaylistToNewPlaylist}"/>
+                                </ContextMenu>
+                            </Grid.Resources>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="100"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.Style>
+                                <Style TargetType="Grid">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                    <Setter Property="ContextMenu" Value="{StaticResource contextMenu}"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding TrackSearcher.PlaylistResult}" Value="{x:Null}">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Grid.Style>
+                            <Image Source="{Binding TrackSearcher.PlaylistResult.Thumbnail}" Height="69" Stretch="UniformToFill" /><!-- The resolution of the image is 120x90 -->
+                            <StackPanel Orientation="Vertical" Grid.Column="1" Margin="10,0,0,0">
+                                <TextBlock Text="{Binding TrackSearcher.PlaylistResult.Title}" FontSize="14"/>
+                                <TextBlock Text="{Binding TrackSearcher.PlaylistResult.Uploader}" FontSize="12"/>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="{Binding TrackSearcher.PlaylistResult.TotalTracks}" FontSize="11"/>
+                                    <TextBlock Text=" " FontSize="11"/>
+                                    <TextBlock Text="{DynamicResource Tracks}" FontSize="11"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </Grid>
+                        <ListView ItemsSource="{Binding TrackSearcher.Results}" ctrl:ListViewLayoutManager.Enabled="True" Style="{StaticResource VisualizingListView}" SelectedItem="{Binding TrackSearcher.SelectedTrack}"
+                                  extensions:GridViewSort.AutoSort="True" Grid.Row="1">
+                            <ListView.Resources>
+                                <converter:FormatLargeNumber x:Key="FormatLargeNumber"/>
+                                <ContextMenu x:Key="ContextMenu">
+                                    <MenuItem Header="{DynamicResource Play}" Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}, Path=DataContext.TrackSearcher.PlaySelectedTrack}"/>
+                                    <Separator />
+                                    <MenuItem Header="{DynamicResource AddToPlaylist}" ItemsSource="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}, Path=DataContext.MusicManager.Playlists}">
+                                        <MenuItem.ItemContainerStyle>
+                                            <Style TargetType="MenuItem" BasedOn="{StaticResource MetroMenuItem}">
+                                                <Setter Property="Header" Value="{Binding Name}"/>
+                                                <Setter Property="Command" Value="{Binding RelativeSource={RelativeSource AncestorType=ListView},Path=DataContext.TrackSearcher.AddToPlaylist}"/>
+                                                <Setter Property="CommandParameter" Value="{Binding}"/>
+                                            </Style>
+                                        </MenuItem.ItemContainerStyle>
+                                    </MenuItem>
+                                    <MenuItem Header="{DynamicResource OpenUrl}" Command="{Binding OpenUrl}"/>
                                     <MenuItem Header="{DynamicResource Download}" IsEnabled="{Binding RelativeSource={RelativeSource AncestorType=ContextMenu},Path=DataContext.TrackSearcher.SelectedTrack.CanDownload}" Command="{Binding RelativeSource={RelativeSource AncestorType=ContextMenu},Path=DataContext.TrackSearcher.DownloadTrack}"/>
                                 </ContextMenu>
                             </ListView.Resources>
@@ -630,7 +704,7 @@
                                 </GridView>
                             </ListView.View>
                         </ListView>
-                        <ProgressBar VerticalAlignment="Bottom" IsIndeterminate="{Binding TrackSearcher.IsLoading}" Visibility="{Binding TrackSearcher.IsLoading,Converter={StaticResource BooleanToVisibilityConverter}}" Grid.Row="1"/>
+                        <ProgressBar VerticalAlignment="Bottom" IsIndeterminate="{Binding TrackSearcher.IsLoading}" Visibility="{Binding TrackSearcher.IsLoading,Converter={StaticResource BooleanToVisibilityConverter}}" Grid.Row="2"/>
                         <TextBlock Grid.RowSpan="2" Visibility="{Binding TrackSearcher.NothingFound,Converter={StaticResource BooleanToVisibilityConverter}}" Text="{DynamicResource NothingFound}" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="16" FontWeight="Light"/>
                     </Grid>
                 </Grid>

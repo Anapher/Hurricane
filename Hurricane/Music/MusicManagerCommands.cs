@@ -94,14 +94,12 @@ namespace Hurricane.Music
                     }
                     if (Musicmanager.SelectedTrack != null)
                     {
-                        await Musicmanager.CSCoreEngine.OpenTrack(Musicmanager.SelectedTrack);
-                        Musicmanager.CSCoreEngine.TogglePlayPause();
+                        Musicmanager.PlayTrack(Musicmanager.SelectedTrack, Musicmanager.SelectedPlaylist);
                         return;
                     }
                     if (Musicmanager.SelectedPlaylist.Tracks.Count > 0)
                     {
-                        await Musicmanager.CSCoreEngine.OpenTrack(Musicmanager.SelectedPlaylist.Tracks[0]);
-                        Musicmanager.CSCoreEngine.TogglePlayPause();
+                        Musicmanager.PlayTrack(Musicmanager.SelectedPlaylist.Tracks[0], Musicmanager.SelectedPlaylist);
                     }
                 }));
             }

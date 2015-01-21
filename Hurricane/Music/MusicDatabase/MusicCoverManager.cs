@@ -6,7 +6,7 @@ using System.Windows.Media.Imaging;
 using Hurricane.Settings;
 using Hurricane.Utilities;
 using Hurricane.Music.Track;
-using Hurricane.Music.Track.SoundCloudApi;
+using Hurricane.Music.Track.WebApi.SoundCloudApi;
 
 namespace Hurricane.Music.MusicDatabase
 {
@@ -49,7 +49,7 @@ namespace Hurricane.Music.MusicDatabase
             return null;
         }
 
-        public static async Task<BitmapImage> LoadCoverFromWeb(PlayableBase track, DirectoryInfo di)
+        public static async Task<BitmapImage> LoadCoverFromWeb(PlayableBase track, DirectoryInfo di, bool UseArtist = true)
         {
             var config = HurricaneSettings.Instance.Config;
             if (config.SaveCoverLocal)
@@ -57,7 +57,7 @@ namespace Hurricane.Music.MusicDatabase
                 if (!di.Exists) di.Create();
             }
 
-            return await LastfmAPI.GetImage(config.DownloadAlbumCoverQuality, config.SaveCoverLocal, di, track, config.TrimTrackname);
+            return await LastfmAPI.GetImage(config.DownloadAlbumCoverQuality, config.SaveCoverLocal, di, track, config.TrimTrackname, UseArtist);
         }
     }
 }

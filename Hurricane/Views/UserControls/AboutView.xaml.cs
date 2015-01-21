@@ -84,6 +84,14 @@ namespace Hurricane.Views.UserControls
                     LicenceUrl = "https://wpfsvl.codeplex.com/license",
                     Description =
                         "The WPF Sound Visualization Library is a collection of WPF Controls for graphically displaying data related to sound processing."
+                },
+                new Component()
+                {
+                    Name = "youtube-dl",
+                    Url = "https://rg3.github.io/youtube-dl/",
+                    LicenceUrl = "https://github.com/rg3/youtube-dl/blob/master/LICENSE",
+                    Description =
+                        "Small command-line program to download videos from YouTube.com and other video sites"
                 }
             };
 

@@ -266,4 +266,14 @@
     <system:String x:Key="Yes">Yes</system:String>
     <system:String x:Key="No">No</system:String>
     <system:String x:Key="AddTagsToDownloads">Add tags to downloads</system:String>
+    <system:String x:Key="CreateNewPlaylist">Create new playlist</system:String>
+    <system:String x:Key="AddToExistingPlaylist">Add to exisiting playlist</system:String>
+    <system:String x:Key="AddTracksToPlaylist">Add tracks to '{0}'</system:String>
+    <system:String x:Key="LoadingTracks">Loading {0} ({1} of {2})</system:String>
+    <system:String x:Key="AllowedInputs">Allowed inputs</system:String>
+    <system:String x:Key="Keyword">Keyword</system:String>
+    <system:String x:Key="YouTubeVideoLink">YouTube video link</system:String>
+    <system:String x:Key="YouTubePlaylistLink">YouTube playlist link</system:String>
+    <system:String x:Key="All">All</system:String>
+    <system:String x:Key="ExceptionAddingOnlineTracks">An error occurred while adding the track</system:String>
 </ResourceDictionary>

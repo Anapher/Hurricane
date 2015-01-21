@@ -114,6 +114,8 @@ namespace Hurricane.Music.Download
             Entries = new ObservableCollection<DownloadEntry>();
             DownloadDirectory = Path.Combine(HurricaneSettings.Instance.BaseDirectory, "Downloads");
             AddTagsToDownloads = true;
+            SelectedService = 0;
+            this.Searches = new ObservableCollection<string>();
         }
 
         #region Settings
@@ -140,6 +142,18 @@ namespace Hurricane.Music.Download
                 SetProperty(value, ref _addTagsToDownloads);
             }
         }
+
+        private int _selectedService;
+        public int SelectedService
+        {
+            get { return _selectedService; }
+            set
+            {
+                SetProperty(value, ref _selectedService);
+            }
+        }
+
+        public ObservableCollection<string> Searches { get; set; }
 
         public string FolderName
         {

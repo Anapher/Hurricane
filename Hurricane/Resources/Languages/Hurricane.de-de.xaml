@@ -266,4 +266,14 @@
     <system:String x:Key="Yes">Ja</system:String>
     <system:String x:Key="No">Nein</system:String>
     <system:String x:Key="AddTagsToDownloads">Tags zu Downloads hinzufügen</system:String>
+    <system:String x:Key="CreateNewPlaylist">Neue Wiedergabeliste erstellen</system:String>
+    <system:String x:Key="AddToExistingPlaylist">Zu vorhandener Wiedergabeliste hinzufügen</system:String>
+    <system:String x:Key="AddTracksToPlaylist">Tracks werden zur Wiedergabeliste '{0}' hinzugefügt</system:String>
+    <system:String x:Key="LoadingTracks">Lade {0} ({1} von {2})</system:String>
+    <system:String x:Key="AllowedInputs">Zulässige Eingaben</system:String>
+    <system:String x:Key="Keyword">Suchwort</system:String>
+    <system:String x:Key="YouTubeVideoLink">YouTube Video Link</system:String>
+    <system:String x:Key="YouTubePlaylistLink">YouTube Wiedergabeliste Link</system:String>
+    <system:String x:Key="All">Alle</system:String>
+    <system:String x:Key="ExceptionAddingOnlineTracks">Ein Fehler ist beim Hinzufügen des Tracks aufgetreten.</system:String>
 </ResourceDictionary>

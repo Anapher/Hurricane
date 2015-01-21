@@ -208,8 +208,8 @@ namespace Hurricane.Music
         {
             if (IsLoopEnabled)
             {
-                await CSCoreEngine.OpenTrack(CSCoreEngine.CurrentTrack);
-                CSCoreEngine.TogglePlayPause();
+                if (await CSCoreEngine.OpenTrack(CSCoreEngine.CurrentTrack))
+                    CSCoreEngine.TogglePlayPause();
             }
             else
             {
@@ -244,9 +244,11 @@ namespace Hurricane.Music
             if (Queue.HasTracks && Queue.FirstOrDefault(t => t.TrackID == track.AuthenticationCode) != null)
                 Queue.RemoveTrack(track);
 
-            await CSCoreEngine.OpenTrack(track);
-            CSCoreEngine.TogglePlayPause();
-            CurrentPlaylist = playlist;
+            if (await CSCoreEngine.OpenTrack(track))
+            {
+                CSCoreEngine.TogglePlayPause();
+                CurrentPlaylist = playlist;  
+            }
         }
 
         public async void GoForward()
@@ -287,8 +289,8 @@ namespace Hurricane.Music
                 nexttrack = CurrentPlaylist.Tracks[nexttrackindex];
             }
 
-            await CSCoreEngine.OpenTrack(nexttrack);
-            CSCoreEngine.TogglePlayPause();
+            if (await CSCoreEngine.OpenTrack(nexttrack))
+                CSCoreEngine.TogglePlayPause();
         }
 
         private bool CheckIfTracksExists(IPlaylist list)
@@ -336,8 +338,8 @@ namespace Hurricane.Music
             }
 
             CSCoreEngine.StopPlayback();
-            await CSCoreEngine.OpenTrack(newtrack);
-            CSCoreEngine.TogglePlayPause();
+            if (await CSCoreEngine.OpenTrack(newtrack))
+                CSCoreEngine.TogglePlayPause();
         }
 
         #endregion

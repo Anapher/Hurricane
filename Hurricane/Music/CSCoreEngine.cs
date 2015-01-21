@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -213,15 +214,19 @@ namespace Hurricane.Music
         #endregion
 
         #region Public Methods
-        public async Task OpenTrack(PlayableBase track)
+        public async Task<bool> OpenTrack(PlayableBase track)
         {
-            if (IsLoading) return;
+            if (IsLoading) return false;
             
             IsLoading = true;
             StopPlayback();
             if (CurrentTrack != null) { CurrentTrack.IsPlaying = false; CurrentTrack.Unload(); }
             if (SoundSource != null && !_Crossfade.IsCrossfading) { SoundSource.Dispose(); }
             track.IsPlaying = true;
+            var previoustrack = CurrentTrack;
+            CurrentTrack = track;
+            var t = Task.Run(() => track.Load());
+            Debug.Print(track.Title);
             Equalizer equalizer;
             try
             {
@@ -231,7 +236,8 @@ namespace Hurricane.Music
             {
                 MessageBox.Show(ex.Message);
                 IsLoading = false;
-                return;
+                CurrentTrack = previoustrack;
+                return false;
             }
             if (Settings.SampleRate == -1 && SoundSource.WaveFormat.SampleRate < 44100)
             {
@@ -253,7 +259,7 @@ namespace Hurricane.Music
             _analyser.Initialize(SoundSource.WaveFormat);
             StopPlayback();
             _soundOut.Initialize(SoundSource);
-            CurrentTrack = track;
+            
             OnPropertyChanged("TrackLength");
             OnPropertyChanged("CurrentTrackLength");
 
@@ -264,7 +270,8 @@ namespace Hurricane.Music
             if (_Crossfade.IsCrossfading)
                 _fader.CrossfadeIn(_soundOut, Volume);
             IsLoading = false;
-            await Task.Run(() => track.Load());
+            await t;
+            return true;
         }
 
         public void StopPlayback()
