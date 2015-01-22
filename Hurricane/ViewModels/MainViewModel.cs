@@ -45,6 +45,7 @@ namespace Hurricane.ViewModels
             MusicManager = new MusicManager();
             MusicManager.CSCoreEngine.StartVisualization += CSCoreEngine_StartVisualization;
             MusicManager.CSCoreEngine.TrackChanged += CSCoreEngine_TrackChanged;
+            MusicManager.CSCoreEngine.ExceptionOccurred += CSCoreEngine_ExceptionOccurred;
             MusicManager.LoadFromSettings();
             TrackSearcher = new TrackSearcher(MusicManager, window);
 
@@ -66,6 +67,11 @@ namespace Hurricane.ViewModels
         void CSCoreEngine_TrackChanged(object sender, TrackChangedEventArgs e)
         {
             if (TrackChanged != null) TrackChanged(sender, e);
+        }
+
+        async void CSCoreEngine_ExceptionOccurred(object sender, Exception e)
+        {
+            await _baseWindow.ShowMessage(e.Message, Application.Current.Resources["Exception"].ToString(), false, DialogMode.Single);
         }
 
         void KListener_KeyDown(object sender, RawKeyEventArgs args)

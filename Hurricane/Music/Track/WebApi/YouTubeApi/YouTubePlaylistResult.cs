@@ -56,9 +56,11 @@ namespace Hurricane.Music.Track.WebApi.YouTubeApi
                     var tracks = YouTubeApi.GetPlaylistTracks(await YouTubeApi.GetPlaylist(PlaylistId.Text, counter, 50));
                     for (int j = 0; j < tracks.Count; j++)
                     {
+                        var track = tracks[j];
                         if (LoadingTracksProcessChanged != null)
-                            LoadingTracksProcessChanged(this, new LoadingTracksEventArgs(counter + j, alltracks, tracks[j].Title));
-                        resultList.Add(await tracks[j].ToPlayable());
+                            LoadingTracksProcessChanged(this, new LoadingTracksEventArgs(counter + j, alltracks, track.Title));
+                        if (await track.CheckIfAvailable())
+                            resultList.Add(await track.ToPlayable());
                     }
                     counter += 50;
                 }

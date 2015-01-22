@@ -58,7 +58,8 @@ namespace Hurricane.Music.Track.WebApi.SoundCloudApi
         private SoundSourceInfo _soundSourceInfo;
         public async override Task<bool> CheckIfAvailable()
         {
-            var newtrack = new SoundCloudTrack { Url = Url };
+            var newtrack = new SoundCloudTrack { SoundCloudID = ((ApiResult)Result).id };
+            
             try
             {
                 using (var x = await newtrack.GetSoundSource())

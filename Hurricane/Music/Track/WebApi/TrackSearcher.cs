@@ -53,7 +53,6 @@ namespace Hurricane.Music.Track.WebApi
                 SetProperty(value, ref _selectedTrack);
             }
         }
-
         
         private IPlaylistResult _playlistResult;
         public IPlaylistResult PlaylistResult
@@ -116,7 +115,7 @@ namespace Hurricane.Music.Track.WebApi
 
                             NothingFound = list.Count == 0;
                             SortResults(list);
-                            _manager.DownloadManager.Searches.Add(SearchText);
+                            _manager.DownloadManager.Searches.Insert(0, SearchText);
                         }
                     }
                     catch (WebException ex)
@@ -124,7 +123,6 @@ namespace Hurricane.Music.Track.WebApi
                         MessageBox.Show(ex.Message);
                     }
 
-                    
                     
                     IsLoading = false;
 
@@ -145,6 +143,12 @@ namespace Hurricane.Music.Track.WebApi
             {
                 if (SelectedTrack == null) return;
                 IsLoading = true;
+                if (!(await SelectedTrack.CheckIfAvailable()))
+                {
+                    await _baseWindow.ShowMessage(Application.Current.Resources["ExceptionOpenOnlineTrack"].ToString(), Application.Current.Resources["Exception"].ToString(), false, DialogMode.Single);
+                    IsLoading = false;
+                    return;
+                }
                 await _manager.CSCoreEngine.OpenTrack(await SelectedTrack.ToPlayable());
                 IsLoading = false;
                 _manager.CSCoreEngine.TogglePlayPause();
@@ -160,12 +164,13 @@ namespace Hurricane.Music.Track.WebApi
                 {
                     var playlist = parameter as IPlaylist;
                     if (playlist == null) return;
+                    IsLoading = true;
                     if (!(await SelectedTrack.CheckIfAvailable()))
                     {
-                        await _baseWindow.ShowMessage(Application.Current.Resources["ExceptionAddingOnlineTracks"].ToString(), Application.Current.Resources["Exception"].ToString(), false, DialogMode.Single);
+                        await _baseWindow.ShowMessage(Application.Current.Resources["ExceptionAddOnlineTrack"].ToString(), Application.Current.Resources["Exception"].ToString(), false, DialogMode.Single);
+                        IsLoading = false;
                         return;
                     }
-                    IsLoading = true;
                     var track = await SelectedTrack.ToPlayable();
                     track.TimeAdded = DateTime.Now;
                     playlist.AddTrack(track);
@@ -230,7 +235,7 @@ namespace Hurricane.Music.Track.WebApi
 
         private async Task AddTracksToPlaylist(NormalPlaylist playlist, IPlaylistResult result)
         {
-            await Task.Delay(1000);
+            await Task.Delay(500);
             var controller = _baseWindow.Messages.CreateProgressDialog(string.Format(Application.Current.Resources["AddTracksToPlaylist"].ToString(), playlist.Name), false);
 
             PlaylistResult.LoadingTracksProcessChanged += (s, e) =>

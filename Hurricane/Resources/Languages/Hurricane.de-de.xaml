@@ -275,5 +275,6 @@
     <system:String x:Key="YouTubeVideoLink">YouTube Video Link</system:String>
     <system:String x:Key="YouTubePlaylistLink">YouTube Wiedergabeliste Link</system:String>
     <system:String x:Key="All">Alle</system:String>
-    <system:String x:Key="ExceptionAddingOnlineTracks">Ein Fehler ist beim Hinzufügen des Tracks aufgetreten.</system:String>
+    <system:String x:Key="ExceptionAddOnlineTrack">Ein Fehler ist beim Hinzufügen des Tracks aufgetreten.</system:String>
+    <system:String x:Key="ExceptionOpenOnlineTrack">Ein Fehler ist beim Öffnen des Tracks aufgetreten.</system:String>
 </ResourceDictionary>

@@ -36,6 +36,7 @@ namespace Hurricane.Music
         public event EventHandler<PlayStateChangedEventArgs> PlaybackStateChanged;
         public event EventHandler<PositionChangedEventArgs> PositionChanged;
         public event EventHandler VolumeChanged;
+        public event EventHandler<Exception> ExceptionOccurred;
 
         #endregion
 
@@ -178,6 +179,7 @@ namespace Hurricane.Music
         protected Crossfade _Crossfade;
         protected SimpleNotificationSource simpleNotificationSource;
         protected SingleBlockNotificationStream singleBlockNotificationStream;
+        protected bool PlayAfterLoading;
 
         #endregion
 
@@ -216,8 +218,7 @@ namespace Hurricane.Music
         #region Public Methods
         public async Task<bool> OpenTrack(PlayableBase track)
         {
-            if (IsLoading) return false;
-            
+            PlayAfterLoading = false;
             IsLoading = true;
             StopPlayback();
             if (CurrentTrack != null) { CurrentTrack.IsPlaying = false; CurrentTrack.Unload(); }
@@ -226,19 +227,18 @@ namespace Hurricane.Music
             var previoustrack = CurrentTrack;
             CurrentTrack = track;
             var t = Task.Run(() => track.Load());
-            Debug.Print(track.Title);
             Equalizer equalizer;
-            try
+
+            var result = await SetSoundSource(track);
+            switch (result.State)
             {
-                SoundSource = await track.GetSoundSource();
+                case State.False:
+                    return false;
+                case State.Exception:
+                    if (ExceptionOccurred != null) ExceptionOccurred(this, (Exception)result.CustomState);
+                    return false;
             }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-                IsLoading = false;
-                CurrentTrack = previoustrack;
-                return false;
-            }
+
             if (Settings.SampleRate == -1 && SoundSource.WaveFormat.SampleRate < 44100)
             {
                 SoundSource = SoundSource.ChangeSampleRate(44100);
@@ -270,8 +270,36 @@ namespace Hurricane.Music
             if (_Crossfade.IsCrossfading)
                 _fader.CrossfadeIn(_soundOut, Volume);
             IsLoading = false;
+            if (PlayAfterLoading) TogglePlayPause();
             await t;
             return true;
+        }
+
+        private CancellationTokenSource _cts;
+        private async Task<Result> SetSoundSource(PlayableBase track)
+        {
+            if (_cts != null)
+                _cts.Cancel();
+            _cts = new CancellationTokenSource();
+            var token = _cts.Token;
+            IWaveSource result;
+
+            try
+            {
+                result = await track.GetSoundSource();
+                if (token.IsCancellationRequested)
+                {
+                    result.Dispose();
+                    return new Result(State.False);
+                }
+            }
+            catch (Exception ex)
+            {
+                return new Result(State.Exception, ex);
+            }
+
+            SoundSource = result;
+            return new Result(State.True);
         }
 
         public void StopPlayback()
@@ -280,6 +308,7 @@ namespace Hurricane.Music
             {
                 _manualstop = true;
                 _soundOut.Stop();
+                CurrentStateChanged();
             }
         }
 
@@ -297,6 +326,12 @@ namespace Hurricane.Music
 
         public async void TogglePlayPause()
         {
+            if (IsLoading)
+            {
+                PlayAfterLoading = !PlayAfterLoading;
+                return;
+            }
+
             if (CurrentTrack == null) return;
             if (_fader != null && _fader.IsFading) { _fader.CancelFading(); _fader.WaitForCancel(); }
             if (_soundOut.PlaybackState == PlaybackState.Playing)

@@ -570,7 +570,7 @@
                             <RowDefinition Height="*"/>
                             <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
-                        <Grid Height="69" Margin="0,3,0,3" Background="{StaticResource WhiteBrush}">
+                        <Grid Height="69" Margin="0,3,0,3">
                             <Grid.Resources>
                                 <ContextMenu x:Key="contextMenu">
                                     <MenuItem Header="{DynamicResource AddToExistingPlaylist}" ItemsSource="{Binding MusicManager.Playlists}">
@@ -593,10 +593,27 @@
                                 <Style TargetType="Grid">
                                     <Setter Property="Visibility" Value="Visible"/>
                                     <Setter Property="ContextMenu" Value="{StaticResource contextMenu}"/>
+                                    <Setter Property="Background" Value="{StaticResource WhiteBrush}"/>
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding TrackSearcher.PlaylistResult}" Value="{x:Null}">
                                             <Setter Property="Visibility" Value="Collapsed"/>
                                         </DataTrigger>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Trigger.EnterActions>
+                                                <BeginStoryboard>
+                                                    <Storyboard>
+                                                        <ColorAnimation To="{StaticResource Gray9}" Duration="0:0:0.2" Storyboard.TargetProperty="(Grid.Background).(SolidColorBrush.Color)"/>
+                                                    </Storyboard>
+                                                </BeginStoryboard>
+                                            </Trigger.EnterActions>
+                                            <Trigger.ExitActions>
+                                                <BeginStoryboard>
+                                                    <Storyboard>
+                                                        <ColorAnimation To="{StaticResource WhiteColor}" Duration="0:0:0.2" Storyboard.TargetProperty="(Grid.Background).(SolidColorBrush.Color)"/>
+                                                    </Storyboard>
+                                                </BeginStoryboard>
+                                            </Trigger.ExitActions>
+                                        </Trigger>
                                     </Style.Triggers>
                                 </Style>
                             </Grid.Style>
@@ -628,7 +645,7 @@
                                         </MenuItem.ItemContainerStyle>
                                     </MenuItem>
                                     <MenuItem Header="{DynamicResource OpenUrl}" Command="{Binding OpenUrl}"/>
-                                    <MenuItem Header="{DynamicResource Download}" IsEnabled="{Binding RelativeSource={RelativeSource AncestorType=ContextMenu},Path=DataContext.TrackSearcher.SelectedTrack.CanDownload}" Command="{Binding RelativeSource={RelativeSource AncestorType=ContextMenu},Path=DataContext.TrackSearcher.DownloadTrack}"/>
+                                    <MenuItem Header="{DynamicResource Download}" IsEnabled="{Binding CanDownload}" Command="{Binding RelativeSource={RelativeSource AncestorType=ListView},Path=DataContext.TrackSearcher.DownloadTrack}"/>
                                 </ContextMenu>
                             </ListView.Resources>
                             <ListView.ItemContainerStyle>
