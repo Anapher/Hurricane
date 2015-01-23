@@ -71,7 +71,7 @@ namespace Hurricane.ViewModels
 
         async void CSCoreEngine_ExceptionOccurred(object sender, Exception e)
         {
-            await _baseWindow.ShowMessage(e.Message, Application.Current.Resources["Exception"].ToString(), false, DialogMode.Single);
+            await _baseWindow.ShowMessage(Application.Current.Resources["ExceptionOpenOnlineTrack"].ToString(), Application.Current.Resources["Exception"].ToString(), false, DialogMode.Single);
         }
 
         void KListener_KeyDown(object sender, RawKeyEventArgs args)

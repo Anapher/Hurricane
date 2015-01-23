@@ -99,7 +99,7 @@ namespace Hurricane.Music
         public QueueManager Queue { get; set; }
 
         public TcpServer ApiServer { get; set; }
-        
+
         private DownloadManager _downloadManager;
         public DownloadManager DownloadManager
         {
@@ -116,7 +116,8 @@ namespace Hurricane.Music
             get { return favoritePlaylist; }
         }
 
-        public bool FavoriteListIsSelected {
+        public bool FavoriteListIsSelected
+        {
             get { return SelectedPlaylist == FavoritePlaylist; }
             set
             {
@@ -199,7 +200,6 @@ namespace Hurricane.Music
             }
 
             AsyncTrackLoader.Instance.RunAsync(Playlists.ToList());
-           
         }
         #endregion
 
@@ -240,14 +240,14 @@ namespace Hurricane.Music
         public async void PlayTrack(PlayableBase track, IPlaylist playlist)
         {
             CSCoreEngine.StopPlayback();
-            
+
             if (Queue.HasTracks && Queue.FirstOrDefault(t => t.TrackID == track.AuthenticationCode) != null)
                 Queue.RemoveTrack(track);
 
             if (await CSCoreEngine.OpenTrack(track))
             {
                 CSCoreEngine.TogglePlayPause();
-                CurrentPlaylist = playlist;  
+                CurrentPlaylist = playlist;
             }
         }
 

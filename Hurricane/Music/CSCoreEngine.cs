@@ -224,7 +224,6 @@ namespace Hurricane.Music
             if (CurrentTrack != null) { CurrentTrack.IsPlaying = false; CurrentTrack.Unload(); }
             if (SoundSource != null && !_Crossfade.IsCrossfading) { SoundSource.Dispose(); }
             track.IsPlaying = true;
-            var previoustrack = CurrentTrack;
             CurrentTrack = track;
             var t = Task.Run(() => track.Load());
             Equalizer equalizer;
@@ -233,8 +232,11 @@ namespace Hurricane.Music
             switch (result.State)
             {
                 case State.False:
+                    track.IsPlaying = false;
                     return false;
                 case State.Exception:
+                    track.IsPlaying = false;
+                    IsLoading = false;
                     if (ExceptionOccurred != null) ExceptionOccurred(this, (Exception)result.CustomState);
                     return false;
             }

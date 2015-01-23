@@ -11,7 +11,7 @@
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.AnimatedTabControl.xaml" />
                 
                 <ResourceDictionary Source="/Resources/VectorGraphics.xaml"/>
-                <ResourceDictionary Source="/Resources/Themes/Cyan.xaml"/> <!-- This line has to be removed because it prevents flyouts to change their color -->
+
                 <ResourceDictionary Source="/Resources/Themes/BaseLight.xaml"/>
             </ResourceDictionary.MergedDictionaries>
             

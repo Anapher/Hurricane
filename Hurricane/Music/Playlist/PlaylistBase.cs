@@ -178,5 +178,10 @@ namespace Hurricane.Music.Playlist
             }
             OnPropertyChanged("ContainsMissingTracks");
         }
+
+        public override string ToString()
+        {
+            return Name;
+        }
     }
 }

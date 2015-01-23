@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 using Hurricane.Settings;
@@ -10,9 +11,9 @@ using Newtonsoft.Json;
 
 namespace Hurricane.Music.Track.WebApi.SoundCloudApi
 {
-    class SoundCloudApi
+    class SoundCloudApi : IMusicApi
     {
-        public async static Task<BitmapImage> LoadBitmapImage(SoundCloudTrack track, ImageQuality quality, DirectoryInfo albumDirectory)
+                public static async Task<BitmapImage> LoadBitmapImage(SoundCloudTrack track, ImageQuality quality, DirectoryInfo albumDirectory)
         {
             var config = HurricaneSettings.Instance.Config;
 
@@ -45,23 +46,72 @@ namespace Hurricane.Music.Track.WebApi.SoundCloudApi
             }
         }
 
-        public static async Task<List<SoundCloudWebTrackResult>> Search(string searchText)
+        private async Task<SoundCloudWebTrackResult> GetSoundCloudTrack(string url)
         {
-            using (var web = new WebClient {Proxy = null})
+            using (var web = new WebClient { Proxy = null })
+            {
+                try
+                {
+                    var result = JsonConvert.DeserializeObject<ApiResult>(await web.DownloadStringTaskAsync(string.Format("http://api.soundcloud.com/resolve.json?url={0}&client_id={1}", url, SensitiveInformation.SoundCloudKey)));
+                    return new SoundCloudWebTrackResult
+                    {
+                        Duration = TimeSpan.FromMilliseconds(result.duration),
+                        Year = result.release_year != null ? uint.Parse(result.release_year.ToString()) : (uint)DateTime.Parse(result.created_at).Year,
+                        Title = result.title,
+                        Uploader = result.user.username,
+                        Result = result,
+                        Views = result.playback_count,
+                        ImageUrl = result.artwork_url,
+                        Url = result.permalink_url,
+                        Genres = result.genre
+                    };
+                }
+                catch (Exception)
+                {
+                    return null;
+                }
+            }
+        }
+
+        async Task<Tuple<bool, List<WebTrackResultBase>, IPlaylistResult>> IMusicApi.CheckForSpecialUrl(string url)
+        {
+            //http://api.soundcloud.com/resolve.json?url=http://soundcloud.com/matas/hobnotropic&client_id=YOUR_CLIENT_ID
+            var match = Regex.Match(url, @"soundcloud.com\/.*\/.*");
+            if (match.Success)
+            {
+                var track = await GetSoundCloudTrack(url);
+                if (track != null)
+                {
+                    return new Tuple<bool, List<WebTrackResultBase>, IPlaylistResult>(true,
+                        new List<WebTrackResultBase> { track }, null);
+                }
+            }
+
+            return new Tuple<bool, List<WebTrackResultBase>, IPlaylistResult>(false, null, null);
+        }
+
+        string IMusicApi.ServiceName
+        {
+            get { return "SoundCloud"; }
+        }
+
+        async Task<List<WebTrackResultBase>> IMusicApi.Search(string searchText)
+        {
+            using (var web = new WebClient { Proxy = null })
             {
                 var results = JsonConvert.DeserializeObject<List<ApiResult>>(await web.DownloadStringTaskAsync(string.Format("https://api.soundcloud.com/tracks?q={0}&client_id={1}", Utilities.GeneralHelper.EscapeTitleName(searchText), SensitiveInformation.SoundCloudKey)));
                 return results.Where(x => x.streamable).Select(x => new SoundCloudWebTrackResult
                 {
                     Duration = TimeSpan.FromMilliseconds(x.duration),
-                    Year =  x.release_year != null ? uint.Parse(x.release_year.ToString()) : (uint)DateTime.Parse(x.created_at).Year,
+                    Year = x.release_year != null ? uint.Parse(x.release_year.ToString()) : (uint)DateTime.Parse(x.created_at).Year,
                     Title = x.title,
                     Uploader = x.user.username,
                     Result = x,
                     Views = x.playback_count,
                     ImageUrl = x.artwork_url,
                     Url = x.permalink_url,
-                    Genres = x.genre,
-                }).ToList();
+                    Genres = x.genre
+                }).Cast<WebTrackResultBase>().ToList();
             }
         }
     }

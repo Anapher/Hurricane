@@ -201,6 +201,7 @@
     <Compile Include="Music\Result.cs" />
     <Compile Include="Music\Track\IDownloadable.cs" />
     <Compile Include="Music\Track\IMusicInformation.cs" />
+    <Compile Include="Music\Track\WebApi\IMusicApi.cs" />
     <Compile Include="Music\Track\WebApi\IPlaylistResult.cs" />
     <Compile Include="Music\Track\LocalTrack.cs" />
     <Compile Include="Music\Track\PlayableBase.cs" />

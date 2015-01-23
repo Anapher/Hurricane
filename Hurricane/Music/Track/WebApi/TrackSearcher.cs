@@ -7,8 +7,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using Hurricane.Music.Playlist;
-using Hurricane.Music.Track.WebApi.SoundCloudApi;
-using Hurricane.Music.Track.WebApi.YouTubeApi;
 using Hurricane.Settings;
 using Hurricane.Utilities;
 using Hurricane.ViewModelBase;
@@ -64,6 +62,8 @@ namespace Hurricane.Music.Track.WebApi
             }
         }
 
+        public List<IMusicApi> MusicApis { get; set; }
+        
         private RelayCommand _searchCommand;
         public RelayCommand SearchCommand
         {
@@ -82,48 +82,12 @@ namespace Hurricane.Music.Track.WebApi
                     PlaylistResult = null;
                     try
                     {
-                        var specialYouTubeResult = await YouTubeApi.YouTubeApi.CheckForSpecialUrl(SearchText);
-                        if (specialYouTubeResult.Item1)
-                        {
-                            SortResults(specialYouTubeResult.Item2);
-                            PlaylistResult = specialYouTubeResult.Item3;
-                        }
-                        else
-                        {
-                            Task<List<SoundCloudWebTrackResult>> tSoundCloud = null;
-                            Task<List<YouTubeWebTrackResult>> tYouTube = null;
-                            var service = _manager.DownloadManager.SelectedService;
-
-                            if (service == 0 || service == 2)
-                                tSoundCloud = SoundCloudApi.SoundCloudApi.Search(SearchText);
-
-                            if (service == 0 || service == 1)
-                                tYouTube = YouTubeApi.YouTubeApi.Search(SearchText);
-
-                            var list = new List<WebTrackResultBase>();
-                            if (tSoundCloud != null)
-                            {
-                                var result = await tSoundCloud;
-                                result.ForEach(x => list.Add(x));
-                            }
-                            if (CheckForCanceled()) return;
-                            if (tYouTube != null)
-                            {
-                                var result = await tYouTube;
-                                result.ForEach(x => list.Add(x));
-                            }
-
-                            NothingFound = list.Count == 0;
-                            SortResults(list);
-                            _manager.DownloadManager.Searches.Insert(0, SearchText);
-                        }
+                        await Search();
                     }
                     catch (WebException ex)
                     {
                         MessageBox.Show(ex.Message);
                     }
-
-                    
                     IsLoading = false;
 
                     foreach (var track in Results)
@@ -136,23 +100,51 @@ namespace Hurricane.Music.Track.WebApi
             }
         }
 
+        private async Task Search()
+        {
+            foreach (var musicApi in MusicApis)
+            {
+                var result = await musicApi.CheckForSpecialUrl(SearchText);
+                if (result.Item1)
+                {
+                    SortResults(result.Item2);
+                    PlaylistResult = result.Item3;
+                    return;
+                }
+            }
+            var list = new List<WebTrackResultBase>();
+
+            var tasks = MusicApis.Where((t, i) => _manager.DownloadManager.SelectedService == 0 || _manager.DownloadManager.SelectedService == i + 1).Select(t => t.Search(SearchText)).ToList();
+            foreach (var task in tasks)
+            {
+                list.AddRange(await task);
+            }
+
+            NothingFound = list.Count == 0;
+            SortResults(list);
+            _manager.DownloadManager.Searches.Insert(0, SearchText);
+        } 
+
         private RelayCommand _playSelectedTrack;
         public RelayCommand PlaySelectedTrack
         {
-            get { return _playSelectedTrack ?? (_playSelectedTrack = new RelayCommand(async parameter =>
+            get
             {
-                if (SelectedTrack == null) return;
-                IsLoading = true;
-                if (!(await SelectedTrack.CheckIfAvailable()))
+                return _playSelectedTrack ?? (_playSelectedTrack = new RelayCommand(async parameter =>
                 {
-                    await _baseWindow.ShowMessage(Application.Current.Resources["ExceptionOpenOnlineTrack"].ToString(), Application.Current.Resources["Exception"].ToString(), false, DialogMode.Single);
+                    if (SelectedTrack == null) return;
+                    IsLoading = true;
+                    if (!(await SelectedTrack.CheckIfAvailable()))
+                    {
+                        await _baseWindow.ShowMessage(Application.Current.Resources["ExceptionOpenOnlineTrack"].ToString(), Application.Current.Resources["Exception"].ToString(), false, DialogMode.Single);
+                        IsLoading = false;
+                        return;
+                    }
+                    await _manager.CSCoreEngine.OpenTrack(await SelectedTrack.ToPlayable());
                     IsLoading = false;
-                    return;
-                }
-                await _manager.CSCoreEngine.OpenTrack(await SelectedTrack.ToPlayable());
-                IsLoading = false;
-                _manager.CSCoreEngine.TogglePlayPause();
-            })); }
+                    _manager.CSCoreEngine.TogglePlayPause();
+                }));
+            }
         }
 
         private RelayCommand _addToPlaylist;
@@ -205,7 +197,7 @@ namespace Hurricane.Music.Track.WebApi
                     if (PlaylistResult == null) return;
                     string result = await _baseWindow.ShowInputDialog(Application.Current.Resources["NewPlaylist"].ToString(), Application.Current.Resources["NameOfPlaylist"].ToString(), Application.Current.Resources["Create"].ToString(), PlaylistResult.Title, DialogMode.Single);
                     if (string.IsNullOrEmpty(result)) return;
-                    NormalPlaylist playlist = new NormalPlaylist() { Name = result };
+                    var playlist = new NormalPlaylist() { Name = result };
                     _manager.Playlists.Add(playlist);
                     _manager.RegisterPlaylist(playlist);
 
@@ -233,17 +225,17 @@ namespace Hurricane.Music.Track.WebApi
             }
         }
 
-        private async Task AddTracksToPlaylist(NormalPlaylist playlist, IPlaylistResult result)
+        private async Task AddTracksToPlaylist(IPlaylist playlist, IPlaylistResult result)
         {
             await Task.Delay(500);
             var controller = _baseWindow.Messages.CreateProgressDialog(string.Format(Application.Current.Resources["AddTracksToPlaylist"].ToString(), playlist.Name), false);
 
-            PlaylistResult.LoadingTracksProcessChanged += (s, e) =>
+            result.LoadingTracksProcessChanged += (s, e) =>
             {
                 controller.SetMessage(string.Format(Application.Current.Resources["LoadingTracks"].ToString(), e.CurrentTrackName, e.Value, e.Maximum));
                 controller.SetProgress(e.Value / e.Maximum);
             };
-            foreach (var track in await PlaylistResult.GetTracks())
+            foreach (var track in await result.GetTracks())
             {
                 playlist.AddTrack(track);
             }
@@ -281,6 +273,7 @@ namespace Hurricane.Music.Track.WebApi
             cancelWaiter = new AutoResetEvent(false);
             _manager = manager;
             this._baseWindow = baseWindow;
+            this.MusicApis = new List<IMusicApi>{new YouTubeApi.YouTubeApi(), new SoundCloudApi.SoundCloudApi() };
         }
     }
 }

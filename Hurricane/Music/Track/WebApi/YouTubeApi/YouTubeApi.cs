@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -13,32 +12,9 @@ using Newtonsoft.Json;
 
 namespace Hurricane.Music.Track.WebApi.YouTubeApi
 {
-    public class YouTubeApi
+    public class YouTubeApi : IMusicApi
     {
-        public static async Task<List<YouTubeWebTrackResult>> Search(string searchText)
-        {
-            using (var web = new WebClient { Proxy = null })
-            {
-                var link = string.Format("https://gdata.youtube.com/feeds/api/videos?q={0}&alt=json&max-results=50",
-                    GeneralHelper.EscapeTitleName(searchText));
-                var resultstr = await web.DownloadStringTaskAsync(link);
-                var result = JsonConvert.DeserializeObject<YouTubeSearchResult>(resultstr);
-                if (result.feed == null || result.feed.entry == null || result.feed.entry.Count == 0) return new List<YouTubeWebTrackResult>();
-                return result.feed.entry.Where(x => x.MediaGroup.Duration != null).Select(x => new YouTubeWebTrackResult
-                {
-                    Duration = TimeSpan.FromSeconds(int.Parse(x.MediaGroup.Duration.seconds)),
-                    Title = x.title.Name,
-                    Uploader = x.author.First().name.Text,
-                    Result = x,
-                    Year = (uint)DateTime.Parse(x.published.Date).Year,
-                    ImageUrl = x.MediaGroup.Thumbnails.First().url,
-                    Views = x.Statistics != null ? int.Parse(x.Statistics.viewCount) : 0,
-                    Url = x.link.First().href
-                }).ToList();
-            }
-        }
-
-        public async static Task<BitmapImage> LoadBitmapImage(YouTubeTrack track, DirectoryInfo albumDirectory)
+        public static async Task<BitmapImage> LoadBitmapImage(YouTubeTrack track, DirectoryInfo albumDirectory)
         {
             var config = HurricaneSettings.Instance.Config;
 
@@ -94,7 +70,7 @@ namespace Hurricane.Music.Track.WebApi.YouTubeApi
             return null;
         }
 
-        public async static Task<YouTubePlaylistResult> GetPlaylist(string playlistId, int index, int maxResults)
+        public static async Task<YouTubePlaylistResult> GetPlaylist(string playlistId, int index, int maxResults)
         {
             using (var web = new WebClient { Proxy = null })
             {
@@ -105,7 +81,7 @@ namespace Hurricane.Music.Track.WebApi.YouTubeApi
             }
         }
 
-        public async static Task<YouTubeWebTrackResult> GetYouTubeVideoInfo(string youtubeVideoId)
+        private static async Task<YouTubeWebTrackResult> GetYouTubeVideoInfo(string youtubeVideoId)
         {
             using (var web = new WebClient { Proxy = null })
             {
@@ -130,22 +106,50 @@ namespace Hurricane.Music.Track.WebApi.YouTubeApi
             }
         }
 
-        public async static Task<Tuple<bool, List<YouTubeWebTrackResult>, IPlaylistResult>> CheckForSpecialUrl(string url)
+        public async Task<Tuple<bool, List<WebTrackResultBase>, IPlaylistResult>> CheckForSpecialUrl(string url)
         {
             var match = Regex.Match(url, @"youtu(?:\.be|be\.com).*?[&?]list=(?<id>[a-zA-Z0-9-_]+)");
             if (match.Success)
             {
                 var playlist = await GetPlaylist(match.Groups["id"].Value, 0, 50);
                 await playlist.feed.LoadImage();
-                return new Tuple<bool, List<YouTubeWebTrackResult>, IPlaylistResult>(true, GetPlaylistTracks(playlist), playlist.feed);
+                return new Tuple<bool, List<WebTrackResultBase>, IPlaylistResult>(true, GetPlaylistTracks(playlist).Cast<WebTrackResultBase>().ToList(), playlist.feed);
             }
 
             match = Regex.Match(url, @"youtu(?:\.be|be\.com)/(?:.*v(?:/|=)|(?:.*/)?)(?<id>[a-zA-Z0-9-_]+)");
             if (match.Success)
             {
-                return new Tuple<bool, List<YouTubeWebTrackResult>, IPlaylistResult>(true, new List<YouTubeWebTrackResult> { await GetYouTubeVideoInfo(match.Groups["id"].Value) }, null);
+                return new Tuple<bool, List<WebTrackResultBase>, IPlaylistResult>(true, new List<WebTrackResultBase> { await GetYouTubeVideoInfo(match.Groups["id"].Value) }, null);
             }
-            return new Tuple<bool, List<YouTubeWebTrackResult>, IPlaylistResult>(false, null, null);
+            return new Tuple<bool, List<WebTrackResultBase>, IPlaylistResult>(false, null, null);
+        }
+
+        public string ServiceName
+        {
+            get { return "YouTube"; }
+        }
+
+        public async Task<List<WebTrackResultBase>> Search(string searchText)
+        {
+            using (var web = new WebClient { Proxy = null })
+            {
+                var link = string.Format("https://gdata.youtube.com/feeds/api/videos?q={0}&alt=json&max-results=50",
+                    GeneralHelper.EscapeTitleName(searchText));
+                var resultstr = await web.DownloadStringTaskAsync(link);
+                var result = JsonConvert.DeserializeObject<YouTubeSearchResult>(resultstr);
+                if (result.feed == null || result.feed.entry == null || result.feed.entry.Count == 0) return new List<WebTrackResultBase>();
+                return result.feed.entry.Where(x => x.MediaGroup.Duration != null).Select(x => new YouTubeWebTrackResult
+                {
+                    Duration = TimeSpan.FromSeconds(int.Parse(x.MediaGroup.Duration.seconds)),
+                    Title = x.title.Name,
+                    Uploader = x.author.First().name.Text,
+                    Result = x,
+                    Year = (uint)DateTime.Parse(x.published.Date).Year,
+                    ImageUrl = x.MediaGroup.Thumbnails.First().url,
+                    Views = x.Statistics != null ? int.Parse(x.Statistics.viewCount) : 0,
+                    Url = x.link.First().href
+                }).Cast<WebTrackResultBase>().ToList();
+            }
         }
     }
 }

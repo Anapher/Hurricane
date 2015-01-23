@@ -10,10 +10,12 @@ using CSCore;
 using CSCore.Codecs;
 using Hurricane.Settings;
 using System.Windows;
+using System.Windows.Media.Imaging;
 using Hurricane.Music.Download;
 using Hurricane.Music.MusicDatabase;
 using Hurricane.Music.Track.WebApi.YouTubeApi;
 using Hurricane.Music.Track.WebApi.YouTubeApi.DataClasses;
+using Hurricane.Utilities;
 using Newtonsoft.Json;
 
 namespace Hurricane.Music.Track
