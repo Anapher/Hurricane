@@ -41,6 +41,14 @@ namespace Hurricane.Views.UserControls
                 },
                 new Component()
                 {
+                    Name = "GongSolutions.WPF.DragDrop",
+                    Url = "https://punker76.github.io/gong-wpf-dragdrop/",
+                    LicenceUrl = "https://github.com/punker76/gong-wpf-dragdrop/blob/master/LICENSE",
+                    Description =
+                        "The GongSolutions.WPF.DragDrop library is a drag'n'drop framework for WPF"
+                },
+                new Component()
+                {
                     Name = "Json.NET",
                     Url = "http://james.newtonking.com/json",
                     LicenceUrl = "https://github.com/JamesNK/Newtonsoft.Json/blob/master/LICENSE.md",

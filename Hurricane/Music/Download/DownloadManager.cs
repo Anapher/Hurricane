@@ -39,7 +39,7 @@ namespace Hurricane.Music.Download
             var entry = new DownloadEntry
             {
                 IsWaiting = true,
-                Filename = Path.Combine(downloadDirectory.FullName, Utilities.GeneralHelper.EscapeFilename(download.DownloadFilename)),
+                DownloadFilename = Path.Combine(downloadDirectory.FullName, Utilities.GeneralHelper.EscapeFilename(download.DownloadFilename)),
                 Trackname = download.DownloadFilename,
                 DownloadParameter = download.DownloadParameter,
                 DownloadMethod = download.DownloadMethod,
@@ -64,17 +64,10 @@ namespace Hurricane.Music.Download
                 foreach (var entry in Entries.Where(x => !x.IsDownloaded).ToList())
                 {
                     entry.IsWaiting = false;
-                    switch (entry.DownloadMethod)
-                    {
-                        case DownloadMethod.SoundCloud:
-                            await SoundCloudDownloader.DownloadSoundCloudTrack(entry.DownloadParameter, entry);
-                            break;
-                        case DownloadMethod.youtube_dl:
-                            await youtube_dl.Instance.DownloadYouTubeVideo(entry.DownloadParameter, entry);
-                            break;
-                    }
+                    var currentEntry = entry;
+                    await DownloadTrack(entry, entry.DownloadFilename, (d) => currentEntry.Progress = d);
                     entry.IsDownloaded = true;
-                    if (AddTagsToDownloads) AddTags(entry.MusicInformation, entry.Filename);
+                    if (AddTagsToDownloads) AddTags(entry.MusicInformation, entry.DownloadFilename);
                 }
 
                 _isRunning = false;
@@ -83,30 +76,46 @@ namespace Hurricane.Music.Download
             }
         }
 
-        public async static void AddTags(IMusicInformation information, string path)
+        public static Task<bool> DownloadTrack(IDownloadable download, string fileName, Action<double> progressChangedAction)
         {
-            var filepath = path;
-            var file = TagLib.File.Create(filepath);
-            file.Tag.Album = information.Album;
-            file.Tag.Performers = new[] { information.Artist };
-            file.Tag.Year = information.Year;
-            if (information.Genres != null)
-                file.Tag.Genres = information.Genres.Split(new[] {", "}, StringSplitOptions.None);
-            file.Tag.Title = information.Title;
-            var image = await information.GetImage();
-            if (image != null)
+            switch (download.DownloadMethod)
             {
-                byte[] data;
-                JpegBitmapEncoder encoder = new JpegBitmapEncoder();
-                encoder.Frames.Add(BitmapFrame.Create(image));
-                using (MemoryStream ms = new MemoryStream())
-                {
-                    encoder.Save(ms);
-                    data = ms.ToArray();
-                }
-                file.Tag.Pictures = new IPicture[] { new TagLib.Picture(new ByteVector(data, data.Length)) };
+                case DownloadMethod.SoundCloud:
+                    return SoundCloudDownloader.DownloadSoundCloudTrack(download.DownloadParameter, fileName, progressChangedAction);
+                case DownloadMethod.youtube_dl:
+                    return youtube_dl.Instance.DownloadYouTubeVideo(download.DownloadParameter, fileName, progressChangedAction);
+                default:
+                    throw new ArgumentException();
             }
-            await Task.Run(() => file.Save());
+        }
+
+        public async static Task AddTags(IMusicInformation information, string path)
+        {
+            var filePath = new FileInfo(path);
+            if (!filePath.Exists) return;
+            using (var file = TagLib.File.Create(filePath.FullName))
+            {
+                file.Tag.Album = information.Album;
+                file.Tag.Performers = new[] {information.Artist};
+                file.Tag.Year = information.Year;
+                if (information.Genres != null)
+                    file.Tag.Genres = information.Genres.Split(new[] {", "}, StringSplitOptions.None);
+                file.Tag.Title = information.Title;
+                var image = await information.GetImage();
+                if (image != null)
+                {
+                    byte[] data;
+                    JpegBitmapEncoder encoder = new JpegBitmapEncoder();
+                    encoder.Frames.Add(BitmapFrame.Create(image));
+                    using (MemoryStream ms = new MemoryStream())
+                    {
+                        encoder.Save(ms);
+                        data = ms.ToArray();
+                    }
+                    file.Tag.Pictures = new IPicture[] {new TagLib.Picture(new ByteVector(data, data.Length))};
+                }
+                await Task.Run(() => file.Save());
+            }
         }
 
         public DownloadManager()

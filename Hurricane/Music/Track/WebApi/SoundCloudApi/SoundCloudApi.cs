@@ -90,7 +90,7 @@ namespace Hurricane.Music.Track.WebApi.SoundCloudApi
             return new Tuple<bool, List<WebTrackResultBase>, IPlaylistResult>(false, null, null);
         }
 
-        string IMusicApi.ServiceName
+        public string ServiceName
         {
             get { return "SoundCloud"; }
         }
@@ -113,6 +113,11 @@ namespace Hurricane.Music.Track.WebApi.SoundCloudApi
                     Genres = x.genre
                 }).Cast<WebTrackResultBase>().ToList();
             }
+        }
+
+        public override string ToString()
+        {
+            return ServiceName;
         }
     }
 }

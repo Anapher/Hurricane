@@ -84,7 +84,7 @@
                                             </Viewbox>
                                             <TextBlock Text="{Binding Trackname}" TextTrimming="CharacterEllipsis" FontSize="16" VerticalAlignment="Center"/>
                                         </DockPanel>
-                                        <controls:MetroProgressBar Value="{Binding Progress}" IsIndeterminate="{Binding IsWaiting}" VerticalAlignment="Center" Margin="0,5,0,0"/>
+                                        <controls:MetroProgressBar Value="{Binding Progress}" Foreground="White" IsIndeterminate="{Binding IsWaiting}" VerticalAlignment="Center" Margin="0,5,0,0"/>
                                     </StackPanel>
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>

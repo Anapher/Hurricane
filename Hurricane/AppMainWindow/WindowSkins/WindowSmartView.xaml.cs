@@ -6,8 +6,6 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using Hurricane.Music;
-using Hurricane.Music.Track;
-using Hurricane.Resources.Styles.DragDropListView.ServiceProviders.UI;
 using Hurricane.Utilities;
 using Hurricane.ViewModels;
 
@@ -21,7 +19,6 @@ namespace Hurricane.AppMainWindow.WindowSkins
         public WindowSmartView()
         {
             InitializeComponent();
-            new ListViewDragDropManager<PlayableBase>(listview) {ShowDragAdorner = true};
             Configuration = new WindowSkinConfiguration()
             {
                 MaxHeight = WpfScreen.MaxHeight,

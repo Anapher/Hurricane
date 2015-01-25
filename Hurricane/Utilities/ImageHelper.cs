@@ -86,6 +86,7 @@ namespace Hurricane.Utilities
                 bitmap.CacheOption = BitmapCacheOption.OnLoad;
                 bitmap.StreamSource = mr;
                 bitmap.EndInit();
+                bitmap.Freeze();
                 return bitmap;
             }
         }

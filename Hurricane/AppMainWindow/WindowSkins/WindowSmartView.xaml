@@ -6,7 +6,6 @@
              xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
              xmlns:converter="clr-namespace:Hurricane.Extensions.Converter"
              xmlns:ex="clr-namespace:Hurricane.Extensions"
-             xmlns:jas="clr-namespace:Hurricane.Resources.Styles.DragDropListView.ServiceProviders.UI"
              xmlns:track="clr-namespace:Hurricane.Music.Track"
              DataContext="{x:Static viewmodels:MainViewModel.Instance}" Width="300" MinWidth="300" MaxWidth="300" MinHeight="400">
     <UserControl.Resources>
@@ -479,13 +478,6 @@
                                 <DataTrigger Binding="{Binding TrackType}" Value="Stream">
                                     <Setter Property="ContextMenu" Value="{StaticResource StreamContextMenu}"/>
                                 </DataTrigger>
-                                
-                                <Trigger Property="jas:ListViewItemDragState.IsBeingDragged" Value="True">
-                                    <Setter Property="FontWeight" Value="DemiBold" />
-                                </Trigger>
-                                <Trigger Property="jas:ListViewItemDragState.IsUnderDragCursor" Value="True">
-                                    <Setter Property="Background" Value="#7FD3D3D3" />
-                                </Trigger>
                                 <DataTrigger Binding="{Binding TrackExists}" Value="False">
                                     <Setter Property="Background" Value="#FFF2F2F2"/>
                                 </DataTrigger>

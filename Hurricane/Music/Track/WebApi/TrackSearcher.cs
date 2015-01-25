@@ -228,7 +228,7 @@ namespace Hurricane.Music.Track.WebApi
         private async Task AddTracksToPlaylist(IPlaylist playlist, IPlaylistResult result)
         {
             await Task.Delay(500);
-            var controller = _baseWindow.Messages.CreateProgressDialog(string.Format(Application.Current.Resources["AddTracksToPlaylist"].ToString(), playlist.Name), false);
+            var controller = _baseWindow.Messages.CreateProgressDialog(playlist.Name, false);
 
             result.LoadingTracksProcessChanged += (s, e) =>
             {

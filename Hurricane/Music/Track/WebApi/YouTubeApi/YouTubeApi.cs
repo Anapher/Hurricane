@@ -151,5 +151,10 @@ namespace Hurricane.Music.Track.WebApi.YouTubeApi
                 }).Cast<WebTrackResultBase>().ToList();
             }
         }
+
+        public override string ToString()
+        {
+            return ServiceName;
+        }
     }
 }

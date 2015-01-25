@@ -8,11 +8,10 @@
              xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
              xmlns:wpfsvl="clr-namespace:WPFSoundVisualizationLib;assembly=WPFSoundVisualizationLib"
              xmlns:extensions="clr-namespace:Hurricane.Extensions"
-             xmlns:jas="clr-namespace:Hurricane.Resources.Styles.DragDropListView.ServiceProviders.UI"
              xmlns:ctrl="clr-namespace:Hurricane.Extensions.ListViewLayoutManager"
              xmlns:userControls="clr-namespace:Hurricane.Views.UserControls"
              xmlns:track="clr-namespace:Hurricane.Music.Track"
-             xmlns:system="clr-namespace:System;assembly=mscorlib"
+             xmlns:dd="clr-namespace:GongSolutions.Wpf.DragDrop;assembly=GongSolutions.Wpf.DragDrop"
              mc:Ignorable="d"
              d:DesignHeight="500" d:DesignWidth="1000" DataContext="{x:Static viewmodels:MainViewModel.Instance}">
     <UserControl.Resources>
@@ -25,7 +24,6 @@
             </ResourceDictionary.MergedDictionaries>
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
             <converter:FormatTimespan x:Key="FormatTimespan"/>
-            <converter:FalseOnEmptyString x:Key="FalseOnEmptyString"/>
             <converter:CollapsedOnNullValue x:Key="CollapsedOnNullValue"/>
         </ResourceDictionary>
     </UserControl.Resources>
@@ -40,6 +38,21 @@
         </Grid>
         <TabControl Grid.Row="1" SelectedIndex="{Binding MainTabControlIndex}">
             <TabItem Header="{DynamicResource Playlists}">
+                <TabItem.Resources>
+                    <DataTemplate x:Key="DragAdornerPlaylist">
+                        <Grid Background="{StaticResource AccentColorBrush2}" Width="190" Height="25">
+                            <TextBlock Text="{Binding}" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0"/>
+                        </Grid>
+                    </DataTemplate>
+                    <DataTemplate x:Key="DragAdornerTrack">
+                        <Grid Background="{StaticResource AccentColorBrush3}" Width="400" Height="40" Margin="1">
+                            <StackPanel Orientation="Vertical" Margin="10,0,0,0" VerticalAlignment="Center">
+                                <TextBlock Text="{Binding Title}" Foreground="White"/>
+                                <TextBlock Text="{Binding Artist}" Foreground="White"/>
+                            </StackPanel>
+                        </Grid>
+                    </DataTemplate>
+                </TabItem.Resources>
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="200"/>
@@ -71,7 +84,7 @@
                             </MenuItem>
                         </MenuItem>
                         <MenuItem Header="{DynamicResource Favorites}" Command="{Binding MusicManager.Commands.OpenFavorites}"/>
-                        <MenuItem Header="Online" Command="{Binding OpenOnlineSection}"/>
+                        <MenuItem Header="{DynamicResource Streams}" Command="{Binding OpenOnlineSection}"/>
                         <MenuItem Header="{DynamicResource Downloads}" Command="{Binding OpenDownloadManager}">
                             <MenuItem.Style>
                                 <Style TargetType="MenuItem" BasedOn="{StaticResource MetroMenuItem}">
@@ -85,8 +98,9 @@
                             </MenuItem.Style>
                         </MenuItem>
                     </Menu>
-                    <TextBox Grid.Column="5" Margin="0,0,10,0" x:Name="txtSearch" VerticalAlignment="Center" controls:TextBoxHelper.ClearTextButton="True" HorizontalAlignment="Right" Width="200" controls:TextBoxHelper.Watermark="{StaticResource Search}" Text="{Binding MusicManager.SelectedPlaylist.SearchText,UpdateSourceTrigger=PropertyChanged}"/>
-                    <ListBox Grid.Row="1" DisplayMemberPath="Name" SelectedItem="{Binding MusicManager.SelectedPlaylist}" Margin="5" ItemsSource="{Binding MusicManager.Playlists}">
+                    <TextBox Grid.Column="3" Margin="0,0,10,0" x:Name="txtSearch" VerticalAlignment="Center" controls:TextBoxHelper.ClearTextButton="True" HorizontalAlignment="Right" Width="200" controls:TextBoxHelper.Watermark="{StaticResource Search}" Text="{Binding MusicManager.SelectedPlaylist.SearchText,UpdateSourceTrigger=PropertyChanged}"/>
+                    <ListBox Grid.Row="1" DisplayMemberPath="Name" SelectedItem="{Binding MusicManager.SelectedPlaylist}" Margin="5" ItemsSource="{Binding MusicManager.Playlists}"
+                             dd:DragDrop.IsDragSource="True" dd:DragDrop.IsDropTarget="True" dd:DragDrop.DropHandler="{Binding PlaylistListDropHandler}" dd:DragDrop.DragAdornerTemplate="{StaticResource DragAdornerPlaylist}" dd:DragDrop.DefaultDragAdornerOpacity=".8">
                         <ListBox.InputBindings>
                             <KeyBinding Key="Delete" Command="{Binding RemovePlaylist}"/>
                         </ListBox.InputBindings>
@@ -110,7 +124,7 @@
                         </Grid.RowDefinitions>
                         <Grid Margin="5,0,5,0" Grid.Row="1">
                             <extensions:AnimatedListView SelectionMode="Extended" ItemsSource="{Binding MusicManager.SelectedPlaylist.ViewSource}" SelectedItem="{Binding MusicManager.SelectedTrack}" BorderThickness="0" SelectionChanged="ListView_SelectionChanged"
-                                  DragEnter="ListView_DragEnter" Drop="ListView_Drop" x:Name="listview" ctrl:ListViewLayoutManager.Enabled="True" Style="{StaticResource VisualizingListView}">
+                                  DragEnter="ListView_DragEnter" Drop="ListView_Drop" x:Name="listview" ctrl:ListViewLayoutManager.Enabled="True" Style="{StaticResource VisualizingListView}" dd:DragDrop.IsDragSource="True" dd:DragDrop.IsDropTarget="True" dd:DragDrop.DragAdornerTemplate="{StaticResource DragAdornerTrack}" dd:DragDrop.DropHandler="{Binding TrackListDropHandler}">
                                 <ListView.Resources>
                                     <ContextMenu x:Key="FileContextMenu" DataContext="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}, Path=DataContext}">
                                         <MenuItem Header="{DynamicResource Play}" Command="{Binding MusicManager.Commands.PlaySelectedTrack}" IsEnabled="{Binding MusicManager.SelectedTrack.TrackExists}" InputGestureText="Enter"/>
@@ -121,7 +135,7 @@
                                         </MenuItem>
                                         <Separator />
                                         <MenuItem Header="{DynamicResource Queue}">
-                                            <MenuItem Header="{DynamicResource AddToQueue}" Command="{Binding MusicManager.Commands.AddTracksToQueue}" CommandParameter="{Binding ElementName=listview,Path=SelectedItems}" InputGestureText="Q"/>
+                                            <MenuItem Header="{DynamicResource AddToQueue}" Command="{Binding MusicManager.Commands.AddTracksToQueue}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=extensions:AnimatedListView},Path=SelectedItems}" InputGestureText="Q"/>
                                             <MenuItem Header="{DynamicResource RemoveFromQueue}" Command="{Binding MusicManager.Commands.RemoveFromQueue}" InputGestureText="Alt+Q"/>
                                             <MenuItem Header="{DynamicResource ClearQueue}" Command="{Binding MusicManager.Commands.ClearQueue}" IsEnabled="{Binding MusicManager.Queue.HasTracks}"/>
                                             <Separator />
@@ -132,7 +146,7 @@
                                         <MenuItem Header="{DynamicResource TagEditor}" Command="{Binding OpenTagEditor}" IsEnabled="{Binding MusicManager.SelectedTrack.TrackExists}" InputGestureText="F3"/>
                                         <MenuItem Header="{DynamicResource FileLocation}" Command="{Binding MusicManager.Commands.OpenTrackLocation}" InputGestureText="Alt+O" IsEnabled="{Binding MusicManager.SelectedTrack.TrackExists}"/>
                                         <Separator />
-                                        <MenuItem Header="{DynamicResource Remove}" Command="{Binding RemoveSelectedTracks}" InputGestureText="{DynamicResource Del}"/>
+                                        <MenuItem Header="{DynamicResource Remove}" Command="{Binding RemoveSelectedTracks}" CommandParameter="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type extensions:AnimatedListView}}, Path=SelectedItems}" InputGestureText="{DynamicResource Del}"/>
                                     </ContextMenu>
                                     <ContextMenu x:Key="StreamContextMenu">
                                         <MenuItem Header="{DynamicResource Play}" Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}, Path=DataContext.MusicManager.Commands.PlaySelectedTrack}" InputGestureText="Enter"/>
@@ -143,7 +157,7 @@
                                         </MenuItem>
                                         <Separator />
                                         <MenuItem Header="{DynamicResource Queue}">
-                                            <MenuItem Header="{DynamicResource AddToQueue}" Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}, Path=DataContext.MusicManager.Commands.AddTracksToQueue}" CommandParameter="{Binding ElementName=listview,Path=SelectedItems}" InputGestureText="Q"/>
+                                            <MenuItem Header="{DynamicResource AddToQueue}" Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}, Path=DataContext.MusicManager.Commands.AddTracksToQueue}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=ListView},Path=SelectedItems}" InputGestureText="Q"/>
                                             <MenuItem Header="{DynamicResource RemoveFromQueue}" Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}, Path=DataContext.MusicManager.Commands.RemoveFromQueue}" InputGestureText="Alt+Q"/>
                                             <MenuItem Header="{DynamicResource ClearQueue}" Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}, Path=DataContext.MusicManager.Commands.ClearQueue}" IsEnabled="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}, Path=DataContext.MusicManager.Queue.HasTracks}"/>
                                             <Separator />
@@ -151,10 +165,21 @@
                                         </MenuItem>
                                         <Separator />
                                         <MenuItem Header="{DynamicResource TrackInformation}" Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}, Path=DataContext.OpenTrackInformation}" InputGestureText="F4"/>
-                                        <MenuItem Header="{DynamicResource Download}" Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}, Path=DataContext.MusicManager.Commands.DownloadTrack}" IsEnabled="{Binding CanDownload}" InputGestureText="F3"/>
+                                        <MenuItem Header="{DynamicResource Download}" Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}, Path=DataContext.MusicManager.Commands.DownloadTracks}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=ListView},Path=SelectedItems}" IsEnabled="{Binding CanDownload}" InputGestureText="F3"/>
                                         <MenuItem Header="{DynamicResource OpenUrl}" Command="{Binding OpenLinkCommand}" InputGestureText="Alt+O"/>
+                                        <MenuItem Header="{DynamicResource ConvertToLocalTrack}" Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}, Path=DataContext.ConvertStreamToLocalTrack}">
+                                            <MenuItem.Style>
+                                                <Style TargetType="MenuItem" BasedOn="{StaticResource MetroMenuItem}">
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding CanDownload}" Value="False">
+                                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </MenuItem.Style>
+                                        </MenuItem>
                                         <Separator />
-                                        <MenuItem Header="{DynamicResource Remove}" Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}, Path=DataContext.RemoveSelectedTracks}" InputGestureText="{DynamicResource Del}"/>
+                                        <MenuItem Header="{DynamicResource Remove}" Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}, Path=DataContext.RemoveSelectedTracks}" CommandParameter="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}, Path=SelectedItems}" InputGestureText="{DynamicResource Del}"/>
                                     </ContextMenu>
                                     <Style TargetType="TextBlock" x:Key="ListTextBlockStyle">
                                         <Setter Property="Foreground" Value="{StaticResource BlackBrush}"/>
@@ -208,12 +233,6 @@
                                             <DataTrigger Binding="{Binding TrackType}" Value="Stream">
                                                 <Setter Property="ContextMenu" Value="{StaticResource StreamContextMenu}"/>
                                             </DataTrigger>
-                                            <Trigger Property="jas:ListViewItemDragState.IsBeingDragged" Value="True">
-                                                <Setter Property="FontWeight" Value="DemiBold" />
-                                            </Trigger>
-                                            <Trigger Property="jas:ListViewItemDragState.IsUnderDragCursor" Value="True">
-                                                <Setter Property="Background" Value="#7FD3D3D3" />
-                                            </Trigger>
                                             <DataTrigger Binding="{Binding TrackExists}" Value="False">
                                                 <Setter Property="Background" Value="#FFF2F2F2"/>
                                             </DataTrigger>
@@ -529,9 +548,15 @@
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
                         <ComboBox Margin="0,0,5,0" Width="100" SelectedIndex="{Binding MusicManager.DownloadManager.SelectedService}">
-                            <ComboBoxItem Content="{DynamicResource All}"/>
-                            <ComboBoxItem Content="YouTube"/>
-                            <ComboBoxItem Content="SoundCloud"/>
+                            <ComboBox.Resources>
+                                <CollectionViewSource Source="{Binding TrackSearcher.MusicApis}" x:Key="ApiCollectionView"/>
+                            </ComboBox.Resources>
+                            <ComboBox.ItemsSource>
+                                <CompositeCollection>
+                                    <ComboBoxItem Content="{DynamicResource All}"/>
+                                    <CollectionContainer Collection="{Binding Source={StaticResource ApiCollectionView}}"/>
+                                </CompositeCollection>
+                            </ComboBox.ItemsSource>
                         </ComboBox>
                         <ComboBox Text="{Binding TrackSearcher.SearchText,UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding MusicManager.DownloadManager.Searches}" IsEditable="True" x:Name="txtSearchOnline" controls:TextBoxHelper.ClearTextButton="True" Grid.Column="1" ToolTipService.ShowDuration="12000">
                             <ComboBox.InputBindings>

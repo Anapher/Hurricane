@@ -2,6 +2,9 @@
 using Hurricane.ViewModelBase;
 using System.Collections;
 using System.Linq;
+using System.Net.Mime;
+using System.Windows;
+using Microsoft.Win32;
 
 namespace Hurricane.Music
 {
@@ -161,17 +164,22 @@ namespace Hurricane.Music
             }
         }
 
-        private RelayCommand _downloadTrack;
-        public RelayCommand DownloadTrack
+        private RelayCommand _downloadTracks;
+        public RelayCommand DownloadTracks
         {
             get
             {
-                return _downloadTrack ?? (_downloadTrack = new RelayCommand(parameter =>
+                return _downloadTracks ?? (_downloadTracks = new RelayCommand(parameter =>
                 {
-                    var stream = Musicmanager.SelectedTrack as StreamableBase;
-                    if (stream == null || !stream.CanDownload) return;
-                    Musicmanager.DownloadManager.AddEntry(stream);
-                    Musicmanager.DownloadManager.IsOpen = true;
+                    if (parameter == null) return;
+                    var tracks = ((IList)parameter).Cast<PlayableBase>().ToList();
+                    bool open = false;
+                    foreach (var track in tracks.OfType<StreamableBase>().Where(x => x.CanDownload))
+                    {
+                        Musicmanager.DownloadManager.AddEntry(track);
+                        open = true;
+                    }
+                    if (open) Musicmanager.DownloadManager.IsOpen = true;
                 }));
             }
         }

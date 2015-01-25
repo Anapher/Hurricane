@@ -72,6 +72,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Exceptionless.Wpf.1.5.2121\lib\net45\Exceptionless.Wpf.dll</HintPath>
     </Reference>
+    <Reference Include="GongSolutions.Wpf.DragDrop">
+      <HintPath>..\packages\gong-wpf-dragdrop.0.1.4.3\lib\net40\GongSolutions.Wpf.DragDrop.dll</HintPath>
+    </Reference>
     <Reference Include="MahApps.Metro, Version=0.14.0.0, Culture=neutral, PublicKeyToken=f4fb5a3c4d1e5b4f, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Libraries\MahApps.Metro.dll</HintPath>
@@ -129,6 +132,10 @@
     <Compile Include="AppMainWindow\Messages\MessageDialog.cs" />
     <Compile Include="AppMainWindow\Messages\MessageManager.cs" />
     <Compile Include="AppMainWindow\Messages\ProgressDialog.cs" />
+    <Compile Include="DragDrop\DropTargetAdorners\DropTargetHighlightAdorner.cs" />
+    <Compile Include="DragDrop\DropTargetAdorners\DropTargetInsertionAdorner.cs" />
+    <Compile Include="DragDrop\PlaylistListDropHandler.cs" />
+    <Compile Include="DragDrop\TrackListDropHandler.cs" />
     <Compile Include="Extensions\AnimatedFrameworkElement.cs" />
     <Compile Include="Extensions\AnimatedListView.cs" />
     <Compile Include="Extensions\AnimatedStackPanel.cs" />
@@ -176,6 +183,7 @@
     <Compile Include="Music\Data\AudioDevice.cs" />
     <Compile Include="Music\Download\DownloadEntry.cs" />
     <Compile Include="Music\Download\DownloadManager.cs" />
+    <Compile Include="Music\Download\DownloadProgress.cs" />
     <Compile Include="Music\Download\SoundCloudDownloader.cs" />
     <Compile Include="Music\Download\youtube-dl.cs" />
     <Compile Include="Music\Playlist\FavoriteList.cs" />
@@ -573,9 +581,6 @@
     <Compile Include="Music\MusicManager.cs" />
     <Compile Include="Music\Playlist\NormalPlaylist.cs" />
     <Compile Include="Music\Visualization\SampleAnalyser.cs" />
-    <Compile Include="Resources\Styles\DragDropListView\DragAdorner.cs" />
-    <Compile Include="Resources\Styles\DragDropListView\ListViewDragDropManager.cs" />
-    <Compile Include="Resources\Styles\DragDropListView\MouseUtilities.cs" />
     <Compile Include="Settings\HurricaneSettings.cs" />
     <Compile Include="ViewModelBase\PropertyChangedBase.cs" />
     <Compile Include="ViewModelBase\RelayCommand.cs" />
@@ -724,9 +729,6 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Languages\Icons\fi.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="youtube-dl.exe">

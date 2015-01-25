@@ -257,4 +257,7 @@
     <system:String x:Key="All">All</system:String>
     <system:String x:Key="ExceptionAddOnlineTrack">An error occurred while adding the track.</system:String>
     <system:String x:Key="ExceptionOpenOnlineTrack">An error occurred while opening the track.</system:String>
+    <system:String x:Key="ExceptionConvertTrack">An error occurred while downloading the track.</system:String>
+    <system:String x:Key="ConvertToLocalTrack">Convert to local track</system:String>
+    <system:String x:Key="Streams">Streams</system:String>
 </ResourceDictionary>

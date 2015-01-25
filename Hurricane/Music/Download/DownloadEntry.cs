@@ -3,7 +3,7 @@ using Hurricane.ViewModelBase;
 
 namespace Hurricane.Music.Download
 {
-    public class DownloadEntry : PropertyChangedBase
+    public class DownloadEntry : PropertyChangedBase, IDownloadable
     {
         private bool _isWaiting;
         public bool IsWaiting
@@ -35,11 +35,16 @@ namespace Hurricane.Music.Download
             }
         }
 
-        public string Filename { get; set; }
         public string Trackname { get; set; }
         public DownloadMethod DownloadMethod { get; set; }
         public string DownloadParameter { get; set; }
         public IMusicInformation MusicInformation { get; set; }
+        public string DownloadFilename { get; set; }
+
+        public bool CanDownload
+        {
+            get { return true; }
+        }
     }
 
     public enum DownloadMethod { SoundCloud, youtube_dl }

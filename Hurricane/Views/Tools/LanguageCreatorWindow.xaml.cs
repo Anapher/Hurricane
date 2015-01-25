@@ -178,8 +178,15 @@ namespace Hurricane.Views.Tools
         {
             foreach (Match match in Regex.Matches(Properties.Resources.Hurricane_en_us, "<system:String x:Key=\"(?<key>(.*?))\">(?<value>(.*?))</system:String>"))
             {
-                document.LanguageEntries.First(x => x.Key == match.Groups["key"].Value).EnglishWord =
-                    match.Groups["value"].Value;
+                var value = document.LanguageEntries.FirstOrDefault(x => x.Key == match.Groups["key"].Value);
+                if (value != null)
+                {
+                    value.EnglishWord = match.Groups["value"].Value;
+                }
+                else
+                {
+                    document.LanguageEntries.Add(new LanguageEntry() { Key = match.Groups["key"].Value, EnglishWord = match.Groups["value"].Value });
+                }
             }
         }
 

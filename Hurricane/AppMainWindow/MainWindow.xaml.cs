@@ -1,11 +1,8 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Diagnostics;
-using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media.Animation;
 using System.Windows.Shell;
@@ -15,7 +12,6 @@ using Hurricane.AppMainWindow.MahAppsExtensions.Dialogs;
 using Hurricane.AppMainWindow.Messages;
 using Hurricane.AppMainWindow.WindowSkins;
 using Hurricane.MagicArrow.DockManager;
-using Hurricane.Music;
 using Hurricane.Music.MusicDatabase.EventArgs;
 using Hurricane.Music.Track;
 using Hurricane.Settings;
@@ -222,7 +218,16 @@ namespace Hurricane
         {
             if (WindowState == WindowState.Maximized) _restoreIfMove = true;
             MagicArrow.DockManager.DragStart();
-            if (HostedWindow.Configuration.NeedsMovingHelp) DragMove();
+            if (HostedWindow.Configuration.NeedsMovingHelp)
+            {
+                try
+                {
+                    DragMove();
+                }
+                catch (InvalidOperationException)
+                {
+                }
+            }
         }
 
         void skin_DragMoveStop(object sender, EventArgs e)
@@ -251,7 +256,13 @@ namespace Hurricane
                 Left = lMousePosition.X - targetHorizontal;
                 Top = lMousePosition.Y - targetVertical;
 
-                DragMove();
+                try
+                {
+                    DragMove();
+                }
+                catch (InvalidOperationException)
+                {
+                }
             }
         }
 

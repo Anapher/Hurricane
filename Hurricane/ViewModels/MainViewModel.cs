@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using CSCore.Codecs;
+using Hurricane.DragDrop;
 using Hurricane.Music;
+using Hurricane.Music.Download;
 using Hurricane.Music.MusicDatabase.EventArgs;
 using Hurricane.Music.Playlist;
 using Hurricane.Music.Track;
@@ -15,6 +18,7 @@ using Hurricane.Settings;
 using Hurricane.Utilities;
 using Hurricane.ViewModelBase;
 using Hurricane.Views;
+using MahApps.Metro.Controls.Dialogs;
 using Microsoft.Win32;
 using QueueManager = Hurricane.Views.QueueManagerWindow;
 
@@ -427,12 +431,15 @@ namespace Hurricane.ViewModels
         private RelayCommand _opentageditor;
         public RelayCommand OpenTagEditor
         {
-            get { return _opentageditor ?? (_opentageditor = new RelayCommand(parameter =>
+            get
             {
-                var localtrack = MusicManager.SelectedTrack as LocalTrack;
-                if (localtrack == null) return;
-                _baseWindow.OpenTagEditor(localtrack);
-            })); }
+                return _opentageditor ?? (_opentageditor = new RelayCommand(parameter =>
+                {
+                    var localtrack = MusicManager.SelectedTrack as LocalTrack;
+                    if (localtrack == null) return;
+                    _baseWindow.OpenTagEditor(localtrack);
+                }));
+            }
         }
 
         private RelayCommand _openupdater;
@@ -467,27 +474,33 @@ namespace Hurricane.ViewModels
         private float oldVolume;
         public RelayCommand ToggleVolume
         {
-            get { return _toggleVolume ?? (_toggleVolume = new RelayCommand(parameter =>
+            get
             {
-                if (MusicManager.CSCoreEngine.Volume == 0)
+                return _toggleVolume ?? (_toggleVolume = new RelayCommand(parameter =>
                 {
-                    MusicManager.CSCoreEngine.Volume = oldVolume;
-                }
-                else
-                {
-                    oldVolume = MusicManager.CSCoreEngine.Volume;
-                    MusicManager.CSCoreEngine.Volume = 0;
-                }
-            })); }
+                    if (MusicManager.CSCoreEngine.Volume == 0)
+                    {
+                        MusicManager.CSCoreEngine.Volume = oldVolume;
+                    }
+                    else
+                    {
+                        oldVolume = MusicManager.CSCoreEngine.Volume;
+                        MusicManager.CSCoreEngine.Volume = 0;
+                    }
+                }));
+            }
         }
 
         private RelayCommand _openOnlineSection;
         public RelayCommand OpenOnlineSection
         {
-            get { return _openOnlineSection ?? (_openOnlineSection = new RelayCommand(parameter =>
+            get
             {
-                MainTabControlIndex = 3;
-            })); }
+                return _openOnlineSection ?? (_openOnlineSection = new RelayCommand(parameter =>
+                {
+                    MainTabControlIndex = 3;
+                }));
+            }
         }
 
         private RelayCommand _openDownloadManager;
@@ -498,6 +511,73 @@ namespace Hurricane.ViewModels
                 return _openDownloadManager ?? (_openDownloadManager = new RelayCommand(parameter =>
                 {
                     MusicManager.DownloadManager.IsOpen = true;
+                }));
+            }
+        }
+
+        private RelayCommand _convertStreamToLocalTrack;
+        public RelayCommand ConvertStreamToLocalTrack
+        {
+            get
+            {
+                return _convertStreamToLocalTrack ?? (_convertStreamToLocalTrack = new RelayCommand(async parameter =>
+                {
+                    var track = MusicManager.SelectedTrack as StreamableBase;
+                    if (track == null) return;
+                    if (!track.CanDownload) return;
+
+                    var sfd = new SaveFileDialog
+                    {
+                        Filter =
+                            string.Format("M4A {0}|*.m4a|{1}|*.*", Application.Current.Resources["File"],
+                                Application.Current.Resources["AllFiles"]),
+                        FileName = track.Title
+                    };
+                    if (sfd.ShowDialog() == true)
+                    {
+                        var downloadFile = new FileInfo(sfd.FileName);
+                        if (downloadFile.Exists) downloadFile.Delete();
+
+                        var controller = await _baseWindow.ShowProgressAsync(Application.Current.Resources["Download"].ToString(), MusicManager.SelectedTrack.Title);
+                        if (await
+                            DownloadManager.DownloadTrack(track, sfd.FileName,
+                                (d) =>
+                                {
+                                    controller.SetProgress(d / 100);
+                                }))
+                        {
+                            if (MySettings.Config.Downloader.AddTagsToDownloads)
+                                await DownloadManager.AddTags(track, sfd.FileName);
+                            var newTrack = new LocalTrack { Path = sfd.FileName };
+                            if (await newTrack.LoadInformation())
+                            {
+                                newTrack.TimeAdded = track.TimeAdded;
+                                newTrack.Artist = track.Artist;
+                                newTrack.Year = track.Year;
+                                newTrack.Title = track.Title;
+                                newTrack.Album = track.Album;
+                                newTrack.Genres = track.Genres;
+                                MusicManager.SelectedPlaylist.Tracks[MusicManager.SelectedPlaylist.Tracks.IndexOf(track)] = newTrack;
+                                if (track.IsPlaying)
+                                    MusicManager.PlayTrack(newTrack, MusicManager.SelectedPlaylist);
+
+                                await controller.CloseAsync();
+                            }
+                            else
+                            {
+                                await controller.CloseAsync();
+                                await
+                                    _baseWindow.ShowMessage(
+                                        Application.Current.Resources["ExceptionConvertTrack"].ToString(),
+                                        Application.Current.Resources["Exception"].ToString(), false, DialogMode.Single);
+                            }
+                        }
+                        else
+                        {
+                            await controller.CloseAsync();
+                            await _baseWindow.ShowMessage(Application.Current.Resources["ExceptionConvertTrack"].ToString(), Application.Current.Resources["Exception"].ToString(), false, DialogMode.Single);
+                        }
+                    }
                 }));
             }
         }
@@ -523,7 +603,7 @@ namespace Hurricane.ViewModels
                 SetProperty(value, ref _updater);
             }
         }
-        
+
         private TrackSearcher _trackSearcher;
         public TrackSearcher TrackSearcher
         {
@@ -546,5 +626,16 @@ namespace Hurricane.ViewModels
 
         #endregion
 
+        private TrackListDropHandler trackListDropHandler;
+        public TrackListDropHandler TrackListDropHandler
+        {
+            get { return trackListDropHandler ?? (trackListDropHandler = new TrackListDropHandler()); }
+        }
+
+        private PlaylistListDropHandler playlistListDropHandler;
+        public PlaylistListDropHandler PlaylistListDropHandler
+        {
+            get { return playlistListDropHandler ?? (playlistListDropHandler = new PlaylistListDropHandler()); }
+        }
     }
 }

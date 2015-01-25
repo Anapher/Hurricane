@@ -105,7 +105,7 @@ namespace Hurricane.Music.Download
             }
         }
 
-        public async Task DownloadYouTubeVideo(string YouTubeLink, DownloadEntry entry)
+        public async Task<bool> DownloadYouTubeVideo(string YouTubeLink, string fileName, Action<double> progressChangedAction)
         {
             await Load();
             using (var p = new Process()
@@ -116,26 +116,26 @@ namespace Hurricane.Music.Download
                     RedirectStandardOutput = true,
                     UseShellExecute = false,
                     FileName = ExecutablePath,
-                    Arguments = string.Format("{0} --extract-audio --output \"{1}\"", YouTubeLink, entry.Filename)
+                    Arguments = string.Format("{0} --extract-audio --output \"{1}\"", YouTubeLink, fileName)
                 }
             })
             {
                 p.Start();
 
                 var regex = new Regex(@"^\[download\].*?(?<percentage>(.*?))% of"); //[download]   2.7% of 4.62MiB at 200.00KiB/s ETA 00:23
-                entry.IsWaiting = false;
                 while (!p.HasExited)
                 {
                     var line = await p.StandardOutput.ReadLineAsync();
                     if (string.IsNullOrEmpty(line)) continue;
+                    if (line.StartsWith("ERROR:")) return false;
                     var match = regex.Match(line);
                     if (match.Success)
                     {
                         var doub = double.Parse(match.Groups["percentage"].Value, CultureInfo.InvariantCulture);
-                        entry.Progress = doub ;
+                        progressChangedAction.Invoke(doub);
                     }
                 }
-                entry.IsDownloaded = true;
+                return true;
             }
         }
     }

@@ -46,7 +46,7 @@ namespace Hurricane.Music.MusicDatabase
 
                                 if (imageurl != null && !imageurl.EndsWith("default_album_medium.png") && !imageurl.EndsWith("[unknown].png")) //We don't want the default album art
                                 {
-                                    BitmapImage img = await ImageHelper.DownloadImage(web,imageurl);
+                                    BitmapImage img = await ImageHelper.DownloadImage(web, imageurl);
                                     string album;
                                     if (string.IsNullOrEmpty(trackinfo.track.album.title))
                                     {
@@ -54,7 +54,7 @@ namespace Hurricane.Music.MusicDatabase
                                     }
                                     else { album = trackinfo.track.album.title; }
                                     if (saveimage) await ImageHelper.SaveImage(img, album, directory.FullName);
-                                    
+
                                     return img;
                                 }
                             }
@@ -65,7 +65,9 @@ namespace Hurricane.Music.MusicDatabase
                                 {
                                     if (GeneralHelper.EscapeFilename(_artist).ToLower() == Path.GetFileNameWithoutExtension(file.FullName).ToLower())
                                     {
-                                        return new BitmapImage(new Uri(file.FullName));
+                                        var img = new BitmapImage(new Uri(file.FullName));
+                                        img.Freeze();
+                                        return img;
                                     }
                                 }
                             }

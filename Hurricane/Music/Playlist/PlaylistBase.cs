@@ -156,6 +156,7 @@ namespace Hurricane.Music.Playlist
                 {
                     this.RemoveTrack(track);
                 }
+                ViewSource.Refresh();
             }
 
             return counter - noduplicates.Count;
