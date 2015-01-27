@@ -12,9 +12,13 @@ namespace Hurricane.Settings.Themes
     [Serializable]
     public class ApplicationThemeManager
     {
+        [UserSetting]
         public ThemeBase SelectedColorTheme { get; set; }
+        [UserSetting]
         public bool UseCustomSpectrumAnalyzerColor { get; set; }
+        [UserSetting]
         public string SpectrumAnalyzerHexColor { get; set; }
+        [UserSetting]
         public BaseTheme BaseTheme { get; set; }
 
         [XmlIgnore]
@@ -86,7 +90,11 @@ namespace Hurricane.Settings.Themes
                 this.SelectedColorTheme = Themes.First(x => x.Name == "Blue");
                 SelectedColorTheme.ApplyTheme();
             }
-            
+            RefreshSpectrumAnalyzerBrush();
+        }
+
+        public void RefreshSpectrumAnalyzerBrush()
+        {
             if (UseCustomSpectrumAnalyzerColor)
             {
                 Application.Current.Resources["SpectrumAnalyzerBrush"] = new SolidColorBrush((Color)ColorConverter.ConvertFromString(SpectrumAnalyzerHexColor));

@@ -36,7 +36,19 @@
         <Grid MouseLeftButtonDown="Titlebar_MouseLeftButtonDown" MouseLeftButtonUp="Titlebar_MouseLeftButtonUp" MouseMove="Titlebar_OnMouseMove" Background="{StaticResource WhiteColorBrush}">
             <TextBlock Text="Hurricane" Foreground="#FFAAAAAA" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Center"/>
         </Grid>
-        <TabControl Grid.Row="1" SelectedIndex="{Binding MainTabControlIndex}">
+        <TabControl Grid.Row="1" SelectedIndex="{Binding MainTabControlIndex}" controls:ControlsHelper.HeaderFontSize="13">
+            <TabControl.Resources>
+                <Style TargetType="TabItem" BasedOn="{StaticResource MetroTabItem}">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding MySettings.Config.UseThinHeaders}" Value="True">
+                            <Setter Property="controls:ControlsHelper.HeaderFontWeight" Value="Light"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding MySettings.Config.UseThinHeaders}" Value="False">
+                            <Setter Property="controls:ControlsHelper.HeaderFontWeight" Value="Normal"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </TabControl.Resources>
             <TabItem Header="{DynamicResource Playlists}">
                 <TabItem.Resources>
                     <DataTemplate x:Key="DragAdornerPlaylist">
@@ -187,7 +199,7 @@
                                             <MultiDataTrigger>
                                                 <MultiDataTrigger.Conditions>
                                                     <Condition Binding="{Binding RelativeSource={RelativeSource AncestorType={x:Type ListViewItem}}, Path=IsSelected}" Value="False"/>
-                                                    <Condition Binding="{Binding IsPlaying}" Value="True"/>
+                                                    <Condition Binding="{Binding IsOpened}" Value="True"/>
                                                 </MultiDataTrigger.Conditions>
                                                 <Setter Property="Foreground" Value="{StaticResource NormalColorBrush}"/>
                                             </MultiDataTrigger>
@@ -286,7 +298,7 @@
                                                                     <Style.Triggers>
                                                                         <MultiDataTrigger>
                                                                             <MultiDataTrigger.Conditions>
-                                                                                <Condition Binding="{Binding IsPlaying}" Value="True"/>
+                                                                                <Condition Binding="{Binding IsOpened}" Value="True"/>
                                                                                 <Condition Binding="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=DataContext.MusicManager.CSCoreEngine.IsPlaying}" Value="True"/>
                                                                             </MultiDataTrigger.Conditions>
                                                                             <Setter Property="Visibility" Value="Visible"/>
@@ -321,8 +333,9 @@
                                                                     <Style.Triggers>
                                                                         <MultiDataTrigger>
                                                                             <MultiDataTrigger.Conditions>
-                                                                                <Condition Binding="{Binding IsPlaying}" Value="True"/>
+                                                                                <Condition Binding="{Binding IsOpened}" Value="True"/>
                                                                                 <Condition Binding="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=DataContext.MusicManager.CSCoreEngine.IsPlaying}" Value="False"/>
+                                                                                <Condition Binding="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=DataContext.MusicManager.CSCoreEngine.IsLoading}" Value="False"/>
                                                                             </MultiDataTrigger.Conditions>
                                                                             <Setter Property="Visibility" Value="Visible"/>
                                                                             <MultiDataTrigger.EnterActions>
@@ -758,7 +771,7 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <Grid>
-                <Slider Maximum="{Binding MusicManager.CSCoreEngine.TrackLength}" Value="{Binding MusicManager.CSCoreEngine.Position}" IsMoveToPointEnabled="True">
+                <Slider Maximum="{Binding MusicManager.CSCoreEngine.TrackLength}" Value="{Binding MusicManager.CSCoreEngine.Position}" IsMoveToPointEnabled="True" extensions:SliderExtensions.MoveToPointOnDrag="True">
                     <Slider.Style>
                         <Style TargetType="Slider" BasedOn="{StaticResource AdvancedTimelineSlider}">
                             <Style.Triggers>

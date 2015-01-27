@@ -468,19 +468,14 @@ namespace Hurricane
 
         public async Task MoveOut()
         {
-            var outanimation = new ThicknessAnimation(new Thickness(0), new Thickness(-100, 0, 100, 0),
-                TimeSpan.FromMilliseconds(500));
             var fadeanimation = new DoubleAnimation(1, 0, TimeSpan.FromMilliseconds(500));
             var control = (DependencyObject) HostedWindow;
 
-            Storyboard.SetTarget(outanimation, control);
             Storyboard.SetTarget(fadeanimation, control);
 
-            Storyboard.SetTargetProperty(outanimation, new PropertyPath(MarginProperty));
             Storyboard.SetTargetProperty(fadeanimation, new PropertyPath(OpacityProperty));
 
             var story = new Storyboard();
-            story.Children.Add(outanimation);
             story.Children.Add(fadeanimation);
             var handler = new AutoResetEvent(false);
             story.Completed += (s, e) => handler.Set();

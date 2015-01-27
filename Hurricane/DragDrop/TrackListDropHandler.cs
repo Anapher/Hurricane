@@ -5,6 +5,7 @@ using System.Linq;
 using System.Windows;
 using GongSolutions.Wpf.DragDrop;
 using Hurricane.Music.Track;
+using Hurricane.ViewModels;
 using DropTargetInsertionAdorner = Hurricane.DragDrop.DropTargetAdorners.DropTargetInsertionAdorner;
 
 namespace Hurricane.DragDrop
@@ -24,13 +25,22 @@ namespace Hurricane.DragDrop
             if (dropInfo.Data is PlayableBase)
             {
                 var track = (PlayableBase)dropInfo.Data;
-                var index = dropInfo.InsertIndex >= collection.Count
-                    ? collection.Count - 1
-                    : dropInfo.InsertIndex;
+                int newIndex;
+                var currentIndex = collection.IndexOf(track);
 
-                var newIndex = collection.IndexOf(track);
-                if (newIndex == index) return;
-                collection.Move(newIndex, index);
+                if (dropInfo.InsertIndex > collection.Count - 1)
+                {
+                    newIndex = collection.Count - 1;
+                }
+                else
+                {
+                    newIndex = dropInfo.InsertIndex;
+                    if (newIndex > 0 && newIndex > currentIndex) newIndex--;
+                }
+
+                if (currentIndex == newIndex) return;
+                collection.Move(currentIndex, newIndex);
+                MainViewModel.Instance.MusicManager.SelectedTrack = collection[newIndex];
             }
             else if (dropInfo.Data is IEnumerable<PlayableBase>)
             {

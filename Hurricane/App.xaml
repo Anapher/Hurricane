@@ -9,7 +9,7 @@
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Colors.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.AnimatedTabControl.xaml" />
-                
+
                 <ResourceDictionary Source="/Resources/VectorGraphics.xaml"/>
 
                 <ResourceDictionary Source="/Resources/Themes/BaseLight.xaml"/>

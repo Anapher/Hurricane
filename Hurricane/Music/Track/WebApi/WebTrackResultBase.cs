@@ -16,7 +16,7 @@ namespace Hurricane.Music.Track.WebApi
         public string Uploader { get; set; }
         public uint Year { get; set; }
         public string ImageUrl { get; set; }
-        public int Views { get; set; }
+        public uint Views { get; set; }
         public abstract ProviderName ProviderName { get; }
         public string Url { get; set; }
 

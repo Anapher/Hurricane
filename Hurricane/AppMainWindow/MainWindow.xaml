@@ -40,8 +40,8 @@
                                                         <Trigger.EnterActions>
                                                             <BeginStoryboard>
                                                                 <Storyboard>
-                                                                    <ColorAnimation To="{StaticResource AccentColor}" Duration="0:0:0.2" Storyboard.TargetName="path" Storyboard.TargetProperty="(Path.Fill).(SolidColorBrush.Color)"/>
-                                                                    <ColorAnimation To="{StaticResource AccentColor}" Duration="0:0:0.2" Storyboard.TargetName="txt" Storyboard.TargetProperty="(TextBlock.Foreground).(SolidColorBrush.Color)"/>
+                                                                    <ColorAnimation To="#FFEDEDED" Duration="0:0:0.2" Storyboard.TargetName="path" Storyboard.TargetProperty="(Path.Fill).(SolidColorBrush.Color)"/>
+                                                                    <ColorAnimation To="#FFEDEDED" Duration="0:0:0.2" Storyboard.TargetName="txt" Storyboard.TargetProperty="(TextBlock.Foreground).(SolidColorBrush.Color)"/>
                                                                 </Storyboard>
                                                             </BeginStoryboard>
                                                         </Trigger.EnterActions>

@@ -50,6 +50,5 @@
             </Grid>
             <Button Content="{StaticResource Update}" Margin="10" Click="Button_Click"/>
         </StackPanel>
-
     </Grid>
 </controls:MetroWindow>

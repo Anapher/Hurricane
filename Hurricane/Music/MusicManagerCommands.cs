@@ -117,7 +117,7 @@ namespace Hurricane.Music
                 {
                     if (parameter == null) return;
                     var tracks = ((IList)parameter).Cast<PlayableBase>().ToList();
-                    foreach (var track in tracks.Where(x => !x.IsPlaying))
+                    foreach (var track in tracks.Where(x => !x.IsOpened))
                     {
                         Musicmanager.Queue.AddTrack(track, Musicmanager.SelectedPlaylist);
                     }

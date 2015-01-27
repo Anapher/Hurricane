@@ -21,7 +21,7 @@ namespace Hurricane.Views
             this.CurrentTrack = track;
             InitializeComponent();
 
-            if (!CurrentTrack.IsPlaying)
+            if (!CurrentTrack.IsOpened)
             {
                 CurrentTrack.Load();
                 if (CurrentTrack.Image == null)

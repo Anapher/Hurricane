@@ -199,7 +199,7 @@
     <system:String x:Key="FailedToBindToPort">Virhe asetettaessa portit</system:String>
     <system:String x:Key="Activated">aktivoitu</system:String>
     <system:String x:Key="Deactivated">vammaiset</system:String>
-    <system:String x:Key="ThemeCreator">teema luoja</system:String>
+    <system:String x:Key="ThemeEditor">teema luoja</system:String>
     <system:String x:Key="Name">nimi</system:String>
     <system:String x:Key="LightColorDescription">Erittäin kirkas (lähes valkoinen) sävy</system:String>
     <system:String x:Key="BrightColorDescription">vaaleampi sävy</system:String>
@@ -260,4 +260,7 @@
     <system:String x:Key="ExceptionConvertTrack">An error occurred while downloading the track.</system:String>
     <system:String x:Key="ConvertToLocalTrack">Convert to local track</system:String>
     <system:String x:Key="Streams">Streams</system:String>
+    
+    <!-- 0.3.1 -->
+    <system:String x:Key="UseThinHeaders">Use thin font weight for headers</system:String>
 </ResourceDictionary>

@@ -10,6 +10,7 @@ using Hurricane.Music.Playlist;
 using Hurricane.Settings;
 using Hurricane.Utilities;
 using Hurricane.ViewModelBase;
+using MahApps.Metro.Controls.Dialogs;
 
 namespace Hurricane.Music.Track.WebApi
 {
@@ -51,7 +52,7 @@ namespace Hurricane.Music.Track.WebApi
                 SetProperty(value, ref _selectedTrack);
             }
         }
-        
+
         private IPlaylistResult _playlistResult;
         public IPlaylistResult PlaylistResult
         {
@@ -63,7 +64,7 @@ namespace Hurricane.Music.Track.WebApi
         }
 
         public List<IMusicApi> MusicApis { get; set; }
-        
+
         private RelayCommand _searchCommand;
         public RelayCommand SearchCommand
         {
@@ -71,6 +72,7 @@ namespace Hurricane.Music.Track.WebApi
             {
                 return _searchCommand ?? (_searchCommand = new RelayCommand(async parameter =>
                 {
+                    if (string.IsNullOrWhiteSpace(SearchText)) return;
                     IsLoading = true;
                     if (_IsSearching)
                     {
@@ -123,7 +125,7 @@ namespace Hurricane.Music.Track.WebApi
             NothingFound = list.Count == 0;
             SortResults(list);
             _manager.DownloadManager.Searches.Insert(0, SearchText);
-        } 
+        }
 
         private RelayCommand _playSelectedTrack;
         public RelayCommand PlaySelectedTrack
@@ -173,7 +175,7 @@ namespace Hurricane.Music.Track.WebApi
                 }));
             }
         }
-            
+
         private RelayCommand _downloadTrack;
         public RelayCommand DownloadTrack
         {
@@ -201,9 +203,11 @@ namespace Hurricane.Music.Track.WebApi
                     _manager.Playlists.Add(playlist);
                     _manager.RegisterPlaylist(playlist);
 
-                    await AddTracksToPlaylist(playlist, PlaylistResult);
-                    ViewModels.MainViewModel.Instance.MainTabControlIndex = 0;
-                    _manager.SelectedPlaylist = playlist;
+                    if (await AddTracksToPlaylist(playlist, PlaylistResult))
+                    {
+                        ViewModels.MainViewModel.Instance.MainTabControlIndex = 0;
+                        _manager.SelectedPlaylist = playlist;
+                    }
                 }));
             }
         }
@@ -218,30 +222,40 @@ namespace Hurricane.Music.Track.WebApi
                     if (PlaylistResult == null) return;
                     var playlist = parameter as NormalPlaylist;
                     if (playlist == null) return;
-                    await AddTracksToPlaylist(playlist, PlaylistResult);
-                    ViewModels.MainViewModel.Instance.MainTabControlIndex = 0;
-                    _manager.SelectedPlaylist = playlist;
+                    if (await AddTracksToPlaylist(playlist, PlaylistResult))
+                    {
+                        ViewModels.MainViewModel.Instance.MainTabControlIndex = 0;
+                        _manager.SelectedPlaylist = playlist;
+                    }
                 }));
             }
         }
 
-        private async Task AddTracksToPlaylist(IPlaylist playlist, IPlaylistResult result)
+        private async Task<bool> AddTracksToPlaylist(IPlaylist playlist, IPlaylistResult result)
         {
             await Task.Delay(500);
-            var controller = _baseWindow.Messages.CreateProgressDialog(playlist.Name, false);
-
+            var controller = await _baseWindow.ShowProgressAsync(playlist.Name, string.Empty, true, new MetroDialogSettings { NegativeButtonText = Application.Current.Resources["Cancel"].ToString() });
             result.LoadingTracksProcessChanged += (s, e) =>
             {
                 controller.SetMessage(string.Format(Application.Current.Resources["LoadingTracks"].ToString(), e.CurrentTrackName, e.Value, e.Maximum));
                 controller.SetProgress(e.Value / e.Maximum);
             };
-            foreach (var track in await result.GetTracks())
+
+            var tracks = await result.GetTracks(controller);
+            if (tracks == null)
+            {
+                await controller.CloseAsync();
+                return false;
+            }
+
+            foreach (var track in tracks)
             {
                 playlist.AddTrack(track);
             }
             _manager.SaveToSettings();
             HurricaneSettings.Instance.Save();
-            await controller.Close();
+            await controller.CloseAsync();
+            return true;
         }
 
         private bool CheckForCanceled()
@@ -273,7 +287,7 @@ namespace Hurricane.Music.Track.WebApi
             cancelWaiter = new AutoResetEvent(false);
             _manager = manager;
             this._baseWindow = baseWindow;
-            this.MusicApis = new List<IMusicApi>{new YouTubeApi.YouTubeApi(), new SoundCloudApi.SoundCloudApi() };
+            this.MusicApis = new List<IMusicApi> { new YouTubeApi.YouTubeApi(), new SoundCloudApi.SoundCloudApi() };
         }
     }
 }

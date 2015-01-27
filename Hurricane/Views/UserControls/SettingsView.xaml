@@ -175,6 +175,7 @@
                     </DockPanel>
                     <TextBlock Style="{StaticResource TextBlockHeader}" extensions:TextBlockHelper.UpperText="{DynamicResource View}" Margin="0,30,0,0"/>
                     <CheckBox Margin="0,10,0,0" Content="{DynamicResource ShowArtistAndTitle}" IsChecked="{Binding Config.ShowArtistAndTitle}" Checked="SettingChanged" Unchecked="SettingChanged"/>
+                    <CheckBox Margin="0,10,0,0" Content="{DynamicResource UseThinHeaders}" IsChecked="{Binding Config.UseThinHeaders}" Checked="SettingChanged" Unchecked="SettingChanged"/>
                 </StackPanel>
             </TabItem>
             <TabItem Header="Behaviour">
@@ -296,7 +297,7 @@
                 </StackPanel>
             </TabItem>
             <TabItem Header="Language">
-                <ListBox ItemsSource="{Binding Config.Languages}" SelectedItem="{Binding CurrentLanguage}">
+                <ListBox ItemsSource="{Binding Config.Languages}" SelectedItem="{Binding CurrentLanguage}" Margin="5">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <Grid Margin="4">

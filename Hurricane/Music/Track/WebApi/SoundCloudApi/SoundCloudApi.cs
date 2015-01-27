@@ -60,7 +60,7 @@ namespace Hurricane.Music.Track.WebApi.SoundCloudApi
                         Title = result.title,
                         Uploader = result.user.username,
                         Result = result,
-                        Views = result.playback_count,
+                        Views = (uint)result.playback_count,
                         ImageUrl = result.artwork_url,
                         Url = result.permalink_url,
                         Genres = result.genre
@@ -107,7 +107,7 @@ namespace Hurricane.Music.Track.WebApi.SoundCloudApi
                     Title = x.title,
                     Uploader = x.user.username,
                     Result = x,
-                    Views = x.playback_count,
+                    Views = (uint)x.playback_count,
                     ImageUrl = x.artwork_url,
                     Url = x.permalink_url,
                     Genres = x.genre

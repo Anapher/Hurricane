@@ -40,7 +40,7 @@ namespace Hurricane.Music
 
         #endregion
 
-        #region Event voids
+        #region Event handler
 
         protected void OnTrackFinished()
         {
@@ -221,9 +221,9 @@ namespace Hurricane.Music
             PlayAfterLoading = false;
             IsLoading = true;
             StopPlayback();
-            if (CurrentTrack != null) { CurrentTrack.IsPlaying = false; CurrentTrack.Unload(); }
+            if (CurrentTrack != null) { CurrentTrack.IsOpened = false; CurrentTrack.Unload(); }
             if (SoundSource != null && !_Crossfade.IsCrossfading) { SoundSource.Dispose(); }
-            track.IsPlaying = true;
+            track.IsOpened = true;
             CurrentTrack = track;
             var t = Task.Run(() => track.Load());
             Equalizer equalizer;
@@ -232,10 +232,10 @@ namespace Hurricane.Music
             switch (result.State)
             {
                 case State.False:
-                    track.IsPlaying = false;
+                    track.IsOpened = false;
                     return false;
                 case State.Exception:
-                    track.IsPlaying = false;
+                    track.IsOpened = false;
                     IsLoading = false;
                     if (ExceptionOccurred != null) ExceptionOccurred(this, (Exception)result.CustomState);
                     return false;
@@ -475,16 +475,19 @@ namespace Hurricane.Music
             _soundOut.Stopped += soundOut_Stopped;
         }
 
-        public async void UpdateSoundOut()
+        public void UpdateSoundOut()
         {
             long position = Position;
             bool isplaying = IsPlaying;
             if (_soundOut != null) { StopPlayback(); _soundOut.Dispose(); }
             RefreshSoundOut();
-            if (CurrentTrack != null)
-                await OpenTrack(CurrentTrack);
-            Position = position;
-            if (isplaying) TogglePlayPause();
+            if (!IsLoading)
+            {
+                if (SoundSource != null)
+                    _soundOut.Initialize(SoundSource);
+                Position = position;
+                if (isplaying) TogglePlayPause();
+            }
         }
 
         void soundOut_Stopped(object sender, PlaybackStoppedEventArgs e)

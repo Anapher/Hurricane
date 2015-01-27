@@ -53,6 +53,15 @@ namespace Hurricane.Settings
         public string PlaylistToImportTrack { get; set; }
         public bool ShufflePreferFavoritTracks { get; set; }
         public bool ShowArtistAndTitle { get; set; }
+        private bool _useThinHeaders;
+        public bool UseThinHeaders
+        {
+            get { return _useThinHeaders; }
+            set
+            {
+                SetProperty(value, ref _useThinHeaders);
+            }
+        }
 
         public bool ApiIsEnabled { get; set; }
         public int ApiPort { get; set; }
@@ -197,7 +206,8 @@ namespace Hurricane.Settings
                     CompareTwoValues(this.CrossfadeDuration, other.CrossfadeDuration) &&
                     CompareTwoValues(this.IsCrossfadeEnabled, other.IsCrossfadeEnabled) &&
                     CompareTwoValues(this.Downloader.DownloadDirectory, other.Downloader.DownloadDirectory) &&
-                    CompareTwoValues(this.Downloader.AddTagsToDownloads, other.Downloader.AddTagsToDownloads));
+                    CompareTwoValues(this.Downloader.AddTagsToDownloads, other.Downloader.AddTagsToDownloads) &&
+                    CompareTwoValues(this.UseThinHeaders, other.UseThinHeaders));
         }
 
         protected bool CompareTwoValues(object v1, object v2)

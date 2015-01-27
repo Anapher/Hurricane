@@ -59,7 +59,6 @@ namespace Hurricane.ViewModels
                 {
                     ConfigSettings original = HurricaneSettings.Instance.Config;
                     
-                    if (Config.SoundOutDeviceID != original.SoundOutDeviceID || Config.SoundOutMode != original.SoundOutMode) { MusicManager.CSCoreEngine.UpdateSoundOut(); }
                     if (original.Language != Config.Language) { Config.LoadLanguage(); }
                     if (Config.Theme.UseCustomSpectrumAnalyzerColor && string.IsNullOrEmpty(Config.Theme.SpectrumAnalyzerHexColor)) Config.Theme.SpectrumAnalyzerColor = Colors.Black;
 
@@ -67,6 +66,11 @@ namespace Hurricane.ViewModels
 
                     bool haveToChangeColorTheme = !original.Theme.SelectedColorTheme.Equals(Config.Theme.SelectedColorTheme);
                     bool haveToChangeBaseTheme = original.Theme.BaseTheme != Config.Theme.BaseTheme;
+                    bool haveToRefreshSpectrumAnalyserColor = Config.Theme.SpectrumAnalyzerColor !=
+                                                              original.Theme.SpectrumAnalyzerColor;
+                    bool haveToUpdateSountOut = Config.SoundOutDeviceID != original.SoundOutDeviceID ||
+                                                Config.SoundOutMode != original.SoundOutMode;
+
 
                     PropertiesCopier.CopyProperties(Config, original, new List<string> { "Queue" });
 
@@ -81,6 +85,9 @@ namespace Hurricane.ViewModels
                             await window.ResetAndMoveIn();
                         }
                     }
+
+                    if (haveToRefreshSpectrumAnalyserColor) original.Theme.RefreshSpectrumAnalyzerBrush();
+                    if (haveToUpdateSountOut) MusicManager.CSCoreEngine.UpdateSoundOut();
 
                     OnPropertyChanged("CanApply");
                     CurrentLanguage = Config.Languages.First((x) => x.Code == Config.Language);
@@ -236,7 +243,7 @@ namespace Hurricane.ViewModels
             {
                 return _openthemecreator ?? (_openthemecreator = new RelayCommand(parameter =>
                 {
-                    ThemeCreatorWindow window = new ThemeCreatorWindow() { Owner = Application.Current.MainWindow };
+                    ThemeEditorWindow window = new ThemeEditorWindow() { Owner = Application.Current.MainWindow };
                     if (window.ShowDialog() == true)
                         Config.Theme.RefreshThemes();
                 }));
@@ -255,7 +262,7 @@ namespace Hurricane.ViewModels
                     if (theme == null) return;
                     source.LoadFromFile(theme.Filename);
                     source.Name = Path.GetFileNameWithoutExtension(theme.Filename);
-                    ThemeCreatorWindow window = new ThemeCreatorWindow(source) { Owner = Application.Current.MainWindow };
+                    ThemeEditorWindow window = new ThemeEditorWindow(source) { Owner = Application.Current.MainWindow };
                     window.ShowDialog();
                     if (theme.Name == HurricaneSettings.Instance.Config.Theme.SelectedColorTheme.Name)
                     {

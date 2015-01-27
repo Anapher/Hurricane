@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
+using MahApps.Metro.Controls.Dialogs;
 
 namespace Hurricane.Music.Track.WebApi
 {
@@ -11,7 +12,7 @@ namespace Hurricane.Music.Track.WebApi
         string Uploader { get; }
         BitmapImage Thumbnail { get; }
         int TotalTracks { get; }
-        Task<List<PlayableBase>> GetTracks();
+        Task<List<PlayableBase>> GetTracks(ProgressDialogController controller);
         Task LoadImage();
         event EventHandler<LoadingTracksEventArgs> LoadingTracksProcessChanged;
     }

@@ -61,14 +61,14 @@ namespace Hurricane.Music.Track
             set { _artist = value; OnPropertyChanged("DisplayText"); }
         }
 
-        private bool _isplaying;
+        private bool _isOpened;
         [XmlIgnore]
-        public bool IsPlaying
+        public bool IsOpened
         {
-            get { return _isplaying; }
+            get { return _isOpened; }
             set
             {
-                SetProperty(value, ref _isplaying);
+                SetProperty(value, ref _isOpened);
             }
         }
 

@@ -38,7 +38,17 @@ namespace Hurricane.ViewModels
         }
 
         private MainWindow _baseWindow;
-        public HurricaneSettings MySettings { get; protected set; }
+
+        private HurricaneSettings _mySettings;
+        public HurricaneSettings MySettings
+        {
+            get { return _mySettings; }
+            protected set
+            {
+                SetProperty(value, ref _mySettings);
+            }
+        }
+
         private KeyboardListener _keyboardListener;
 
         public void Loaded(MainWindow window)
@@ -350,7 +360,7 @@ namespace Hurricane.ViewModels
                     {
                         foreach (var t in tracks)
                         {
-                            if (t.IsPlaying)
+                            if (t.IsOpened)
                             {
                                 MusicManager.CSCoreEngine.StopPlayback();
                                 MusicManager.CSCoreEngine.KickTrack();
@@ -558,7 +568,7 @@ namespace Hurricane.ViewModels
                                 newTrack.Album = track.Album;
                                 newTrack.Genres = track.Genres;
                                 MusicManager.SelectedPlaylist.Tracks[MusicManager.SelectedPlaylist.Tracks.IndexOf(track)] = newTrack;
-                                if (track.IsPlaying)
+                                if (track.IsOpened)
                                     MusicManager.PlayTrack(newTrack, MusicManager.SelectedPlaylist);
 
                                 await controller.CloseAsync();

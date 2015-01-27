@@ -42,7 +42,7 @@ namespace Hurricane.Music.Track.WebApi.YouTubeApi
                     Result = x,
                     Year = (uint)DateTime.Parse(x.published.Date).Year,
                     ImageUrl = x.MediaGroup.Thumbnails.First().url,
-                    Views = x.Statistics != null ? int.Parse(x.Statistics.viewCount) : 0,
+                    Views = x.Statistics != null ? uint.Parse(x.Statistics.viewCount) : 0,
                     Url = x.link.First().href
                 }).ToList();
 
@@ -98,7 +98,7 @@ namespace Hurricane.Music.Track.WebApi.YouTubeApi
                         Result = result.entry,
                         Year = (uint)DateTime.Parse(result.entry.published.Date).Year,
                         ImageUrl = result.entry.MediaGroup.Thumbnails.First().url,
-                        Views = result.entry.Statistics != null ? int.Parse(result.entry.Statistics.viewCount) : 0,
+                        Views = result.entry.Statistics != null ? uint.Parse(result.entry.Statistics.viewCount) : 0,
                         Url = result.entry.link.First().href
                     };
                 }
@@ -146,7 +146,7 @@ namespace Hurricane.Music.Track.WebApi.YouTubeApi
                     Result = x,
                     Year = (uint)DateTime.Parse(x.published.Date).Year,
                     ImageUrl = x.MediaGroup.Thumbnails.First().url,
-                    Views = x.Statistics != null ? int.Parse(x.Statistics.viewCount) : 0,
+                    Views = x.Statistics != null ? uint.Parse(x.Statistics.viewCount) : 0,
                     Url = x.link.First().href
                 }).Cast<WebTrackResultBase>().ToList();
             }

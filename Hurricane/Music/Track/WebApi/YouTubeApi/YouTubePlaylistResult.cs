@@ -5,6 +5,7 @@ using System.Net;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 using Hurricane.Music.Track.WebApi.YouTubeApi.DataClasses;
+using MahApps.Metro.Controls.Dialogs;
 using Newtonsoft.Json;
 
 namespace Hurricane.Music.Track.WebApi.YouTubeApi
@@ -45,7 +46,7 @@ namespace Hurricane.Music.Track.WebApi.YouTubeApi
                 get { return SearchTotalResults.Number; }
             }
 
-            public async Task<List<PlayableBase>> GetTracks()
+            public async Task<List<PlayableBase>> GetTracks(ProgressDialogController controller)
             {
                 var alltracks = SearchTotalResults.Number;
                 
@@ -61,6 +62,7 @@ namespace Hurricane.Music.Track.WebApi.YouTubeApi
                             LoadingTracksProcessChanged(this, new LoadingTracksEventArgs(counter + j, alltracks, track.Title));
                         if (await track.CheckIfAvailable())
                             resultList.Add(await track.ToPlayable());
+                        if (controller.IsCanceled) return null;
                     }
                     counter += 50;
                 }

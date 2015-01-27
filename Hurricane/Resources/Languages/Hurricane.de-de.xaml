@@ -217,7 +217,7 @@
     <system:String x:Key="Activated">Aktiviert</system:String>
     <system:String x:Key="Deactivated">Deaktiviert</system:String>
     
-    <system:String x:Key="ThemeCreator">Theme Ersteller</system:String>
+    <system:String x:Key="ThemeEditor">Theme Editor</system:String>
     <system:String x:Key="Name">Name</system:String>
     <system:String x:Key="LightColorDescription">Ein sehr heller (fast weißer) Farbton</system:String>
     <system:String x:Key="BrightColorDescription">Ein heller Farbton</system:String>
@@ -280,4 +280,7 @@
     <system:String x:Key="ExceptionConvertTrack">Es ist ein Fehler beim Downloaden des Tracks aufgetreten.</system:String>
     <system:String x:Key="ConvertToLocalTrack">Zu lokalem Track konvertieren</system:String>
     <system:String x:Key="Streams">Streams</system:String>
+    
+    <!-- 0.3.1 -->
+    <system:String x:Key="UseThinHeaders">Dünne Schriftstärke für das Hauptmenü verwenden</system:String>
 </ResourceDictionary>

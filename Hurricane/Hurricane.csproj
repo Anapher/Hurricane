@@ -153,6 +153,7 @@
     <Compile Include="Extensions\Converter\TimespanToMinutesSecounds.cs" />
     <Compile Include="Extensions\GridViewSort.cs" />
     <Compile Include="Extensions\ImageFromFont.cs" />
+    <Compile Include="Extensions\SliderExtensions.cs" />
     <Compile Include="Extensions\VectorMenuItem.cs" />
     <Compile Include="Extensions\ListViewLayoutManager\ConverterGridViewColumn.cs" />
     <Compile Include="Extensions\ListViewLayoutManager\FixedColumn.cs" />
@@ -281,6 +282,7 @@
     <Compile Include="Settings\Themes\ThemeBase.cs" />
     <Compile Include="Settings\Themes\ThemeSource.cs" />
     <Compile Include="Settings\UpdateService.cs" />
+    <Compile Include="Settings\UserSettingAttribute.cs" />
     <Compile Include="Utilities\ActiveWindowHook.cs" />
     <Compile Include="Utilities\GeneralHelper.cs" />
     <Compile Include="Utilities\Keyboard.cs" />
@@ -348,8 +350,8 @@
     <Compile Include="Views\Test\TestWindow.xaml.cs">
       <DependentUpon>TestWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\ThemeCreatorWindow.xaml.cs">
-      <DependentUpon>ThemeCreatorWindow.xaml</DependentUpon>
+    <Compile Include="Views\ThemeEditorWindow.xaml.cs">
+      <DependentUpon>ThemeEditorWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\TrackImportWindow.xaml.cs">
       <DependentUpon>TrackImportWindow.xaml</DependentUpon>
@@ -632,7 +634,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\ThemeCreatorWindow.xaml">
+    <Page Include="Views\ThemeEditorWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

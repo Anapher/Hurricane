@@ -236,7 +236,7 @@
                     </StackPanel>
                 </Grid>
                 <Grid Margin="0,8,0,5">
-                    <Slider Width="{Binding ElementName=BaseControlGrid,Path=ActualWidth}" VerticalAlignment="Bottom" HorizontalAlignment="Stretch" IsMoveToPointEnabled="True" Maximum="{Binding MusicManager.CSCoreEngine.TrackLength}" Value="{Binding MusicManager.CSCoreEngine.Position}">
+                    <Slider Width="{Binding ElementName=BaseControlGrid,Path=ActualWidth}" VerticalAlignment="Bottom" HorizontalAlignment="Stretch" IsMoveToPointEnabled="True" Maximum="{Binding MusicManager.CSCoreEngine.TrackLength}" Value="{Binding MusicManager.CSCoreEngine.Position}" ex:SliderExtensions.MoveToPointOnDrag="True">
                         <Slider.Resources>
                             <ResourceDictionary>
                                 <ResourceDictionary.MergedDictionaries>
@@ -383,13 +383,7 @@
                     <ListView.Resources>
                         <converter:TrueFalseValueConverter x:Key="boldifplaying" FalseValue="Normal" TrueValue="Bold"/>
                         <ContextMenu x:Key="FileContextMenu" DataContext="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}, Path=DataContext}">
-                            <MenuItem Header="{DynamicResource Play}" Command="{Binding MusicManager.Commands.PlaySelectedTrack}" IsEnabled="{Binding MusicManager.SelectedTrack.TrackExists}" InputGestureText="Enter">
-                                <MenuItem.Icon>
-                                    <Viewbox Stretch="Uniform" Width="16" Height="16">
-                                        <Path Fill="{StaticResource BlackBrush}" Data="{StaticResource VectorPlay}"/>
-                                    </Viewbox>
-                                </MenuItem.Icon>
-                            </MenuItem>
+                            <MenuItem Header="{DynamicResource Play}" Command="{Binding MusicManager.Commands.PlaySelectedTrack}" IsEnabled="{Binding MusicManager.SelectedTrack.TrackExists}" InputGestureText="Enter"/>
                             <Separator />
                             <MenuItem Header="{DynamicResource AddTracks}" IsEnabled="{Binding MusicManager.SelectedPlaylist.CanEdit}">
                                 <MenuItem Header="{DynamicResource AddFiles}" Command="{Binding AddFilesToPlaylist}" InputGestureText="{DynamicResource Ins}">
@@ -409,7 +403,7 @@
                             </MenuItem>
                             <Separator />
                             <MenuItem Header="{DynamicResource Queue}">
-                                <MenuItem Header="{DynamicResource AddToQueue}" Command="{Binding MusicManager.Commands.AddTracksToQueue}" CommandParameter="{Binding ElementName=listview,Path=SelectedItems}" InputGestureText="Q"/>
+                                <MenuItem Header="{DynamicResource AddToQueue}" Command="{Binding MusicManager.Commands.AddTracksToQueue}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=ListView},Path=SelectedItems}" InputGestureText="Q"/>
                                 <MenuItem Header="{DynamicResource RemoveFromQueue}" Command="{Binding MusicManager.Commands.RemoveFromQueue}" InputGestureText="Alt+Q"/>
                                 <MenuItem Header="{DynamicResource ClearQueue}" Command="{Binding MusicManager.Commands.ClearQueue}" IsEnabled="{Binding MusicManager.Queue.HasTracks}"/>
                                 <Separator />
@@ -417,26 +411,10 @@
                             </MenuItem>
                             <Separator />
                             <MenuItem Header="{DynamicResource TrackInformation}" Command="{Binding OpenTrackInformation}" IsEnabled="{Binding MusicManager.SelectedTrack.TrackExists}" InputGestureText="F4"/>
-                            <MenuItem Header="{DynamicResource TagEditor}" Command="{Binding OpenTagEditor}" IsEnabled="{Binding MusicManager.SelectedTrack.TrackExists}" InputGestureText="F3">
-                                <MenuItem.Icon>
-                                    <Viewbox Width="16" Height="16" Stretch="Uniform">
-                                        <Path Fill="{StaticResource BlackBrush}" Data="{StaticResource VectorEditor}"/>
-                                    </Viewbox>
-                                </MenuItem.Icon>
-                            </MenuItem>
-                            <MenuItem Header="{DynamicResource FileLocation}" Command="{Binding MusicManager.Commands.OpenTrackLocation}" InputGestureText="Alt+O" IsEnabled="{Binding MusicManager.SelectedTrack.TrackExists}">
-                                <MenuItem.Icon>
-                                    <Viewbox Stretch="Uniform" Width="16" Height="16">
-                                        <Path Fill="{StaticResource BlackBrush}" Data="{StaticResource VectorFolder}"></Path>
-                                    </Viewbox>
-                                </MenuItem.Icon>
-                            </MenuItem>
+                            <MenuItem Header="{DynamicResource TagEditor}" Command="{Binding OpenTagEditor}" IsEnabled="{Binding MusicManager.SelectedTrack.TrackExists}" InputGestureText="F3"/>
+                            <MenuItem Header="{DynamicResource FileLocation}" Command="{Binding MusicManager.Commands.OpenTrackLocation}" InputGestureText="Alt+O" IsEnabled="{Binding MusicManager.SelectedTrack.TrackExists}"/>
                             <Separator />
-                            <MenuItem Header="{DynamicResource Remove}" Command="{Binding RemoveSelectedTracks}" InputGestureText="{DynamicResource Del}">
-                                <MenuItem.Icon>
-                                    <Path Height="16" Width="16" Fill="{StaticResource BlackBrush}" Data="{StaticResource VectorRemove}"/>
-                                </MenuItem.Icon>
-                            </MenuItem>
+                            <MenuItem Header="{DynamicResource Remove}" Command="{Binding RemoveSelectedTracks}" CommandParameter="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}, Path=SelectedItems}" InputGestureText="{DynamicResource Del}"/>
                         </ContextMenu>
                         <ContextMenu x:Key="StreamContextMenu">
                             <MenuItem Header="{DynamicResource Play}" Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}, Path=DataContext.MusicManager.Commands.PlaySelectedTrack}" InputGestureText="Enter"/>
@@ -447,7 +425,7 @@
                             </MenuItem>
                             <Separator />
                             <MenuItem Header="{DynamicResource Queue}">
-                                <MenuItem Header="{DynamicResource AddToQueue}" Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}, Path=DataContext.MusicManager.Commands.AddTracksToQueue}" CommandParameter="{Binding ElementName=listview,Path=SelectedItems}" InputGestureText="Q"/>
+                                <MenuItem Header="{DynamicResource AddToQueue}" Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}, Path=DataContext.MusicManager.Commands.AddTracksToQueue}" CommandParameter="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}},Path=SelectedItems}" InputGestureText="Q"/>
                                 <MenuItem Header="{DynamicResource RemoveFromQueue}" Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}, Path=DataContext.MusicManager.Commands.RemoveFromQueue}" InputGestureText="Alt+Q"/>
                                 <MenuItem Header="{DynamicResource ClearQueue}" Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}, Path=DataContext.MusicManager.Commands.ClearQueue}" IsEnabled="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}, Path=DataContext.MusicManager.Queue.HasTracks}"/>
                                 <Separator />
@@ -457,7 +435,7 @@
                             <MenuItem Header="{DynamicResource TrackInformation}" Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}, Path=DataContext.OpenTrackInformation}" InputGestureText="F4"/>
                             <MenuItem Header="{DynamicResource OpenUrl}" Command="{Binding OpenLinkCommand}" InputGestureText="Alt+O"/>
                             <Separator />
-                            <MenuItem Header="{DynamicResource Remove}" Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}, Path=DataContext.RemoveSelectedTracks}" InputGestureText="{DynamicResource Del}"/>
+                            <MenuItem Header="{DynamicResource Remove}" Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}, Path=DataContext.RemoveSelectedTracks}" CommandParameter="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}, Path=SelectedItems}" InputGestureText="{DynamicResource Del}"/>
                         </ContextMenu>
                     </ListView.Resources>
                     <ListView.ItemContainerStyle>
@@ -513,7 +491,7 @@
                                 <Grid.Resources>
                                     <converter:TrueFalseValueConverter TrueValue="2" FalseValue="0" x:Key="TrueFalseValueConverter"/>
                                 </Grid.Resources>
-                                <Border BorderBrush="{StaticResource LightColorBrush}" BorderThickness="{Binding IsPlaying,Converter={StaticResource TrueFalseValueConverter}}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="-4">
+                                <Border BorderBrush="{StaticResource LightColorBrush}" BorderThickness="{Binding IsOpened,Converter={StaticResource TrueFalseValueConverter}}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="-4">
                                     <StackPanel Orientation="Vertical" Margin="3">
                                         <Grid>
                                             <Grid.ColumnDefinitions>
@@ -526,14 +504,14 @@
                                                 <TextBlock Text="{Binding QueueID}"/>
                                                 <TextBlock Text="]"/>
                                             </StackPanel>
-                                            <TextBlock Text="{Binding Title}" TextTrimming="CharacterEllipsis" FontWeight="{Binding IsPlaying,Converter={StaticResource boldifplaying}}" Grid.Column="1"/>
-                                            <TextBlock Text="{Binding Duration}" TextAlignment="Right" x:Name="txt2" FontWeight="{Binding IsPlaying,Converter={StaticResource boldifplaying}}" Grid.Column="2"/>
+                                            <TextBlock Text="{Binding Title}" TextTrimming="CharacterEllipsis" FontWeight="{Binding IsOpened,Converter={StaticResource boldifplaying}}" Grid.Column="1"/>
+                                            <TextBlock Text="{Binding Duration}" TextAlignment="Right" x:Name="txt2" FontWeight="{Binding IsOpened,Converter={StaticResource boldifplaying}}" Grid.Column="2"/>
                                         </Grid>
                                         <DockPanel LastChildFill="False">
                                             <DockPanel.Resources>
                                                 <Style TargetType="TextBlock">
                                                     <Setter Property="FontSize" Value="10"/>
-                                                    <Setter Property="FontWeight" Value="{Binding IsPlaying,Converter={StaticResource boldifplaying}}"/>
+                                                    <Setter Property="FontWeight" Value="{Binding IsOpened,Converter={StaticResource boldifplaying}}"/>
                                                 </Style>
                                                 <converter:TrueFalseValueConverter x:Key="TrueFalseValueConverter" FalseValue="#FFB4B4B4" TrueValue="White"/>
                                             </DockPanel.Resources>

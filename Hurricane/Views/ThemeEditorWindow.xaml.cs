@@ -10,9 +10,9 @@ namespace Hurricane.Views
     /// <summary>
     /// Interaction logic for ThemeCreatorWindow.xaml
     /// </summary>
-    public partial class ThemeCreatorWindow : MetroWindow
+    public partial class ThemeEditorWindow : MetroWindow
     {
-        public ThemeCreatorWindow(ThemeSource theme)
+        public ThemeEditorWindow(ThemeSource theme)
         {
             this.DataContext = theme;
             InitializeComponent();
@@ -21,7 +21,7 @@ namespace Hurricane.Views
             txtName.IsEnabled = false;
         }
 
-        public ThemeCreatorWindow()
+        public ThemeEditorWindow()
         {
             var theme = new ThemeSource();
             this.DataContext = theme;
