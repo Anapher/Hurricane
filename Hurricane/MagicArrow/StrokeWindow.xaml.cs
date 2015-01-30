@@ -8,11 +8,11 @@ namespace Hurricane.MagicArrow
     /// </summary>
     public partial class StrokeWindow : Window
     {
-        public StrokeWindow(double height, double left, Side side)
+        public StrokeWindow(double height, double left, double top, Side side)
         {
             InitializeComponent();
             this.StrokeWidth = 3;
-            this.Top = 0;
+            this.Top = top;
             this.SetLeft(left, side);
             this.Height = height;
             this.SetValue(RenderOptions.EdgeModeProperty, EdgeMode.Aliased);

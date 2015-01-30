@@ -41,6 +41,7 @@ namespace Hurricane.Music.Track
         public async Task<bool> CheckTrack()
         {
             TimeSpan duration = TimeSpan.Zero;
+            if (!TrackExists) return false;
             try
             {
                 await Task.Run(() =>
@@ -72,11 +73,10 @@ namespace Hurricane.Music.Track
         public async override Task<bool> LoadInformation()
         {
             _trackinformation = null; //to refresh the fileinfo
-            FileInfo file = TrackInformation;
             IsChecked = false;
-            Extension = file.Extension.ToUpper().Replace(".", string.Empty);
+            Extension = TrackInformation.Extension.ToUpper().Replace(".", string.Empty);
 
-            return await TryLoadWithTagLibSharp(file) || await TryLoadWithCSCore(file);
+            return await TryLoadWithTagLibSharp(TrackInformation) || await TryLoadWithCSCore(TrackInformation);
         }
 
         private async Task<bool> TryLoadWithTagLibSharp(FileInfo filename)

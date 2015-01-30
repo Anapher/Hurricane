@@ -35,9 +35,9 @@ namespace Hurricane.Settings.Themes
             }
         }
 
-        private ObservableCollection<ThemeBase> themes;
+        private static ObservableCollection<ThemeBase> themes;
         [XmlIgnore]
-        public ObservableCollection<ThemeBase> Themes
+        public static ObservableCollection<ThemeBase> Themes
         {
             get
             {
@@ -49,7 +49,7 @@ namespace Hurricane.Settings.Themes
             }
         }
 
-        public void RefreshThemes()
+        public static void RefreshThemes()
         {
             if (themes == null)
             {

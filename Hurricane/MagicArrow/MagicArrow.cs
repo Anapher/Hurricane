@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media.Animation;
+using Hurricane.MagicArrow.DockManager;
 using Hurricane.Settings;
 using Hurricane.Utilities;
 using Cursor = System.Windows.Forms.Cursor;
@@ -28,7 +29,7 @@ namespace Hurricane.MagicArrow
         #region Eventhandler
         void Application_Deactivated(object sender, EventArgs e)
         {
-            if (BaseWindow.ActualHeight == WpfScreen.GetScreenFrom(new Point(BaseWindow.Left, 0)).WorkingArea.Height && (BaseWindow.Left == 0 || BaseWindow.Left == maxwidth - 300) && BaseWindow.Top == 0)
+            if (DockManager.CurrentSide != DockingSide.None)//(BaseWindow.ActualHeight == WpfScreen.GetScreenFrom(new Point(BaseWindow.Left, 0)).WorkingArea.Height && (BaseWindow.Left == 0 || BaseWindow.Left == maxwidth - 300) && BaseWindow.Top == 0)
             {
                 //The window is at a good site
                 MoveWindowOutOfScreen(BaseWindow.Left == 0 ? Side.Left : Side.Right);
@@ -125,7 +126,8 @@ namespace Hurricane.MagicArrow
 
         protected void StartMagic()
         {
-            Strokewindow = _movedoutside == Side.Left ? new StrokeWindow(WpfScreen.GetScreenFrom(new Point(0, 0)).WorkingArea.Height, 0, _movedoutside) : new StrokeWindow(WpfScreen.GetScreenFrom(new Point(maxwidth, 0)).WorkingArea.Height, maxwidth, _movedoutside);
+            var screen = WpfScreen.GetScreenFrom(_movedoutside == Side.Left ? new Point(0, 0) : new Point(maxwidth, 0));
+            Strokewindow = new StrokeWindow(screen.WorkingArea.Height, _movedoutside == Side.Left ? 0 : maxwidth, screen.WorkingArea.Top, _movedoutside);
             Strokewindow.Show();
             Strokewindow.MouseMove += strokewindow_MouseMove;
             Strokewindow.MouseLeave += strokewindow_MouseLeave;
@@ -159,7 +161,8 @@ namespace Hurricane.MagicArrow
             {
                 IsInZone = true;
                 Point p = e.GetPosition(Strokewindow);
-                ShowMagicArrow(p.Y, _movedoutside);
+                var screen = WpfScreen.GetScreenFrom(p);
+                ShowMagicArrow(p.Y + screen.WorkingArea.Top, _movedoutside);
             }
             MouseWasOver = true;
         }
@@ -186,7 +189,7 @@ namespace Hurricane.MagicArrow
             MagicArrowIsShown = true;
             if (!HurricaneSettings.Instance.Config.ShowMagicArrowBelowCursor)
             {
-                if (top + 40 > SystemParameters.WorkArea.Height - 10)
+                if (top + 40 > WpfScreen.GetScreenFrom(_movedoutside == Side.Left ? new Point(0, 0) : new Point(maxwidth, 0)).WorkingArea.Height - 10)
                 {
                     top -= 40;
                 }

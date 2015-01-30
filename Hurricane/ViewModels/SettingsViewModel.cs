@@ -245,7 +245,7 @@ namespace Hurricane.ViewModels
                 {
                     ThemeEditorWindow window = new ThemeEditorWindow() { Owner = Application.Current.MainWindow };
                     if (window.ShowDialog() == true)
-                        Config.Theme.RefreshThemes();
+                        ApplicationThemeManager.RefreshThemes();
                 }));
             }
         }

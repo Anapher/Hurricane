@@ -19,6 +19,7 @@ If you click on it, Hurricane appears.
  - Modern design
  - Tag editor
  - Crossfade
+ - Support for streaming YouTube and SoundCloud
  - Automatic cover downloading
  - Equalizer
  - 23 Colorthemes (you can also create your own)

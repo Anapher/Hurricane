@@ -16,7 +16,7 @@ namespace Hurricane.DragDrop
         {
             if (((dropInfo.Data is PlayableBase || dropInfo.Data is IEnumerable<PlayableBase>) && dropInfo.TargetItem is IPlaylist && dropInfo.DragInfo.SourceCollection != MainViewModel.Instance.MusicManager.FavoritePlaylist.ViewSource))
             {
-                dropInfo.DropTargetAdorner = GongSolutions.Wpf.DragDrop.DropTargetAdorners.Highlight;
+                dropInfo.DropTargetAdorner = typeof (DropTargetHighlightAdorner);
                 dropInfo.Effects = DragDropEffects.Move;
             }
             else if (dropInfo.Data is NormalPlaylist)

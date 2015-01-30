@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -20,6 +19,7 @@ using Hurricane.ViewModelBase;
 using Hurricane.Views;
 using MahApps.Metro.Controls.Dialogs;
 using Microsoft.Win32;
+using WPFFolderBrowser;
 using QueueManager = Hurricane.Views.QueueManagerWindow;
 
 namespace Hurricane.ViewModels
@@ -551,7 +551,7 @@ namespace Hurricane.ViewModels
                         var controller = await _baseWindow.ShowProgressAsync(Application.Current.Resources["Download"].ToString(), MusicManager.SelectedTrack.Title);
                         if (await
                             DownloadManager.DownloadTrack(track, sfd.FileName,
-                                (d) =>
+                                d =>
                                 {
                                     controller.SetProgress(d / 100);
                                 }))
@@ -588,6 +588,63 @@ namespace Hurricane.ViewModels
                             await _baseWindow.ShowMessage(Application.Current.Resources["ExceptionConvertTrack"].ToString(), Application.Current.Resources["Exception"].ToString(), false, DialogMode.Single);
                         }
                     }
+                }));
+            }
+        }
+
+        private RelayCommand _downloadAllStreams;
+        public RelayCommand DownloadAllStreams
+        {
+            get
+            {
+                return _downloadAllStreams ?? (_downloadAllStreams = new RelayCommand(async parameter =>
+                {
+                    if (MusicManager.FavoriteListIsSelected) return;
+                    var lst = MusicManager.SelectedPlaylist.Tracks.OfType<StreamableBase>().Where(x => x.CanDownload).ToList();
+                    if (!lst.Any()) return;
+                    var fdb = new WPFFolderBrowserDialog
+                    {
+                        InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyMusic),
+                        Title = MusicManager.SelectedPlaylist.Name
+                    };
+
+                    if (fdb.ShowDialog() != true) return;
+                    var controller = await _baseWindow.ShowProgressAsync(Application.Current.Resources["Download"].ToString(), "", true);
+                    foreach (var track in lst)
+                    {
+                        if (controller.IsCanceled)
+                        {
+                            await controller.CloseAsync();
+                            return;
+                        }
+                        controller.SetMessage(track.Title);
+                        var downloadFile = new FileInfo(Path.Combine(fdb.FileName, track.DownloadFilename));
+                        if (downloadFile.Exists) continue;
+                        if (await
+                            DownloadManager.DownloadTrack(track, downloadFile.FullName,
+                                d =>
+                                {
+                                    controller.SetProgress(lst.IndexOf(track) / (double)lst.Count + 1 / (double)lst.Count / 100 * d);
+                                }))
+                        {
+                            if (MySettings.Config.Downloader.AddTagsToDownloads)
+                                await DownloadManager.AddTags(track, downloadFile.FullName);
+                            var newTrack = new LocalTrack { Path = downloadFile.FullName };
+                            if (await newTrack.LoadInformation())
+                            {
+                                newTrack.TimeAdded = track.TimeAdded;
+                                newTrack.Artist = track.Artist;
+                                newTrack.Year = track.Year;
+                                newTrack.Title = track.Title;
+                                newTrack.Album = track.Album;
+                                newTrack.Genres = track.Genres;
+                                MusicManager.SelectedPlaylist.Tracks[MusicManager.SelectedPlaylist.Tracks.IndexOf(track)] = newTrack;
+                            }
+                        }
+                    }
+                    MusicManager.SaveToSettings();
+                    HurricaneSettings.Instance.Save();
+                    await controller.CloseAsync();
                 }));
             }
         }

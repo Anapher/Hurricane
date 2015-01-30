@@ -20,6 +20,7 @@ namespace Hurricane.Notification.Views
             this.Width = SystemParameters.WorkArea.Width;
             this.MouseMove += NotificationTopWindow_MouseMove;
             this.Closing += NotificationTopWindow_Closing;
+            this.Top = SystemParameters.WorkArea.Top;
             Thread t = new Thread(() =>
             {
                 Thread.Sleep(timestayopened);

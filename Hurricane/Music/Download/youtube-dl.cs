@@ -127,7 +127,6 @@ namespace Hurricane.Music.Download
                 {
                     var line = await p.StandardOutput.ReadLineAsync();
                     if (string.IsNullOrEmpty(line)) continue;
-                    if (line.StartsWith("ERROR:")) return false;
                     var match = regex.Match(line);
                     if (match.Success)
                     {
@@ -135,7 +134,7 @@ namespace Hurricane.Music.Download
                         progressChangedAction.Invoke(doub);
                     }
                 }
-                return true;
+                return File.Exists(fileName);
             }
         }
     }

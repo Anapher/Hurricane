@@ -263,4 +263,5 @@
     
     <!-- 0.3.1 -->
     <system:String x:Key="UseThinHeaders">Use thin font weight for headers</system:String>
+    <system:String x:Key="DownloadAllStreams">Download all streams</system:String>
 </ResourceDictionary>

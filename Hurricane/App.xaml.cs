@@ -132,12 +132,14 @@ namespace Hurricane
             OnExceptionOccurred((Exception)e.ExceptionObject);
         }
 
-        bool _isHandled = false;
+        bool _isHandled;
         protected void OnExceptionOccurred(Exception ex)
         {
             if (!_isHandled)
             {
                 _isHandled = true;
+                if (MainViewModel.Instance.MusicManager != null && MainViewModel.Instance.MusicManager.CSCoreEngine.IsPlaying)
+                    MainViewModel.Instance.MusicManager.CSCoreEngine.StopPlayback();
                 ReportExceptionWindow window = new ReportExceptionWindow(ex);
                 window.ShowDialog();
             }

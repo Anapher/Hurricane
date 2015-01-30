@@ -14,6 +14,7 @@ namespace Hurricane.Music.Playlist
         string Name { get; set; }
         bool CanEdit { get; }
         bool ContainsMissingTracks { get; }
+        bool ContainsDownloadableStreams { get; }
 
         PlayableBase GetRandomTrack(PlayableBase currentTrack);
 

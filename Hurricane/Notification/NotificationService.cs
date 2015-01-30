@@ -51,7 +51,7 @@ namespace Hurricane.Notification
                 case NotificationType.RightBottom:
                     messagewindow = new NotificationRightBottomWindow(track, timetostayopen);
                     break;
-                    default:
+                default:
                     return;
             }
             messagewindow.Show();

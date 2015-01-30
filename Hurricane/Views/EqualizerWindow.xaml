@@ -3,6 +3,6 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
         xmlns:UserControls="clr-namespace:Hurricane.Views.UserControls"
-        Title="Equalizer" Height="200" SizeToContent="Width" Width="300" Top="20" ShowInTaskbar="False" ShowTitleBar="False" ShowCloseButton="False" ShowMinButton="False" ShowMaxRestoreButton="False" ShowIconOnTitleBar="False" GlowBrush="{StaticResource AccentColorBrush}" ResizeMode="NoResize">
+        Title="Equalizer" Height="200" SizeToContent="Width" Width="300" Top="20" IsWindowDraggable="False" ShowInTaskbar="False" ShowTitleBar="False" ShowCloseButton="False" ShowMinButton="False" ShowMaxRestoreButton="False" ShowIconOnTitleBar="False" GlowBrush="{StaticResource AccentColorBrush}" ResizeMode="NoResize">
     <UserControls:EqualizerView WantClose="EqualizerView_OnWantClose" ItemSpace="5"/>
 </controls:MetroWindow>

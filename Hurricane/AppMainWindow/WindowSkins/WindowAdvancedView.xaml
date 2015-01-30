@@ -87,6 +87,8 @@
                             <MenuItem Header="{DynamicResource AddFiles}" Command="{Binding AddFilesToPlaylist}" IsEnabled="{Binding MusicManager.SelectedPlaylist.CanEdit}"/>
                             <MenuItem Header="{DynamicResource AddDirectories}" Command="{Binding AddFolderToPlaylist}" IsEnabled="{Binding MusicManager.SelectedPlaylist.CanEdit}"/>
                             <Separator />
+                            <MenuItem Header="{DynamicResource DownloadAllStreams}" Command="{Binding DownloadAllStreams}" IsEnabled="{Binding MusicManager.SelectedPlaylist.ContainsDownloadableStreams}"/>
+                            <Separator />
                             <MenuItem Header="{DynamicResource ReloadTrackInfo}" Command="{Binding ReloadTrackInformation}" IsEnabled="{Binding MusicManager.SelectedPlaylist.CanEdit}"/>
                             <MenuItem Header="{DynamicResource RemoveTracks}" IsEnabled="{Binding MusicManager.SelectedPlaylist.CanEdit}">
                                 <MenuItem Header="{DynamicResource RemoveMissingTracks}" Command="{Binding RemoveMissingTracks}" IsEnabled="{Binding MusicManager.SelectedPlaylist.ContainsMissingTracks}"/>

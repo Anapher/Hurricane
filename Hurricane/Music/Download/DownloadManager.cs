@@ -10,7 +10,6 @@ using Hurricane.Music.Track;
 using Hurricane.Settings;
 using Hurricane.ViewModelBase;
 using TagLib;
-using TagLib.Flac;
 
 namespace Hurricane.Music.Download
 {
@@ -93,28 +92,34 @@ namespace Hurricane.Music.Download
         {
             var filePath = new FileInfo(path);
             if (!filePath.Exists) return;
-            using (var file = TagLib.File.Create(filePath.FullName))
+            try
             {
-                file.Tag.Album = information.Album;
-                file.Tag.Performers = new[] {information.Artist};
-                file.Tag.Year = information.Year;
-                if (information.Genres != null)
-                    file.Tag.Genres = information.Genres.Split(new[] {", "}, StringSplitOptions.None);
-                file.Tag.Title = information.Title;
-                var image = await information.GetImage();
-                if (image != null)
+                using (var file = TagLib.File.Create(filePath.FullName))
                 {
-                    byte[] data;
-                    JpegBitmapEncoder encoder = new JpegBitmapEncoder();
-                    encoder.Frames.Add(BitmapFrame.Create(image));
-                    using (MemoryStream ms = new MemoryStream())
+                    file.Tag.Album = information.Album;
+                    file.Tag.Performers = new[] { information.Artist };
+                    file.Tag.Year = information.Year;
+                    if (information.Genres != null)
+                        file.Tag.Genres = information.Genres.Split(new[] { ", " }, StringSplitOptions.None);
+                    file.Tag.Title = information.Title;
+                    var image = await information.GetImage();
+                    if (image != null)
                     {
-                        encoder.Save(ms);
-                        data = ms.ToArray();
+                        byte[] data;
+                        JpegBitmapEncoder encoder = new JpegBitmapEncoder();
+                        encoder.Frames.Add(BitmapFrame.Create(image));
+                        using (MemoryStream ms = new MemoryStream())
+                        {
+                            encoder.Save(ms);
+                            data = ms.ToArray();
+                        }
+                        file.Tag.Pictures = new IPicture[] { new TagLib.Picture(new ByteVector(data, data.Length)) };
                     }
-                    file.Tag.Pictures = new IPicture[] {new TagLib.Picture(new ByteVector(data, data.Length))};
+                    await Task.Run(() => file.Save());
                 }
-                await Task.Run(() => file.Save());
+            }
+            catch (CorruptFileException)
+            {
             }
         }
 

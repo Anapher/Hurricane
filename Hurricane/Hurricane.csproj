@@ -132,7 +132,6 @@
     <Compile Include="AppMainWindow\Messages\MessageDialog.cs" />
     <Compile Include="AppMainWindow\Messages\MessageManager.cs" />
     <Compile Include="AppMainWindow\Messages\ProgressDialog.cs" />
-    <Compile Include="DragDrop\DropTargetAdorners\DropTargetHighlightAdorner.cs" />
     <Compile Include="DragDrop\DropTargetAdorners\DropTargetInsertionAdorner.cs" />
     <Compile Include="DragDrop\PlaylistListDropHandler.cs" />
     <Compile Include="DragDrop\TrackListDropHandler.cs" />
@@ -733,6 +732,9 @@
     <Resource Include="Resources\Languages\Icons\fi.png" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="ffmpeg.exe">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="youtube-dl.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

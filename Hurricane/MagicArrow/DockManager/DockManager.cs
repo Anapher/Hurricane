@@ -181,7 +181,7 @@ namespace Hurricane.MagicArrow.DockManager
                     throw new ArgumentOutOfRangeException("side");
             }
 
-            window = new DockRangeWindow(0, dockwindowLeft, screen.WorkingArea.Height, dockwindowWidth);
+            window = new DockRangeWindow(screen.WorkingArea.Top, dockwindowLeft, screen.WorkingArea.Height, dockwindowWidth);
             window.Show();
         }
         #endregion
@@ -219,9 +219,10 @@ namespace Hurricane.MagicArrow.DockManager
         {
             if (CurrentSide == DockingSide.Left || CurrentSide == DockingSide.Right)
             {
-                basewindow.Top = 0;
                 basewindow.Left = CurrentSide == DockingSide.Left ? 0 : WpfScreen.AllScreensWidth - 300;
-                WindowHeight = WpfScreen.GetScreenFrom(new Point(basewindow.Left, 0)).WorkingArea.Height;
+                var screen = WpfScreen.GetScreenFrom(new Point(basewindow.Left, 0));
+                basewindow.Top = screen.WorkingArea.Top;
+                WindowHeight = screen.WorkingArea.Height;
             }
         }
 

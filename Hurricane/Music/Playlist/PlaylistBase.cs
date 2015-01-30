@@ -132,9 +132,15 @@ namespace Hurricane.Music.Playlist
 
         #endregion
 
-        public abstract void AddTrack(PlayableBase track);
+        public virtual void AddTrack(PlayableBase track)
+        {
+            OnTrackListChanged();
+        }
 
-        public abstract void RemoveTrack(PlayableBase track);
+        public virtual void RemoveTrack(PlayableBase track)
+        {
+            OnTrackListChanged();
+        }
 
         public abstract string Name { get; set; }
 
@@ -164,7 +170,6 @@ namespace Hurricane.Music.Playlist
 
         public abstract bool CanEdit { get; }
 
-
         public bool ContainsMissingTracks
         {
             get { return Tracks.Any(t => !t.TrackExists); }
@@ -177,12 +182,23 @@ namespace Hurricane.Music.Playlist
                 PlayableBase t = Tracks[i];
                 if (!t.TrackExists) RemoveTrack(t);
             }
+            OnTrackListChanged();
+        }
+
+        protected void OnTrackListChanged()
+        {
             OnPropertyChanged("ContainsMissingTracks");
+            OnPropertyChanged("ContainsStreams");
         }
 
         public override string ToString()
         {
             return Name;
+        }
+
+        public bool ContainsDownloadableStreams
+        {
+            get { return Tracks.OfType<StreamableBase>().Any(x => x.CanDownload); }
         }
     }
 }
