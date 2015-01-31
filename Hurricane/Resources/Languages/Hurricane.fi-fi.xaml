@@ -162,7 +162,7 @@
     <system:String x:Key="EnableAdvancedView">Aktivoi tarkennettu näkymä</system:String>
     <system:String x:Key="Test">Testi</system:String>
     <system:String x:Key="ShowTime">näyttöajan:</system:String>
-    <system:String x:Key="Bitrate">bitrate:</system:String>
+    <system:String x:Key="Bitrate">bitrate</system:String>
     <system:String x:Key="Remember">muistaa</system:String>
     <system:String x:Key="AlsoAfterRestart">jopa uudelleenkäynnistyksen jälkeen</system:String>
     <system:String x:Key="CanBeResetedInSettings">Voi olla asetukset nollataan</system:String>

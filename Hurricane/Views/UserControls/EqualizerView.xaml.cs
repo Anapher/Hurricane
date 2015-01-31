@@ -12,6 +12,7 @@ namespace Hurricane.Views.UserControls
     {
         public event EventHandler WantClose;
         public Thickness SliderThickness { get; set; }
+        public bool ShowLabelBelowSlider { get; set; }
 
         private int _itemSpace;
         public int ItemSpace
@@ -28,6 +29,15 @@ namespace Hurricane.Views.UserControls
             }
         }
 
+        public static readonly DependencyProperty WantCloseCommandProperty = DependencyProperty.Register(
+            "WantCloseCommand", typeof (ICommand), typeof (EqualizerView), new PropertyMetadata(default(ICommand)));
+
+        public ICommand WantCloseCommand
+        {
+            get { return (ICommand) GetValue(WantCloseCommandProperty); }
+            set { SetValue(WantCloseCommandProperty, value); }
+        }
+
         public EqualizerView()
         {
             InitializeComponent();
@@ -41,6 +51,7 @@ namespace Hurricane.Views.UserControls
         protected void OnWantClose()
         {
             if (WantClose != null) WantClose(this, EventArgs.Empty);
+            if (WantCloseCommand != null) WantCloseCommand.Execute(null);
         }
 
         protected override void OnKeyDown(KeyEventArgs e)

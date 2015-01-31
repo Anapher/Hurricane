@@ -58,7 +58,7 @@ namespace Hurricane
             MagicArrow.DockManager.Docked += (s, e) => { ApplyHostWindow(SmartWindowSkin); };
             MagicArrow.DockManager.Undocked += (s, e) =>
             {
-                if (HurricaneSettings.Instance.Config.EnableAdvancedView) ApplyHostWindow(AdvancedWindowSkin);
+                ApplyHostWindow(AdvancedWindowSkin);
             };
 
             var appsettings = HurricaneSettings.Instance.Config;
@@ -100,7 +100,7 @@ namespace Hurricane
             try
             {
                 MagicArrow.DockManager.ApplyCurrentSide();
-                if (MagicArrow.DockManager.CurrentSide == DockingSide.None && HurricaneSettings.Instance.Config.EnableAdvancedView)
+                if (MagicArrow.DockManager.CurrentSide == DockingSide.None)
                 {
                     ApplyHostWindow(AdvancedWindowSkin, false);
                 }
@@ -418,14 +418,15 @@ namespace Hurricane
         EqualizerWindow _equalizerWindow;
         private bool _equalizerIsOpen;
 
-        public async Task ShowEqualizer()
+        public void ShowEqualizer()
         {
             if (HostedWindow.Configuration.ShowFullscreenDialogs)
             {
-                var dialog = new EqualizerDialog(this, new MetroDialogSettings() { ColorScheme = GetTheme() });
+                /*var dialog = new EqualizerDialog(this, new MetroDialogSettings() { ColorScheme = GetTheme() });
                 await this.ShowMetroDialogAsync(dialog);
                 await dialog.WaitForCloseAsync();
-                await this.HideMetroDialogAsync(dialog);
+                await this.HideMetroDialogAsync(dialog);*/
+                HurricaneSettings.Instance.Config.EqualizerIsOpen = !HurricaneSettings.Instance.Config.EqualizerIsOpen;
             }
             else
             {

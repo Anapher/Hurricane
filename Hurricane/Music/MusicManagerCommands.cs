@@ -116,7 +116,7 @@ namespace Hurricane.Music
                 return _addtrackstoqueue ?? (_addtrackstoqueue = new RelayCommand(parameter =>
                 {
                     if (parameter == null) return;
-                    var tracks = ((IList)parameter).Cast<PlayableBase>().ToList();
+                    var tracks = ((IList)parameter).Cast<PlayableBase>().Where(x => x.TrackExists).ToList();
                     foreach (var track in tracks.Where(x => !x.IsOpened))
                     {
                         Musicmanager.Queue.AddTrack(track, Musicmanager.SelectedPlaylist);

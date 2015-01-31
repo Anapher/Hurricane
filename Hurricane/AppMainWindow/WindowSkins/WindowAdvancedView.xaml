@@ -2,7 +2,7 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:viewmodels="clr-namespace:Hurricane.ViewModels"
              xmlns:converter="clr-namespace:Hurricane.Extensions.Converter"
              xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
@@ -133,10 +133,10 @@
                     <Rectangle Grid.Column="1" Width="1" Fill="Gray" Grid.Row="1"/>
                     <Grid Grid.Column="2" Margin="5" x:Name="gridplaylist" Grid.Row="1">
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="auto"/>
                             <RowDefinition Height="*"/>
+                            <RowDefinition Height="auto"/>
                         </Grid.RowDefinitions>
-                        <Grid Margin="5,0,5,0" Grid.Row="1">
+                        <Grid>
                             <extensions:AnimatedListView SelectionMode="Extended" ItemsSource="{Binding MusicManager.SelectedPlaylist.ViewSource}" SelectedItem="{Binding MusicManager.SelectedTrack}" BorderThickness="0" SelectionChanged="ListView_SelectionChanged"
                                   DragEnter="ListView_DragEnter" Drop="ListView_Drop" x:Name="listview" ctrl:ListViewLayoutManager.Enabled="True" Style="{StaticResource VisualizingListView}" dd:DragDrop.IsDragSource="True" dd:DragDrop.IsDropTarget="True" dd:DragDrop.DragAdornerTemplate="{StaticResource DragAdornerTrack}" dd:DragDrop.DropHandler="{Binding TrackListDropHandler}">
                                 <ListView.Resources>
@@ -148,7 +148,7 @@
                                             <MenuItem Header="{DynamicResource AddDirectories}" Command="{Binding AddFolderToPlaylist}" InputGestureText="{DynamicResource CtrlIns}"/>
                                         </MenuItem>
                                         <Separator />
-                                        <MenuItem Header="{DynamicResource Queue}">
+                                        <MenuItem Header="{DynamicResource Queue}" IsEnabled="{Binding MusicManager.SelectedTrack.TrackExists}">
                                             <MenuItem Header="{DynamicResource AddToQueue}" Command="{Binding MusicManager.Commands.AddTracksToQueue}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=extensions:AnimatedListView},Path=SelectedItems}" InputGestureText="Q"/>
                                             <MenuItem Header="{DynamicResource RemoveFromQueue}" Command="{Binding MusicManager.Commands.RemoveFromQueue}" InputGestureText="Alt+Q"/>
                                             <MenuItem Header="{DynamicResource ClearQueue}" Command="{Binding MusicManager.Commands.ClearQueue}" IsEnabled="{Binding MusicManager.Queue.HasTracks}"/>
@@ -248,7 +248,7 @@
                                                 <Setter Property="ContextMenu" Value="{StaticResource StreamContextMenu}"/>
                                             </DataTrigger>
                                             <DataTrigger Binding="{Binding TrackExists}" Value="False">
-                                                <Setter Property="Background" Value="#FFF2F2F2"/>
+                                                <Setter Property="Background" Value="{StaticResource GrayBrush8}"/>
                                             </DataTrigger>
                                             <DataTrigger Binding="{Binding IsRemoving}" Value="True">
                                                 <DataTrigger.EnterActions>
@@ -393,6 +393,35 @@
                             </extensions:AnimatedListView>
                             <TextBlock extensions:AnimatedFrameworkElement.AnimationTrigger="{Binding MusicManager.SelectedPlaylist}" Visibility="{Binding MusicManager.SelectedPlaylist.ViewSource.IsEmpty,Converter={StaticResource BooleanToVisibilityConverter}}" Text="{DynamicResource NoTracksFound}" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="16" FontWeight="Light"/>
                         </Grid>
+                        <userControls:EqualizerView Grid.Row="1" SliderThickness="10" ShowLabelBelowSlider="True" WantCloseCommand="{Binding CloseEqualizer}">
+                            <userControls:EqualizerView.Style>
+                                <Style TargetType="userControls:EqualizerView">
+                                    <Setter Property="Height" Value="200"/>
+                                    <Setter Property="Opacity" Value="0"/>
+                                    <Setter Property="Margin" Value="0,0,0,-200"></Setter>
+                                   <Style.Triggers>
+                                        <DataTrigger Binding="{Binding MySettings.Config.EqualizerIsOpen}" Value="true">
+                                            <DataTrigger.EnterActions>
+                                                <BeginStoryboard>
+                                                    <Storyboard>
+                                                        <ThicknessAnimation To="0" Duration="0:0:0.3" Storyboard.TargetProperty="Margin"/>
+                                                        <DoubleAnimation To="1" Duration="0:0:0.2" Storyboard.TargetProperty="Opacity"/>
+                                                    </Storyboard>
+                                               </BeginStoryboard>
+                                           </DataTrigger.EnterActions>
+                                           <DataTrigger.ExitActions>
+                                               <BeginStoryboard>
+                                                   <Storyboard>
+                                                        <ThicknessAnimation To="0,0,0,-200" Duration="0:0:0.3" Storyboard.TargetProperty="Margin"/>
+                                                        <DoubleAnimation To="0" Duration="0:0:0.2" Storyboard.TargetProperty="Opacity"/>
+                                                    </Storyboard>
+                                               </BeginStoryboard>
+                                           </DataTrigger.ExitActions>
+                                       </DataTrigger>
+                                   </Style.Triggers>
+                                </Style>
+                            </userControls:EqualizerView.Style>
+                        </userControls:EqualizerView>
                     </Grid>
                     
                     <Grid Grid.Column="3" Grid.Row="1" x:Name="girdcover" Visibility="{Binding MusicManager.CSCoreEngine.CurrentTrack,Converter={StaticResource CollapsedOnNullValue}}">

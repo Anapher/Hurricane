@@ -18,25 +18,25 @@ namespace Hurricane.Settings.Themes
                 new ThemeColor()
                 {
                     Description = GetResource("LightColorDescription"),
-                    RegexPattern = "x:Key=\"LightColorBrush\" Color=\"(?<color>(.*?))\"",
+                    RegexPattern = "x:Key=\"LightColor\">(?<color>(.*?))<",
                     Name = "LightColor"
                 },
                 new ThemeColor()
                 {
                     Description = GetResource("BrightColorDescription"),
-                    RegexPattern = "x:Key=\"BrightColorBrush\" Color=\"(?<color>(.*?))\"",
+                    RegexPattern = "x:Key=\"BrightColor\">(?<color>(.*?))<",
                     Name = "BrightColor"
                 },
                 new ThemeColor()
                 {
                     Description = GetResource("NormalColorDescription"),
-                    RegexPattern = "x:Key=\"NormalColorBrush\" Color=\"(?<color>(.*?))\"",
+                    RegexPattern = "x:Key=\"NormalColor\">(?<color>(.*?))<",
                     Name = "NormalColor"
                 },
                 new ThemeColor()
                 {
                     Description = GetResource("DarkColorDescription"),
-                    RegexPattern = "x:Key=\"DarkColorBrush\" Color=\"(?<color>(.*?))\"",
+                    RegexPattern = "x:Key=\"DarkColor\">(?<color>(.*?))<",
                     Name = "DarkColor"
                 },
                 new ThemeColor()

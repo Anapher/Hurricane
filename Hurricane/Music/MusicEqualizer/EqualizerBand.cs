@@ -2,7 +2,7 @@
 using System.Xml.Serialization;
 using Hurricane.ViewModelBase;
 
-namespace Hurricane.Music
+namespace Hurricane.Music.MusicEqualizer
 {
     [Serializable]
   public  class EqualizerBand : PropertyChangedBase

@@ -7,17 +7,16 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Xml.Serialization;
 
-namespace Hurricane.Utilities
+namespace Hurricane.Settings.MirrorManagement
 {
     public class PropertiesCopier
     {
-        public static void CopyProperties(object source, object destination, IList<String> propertiesToOmmit)
+        public static void CopyProperties(object source, object destination)
         {
-            CopyPropertiesRecursive(source, destination, propertiesToOmmit);
+            CopyPropertiesRecursive(source, destination);
         }
 
-        private static void CopyPropertiesRecursive(object source, object destination,
-            IList<String> propertiesToOmmit)
+        private static void CopyPropertiesRecursive(object source, object destination)
         {
             var destinationType = destination.GetType();
 
@@ -28,19 +27,12 @@ namespace Hurricane.Utilities
 
             var destinationProperties = destinationType.GetProperties();
 
-            //for a type coming from a serialized web service type
-            if (propertiesToOmmit == null)
-                propertiesToOmmit = new List<string> { "ExtensionData" };
-
-            destinationProperties = Array.FindAll(destinationProperties, pi => !propertiesToOmmit.Contains(pi.Name));
-
             foreach (var property in destinationProperties)
             {
                 var propertyType = property.PropertyType;
-                if (Attribute.IsDefined(property, typeof(XmlIgnoreAttribute))) continue;
-                if (!property.CanWrite) continue;
+                if (!Attribute.IsDefined(property, typeof(CopyablePropertyAttribute))) continue;
+                var copyablePropertyAttribute = property.GetCustomAttributes(true).OfType<CopyablePropertyAttribute>().First();
 
-                //todo can cache this as: static readonly Dictionary<Type,object> cache. how about multithreading?
                 var sourceValue = propertyType.IsValueType ? Activator.CreateInstance(propertyType) : null;
 
                 PropertyInfo propertyInSource = null;
@@ -57,18 +49,12 @@ namespace Hurricane.Utilities
                     }
                 }
 
-
-                //it's a complex/container type?
-                var isComplex = !propertyType.ToString().StartsWith("System") && !propertyType.IsEnum;
-
-                if (isComplex & !propertyType.IsArray)
+                if (copyablePropertyAttribute.CopyContainingProperties)
                 {
                     var newDestination = destinationType.GetProperty(property.Name).GetValue(destination, null);
-                    CopyPropertiesRecursive(sourceValue, newDestination, propertiesToOmmit);
+                    CopyPropertiesRecursive(sourceValue, newDestination);
                     continue;
                 }
-
-                //todo check for CanWrite and CanRead - if (!toField.CanWrite) continue;
 
                 if (propertyType.IsArray & propertyInSource != null)
                     sourceValue = DeepCopyArray(propertyInSource.PropertyType, propertyType, sourceValue, source, destination);

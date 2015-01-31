@@ -39,7 +39,7 @@ namespace Hurricane.Music
             havetocheck = false;
             foreach (var p in PlaylistsToCheck.ToList())
             {
-                foreach (var track in p.Tracks.OfType<LocalTrack>())
+                foreach (var track in p.Tracks.OfType<LocalTrack>().Where(x => x.TrackExists))
                 {
                     if(track.IsChecked == false && !await track.CheckTrack()) p.RemoveTrack(track);
                 }

@@ -4,14 +4,14 @@ using System.Collections.ObjectModel;
 using Hurricane.Music.MusicDatabase.EventArgs;
 using Hurricane.ViewModelBase;
 
-namespace Hurricane.Music
+namespace Hurricane.Music.MusicEqualizer
 {
     [Serializable]
     public class EqualizerSettings : PropertyChangedBase
     {
         public event EventHandler<EqualizerChangedEventArgs> EqualizerChanged;
 
-        protected List<string> bandlabels = new List<string>(new string[] { "31Hz", "62Hz", "125Hz", "250Hz", "500Hz", "1KHz", "2KHz", "4KHz", "8KHz", "16KHz" });
+        protected List<string> bandlabels = new List<string>(new string[] { "31", "62", "125", "250", "500", "1K", "2K", "4K", "8K", "16K" });
 
         public void CreateNew()
         {

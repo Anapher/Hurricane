@@ -64,9 +64,12 @@ namespace Hurricane.Properties {
         ///   Sucht eine lokalisierte Zeichenfolge, die &lt;ResourceDictionary xmlns=&quot;http://schemas.microsoft.com/winfx/2006/xaml/presentation&quot;
         ///                    xmlns:x=&quot;http://schemas.microsoft.com/winfx/2006/xaml&quot; xmlns:system=&quot;clr-namespace:System;assembly=mscorlib&quot; xmlns:options=&quot;http://schemas.microsoft.com/winfx/2006/xaml/presentation/options&quot;&gt;
         ///
-        ///    &lt;SolidColorBrush x:Key=&quot;LightColorBrush&quot; Color=&quot;{LightColor}&quot; options:Freeze=&quot;True&quot;/&gt;
-        ///    &lt;SolidColorBrush x:Key=&quot;BrightColorBrush&quot; Color=&quot;{BrightColor}&quot; options:Freeze=&quot;True&quot;/&gt;
-        ///    &lt;SolidColorBrush x:Key [Rest der Zeichenfolge wurde abgeschnitten]&quot;; ähnelt.
+        ///	&lt;Color x:Key=&quot;LightColor&quot;&gt;{LightColor}&lt;/Color&gt;
+        ///    &lt;Color x:Key=&quot;BrightColor&quot;&gt;{BrightColor}&lt;/Color&gt;
+        ///    &lt;Color x:Key=&quot;NormalColor&quot;&gt;{NormalColor}&lt;/Color&gt;
+        ///    &lt;Color x:Key=&quot;DarkColor&quot;&gt;{DarkColor}&lt;/Color&gt;
+        ///
+        ///  [Rest der Zeichenfolge wurde abgeschnitten]&quot;; ähnelt.
         /// </summary>
         internal static string ColorTheme {
             get {

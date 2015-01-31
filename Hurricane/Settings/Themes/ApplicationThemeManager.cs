@@ -5,6 +5,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Media;
 using System.Xml.Serialization;
+using Hurricane.Settings.MirrorManagement;
 using MahApps.Metro;
 
 namespace Hurricane.Settings.Themes
@@ -12,13 +13,13 @@ namespace Hurricane.Settings.Themes
     [Serializable]
     public class ApplicationThemeManager
     {
-        [UserSetting]
+        [CopyableProperty]
         public ThemeBase SelectedColorTheme { get; set; }
-        [UserSetting]
+        [CopyableProperty]
         public bool UseCustomSpectrumAnalyzerColor { get; set; }
-        [UserSetting]
+        [CopyableProperty]
         public string SpectrumAnalyzerHexColor { get; set; }
-        [UserSetting]
+        [CopyableProperty]
         public BaseTheme BaseTheme { get; set; }
 
         [XmlIgnore]
@@ -54,20 +55,16 @@ namespace Hurricane.Settings.Themes
             if (themes == null)
             {
                 themes = new ObservableCollection<ThemeBase>();
-
-                foreach (var t in ThemeManager.Accents.Select(a => new AccentColorTheme() { Name = a.Name }).OrderBy((x) => x.TranslatedName))
-                {
-                    themes.Add(t);
-                }
             }
             else
             {
-                for (int i = themes.Count -1; i < 0; i++)
-                {
-                    if (themes[i].GetType() == typeof(CustomColorTheme)) themes.Remove(themes[i]);
-                }
+                themes.Clear();
             }
 
+            foreach (var t in ThemeManager.Accents.Select(a => new AccentColorTheme() { Name = a.Name }).OrderBy((x) => x.TranslatedName))
+            {
+                themes.Add(t);
+            }
             DirectoryInfo themefolder = new DirectoryInfo(HurricaneSettings.Instance.ThemeDirectory);
             if (themefolder.Exists)
             {
@@ -123,6 +120,7 @@ namespace Hurricane.Settings.Themes
         {
             var other = obj as ApplicationThemeManager;
             if (other == null) return false;
+            if (other.SelectedColorTheme == null) return false;
             return this.SelectedColorTheme.Name == other.SelectedColorTheme.Name && this.UseCustomSpectrumAnalyzerColor == other.UseCustomSpectrumAnalyzerColor && this.SpectrumAnalyzerColor == other.SpectrumAnalyzerColor && this.BaseTheme == other.BaseTheme;
         }
 

@@ -12,6 +12,7 @@ using CSCore.SoundOut.DirectSound;
 using CSCore.Streams;
 using Hurricane.Music.Data;
 using Hurricane.Music.MusicDatabase.EventArgs;
+using Hurricane.Music.MusicEqualizer;
 using Hurricane.Music.Track;
 using Hurricane.Music.Visualization;
 using Hurricane.Settings;
@@ -186,8 +187,15 @@ namespace Hurricane.Music
         #region Equalizer
         public Equalizer MusicEqualizer { get; set; }
 
-        protected EqualizerSettings _equalizersettings;
-        public EqualizerSettings EqualizerSettings { get { return _equalizersettings; } set { _equalizersettings = value; value.EqualizerChanged += value_EqualizerChanged; } }
+        private EqualizerSettings _equalizerSettings;
+        public EqualizerSettings EqualizerSettings
+        {
+            get { return _equalizerSettings; }
+            set
+            {
+                if (SetProperty(value, ref _equalizerSettings)) value.EqualizerChanged += value_EqualizerChanged;
+            }
+        }
 
         void value_EqualizerChanged(object sender, EqualizerChangedEventArgs e)
         {
@@ -199,7 +207,6 @@ namespace Hurricane.Music
             if (MusicEqualizer == null) return;
             double perc = (value / 100);
             var newvalue = (float)(perc * MaxDB);
-
             //the tag of the trackbar contains the index of the filter
             EqualizerFilter filter = MusicEqualizer.SampleFilters[number];
             filter.AverageGainDB = newvalue;

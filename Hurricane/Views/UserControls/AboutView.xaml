@@ -12,18 +12,32 @@
             <Style TargetType="TextBlock" x:Key="TextBlockHeader">
                 <Setter Property="FontWeight" Value="Bold"/>
                 <Setter Property="FontSize" Value="14"/>
-                <Setter Property="Foreground" Value="{DynamicResource AccentColorBrush}"/>
+                <Setter Property="Foreground" Value="{StaticResource AccentColorBrush}"/>
             </Style>
             <converter:TextWithHyperlinkParametersConverter x:Key="TextWithHyperlinkParametersConverter"/>
-            <Style TargetType="Hyperlink" x:Key="hyperlink">
-                <Setter Property="Foreground" Value="{DynamicResource NormalColorBrush}"/>
+            <Style TargetType="Hyperlink" x:Key="HyperlinkStyle">
                 <Setter Property="TextBlock.TextDecorations" Value="{x:Null}"/>
+                <Setter Property="Foreground" Value="{StaticResource NormalColorBrush}"/>
                 <Style.Triggers>
                     <Trigger Property="IsMouseOver" Value="True">
-                        <Setter Property="Foreground" Value="{DynamicResource BrightColorBrush}"/>
+                        <Trigger.EnterActions>
+                            <BeginStoryboard>
+                                <Storyboard>
+                                    <ColorAnimation To="{StaticResource LightColor}" Duration="0:0:0.1" Storyboard.TargetProperty="(Hyperlink.Foreground).(SolidColorBrush.Color)"/>
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </Trigger.EnterActions>
+                        <Trigger.ExitActions>
+                            <BeginStoryboard>
+                                <Storyboard>
+                                    <ColorAnimation To="{StaticResource NormalColor}" Duration="0:0:0.1" Storyboard.TargetProperty="(Hyperlink.Foreground).(SolidColorBrush.Color)"/>
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </Trigger.ExitActions>
                     </Trigger>
                 </Style.Triggers>
             </Style>
+            <Style TargetType="Hyperlink" BasedOn="{StaticResource HyperlinkStyle}"/>
             <Style TargetType="TextBlock">
                 <Setter Property="Foreground" Value="{DynamicResource BlackBrush}"/>
             </Style>
@@ -130,7 +144,7 @@
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
                             <TextBlock>
-                            <Hyperlink NavigateUri="{Binding Url}" RequestNavigate="Hyperlink_RequestNavigate" Style="{StaticResource hyperlink}">
+                            <Hyperlink NavigateUri="{Binding Url}" RequestNavigate="Hyperlink_RequestNavigate" Style="{StaticResource HyperlinkStyle}">
                                 <TextBlock Text="{Binding Name}"/>
                             </Hyperlink>
                         </TextBlock>
@@ -151,12 +165,12 @@
                             </Grid.ColumnDefinitions>
                             <TextBlock Text="{Binding Name}" Foreground="{DynamicResource BlackBrush}"/>
                             <TextBlock Grid.Column="1">
-                                <Hyperlink NavigateUri="{Binding Licence}" RequestNavigate="Hyperlink_RequestNavigate" Style="{StaticResource hyperlink}">
+                                <Hyperlink NavigateUri="{Binding Licence}" RequestNavigate="Hyperlink_RequestNavigate" Style="{StaticResource HyperlinkStyle}">
                                     <TextBlock Text="{DynamicResource Licence}"/>
                                 </Hyperlink>
                             </TextBlock>
                             <TextBlock Grid.Column="2">
-                                <Hyperlink NavigateUri="{Binding Website}" RequestNavigate="Hyperlink_RequestNavigate" Style="{StaticResource hyperlink}">
+                                <Hyperlink NavigateUri="{Binding Website}" RequestNavigate="Hyperlink_RequestNavigate" Style="{StaticResource HyperlinkStyle}">
                                     <TextBlock Text="{DynamicResource Website}"/>
                                 </Hyperlink>
                             </TextBlock>

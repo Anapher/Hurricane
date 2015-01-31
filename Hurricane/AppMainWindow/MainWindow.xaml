@@ -107,6 +107,6 @@
     </Window.TaskbarItemInfo>
     <Window.InputBindings>
         <KeyBinding Key="Space" Command="{Binding MusicManager.Commands.TogglePlayPause}"/>
-        <KeyBinding Key="E" Modifiers="Control" Command="{Binding OpenEqualizer}"/>
+        <KeyBinding Key="E" Modifiers="Control" Command="{Binding ToggleEqualizer}"/>
     </Window.InputBindings>
 </controls:MetroWindow>

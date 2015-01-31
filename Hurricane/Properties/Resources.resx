@@ -121,10 +121,15 @@
     <value>&lt;ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:system="clr-namespace:System;assembly=mscorlib" xmlns:options="http://schemas.microsoft.com/winfx/2006/xaml/presentation/options"&gt;
 
-    &lt;SolidColorBrush x:Key="LightColorBrush" Color="{LightColor}" options:Freeze="True"/&gt;
-    &lt;SolidColorBrush x:Key="BrightColorBrush" Color="{BrightColor}" options:Freeze="True"/&gt;
-    &lt;SolidColorBrush x:Key="NormalColorBrush" Color="{NormalColor}" options:Freeze="True"/&gt;
-    &lt;SolidColorBrush x:Key="DarkColorBrush" Color="{DarkColor}" options:Freeze="True"/&gt;
+	&lt;Color x:Key="LightColor"&gt;{LightColor}&lt;/Color&gt;
+    &lt;Color x:Key="BrightColor"&gt;{BrightColor}&lt;/Color&gt;
+    &lt;Color x:Key="NormalColor"&gt;{NormalColor}&lt;/Color&gt;
+    &lt;Color x:Key="DarkColor"&gt;{DarkColor}&lt;/Color&gt;
+
+    &lt;SolidColorBrush x:Key="LightColorBrush" Color="{StaticResource LightColor}" options:Freeze="true"/&gt;
+    &lt;SolidColorBrush x:Key="BrightColorBrush" Color="{StaticResource BrightColor}" options:Freeze="true"/&gt;
+    &lt;SolidColorBrush x:Key="NormalColorBrush" Color="{StaticResource NormalColor}" options:Freeze="true"/&gt;
+    &lt;SolidColorBrush x:Key="DarkColorBrush" Color="{StaticResource DarkColor}" options:Freeze="true"/&gt;
 	
 	    &lt;!--ACCENT COLORS--&gt;
     &lt;Color x:Key="HighlightColor"&gt;{HighlightColor}&lt;/Color&gt;

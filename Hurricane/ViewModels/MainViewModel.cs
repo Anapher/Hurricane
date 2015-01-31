@@ -201,17 +201,26 @@ namespace Hurricane.ViewModels
         #endregion
 
         #region Commands
-
-
-
-        private RelayCommand _openequalizer;
-        public RelayCommand OpenEqualizer
+        private RelayCommand _toggleEqualizer;
+        public RelayCommand ToggleEqualizer
         {
             get
             {
-                return _openequalizer ?? (_openequalizer = new RelayCommand(async parameter =>
+                return _toggleEqualizer ?? (_toggleEqualizer = new RelayCommand(parameter =>
                 {
-                    await _baseWindow.ShowEqualizer();
+                    _baseWindow.ShowEqualizer();
+                }));
+            }
+        }
+
+        private RelayCommand _closeEqualizer;
+        public RelayCommand CloseEqualizer
+        {
+            get
+            {
+                return _closeEqualizer ?? (_closeEqualizer = new RelayCommand(parameter =>
+                {
+                    HurricaneSettings.Instance.Config.EqualizerIsOpen = false;
                 }));
             }
         }

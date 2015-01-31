@@ -1,11 +1,17 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:system="clr-namespace:System;assembly=mscorlib">
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:options="http://schemas.microsoft.com/winfx/2006/xaml/presentation/options">
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/Crimson.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
-    <SolidColorBrush x:Key="LightColorBrush" Color="#CCC92E52"/>
-    <SolidColorBrush x:Key="BrightColorBrush" Color="#CCC22247"/>
-    <SolidColorBrush x:Key="NormalColorBrush" Color="#CCA61435"/>
-    <SolidColorBrush x:Key="DarkColorBrush" Color="#CC840322"/>
+    <Color x:Key="LightColor">#CCC92E52</Color>
+    <Color x:Key="BrightColor">#CCC22247</Color>
+    <Color x:Key="NormalColor">#CCA61435</Color>
+    <Color x:Key="DarkColor">#CC840322</Color>
+
+    <SolidColorBrush x:Key="LightColorBrush" Color="{StaticResource LightColor}" options:Freeze="true"/>
+    <SolidColorBrush x:Key="BrightColorBrush" Color="{StaticResource BrightColor}" options:Freeze="true"/>
+    <SolidColorBrush x:Key="NormalColorBrush" Color="{StaticResource NormalColor}" options:Freeze="true"/>
+    <SolidColorBrush x:Key="DarkColorBrush" Color="{StaticResource DarkColor}" options:Freeze="true"/>
 </ResourceDictionary>

@@ -188,7 +188,7 @@ namespace Hurricane.Music.Playlist
         protected void OnTrackListChanged()
         {
             OnPropertyChanged("ContainsMissingTracks");
-            OnPropertyChanged("ContainsStreams");
+            OnPropertyChanged("ContainsDownloadableStreams");
         }
 
         public override string ToString()

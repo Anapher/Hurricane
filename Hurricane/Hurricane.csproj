@@ -140,6 +140,7 @@
     <Compile Include="Extensions\AnimatedStackPanel.cs" />
     <Compile Include="Extensions\ControlDoubleClick.cs" />
     <Compile Include="Extensions\Converter\CollapsedOnNullValue.cs" />
+    <Compile Include="Settings\Converter\ComboBoxForegroundConverter.cs" />
     <Compile Include="Extensions\Converter\FalseOnNullValue.cs" />
     <Compile Include="Extensions\Converter\FormatLargeNumber.cs" />
     <Compile Include="Extensions\Converter\FormatTimespan.cs" />
@@ -189,10 +190,10 @@
     <Compile Include="Music\Playlist\FavoriteList.cs" />
     <Compile Include="Music\Data\IRepresentable.cs" />
     <Compile Include="Music\Data\SoundOutRepresenter.cs" />
-    <Compile Include="Music\Equalizer\EqualizerBand.cs" />
+    <Compile Include="Music\MusicEqualizer\EqualizerBand.cs" />
     <Compile Include="Music\Playlist\IPlaylist.cs" />
     <Compile Include="Music\MusicDatabase\EventArgs\EqualizerChangedEventArgs.cs" />
-    <Compile Include="Music\Equalizer\EqualizerSettings.cs" />
+    <Compile Include="Music\MusicEqualizer\EqualizerSettings.cs" />
     <Compile Include="Music\MusicDatabase\EventArgs\PlaybackStateChangedEventArgs.cs" />
     <Compile Include="Music\MusicDatabase\EventArgs\PositionChangedEventArgs.cs" />
     <Compile Include="Music\MusicDatabase\EventArgs\TrackImportProgressChanged.cs" />
@@ -269,6 +270,7 @@
     <Compile Include="Settings\Converter\QualityToIndexConverter.cs" />
     <Compile Include="Settings\Converter\SampleRateToIndexConverter.cs" />
     <Compile Include="Settings\LanguageInfo.cs" />
+    <Compile Include="Settings\MirrorManagement\CopyablePropertyAttribute.cs" />
     <Compile Include="Settings\PlaylistSettings.cs" />
     <Compile Include="Settings\RegistryManager\RegistryContextMenuItem.cs" />
     <Compile Include="Settings\RegistryManager\RegistryManager.cs" />
@@ -281,7 +283,6 @@
     <Compile Include="Settings\Themes\ThemeBase.cs" />
     <Compile Include="Settings\Themes\ThemeSource.cs" />
     <Compile Include="Settings\UpdateService.cs" />
-    <Compile Include="Settings\UserSettingAttribute.cs" />
     <Compile Include="Utilities\ActiveWindowHook.cs" />
     <Compile Include="Utilities\GeneralHelper.cs" />
     <Compile Include="Utilities\Keyboard.cs" />
@@ -291,10 +292,11 @@
     <Compile Include="Utilities\Native\POINT.cs" />
     <Compile Include="Utilities\Native\RECT.cs" />
     <Compile Include="Utilities\Native\WINDOWPLACEMENT.cs" />
-    <Compile Include="Utilities\ObjectCopier.cs" />
+    <Compile Include="Settings\MirrorManagement\ObjectCopier.cs" />
     <Compile Include="Utilities\Native\UnsafeNativeMethods.cs" />
-    <Compile Include="Utilities\PropertiesCopier.cs" />
+    <Compile Include="Settings\MirrorManagement\PropertiesCopier.cs" />
     <Compile Include="Utilities\RegistryExtensions.cs" />
+    <Compile Include="Utilities\UIHelper.cs" />
     <Compile Include="Utilities\WindowHelper.cs" />
     <Compile Include="Utilities\WpfScreen.cs" />
     <Compile Include="ViewModels\SettingsViewModel.cs" />

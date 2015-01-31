@@ -8,8 +8,10 @@ using System.Xml.Serialization;
 using Hurricane.MagicArrow.DockManager;
 using Hurricane.Music;
 using Hurricane.Music.Download;
+using Hurricane.Music.MusicEqualizer;
 using Hurricane.Notification;
 using Hurricane.Settings.Themes;
+using Hurricane.Settings.MirrorManagement;
 
 namespace Hurricane.Settings
 {
@@ -19,11 +21,16 @@ namespace Hurricane.Settings
         protected const string Filename = "config.xml";
 
         //CSCore
+        [CopyableProperty]
         public string SoundOutDeviceID { get; set; }
+        [CopyableProperty]
         public SoundOutMode SoundOutMode { get; set; }
         public float Volume { get; set; }
+        [CopyableProperty]
         public int Latency { get; set; }
+        [CopyableProperty]
         public bool IsCrossfadeEnabled { get; set; }
+        [CopyableProperty]
         public int CrossfadeDuration { get; set; }
 
         //Current State
@@ -38,22 +45,31 @@ namespace Hurricane.Settings
         public bool IsLoopEnabled { get; set; }
         public bool IsShuffleEnabled { get; set; }
         public EqualizerSettings EqualizerSettings { get; set; }
+        [CopyableProperty]
         public int WaveSourceBits { get; set; }
+        [CopyableProperty]
         public int SampleRate { get; set; }
 
         //Magic Arrow
+        [CopyableProperty]
         public bool ShowMagicArrowBelowCursor { get; set; }
         public DockingApplicationState ApplicationState { get; set; }
 
         //General
+        [CopyableProperty]
         public string Language { get; set; }
+        [CopyableProperty(CopyContainingProperties = true)]
         public ApplicationThemeManager Theme { get; set; }
-        public bool EnableAdvancedView { get; set; }
+        [CopyableProperty]
         public bool RememberTrackImportPlaylist { get; set; }
+        [CopyableProperty]
         public string PlaylistToImportTrack { get; set; }
+        [CopyableProperty]
         public bool ShufflePreferFavoritTracks { get; set; }
+        [CopyableProperty]
         public bool ShowArtistAndTitle { get; set; }
         private bool _useThinHeaders;
+        [CopyableProperty]
         public bool UseThinHeaders
         {
             get { return _useThinHeaders; }
@@ -62,19 +78,36 @@ namespace Hurricane.Settings
                 SetProperty(value, ref _useThinHeaders);
             }
         }
-
+        private bool _equalizerIsOpen;
+        public bool EqualizerIsOpen
+        {
+            get { return _equalizerIsOpen; }
+            set
+            {
+                SetProperty(value, ref _equalizerIsOpen);
+            }
+        }
+        [CopyableProperty]
         public bool ApiIsEnabled { get; set; }
+        [CopyableProperty]
         public int ApiPort { get; set; }
 
         //Notifications
+        [CopyableProperty]
         public NotificationType Notification { get; set; }
+        [CopyableProperty]
         public bool DisableNotificationInGame { get; set; }
+        [CopyableProperty]
         public int NotificationShowTime { get; set; }
 
         //Album Cover
+        [CopyableProperty]
         public bool LoadAlbumCoverFromInternet { get; set; }
+        [CopyableProperty]
         public ImageQuality DownloadAlbumCoverQuality { get; set; }
+        [CopyableProperty]
         public bool SaveCoverLocal { get; set; }
+        [CopyableProperty]
         public bool TrimTrackname { get; set; }
 
         //Download
@@ -121,7 +154,6 @@ namespace Hurricane.Settings
             ApplicationState = null;
             Theme = new ApplicationThemeManager();
             Theme.LoadStandard();
-            EnableAdvancedView = true;
             NotificationShowTime = 5000;
             RememberTrackImportPlaylist = false;
             PlaylistToImportTrack = null;
@@ -190,7 +222,6 @@ namespace Hurricane.Settings
                     CompareTwoValues(this.Notification, other.Notification) &&
                     CompareTwoValues(this.DisableNotificationInGame, other.DisableNotificationInGame) &&
                     CompareTwoValues(this.Theme, other.Theme) &&
-                    CompareTwoValues(this.EnableAdvancedView, other.EnableAdvancedView) &&
                     CompareTwoValues(this.NotificationShowTime, other.NotificationShowTime) &&
                     CompareTwoValues(this.RememberTrackImportPlaylist, other.RememberTrackImportPlaylist) &&
                     CompareTwoValues(this.DownloadAlbumCoverQuality, other.DownloadAlbumCoverQuality) &&

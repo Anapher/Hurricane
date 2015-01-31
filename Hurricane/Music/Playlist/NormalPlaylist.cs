@@ -58,6 +58,7 @@ namespace Hurricane.Music.Playlist
 
         public override void AddTrack(PlayableBase track)
         {
+            base.AddTrack(track);
             Tracks.Add(track);
             ShuffleList.Add(track);
 
@@ -73,6 +74,7 @@ namespace Hurricane.Music.Playlist
 
         public override void RemoveTrack(PlayableBase track)
         {
+            base.RemoveTrack(track);
             ShuffleList.Remove(track);
             track.IsRemoving = true;
             DispatcherTimer tmr = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(500) };

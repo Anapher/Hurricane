@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows;
@@ -9,10 +10,10 @@ using Hurricane.Music.Data;
 using Hurricane.Settings;
 using Hurricane.Settings.RegistryManager;
 using Hurricane.Settings.Themes;
-using Hurricane.Utilities;
 using Hurricane.ViewModelBase;
 using Hurricane.Views;
 using System.Threading.Tasks;
+using Hurricane.Settings.MirrorManagement;
 using WPFFolderBrowser;
 
 namespace Hurricane.ViewModels
@@ -72,7 +73,7 @@ namespace Hurricane.ViewModels
                                                 Config.SoundOutMode != original.SoundOutMode;
 
 
-                    PropertiesCopier.CopyProperties(Config, original, new List<string> { "Queue" });
+                    PropertiesCopier.CopyProperties(Config, original);
 
                     if (haveToChangeColorTheme || haveToChangeBaseTheme)
                     {
@@ -245,7 +246,13 @@ namespace Hurricane.ViewModels
                 {
                     ThemeEditorWindow window = new ThemeEditorWindow() { Owner = Application.Current.MainWindow };
                     if (window.ShowDialog() == true)
+                    {
+                        var currentThemeIndex = ApplicationThemeManager.Themes.IndexOf(Config.Theme.SelectedColorTheme);
                         ApplicationThemeManager.RefreshThemes();
+                        Config.Theme.SelectedColorTheme = ApplicationThemeManager.Themes.Count > currentThemeIndex ? ApplicationThemeManager.Themes[currentThemeIndex] : ApplicationThemeManager.Themes.First();
+                        OnPropertyChanged("Config");
+                        Debug.Print("test");
+                    }
                 }));
             }
         }

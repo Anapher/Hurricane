@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:viewmodels="clr-namespace:Hurricane.ViewModels"
-             mc:Ignorable="d" 
+             mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300" DataContext="{x:Static viewmodels:MainViewModel.Instance}" x:Name="UserControl">
     <UserControl.Resources>
         <ResourceDictionary>
@@ -35,7 +35,7 @@
             <MenuItem Header="{DynamicResource Reset}" Command="{Binding MusicManager.CSCoreEngine.EqualizerSettings.ResetEqualizer}"/>
         </Menu>
         <Button Style="{StaticResource WindowButtonStyle}" Click="PART_CLOSE_Click" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="5" Width="20" Height="20"/>
-        <ItemsControl Margin="5,10,5,10" Grid.Row="1" ItemsSource="{Binding MusicManager.CSCoreEngine.EqualizerSettings.Bands}">
+        <ItemsControl Margin="5,10,5,10" Grid.Row="1" ItemsSource="{Binding MusicManager.CSCoreEngine.EqualizerSettings.Bands}" HorizontalAlignment="Center">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
                     <StackPanel Orientation="Horizontal"/>
@@ -43,7 +43,35 @@
             </ItemsControl.ItemsPanel>
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
-                    <Slider Orientation="Vertical" Maximum="100" Minimum="-100" Margin="{Binding ElementName=UserControl,Path=SliderThickness}" Value="{Binding Value}" ToolTip="{Binding Label}"/>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <Slider Orientation="Vertical" Maximum="100" Minimum="-100" Margin="{Binding ElementName=UserControl,Path=SliderThickness}" Value="{Binding Value}">
+                            <Slider.Style>
+                                <Style TargetType="Slider" BasedOn="{StaticResource MetroSlider}">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding ElementName=UserControl,Path=ShowLabelBelowSlider}" Value="false">
+                                            <Setter Property="ToolTip" Value="{Binding Label}"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Slider.Style>
+                        </Slider>
+                        <TextBlock Text="{Binding Label}" Margin="0,5,0,0" Grid.Row="1" Foreground="{StaticResource BlackBrush}" HorizontalAlignment="Center">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding ElementName=UserControl,Path=ShowLabelBelowSlider}" Value="true">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+                    </Grid>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
         </ItemsControl>

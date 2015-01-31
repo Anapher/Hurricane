@@ -218,7 +218,7 @@
                                 </Style.Triggers>
                             </Style>
                         </StackPanel.Resources>
-                        <Button Width="24" Height="24" Focusable="False" Command="{Binding OpenEqualizer}">
+                        <Button Width="24" Height="24" Focusable="False" Command="{Binding ToggleEqualizer}">
                             <Viewbox Width="14" Height="14" Stretch="Fill">
                                 <Path Data="{StaticResource VectorEqualizer}" Fill="{StaticResource BlackBrush}"/>
                             </Viewbox>
@@ -366,7 +366,7 @@
                     </Menu>
                 </Grid>
                 <ListView ItemsSource="{Binding MusicManager.SelectedPlaylist.ViewSource}" SelectionMode="Extended" Grid.Row="1" Drop="listview_Drop" DragEnter="listview_DragEnter" x:Name="listview" SelectedItem="{Binding MusicManager.SelectedTrack}" ScrollViewer.VerticalScrollBarVisibility="Visible"
-                          Margin="0,5,-1,0" HorizontalContentAlignment="Stretch" ScrollViewer.HorizontalScrollBarVisibility="Disabled" SelectionChanged="listview_SelectionChanged" IsSynchronizedWithCurrentItem="True" Style="{StaticResource VisualizingListView}">
+                          Margin="0,5,-1,0" HorizontalContentAlignment="Stretch" ScrollViewer.HorizontalScrollBarVisibility="Disabled" SelectionChanged="listview_SelectionChanged" IsSynchronizedWithCurrentItem="True" Style="{StaticResource VisualizingListView}" Background="{StaticResource WhiteBrush}">
                     <ListView.InputBindings>
                         <KeyBinding Key="Delete" Command="{Binding RemoveSelectedTracks}" CommandParameter="{Binding ElementName=listview,Path=SelectedItems}"/>
                         <KeyBinding Key="Enter" Command="{Binding MusicManager.Commands.PlaySelectedTrack}"/>
@@ -402,7 +402,7 @@
                                 </MenuItem>
                             </MenuItem>
                             <Separator />
-                            <MenuItem Header="{DynamicResource Queue}">
+                            <MenuItem Header="{DynamicResource Queue}" IsEnabled="{Binding MusicManager.SelectedTrack.TrackExists}">
                                 <MenuItem Header="{DynamicResource AddToQueue}" Command="{Binding MusicManager.Commands.AddTracksToQueue}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=ListView},Path=SelectedItems}" InputGestureText="Q"/>
                                 <MenuItem Header="{DynamicResource RemoveFromQueue}" Command="{Binding MusicManager.Commands.RemoveFromQueue}" InputGestureText="Alt+Q"/>
                                 <MenuItem Header="{DynamicResource ClearQueue}" Command="{Binding MusicManager.Commands.ClearQueue}" IsEnabled="{Binding MusicManager.Queue.HasTracks}"/>
@@ -457,7 +457,7 @@
                                     <Setter Property="ContextMenu" Value="{StaticResource StreamContextMenu}"/>
                                 </DataTrigger>
                                 <DataTrigger Binding="{Binding TrackExists}" Value="False">
-                                    <Setter Property="Background" Value="#FFF2F2F2"/>
+                                    <Setter Property="Background" Value="{StaticResource GrayBrush8}"/>
                                 </DataTrigger>
                                 <DataTrigger Binding="{Binding IsRemoving}" Value="True">
                                     <DataTrigger.EnterActions>
