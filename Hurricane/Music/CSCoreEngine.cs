@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -88,7 +87,16 @@ namespace Hurricane.Music
             set
             {
                 if (SoundSource != null)
-                    SoundSource.Position = value;
+                {
+                    try
+                    {
+                        SoundSource.Position = value;
+                    }
+                    catch (Exception)
+                    {
+                        return;
+                    }
+                }
                 OnPropertyChanged("CurrentTrackPosition");
                 if (PositionChanged != null) PositionChanged(this, new PositionChangedEventArgs((int)this.CurrentTrackPosition.TotalSeconds, (int)this.CurrentTrackLength.TotalSeconds));
             }
@@ -266,7 +274,6 @@ namespace Hurricane.Music
 
             _analyser = new SampleAnalyser(FFTSize);
             _analyser.Initialize(SoundSource.WaveFormat);
-            StopPlayback();
             _soundOut.Initialize(SoundSource);
             
             OnPropertyChanged("TrackLength");
@@ -402,9 +409,9 @@ namespace Hurricane.Music
         #region Constructor
         public CSCoreEngine()
         {
-            _client = new MMNotificationClient();
+            //_client = new MMNotificationClient();
             RefreshSoundOut();
-            _client.DefaultDeviceChanged += client_DefaultDeviceChanged;
+            //_client.DefaultDeviceChanged += client_DefaultDeviceChanged;
             _fader = new VolumeFading();
             _Crossfade = new Crossfade();
         }
@@ -424,6 +431,7 @@ namespace Hurricane.Music
                 }) { IsBackground = true };
                 t.Start();
             }
+            _client.Dispose();
         }
 
         public void RefreshSoundOut()
@@ -465,7 +473,7 @@ namespace Hurricane.Music
                     {
                         using (MMDeviceCollection devices = enumerator.EnumAudioEndpoints(DataFlow.Render, DeviceState.Active))
                         {
-                            device = devices.First(x => x.DeviceID == Settings.SoundOutDeviceID);
+                            device = devices.FirstOrDefault(x => x.DeviceID == Settings.SoundOutDeviceID);
 
                             if (device == null)
                             {
@@ -491,9 +499,12 @@ namespace Hurricane.Music
             if (!IsLoading)
             {
                 if (SoundSource != null)
+                {
                     _soundOut.Initialize(SoundSource);
-                Position = position;
-                if (isplaying) TogglePlayPause();
+                    _soundOut.Volume = Volume;
+                    Position = position;
+                    if (isplaying) TogglePlayPause();
+                }
             }
         }
 

@@ -43,7 +43,8 @@ namespace Hurricane.Music.Track.WebApi.YouTubeApi
                     Year = (uint)DateTime.Parse(x.published.Date).Year,
                     ImageUrl = x.MediaGroup.Thumbnails.First().url,
                     Views = x.Statistics != null ? uint.Parse(x.Statistics.viewCount) : 0,
-                    Url = x.link.First().href
+                    Url = x.link.First().href,
+                    Description = x.MediaGroup.Description.Text
                 }).ToList();
 
 /*                List<YouTubeWebTrackResult> lst = new List<YouTubeWebTrackResult>();
@@ -99,7 +100,8 @@ namespace Hurricane.Music.Track.WebApi.YouTubeApi
                         Year = (uint)DateTime.Parse(result.entry.published.Date).Year,
                         ImageUrl = result.entry.MediaGroup.Thumbnails.First().url,
                         Views = result.entry.Statistics != null ? uint.Parse(result.entry.Statistics.viewCount) : 0,
-                        Url = result.entry.link.First().href
+                        Url = result.entry.link.First().href,
+                        Description = result.entry.MediaGroup.Description.Text
                     };
                 }
                 return null;
@@ -147,7 +149,8 @@ namespace Hurricane.Music.Track.WebApi.YouTubeApi
                     Year = (uint)DateTime.Parse(x.published.Date).Year,
                     ImageUrl = x.MediaGroup.Thumbnails.First().url,
                     Views = x.Statistics != null ? uint.Parse(x.Statistics.viewCount) : 0,
-                    Url = x.link.First().href
+                    Url = x.link.First().href,
+                    Description = x.MediaGroup.Description.Text
                 }).Cast<WebTrackResultBase>().ToList();
             }
         }

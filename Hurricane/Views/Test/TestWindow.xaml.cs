@@ -69,7 +69,7 @@ namespace Hurricane.Views.Test
                     break;
                 case Steps.StepThree:
                     txtStatus.Text = "Nice one. Next, please move your mouse to the right side of your screen";
-                    if (e.X < WpfScreen.AllScreensWidth - 5)
+                    if (e.X < WpfScreen.MostRightX - 5)
                     {
                         CurrentStep = Steps.StepFour;
                     }

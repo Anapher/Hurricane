@@ -53,7 +53,7 @@ namespace Hurricane.Views
         public void SetPosition(RECT parentRecantgle, double windowWidth)
         {
             this.Top = parentRecantgle.top + 25;
-            if (parentRecantgle.left + windowWidth + windowWidth - WpfScreen.AllScreensWidth > 0) //If left from the parent isn't 300 space
+            if (parentRecantgle.left + windowWidth + windowWidth - WpfScreen.MostRightX > 0) //If left from the parent isn't 300 space
             {
                 this.Left = parentRecantgle.left - windowWidth;
                 IsLeft = false;

@@ -15,7 +15,6 @@ namespace Hurricane.Settings
     {
         readonly updateController updController;
         readonly Language language;
-        const string changelogseperator = "------------------------------------";
 
         public UpdateService(Language currentlanguage)
         {
@@ -109,8 +108,8 @@ namespace Hurricane.Settings
             StringBuilder sb = new StringBuilder();
             foreach (var package in e.Result.newUpdatePackages)
             {
-                sb.AppendLine(string.Format(Application.Current.Resources["UpdateChangelogText"].ToString(), package.releaseInfo.Version, DateTime.Parse(package.ReleaseDate).ToString(Application.Current.Resources["DateFormat"].ToString())));
-                sb.AppendLine(changelogseperator);
+                sb.AppendLine("[i]" + string.Format(Application.Current.Resources["UpdateChangelogText"].ToString(), package.releaseInfo.Version, DateTime.Parse(package.ReleaseDate).ToString(Application.Current.Resources["DateFormat"].ToString())));
+                sb.AppendLine();
                 sb.AppendLine(this.language == Language.English ? updController.currentUpdateResult.Changelogs[package].englishChanges : updController.currentUpdateResult.Changelogs[package].germanChanges);
                 sb.AppendLine();
                 UpdateSize += package.packageSize;

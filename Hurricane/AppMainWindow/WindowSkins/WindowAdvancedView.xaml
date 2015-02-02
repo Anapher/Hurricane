@@ -25,6 +25,7 @@
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
             <converter:FormatTimespan x:Key="FormatTimespan"/>
             <converter:CollapsedOnNullValue x:Key="CollapsedOnNullValue"/>
+            <converter:FalseOnEmptyString x:Key="FalseOnEmptyString"></converter:FalseOnEmptyString>
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
@@ -628,6 +629,11 @@
                                             <TextBlock Text=" - "/>
                                             <TextBlock Text="https://www.youtube.com/playlist?list=PL55713C70BA91BD6E" FontStyle="Italic"/>
                                         </StackPanel>
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="{DynamicResource SoundCloudLink}" FontWeight="Bold"/>
+                                            <TextBlock Text=" - "/>
+                                            <TextBlock Text="https://soundcloud.com/lensko/lensko-cetus" FontStyle="Italic"/>
+                                        </StackPanel>
                                     </StackPanel>
                                 </ToolTip>
                             </ComboBox.ToolTip>
@@ -716,11 +722,32 @@
                                     <MenuItem Header="{DynamicResource OpenUrl}" Command="{Binding OpenUrl}"/>
                                     <MenuItem Header="{DynamicResource Download}" IsEnabled="{Binding CanDownload}" Command="{Binding RelativeSource={RelativeSource AncestorType=ListView},Path=DataContext.TrackSearcher.DownloadTrack}"/>
                                 </ContextMenu>
+                                <Style TargetType="ToolTip" BasedOn="{StaticResource MetroToolTip}">
+                                    <Setter Property="MaxWidth" Value="600" />
+                                    <Setter Property="ContentTemplate">
+                                        <Setter.Value>
+                                            <DataTemplate>
+                                                <ContentPresenter Content="{TemplateBinding Content}"  >
+                                                    <ContentPresenter.Resources>
+                                                        <Style TargetType="{x:Type TextBlock}">
+                                                            <Setter Property="TextWrapping" Value="Wrap" />
+                                                        </Style>
+                                                    </ContentPresenter.Resources>
+                                                </ContentPresenter>
+                                            </DataTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
                             </ListView.Resources>
                             <ListView.ItemContainerStyle>
                                 <Style TargetType="ListViewItem" BasedOn="{StaticResource MetroListViewItem}">
                                     <Setter Property="extensions:ControlDoubleClick.Command" Value="{Binding RelativeSource={RelativeSource AncestorType=ListView},Path=DataContext.TrackSearcher.PlaySelectedTrack}"/>
                                     <Setter Property="ContextMenu" Value="{StaticResource ContextMenu}"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Description,Converter={StaticResource FalseOnEmptyString}}" Value="true">
+                                            <Setter Property="ToolTip" Value="{Binding Description}"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
                                 </Style>
                             </ListView.ItemContainerStyle>
                             <ListView.View>

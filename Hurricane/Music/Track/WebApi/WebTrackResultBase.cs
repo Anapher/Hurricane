@@ -19,6 +19,7 @@ namespace Hurricane.Music.Track.WebApi
         public uint Views { get; set; }
         public abstract ProviderName ProviderName { get; }
         public string Url { get; set; }
+        public string Description { get; set; }
 
         private BitmapImage _image;
         public BitmapImage Image

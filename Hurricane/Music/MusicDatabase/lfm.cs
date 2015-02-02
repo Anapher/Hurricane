@@ -4,137 +4,41 @@ namespace Hurricane.Music.MusicDatabase
 {
     public partial class lfm
     {
-
-        private lfmResults resultsField;
-
         /// <remarks/>
-        public lfmResults results
-        {
-            get
-            {
-                return this.resultsField;
-            }
-            set
-            {
-                this.resultsField = value;
-            }
-        }
+        public lfmResults results { get; set; }
 
         /// <remarks/>
         [XmlAttribute()]
-        public string status
-        {
-            get
-            {
-                return this.statusField;
-            }
-            set
-            {
-                this.statusField = value;
-            }
-        }
+        public string status { get; set; }
     }
 
     /// <remarks/>
     [XmlType(AnonymousType = true)]
     public partial class lfmResults
     {
-
-        private Query queryField;
-
-        private ushort totalResultsField;
-
-        private byte startIndexField;
-
-        private byte itemsPerPageField;
-
-        private lfmResultsTrack[] trackmatchesField;
-
-        private string forField;
+        /// <remarks/>
+        [XmlElement(Namespace = "http://a9.com/-/spec/opensearch/1.1/")]
+        public Query Query { get; set; }
 
         /// <remarks/>
         [XmlElement(Namespace = "http://a9.com/-/spec/opensearch/1.1/")]
-        public Query Query
-        {
-            get
-            {
-                return this.queryField;
-            }
-            set
-            {
-                this.queryField = value;
-            }
-        }
+        public uint totalResults { get; set; }
 
         /// <remarks/>
         [XmlElement(Namespace = "http://a9.com/-/spec/opensearch/1.1/")]
-        public ushort totalResults
-        {
-            get
-            {
-                return this.totalResultsField;
-            }
-            set
-            {
-                this.totalResultsField = value;
-            }
-        }
+        public byte startIndex { get; set; }
 
         /// <remarks/>
         [XmlElement(Namespace = "http://a9.com/-/spec/opensearch/1.1/")]
-        public byte startIndex
-        {
-            get
-            {
-                return this.startIndexField;
-            }
-            set
-            {
-                this.startIndexField = value;
-            }
-        }
-
-        /// <remarks/>
-        [XmlElement(Namespace = "http://a9.com/-/spec/opensearch/1.1/")]
-        public byte itemsPerPage
-        {
-            get
-            {
-                return this.itemsPerPageField;
-            }
-            set
-            {
-                this.itemsPerPageField = value;
-            }
-        }
+        public byte itemsPerPage { get; set; }
 
         /// <remarks/>
         [XmlArrayItem("track", IsNullable = false)]
-        public lfmResultsTrack[] trackmatches
-        {
-            get
-            {
-                return this.trackmatchesField;
-            }
-            set
-            {
-                this.trackmatchesField = value;
-            }
-        }
+        public lfmResultsTrack[] trackmatches { get; set; }
 
         /// <remarks/>
         [XmlAttribute()]
-        public string @for
-        {
-            get
-            {
-                return this.forField;
-            }
-            set
-            {
-                this.forField = value;
-            }
-        }
+        public string @for { get; set; }
     }
 
     /// <remarks/>
@@ -142,227 +46,67 @@ namespace Hurricane.Music.MusicDatabase
     [XmlRoot(Namespace = "http://a9.com/-/spec/opensearch/1.1/", IsNullable = false)]
     public partial class Query
     {
-
-        private string roleField;
-
-        private string searchTermsField;
-
-        private byte startPageField;
+        /// <remarks/>
+        [XmlAttribute()]
+        public string role { get; set; }
 
         /// <remarks/>
         [XmlAttribute()]
-        public string role
-        {
-            get
-            {
-                return this.roleField;
-            }
-            set
-            {
-                this.roleField = value;
-            }
-        }
+        public string searchTerms { get; set; }
 
         /// <remarks/>
         [XmlAttribute()]
-        public string searchTerms
-        {
-            get
-            {
-                return this.searchTermsField;
-            }
-            set
-            {
-                this.searchTermsField = value;
-            }
-        }
-
-        /// <remarks/>
-        [XmlAttribute()]
-        public byte startPage
-        {
-            get
-            {
-                return this.startPageField;
-            }
-            set
-            {
-                this.startPageField = value;
-            }
-        }
+        public byte startPage { get; set; }
     }
 
     /// <remarks/>
     [XmlType(AnonymousType = true)]
     public partial class lfmResultsTrack
     {
-
-        private string nameField;
-
-        private string artistField;
-
-        private string urlField;
-
-        private lfmResultsTrackStreamable streamableField;
-
-        private lfmResultsTrackImage[] imageField;
-
-        private string mbidField;
+        /// <remarks/>
+        public string name { get; set; }
 
         /// <remarks/>
-        public string name
-        {
-            get
-            {
-                return this.nameField;
-            }
-            set
-            {
-                this.nameField = value;
-            }
-        }
+        public string artist { get; set; }
 
         /// <remarks/>
-        public string artist
-        {
-            get
-            {
-                return this.artistField;
-            }
-            set
-            {
-                this.artistField = value;
-            }
-        }
+        public string url { get; set; }
 
         /// <remarks/>
-        public string url
-        {
-            get
-            {
-                return this.urlField;
-            }
-            set
-            {
-                this.urlField = value;
-            }
-        }
-
-        /// <remarks/>
-        public lfmResultsTrackStreamable streamable
-        {
-            get
-            {
-                return this.streamableField;
-            }
-            set
-            {
-                this.streamableField = value;
-            }
-        }
+        public lfmResultsTrackStreamable streamable { get; set; }
 
         /// <remarks/>
         [XmlElement("image")]
-        public lfmResultsTrackImage[] image
-        {
-            get
-            {
-                return this.imageField;
-            }
-            set
-            {
-                this.imageField = value;
-            }
-        }
+        public lfmResultsTrackImage[] image { get; set; }
 
         /// <remarks/>
-        public string mbid
-        {
-            get
-            {
-                return this.mbidField;
-            }
-            set
-            {
-                this.mbidField = value;
-            }
-        }
+        public string mbid { get; set; }
     }
 
     /// <remarks/>
     [XmlType(AnonymousType = true)]
     public partial class lfmResultsTrackStreamable
     {
-
-        private byte fulltrackField;
-
-        private byte valueField;
-
         /// <remarks/>
         [XmlAttribute()]
-        public byte fulltrack
-        {
-            get
-            {
-                return this.fulltrackField;
-            }
-            set
-            {
-                this.fulltrackField = value;
-            }
-        }
+        public byte fulltrack { get; set; }
 
         /// <remarks/>
         [XmlText()]
-        public byte Value
-        {
-            get
-            {
-                return this.valueField;
-            }
-            set
-            {
-                this.valueField = value;
-            }
-        }
+        public byte Value { get; set; }
     }
 
     /// <remarks/>
     [XmlType(AnonymousType = true)]
     public partial class lfmResultsTrackImage
     {
-
-        private string sizeField;
-
-        private string valueField;
-
         /// <remarks/>
         [XmlAttribute()]
-        public string size
-        {
-            get
-            {
-                return this.sizeField;
-            }
-            set
-            {
-                this.sizeField = value;
-            }
-        }
+        public string size { get; set; }
 
         /// <remarks/>
         [XmlText()]
-        public string Value
-        {
-            get
-            {
-                return this.valueField;
-            }
-            set
-            {
-                this.valueField = value;
-            }
-        }
+        public string Value { get; set; }
     }
 
 

@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Diagnostics;
-using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Media;
-using Hurricane.Music.Data;
 using Hurricane.Utilities;
 
 namespace Hurricane.Settings.Converter

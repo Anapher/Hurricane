@@ -76,7 +76,7 @@
                                                             <MultiDataTrigger.Conditions>
                                                                 <Condition Binding="{Binding IsDefault}" Value="True"/>
                                                                 <Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=FrameworkElement},Converter={StaticResource ComboBoxForegroundConverter}}" Value="True"/>
-                                                                <Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=ComboBox},Path=SelectedItem.IsDefault}" Value="true"/>
+                                                                <Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=ComboBox},Path=DataContext.SelectedAudioDevice.IsDefault}" Value="true"/>
                                                             </MultiDataTrigger.Conditions>
                                                             <Setter TargetName="txt" Property="Foreground" Value="White"/>
                                                         </MultiDataTrigger>

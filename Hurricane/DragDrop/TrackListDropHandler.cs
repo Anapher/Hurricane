@@ -27,7 +27,7 @@ namespace Hurricane.DragDrop
             {
                 var track = (PlayableBase)dropInfo.Data;
                 int newIndex;
-                var currentIndex = collection.IndexOf(track);
+                var currentIndex = dropInfo.DragInfo.SourceIndex;
 
                 if (dropInfo.InsertIndex > collection.Count - 1)
                 {
@@ -64,6 +64,11 @@ namespace Hurricane.DragDrop
                 if (tracks.Any(track => collection.IndexOf(track) == index))
                 {
                     return;
+                }
+
+                if (index < collection.IndexOf(tracks[0]))
+                {
+                    tracks.Reverse();
                 }
                 
                 foreach (var track in tracks)

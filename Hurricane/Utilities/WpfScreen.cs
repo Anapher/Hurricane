@@ -49,18 +49,35 @@ namespace Hurricane.Utilities
             }
         }
 
-        protected static double allscreenswidth = -1;
-        public static double AllScreensWidth
+        private static double? _mostRightX;
+        public static double MostRightX
         {
             get
             {
-                if (allscreenswidth == -1)
+                if (!_mostRightX.HasValue)
                 {
-                    allscreenswidth = 0;
                     foreach (var screen in AllScreens())
-                        allscreenswidth += screen.WorkingArea.Width;
+                    {
+                        if (_mostRightX == null || _mostLeftX > screen.WorkingArea.X) _mostRightX = screen.WorkingArea.X + screen.WorkingArea.Width;
+                    }
                 }
-                return allscreenswidth;
+                return _mostRightX.Value;
+            }
+        }
+
+        private static double? _mostLeftX;
+        public static double MostLeftX
+        {
+            get
+            {
+                if (!_mostLeftX.HasValue)
+                {
+                    foreach (var screen in AllScreens())
+                    {
+                        if (_mostLeftX == null || _mostLeftX > screen.WorkingArea.X) _mostLeftX = screen.WorkingArea.X;
+                    }
+                }
+                return _mostLeftX.Value;
             }
         }
 

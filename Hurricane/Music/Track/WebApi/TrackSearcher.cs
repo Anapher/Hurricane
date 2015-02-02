@@ -172,6 +172,8 @@ namespace Hurricane.Music.Track.WebApi
                     ViewModels.MainViewModel.Instance.MainTabControlIndex = 0;
                     _manager.SelectedPlaylist = playlist;
                     _manager.SelectedTrack = track;
+                    _manager.SaveToSettings();
+                    HurricaneSettings.Instance.Save();
                 }));
             }
         }

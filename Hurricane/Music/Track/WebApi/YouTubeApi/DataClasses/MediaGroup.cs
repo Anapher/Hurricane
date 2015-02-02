@@ -16,5 +16,8 @@ namespace Hurricane.Music.Track.WebApi.YouTubeApi.DataClasses
 
         [JsonProperty("media$title")]
         public MediaTitle Title { get; set; }
+
+        [JsonProperty("media$description")]
+            public MediaDescription Description { get; set; }
     }
 }

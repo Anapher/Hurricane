@@ -77,7 +77,7 @@ namespace Hurricane
 
             if (appsettings.ApplicationState.CurrentSide == DockingSide.None)
             {
-                if (appsettings.ApplicationState.Left < WpfScreen.AllScreensWidth) //To prevent that the window is out of view when the user unplugs a monitor
+                if (appsettings.ApplicationState.Left < WpfScreen.MostRightX) //To prevent that the window is out of view when the user unplugs a monitor
                 {
                     Height = appsettings.ApplicationState.Height;
                     Width = appsettings.ApplicationState.Width;

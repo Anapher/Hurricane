@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Windows;
 using System.Windows.Input;
 using Hurricane.Settings;
@@ -66,12 +65,12 @@ namespace Hurricane.MagicArrow.DockManager
 
         protected bool MouseIsLeftRightOrTop(int MouseX, int MouseY, out WindowPositionSide? side)
         {
-            if (MouseX < 5)
+            if (MouseX < WpfScreen.MostLeftX + 5)
             {
                 side = WindowPositionSide.Left;
                 return true;
             }
-            if (MouseX >= WpfScreen.AllScreensWidth - 5)
+            if (MouseX >= WpfScreen.MostRightX - 5)
             {
                 side = WindowPositionSide.Right;
                 return true;
@@ -87,7 +86,7 @@ namespace Hurricane.MagicArrow.DockManager
 
         protected bool WindowIsLeftOrRight()
         {
-            return basewindow.Left == 0 || (basewindow.Left == WpfScreen.AllScreensWidth - basewindow.Width);
+            return basewindow.Left == WpfScreen.MostLeftX || (basewindow.Left == WpfScreen.MostRightX - basewindow.Width);
         }
 
         void HookManager_MouseMove(object sender, MouseEventArgs e)
@@ -166,11 +165,11 @@ namespace Hurricane.MagicArrow.DockManager
             switch (side)
             {
                 case WindowPositionSide.Left:
-                    dockwindowLeft = 0;
+                    dockwindowLeft = WpfScreen.MostLeftX;
                     dockwindowWidth = 300;
                     break;
                 case WindowPositionSide.Right:
-                    dockwindowLeft = WpfScreen.AllScreensWidth - 300;
+                    dockwindowLeft = WpfScreen.MostRightX - 300;
                     dockwindowWidth = 300;
                     break;
                 case WindowPositionSide.Top:
@@ -219,7 +218,7 @@ namespace Hurricane.MagicArrow.DockManager
         {
             if (CurrentSide == DockingSide.Left || CurrentSide == DockingSide.Right)
             {
-                basewindow.Left = CurrentSide == DockingSide.Left ? 0 : WpfScreen.AllScreensWidth - 300;
+                basewindow.Left = CurrentSide == DockingSide.Left ? WpfScreen.MostLeftX : WpfScreen.MostRightX - 300;
                 var screen = WpfScreen.GetScreenFrom(new Point(basewindow.Left, 0));
                 basewindow.Top = screen.WorkingArea.Top;
                 WindowHeight = screen.WorkingArea.Height;

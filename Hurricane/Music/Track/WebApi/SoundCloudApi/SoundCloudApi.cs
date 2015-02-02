@@ -63,7 +63,8 @@ namespace Hurricane.Music.Track.WebApi.SoundCloudApi
                         Views = (uint)result.playback_count,
                         ImageUrl = result.artwork_url,
                         Url = result.permalink_url,
-                        Genres = result.genre
+                        Genres = result.genre,
+                        Description = result.description
                     };
                 }
                 catch (Exception)
@@ -110,7 +111,8 @@ namespace Hurricane.Music.Track.WebApi.SoundCloudApi
                     Views = (uint)x.playback_count,
                     ImageUrl = x.artwork_url,
                     Url = x.permalink_url,
-                    Genres = x.genre
+                    Genres = x.genre,
+                    Description = x.description
                 }).Cast<WebTrackResultBase>().ToList();
             }
         }

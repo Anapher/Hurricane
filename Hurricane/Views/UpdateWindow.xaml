@@ -4,11 +4,16 @@
         xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
         xmlns:converter="clr-namespace:Hurricane.Extensions.Converter"
         xmlns:ex="clr-namespace:Hurricane.Extensions"
-        Title="{StaticResource UpdatesAvailable}" Width="454" GlowBrush="{StaticResource AccentColorBrush}" ResizeMode="NoResize" SizeToContent="Height" x:Name="window" WindowStartupLocation="CenterScreen" Icon="/Resources/GUI/updater.ico" ShowIconOnTitleBar="False">
+        Title="{StaticResource UpdatesAvailable}" Width="670" GlowBrush="{StaticResource AccentColorBrush}" ResizeMode="NoResize" x:Name="window" WindowStartupLocation="CenterScreen" Icon="/Resources/GUI/updater.ico" ShowIconOnTitleBar="False" Height="405">
     <Window.Resources>
         <converter:RoundSizeConverter x:Key="RoundSizeConverter"/>
     </Window.Resources>
     <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
         <StackPanel Orientation="Vertical">
             <Grid>
                 <Grid.ColumnDefinitions>
@@ -26,8 +31,12 @@
                 <TextBlock Text="{StaticResource NewVersion}"/>
                 <TextBlock Grid.Column="1" Text="{Binding ElementName=window,Path=UpdateService.NewVersion}"/>
             </Grid>
-            <TextBlock Text="{StaticResource Changelog}" Margin="0,15,0,0"/>
-            <TextBox Height="100" Margin="0,5,0,0" IsReadOnly="True" Text="{Binding ElementName=window,Path=UpdateService.Changelog,Mode=OneWay}"/>
+            <Separator Margin="0,5,0,0"/>
+        </StackPanel>
+        <ScrollViewer Grid.Row="1" Margin="0,10,0,0">
+            <TextBlock ex:TextBlockTextFormat.FormattedText="{Binding ElementName=window,Path=UpdateService.Changelog}"/>
+        </ScrollViewer>
+        <StackPanel Orientation="Vertical" Grid.Row="2">
             <Grid Margin="0,5,0,0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="100"/>
@@ -44,7 +53,7 @@
                 <controls:MetroProgressBar VerticalAlignment="Center" Value="{Binding ElementName=window,Path=UpdateService.ProgressState}" Foreground="{StaticResource NormalColorBrush}"/>
                 <Button Style="{DynamicResource MetroCircleButtonStyle}" Width="24" Height="24" Grid.Column="1" x:Name="btncancel" Click="btncancel_Click">
                     <Viewbox Width="6" Height="6" Stretch="UniformToFill">
-                        <Path Data="{StaticResource VectorX}"/>
+                        <Path Data="{StaticResource VectorX}" Fill="{StaticResource GrayBrush1}"/>
                     </Viewbox>
                 </Button>
             </Grid>

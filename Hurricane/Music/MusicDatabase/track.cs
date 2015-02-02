@@ -4,504 +4,136 @@ namespace Hurricane.Music.MusicDatabase
 {
     public partial class lfm
     {
-
-        private lfmTrack trackField;
-
         /// <remarks/>
-        public lfmTrack track
-        {
-            get
-            {
-                return this.trackField;
-            }
-            set
-            {
-                this.trackField = value;
-            }
-        }
+        public lfmTrack track { get; set; }
     }
 
     /// <remarks/>
     [XmlType(AnonymousType = true)]
     public partial class lfmTrack
     {
-
-        private long idField;
-
-        private string nameField;
-
-        private object mbidField;
-
-        private string urlField;
-
-        private long durationField;
-
-        private lfmTrackStreamable streamableField;
-
-        private long playcountField;
-
-        private lfmTrackArtist artistField;
-
-        private lfmTrackAlbum albumField;
-
-        private lfmTrackTag[] toptagsField;
-
-        private lfmTrackWiki wikiField;
+        /// <remarks/>
+        public long id { get; set; }
 
         /// <remarks/>
-        public long id
-        {
-            get
-            {
-                return this.idField;
-            }
-            set
-            {
-                this.idField = value;
-            }
-        }
+        public string name { get; set; }
 
         /// <remarks/>
-        public string name
-        {
-            get
-            {
-                return this.nameField;
-            }
-            set
-            {
-                this.nameField = value;
-            }
-        }
+        public object mbid { get; set; }
 
         /// <remarks/>
-        public object mbid
-        {
-            get
-            {
-                return this.mbidField;
-            }
-            set
-            {
-                this.mbidField = value;
-            }
-        }
+        public string url { get; set; }
 
         /// <remarks/>
-        public string url
-        {
-            get
-            {
-                return this.urlField;
-            }
-            set
-            {
-                this.urlField = value;
-            }
-        }
+        public long duration { get; set; }
 
         /// <remarks/>
-        public long duration
-        {
-            get
-            {
-                return this.durationField;
-            }
-            set
-            {
-                this.durationField = value;
-            }
-        }
+        public lfmTrackStreamable streamable { get; set; }
 
         /// <remarks/>
-        public lfmTrackStreamable streamable
-        {
-            get
-            {
-                return this.streamableField;
-            }
-            set
-            {
-                this.streamableField = value;
-            }
-        }
+        public long playcount { get; set; }
 
         /// <remarks/>
-        public long playcount
-        {
-            get
-            {
-                return this.playcountField;
-            }
-            set
-            {
-                this.playcountField = value;
-            }
-        }
+        public lfmTrackArtist artist { get; set; }
 
         /// <remarks/>
-        public lfmTrackArtist artist
-        {
-            get
-            {
-                return this.artistField;
-            }
-            set
-            {
-                this.artistField = value;
-            }
-        }
-
-        /// <remarks/>
-        public lfmTrackAlbum album
-        {
-            get
-            {
-                return this.albumField;
-            }
-            set
-            {
-                this.albumField = value;
-            }
-        }
+        public lfmTrackAlbum album { get; set; }
 
         /// <remarks/>
         [XmlArrayItem("tag", IsNullable = false)]
-        public lfmTrackTag[] toptags
-        {
-            get
-            {
-                return this.toptagsField;
-            }
-            set
-            {
-                this.toptagsField = value;
-            }
-        }
+        public lfmTrackTag[] toptags { get; set; }
 
         /// <remarks/>
-        public lfmTrackWiki wiki
-        {
-            get
-            {
-                return this.wikiField;
-            }
-            set
-            {
-                this.wikiField = value;
-            }
-        }
+        public lfmTrackWiki wiki { get; set; }
     }
 
     /// <remarks/>
     [XmlType(AnonymousType = true)]
     public partial class lfmTrackStreamable
     {
-
-        private byte fulltrackField;
-
-        private byte valueField;
-
         /// <remarks/>
         [XmlAttribute()]
-        public byte fulltrack
-        {
-            get
-            {
-                return this.fulltrackField;
-            }
-            set
-            {
-                this.fulltrackField = value;
-            }
-        }
+        public byte fulltrack { get; set; }
 
         /// <remarks/>
         [XmlText()]
-        public byte Value
-        {
-            get
-            {
-                return this.valueField;
-            }
-            set
-            {
-                this.valueField = value;
-            }
-        }
+        public byte Value { get; set; }
     }
 
     /// <remarks/>
     [XmlType(AnonymousType = true)]
     public partial class lfmTrackArtist
     {
-
-        private string nameField;
-
-        private string mbidField;
-
-        private string urlField;
+        /// <remarks/>
+        public string name { get; set; }
 
         /// <remarks/>
-        public string name
-        {
-            get
-            {
-                return this.nameField;
-            }
-            set
-            {
-                this.nameField = value;
-            }
-        }
+        public string mbid { get; set; }
 
         /// <remarks/>
-        public string mbid
-        {
-            get
-            {
-                return this.mbidField;
-            }
-            set
-            {
-                this.mbidField = value;
-            }
-        }
-
-        /// <remarks/>
-        public string url
-        {
-            get
-            {
-                return this.urlField;
-            }
-            set
-            {
-                this.urlField = value;
-            }
-        }
+        public string url { get; set; }
     }
 
     /// <remarks/>
     [XmlType(AnonymousType = true)]
     public partial class lfmTrackAlbum
     {
-
-        private string artistField;
-
-        private string titleField;
-
-        private string mbidField;
-
-        private string urlField;
-
-        private lfmTrackAlbumImage[] imageField;
-
-        private byte positionField;
+        /// <remarks/>
+        public string artist { get; set; }
 
         /// <remarks/>
-        public string artist
-        {
-            get
-            {
-                return this.artistField;
-            }
-            set
-            {
-                this.artistField = value;
-            }
-        }
+        public string title { get; set; }
 
         /// <remarks/>
-        public string title
-        {
-            get
-            {
-                return this.titleField;
-            }
-            set
-            {
-                this.titleField = value;
-            }
-        }
+        public string mbid { get; set; }
 
         /// <remarks/>
-        public string mbid
-        {
-            get
-            {
-                return this.mbidField;
-            }
-            set
-            {
-                this.mbidField = value;
-            }
-        }
-
-        /// <remarks/>
-        public string url
-        {
-            get
-            {
-                return this.urlField;
-            }
-            set
-            {
-                this.urlField = value;
-            }
-        }
+        public string url { get; set; }
 
         /// <remarks/>
         [XmlElement("image")]
-        public lfmTrackAlbumImage[] image
-        {
-            get
-            {
-                return this.imageField;
-            }
-            set
-            {
-                this.imageField = value;
-            }
-        }
+        public lfmTrackAlbumImage[] image { get; set; }
 
         /// <remarks/>
         [XmlAttribute()]
-        public byte position
-        {
-            get
-            {
-                return this.positionField;
-            }
-            set
-            {
-                this.positionField = value;
-            }
-        }
+        public byte position { get; set; }
     }
 
     /// <remarks/>
     [XmlType(AnonymousType = true)]
     public partial class lfmTrackAlbumImage
     {
-
-        private string sizeField;
-
-        private string valueField;
-
         /// <remarks/>
         [XmlAttribute()]
-        public string size
-        {
-            get
-            {
-                return this.sizeField;
-            }
-            set
-            {
-                this.sizeField = value;
-            }
-        }
+        public string size { get; set; }
 
         /// <remarks/>
         [XmlText()]
-        public string Value
-        {
-            get
-            {
-                return this.valueField;
-            }
-            set
-            {
-                this.valueField = value;
-            }
-        }
+        public string Value { get; set; }
     }
 
     /// <remarks/>
     [XmlType(AnonymousType = true)]
     public partial class lfmTrackTag
     {
-
-        private string nameField;
-
-        private string urlField;
+        /// <remarks/>
+        public string name { get; set; }
 
         /// <remarks/>
-        public string name
-        {
-            get
-            {
-                return this.nameField;
-            }
-            set
-            {
-                this.nameField = value;
-            }
-        }
-
-        /// <remarks/>
-        public string url
-        {
-            get
-            {
-                return this.urlField;
-            }
-            set
-            {
-                this.urlField = value;
-            }
-        }
+        public string url { get; set; }
     }
 
     /// <remarks/>
     [XmlType(AnonymousType = true)]
     public partial class lfmTrackWiki
     {
-
-        private string publishedField;
-
-        private string summaryField;
-
-        private string contentField;
+        /// <remarks/>
+        public string published { get; set; }
 
         /// <remarks/>
-        public string published
-        {
-            get
-            {
-                return this.publishedField;
-            }
-            set
-            {
-                this.publishedField = value;
-            }
-        }
+        public string summary { get; set; }
 
         /// <remarks/>
-        public string summary
-        {
-            get
-            {
-                return this.summaryField;
-            }
-            set
-            {
-                this.summaryField = value;
-            }
-        }
-
-        /// <remarks/>
-        public string content
-        {
-            get
-            {
-                return this.contentField;
-            }
-            set
-            {
-                this.contentField = value;
-            }
-        }
+        public string content { get; set; }
     }
 }
