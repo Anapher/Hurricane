@@ -26,7 +26,7 @@
             <ColumnDefinition Width="200"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-        <ListBox x:Name="lst" SelectedIndex="{Binding SelectedTab}">
+        <ListBox x:Name="lst" SelectedIndex="{Binding SelectedTab}" Background="Transparent">
             <ListBoxItem Content="{DynamicResource Playback}"/>
             <ListBoxItem Content="{DynamicResource Appearance}"/>
             <ListBoxItem Content="{DynamicResource Behaviour}"/>
@@ -146,41 +146,45 @@
                 </ScrollViewer>
             </TabItem>
             <TabItem Header="Appearance">
-                <StackPanel Orientation="Vertical" Margin="10">
-                    <TextBlock Style="{StaticResource TextBlockHeader}" extensions:TextBlockHelper.UpperText="{DynamicResource Theme}"/>
-                    <StackPanel Orientation="Vertical" Margin="0,10,0,0">
-                        <StackPanel.Resources>
-                            <converter:BaseThemeToIndexConverter x:Key="BaseThemeToIndexConverter"/>
-                        </StackPanel.Resources>
-                        <TextBlock Text="{DynamicResource BaseTheme}" VerticalAlignment="Center"/>
-                        <ComboBox Margin="0,5,0,0" Width="100" HorizontalAlignment="Left" SelectedIndex="{Binding Config.Theme.BaseTheme,Converter={StaticResource BaseThemeToIndexConverter}}" SelectionChanged="SettingChanged">
-                            <ComboBoxItem Content="{DynamicResource Light}"/>
-                            <ComboBoxItem Content="{DynamicResource Dark}"/>
-                        </ComboBox>
+                <ScrollViewer>
+                    <StackPanel Orientation="Vertical" Margin="10">
+                        <TextBlock Style="{StaticResource TextBlockHeader}" extensions:TextBlockHelper.UpperText="{DynamicResource Theme}"/>
+                        <StackPanel Orientation="Vertical" Margin="0,10,0,0">
+                            <StackPanel.Resources>
+                                <converter:BaseThemeToIndexConverter x:Key="BaseThemeToIndexConverter"/>
+                            </StackPanel.Resources>
+                            <TextBlock Text="{DynamicResource BaseTheme}" VerticalAlignment="Center"/>
+                            <ComboBox Margin="0,5,0,0" Width="100" HorizontalAlignment="Left" SelectedIndex="{Binding Config.Theme.BaseTheme,Converter={StaticResource BaseThemeToIndexConverter}}" SelectionChanged="SettingChanged">
+                                <ComboBoxItem Content="{DynamicResource Light}"/>
+                                <ComboBoxItem Content="{DynamicResource Dark}"/>
+                            </ComboBox>
+                        </StackPanel>
+                        <TextBlock Text="{DynamicResource ColorTheme}" Margin="0,15,0,0"/>
+                        <WrapPanel Orientation="Horizontal">
+                            <ComboBox Margin="0,5,10,0" x:Name="cbb" ItemsSource="{Binding Config.Theme.Themes}" SelectedItem="{Binding Config.Theme.SelectedColorTheme}" SelectionChanged="SettingChanged" Width="300" HorizontalAlignment="Left">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <DockPanel>
+                                            <Ellipse Width="16" Height="16" Fill="{Binding ColorBrush}"/>
+                                            <TextBlock Text="{Binding TranslatedName}" Margin="10,0,0,0"/>
+                                        </DockPanel>
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
+                            <Button Margin="0,5,0,0" Content="{DynamicResource Edit}" IsEnabled="{Binding ElementName=cbb,Path=SelectedItem.IsEditable}" VerticalAlignment="Bottom" Command="{Binding EditTheme}"/>
+                            <Button Margin="10,5,0,0" Content="{DynamicResource Create}" VerticalAlignment="Bottom" Command="{Binding OpenThemeCreator}"/>
+                        </WrapPanel>
+                        <DockPanel Margin="0,10,0,0">
+                            <CheckBox Content="{DynamicResource SpectrumAnalyzerColor}" VerticalAlignment="Center" IsChecked="{Binding Config.Theme.UseCustomSpectrumAnalyzerColor}" Checked="SettingChanged" Unchecked="SettingChanged"/>
+                            <tkt:ColorPicker Margin="10,0,0,0" Width="150" HorizontalAlignment="Left" IsEnabled="{Binding Config.Theme.UseCustomSpectrumAnalyzerColor}" SelectedColor="{Binding Config.Theme.SpectrumAnalyzerColor}" SelectedColorChanged="SettingChanged" ColorMode="ColorCanvas" ShowStandardColors="False" ShowAvailableColors="False" ShowAdvancedButton="False"/>
+                        </DockPanel>
+                        <TextBlock Text="{DynamicResource Background}" Margin="0,10,0,0"/>
+                        <TextBox Margin="0,5,0,0"/>
+                        <TextBlock Style="{StaticResource TextBlockHeader}" extensions:TextBlockHelper.UpperText="{DynamicResource View}" Margin="0,30,0,0"/>
+                        <CheckBox Margin="0,10,0,0" Content="{DynamicResource ShowArtistAndTitle}" IsChecked="{Binding Config.ShowArtistAndTitle}" Checked="SettingChanged" Unchecked="SettingChanged"/>
+                        <CheckBox Margin="0,10,0,0" Content="{DynamicResource UseThinHeaders}" IsChecked="{Binding Config.UseThinHeaders}" Checked="SettingChanged" Unchecked="SettingChanged"/>
                     </StackPanel>
-                    <TextBlock Text="{DynamicResource ColorTheme}" Margin="0,15,0,0"/>
-                    <WrapPanel Orientation="Horizontal">
-                        <ComboBox Margin="0,5,10,0" x:Name="cbb" ItemsSource="{Binding Config.Theme.Themes}" SelectedItem="{Binding Config.Theme.SelectedColorTheme}" SelectionChanged="SettingChanged" Width="300" HorizontalAlignment="Left">
-                            <ComboBox.ItemTemplate>
-                                <DataTemplate>
-                                    <DockPanel>
-                                        <Ellipse Width="16" Height="16" Fill="{Binding ColorBrush}"/>
-                                        <TextBlock Text="{Binding TranslatedName}" Margin="10,0,0,0"/>
-                                    </DockPanel>
-                                </DataTemplate>
-                            </ComboBox.ItemTemplate>
-                        </ComboBox>
-                        <Button Margin="0,5,0,0" Content="{DynamicResource Edit}" IsEnabled="{Binding ElementName=cbb,Path=SelectedItem.IsEditable}" VerticalAlignment="Bottom" Command="{Binding EditTheme}"/>
-                        <Button Margin="10,5,0,0" Content="{DynamicResource Create}" VerticalAlignment="Bottom" Command="{Binding OpenThemeCreator}"/>
-                    </WrapPanel>
-                    <DockPanel Margin="0,10,0,0">
-                        <CheckBox Content="{DynamicResource SpectrumAnalyzerColor}" VerticalAlignment="Center" IsChecked="{Binding Config.Theme.UseCustomSpectrumAnalyzerColor}" Checked="SettingChanged" Unchecked="SettingChanged"/>
-                        <tkt:ColorPicker Margin="10,0,0,0" Width="150" HorizontalAlignment="Left" IsEnabled="{Binding Config.Theme.UseCustomSpectrumAnalyzerColor}" SelectedColor="{Binding Config.Theme.SpectrumAnalyzerColor}" SelectedColorChanged="SettingChanged" ColorMode="ColorCanvas" ShowStandardColors="False" ShowAvailableColors="False" ShowAdvancedButton="False"/>
-                    </DockPanel>
-                    <TextBlock Style="{StaticResource TextBlockHeader}" extensions:TextBlockHelper.UpperText="{DynamicResource View}" Margin="0,30,0,0"/>
-                    <CheckBox Margin="0,10,0,0" Content="{DynamicResource ShowArtistAndTitle}" IsChecked="{Binding Config.ShowArtistAndTitle}" Checked="SettingChanged" Unchecked="SettingChanged"/>
-                    <CheckBox Margin="0,10,0,0" Content="{DynamicResource UseThinHeaders}" IsChecked="{Binding Config.UseThinHeaders}" Checked="SettingChanged" Unchecked="SettingChanged"/>
-                </StackPanel>
+                </ScrollViewer>
             </TabItem>
             <TabItem Header="Behaviour">
                 <ScrollViewer>
@@ -301,7 +305,7 @@
                 </StackPanel>
             </TabItem>
             <TabItem Header="Language">
-                <ListBox ItemsSource="{Binding Config.Languages}" SelectedItem="{Binding CurrentLanguage}" Margin="5">
+                <ListBox ItemsSource="{Binding Config.Languages}" SelectedItem="{Binding CurrentLanguage}" Margin="5" Background="Transparent">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <Grid Margin="4">
@@ -320,7 +324,7 @@
                 </ListBox>
             </TabItem>
             <TabItem Header="About">
-                <userControls:AboutView />
+                <userControls:AboutView Margin="5"/>
             </TabItem>
         </TabControl>
     </Grid>

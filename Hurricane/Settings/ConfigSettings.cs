@@ -169,6 +169,7 @@ namespace Hurricane.Settings
             IsCrossfadeEnabled = false;
             CrossfadeDuration = 6;
             Downloader = new DownloadManager();
+            UseThinHeaders = true;
         }
 
         public ConfigSettings()

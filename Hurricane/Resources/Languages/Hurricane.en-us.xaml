@@ -285,4 +285,7 @@
     <system:String x:Key="UseThinHeaders">Use thin font weight for headers</system:String>
     <system:String x:Key="DownloadAllStreams">Download all streams</system:String>
     <system:String x:Key="SoundCloudLink">SoundCloud link</system:String>
+
+    <!-- 0.3.2 -->
+    <system:String x:Key="Background">Background</system:String>
 </ResourceDictionary>

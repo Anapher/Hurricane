@@ -80,7 +80,19 @@ namespace Hurricane.Music.Playlist
             DispatcherTimer tmr = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(500) };
             tmr.Tick += (s, e) =>
             {
-                Tracks.Remove(track);
+                if (!track.TrackExists)
+                {
+                    for (int i = 0; i < Tracks.Count; i++)
+                    {
+                        if (Tracks[i].AuthenticationCode == track.AuthenticationCode)
+                        {
+                            Tracks.RemoveAt(i);
+                            break;
+                        }
+                    }
+                }
+                else { Tracks.Remove(track); }
+                
                 tmr.Stop();
                 track.IsRemoving = false; //The track could be also in another playlist
             };

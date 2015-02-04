@@ -72,7 +72,6 @@ namespace Hurricane.ViewModels
                     bool haveToUpdateSountOut = Config.SoundOutDeviceID != original.SoundOutDeviceID ||
                                                 Config.SoundOutMode != original.SoundOutMode;
 
-
                     PropertiesCopier.CopyProperties(Config, original);
 
                     if (haveToChangeColorTheme || haveToChangeBaseTheme)

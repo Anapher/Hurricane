@@ -302,6 +302,9 @@
     <Compile Include="Views\TagEditorWindow.xaml.cs">
       <DependentUpon>TagEditorWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Test\PositionTestWindow.xaml.cs">
+      <DependentUpon>PositionTestWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Tools\LanguageCreatorWindow.xaml.cs">
       <DependentUpon>LanguageCreatorWindow.xaml</DependentUpon>
     </Compile>
@@ -535,6 +538,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\TagEditorWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Test\PositionTestWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -41,6 +41,14 @@ namespace Hurricane.Views.UserControls
                 },
                 new Component()
                 {
+                    Name = "FFmpeg",
+                    Url = "http://ffmpeg.org/",
+                    LicenceUrl = "https://www.ffmpeg.org/legal.html",
+                    Description =
+                        "FFmpeg is a complete, cross-platform solution to record, convert and stream audio and video."
+                },
+                new Component()
+                {
                     Name = "GongSolutions.WPF.DragDrop",
                     Url = "https://punker76.github.io/gong-wpf-dragdrop/",
                     LicenceUrl = "https://github.com/punker76/gong-wpf-dragdrop/blob/master/LICENSE",

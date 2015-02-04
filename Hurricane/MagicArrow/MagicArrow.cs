@@ -29,12 +29,11 @@ namespace Hurricane.MagicArrow
         #region Eventhandler
         void Application_Deactivated(object sender, EventArgs e)
         {
-            var erst = DockManager.CurrentSide != DockingSide.None;
-            var zwei = _movedoutside == Side.Left
+            var first = DockManager.CurrentSide != DockingSide.None;
+            var secound = _movedoutside == Side.Left
                 ? BaseWindow.Left >= WpfScreen.MostLeftX
                 : BaseWindow.Left <= WpfScreen.MostRightX;
-            if (erst &&
-                 zwei) //(BaseWindow.ActualHeight == WpfScreen.GetScreenFrom(new Point(BaseWindow.Left, 0)).WorkingArea.Height && (BaseWindow.Left == 0 || BaseWindow.Left == maxwidth - 300) && BaseWindow.Top == 0)
+            if (first && secound) //(BaseWindow.ActualHeight == WpfScreen.GetScreenFrom(new Point(BaseWindow.Left, 0)).WorkingArea.Height && (BaseWindow.Left == 0 || BaseWindow.Left == maxwidth - 300) && BaseWindow.Top == 0)
             {
                 //The window is at a good site
                 MoveWindowOutOfScreen(BaseWindow.Left == WpfScreen.MostLeftX ? Side.Left : Side.Right);
@@ -261,10 +260,6 @@ namespace Hurricane.MagicArrow
             DockManager = new DockManager.DockManager(BaseWindow);
             _activewindowhook = new ActiveWindowHook();
             _activewindowhook.ActiveWindowChanged += activewindowhook_ActiveWindowChanged;
-
-            //MessageBox.Show(
-    //string.Format(
-      //  "Folgende Daten wurden erkannt: \rLinkeste X-Koordinate: {0}\rRechteste X-Koordinate: {1}", WpfScreen.MostLeftX, WpfScreen.MostRightX));
         }
 
         public void Unregister()

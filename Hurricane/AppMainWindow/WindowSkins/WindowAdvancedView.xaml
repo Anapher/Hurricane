@@ -34,7 +34,8 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
-        <Grid MouseLeftButtonDown="Titlebar_MouseLeftButtonDown" MouseLeftButtonUp="Titlebar_MouseLeftButtonUp" MouseMove="Titlebar_OnMouseMove" Background="{StaticResource WhiteColorBrush}">
+
+        <Grid MouseLeftButtonDown="Titlebar_MouseLeftButtonDown" MouseLeftButtonUp="Titlebar_MouseLeftButtonUp" MouseMove="Titlebar_OnMouseMove" Background="{StaticResource WhiteColorBrush}" Opacity="0.01">
             <TextBlock Text="Hurricane" Foreground="#FFAAAAAA" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Center"/>
         </Grid>
         <TabControl Grid.Row="1" SelectedIndex="{Binding MainTabControlIndex}" controls:ControlsHelper.HeaderFontSize="13">
@@ -77,14 +78,14 @@
                         <RowDefinition Height="30"/>
                         <RowDefinition />
                     </Grid.RowDefinitions>
-                    <Menu Grid.ColumnSpan="3">
-                        <MenuItem Header="{DynamicResource Playlist}">
+                    <Menu Grid.ColumnSpan="3" Background="Transparent">
+                        <MenuItem Header="{DynamicResource Playlist}" Background="Transparent">
                             <MenuItem Header="{DynamicResource NewPlaylist}" Command="{Binding AddNewPlaylist}"/>
                             <Separator />
                             <MenuItem Header="{DynamicResource RemovePlaylist}" Command="{Binding RemovePlaylist}" IsEnabled="{Binding MusicManager.SelectedPlaylist.CanEdit}"/>
                             <MenuItem Header="{DynamicResource RenamePlaylist}" Command="{Binding RenamePlaylist}"  IsEnabled="{Binding MusicManager.SelectedPlaylist.CanEdit}"/>
                         </MenuItem>
-                        <MenuItem Header="{DynamicResource Tracks}">
+                        <MenuItem Header="{DynamicResource Tracks}" Background="Transparent">
                             <MenuItem Header="{DynamicResource AddFiles}" Command="{Binding AddFilesToPlaylist}" IsEnabled="{Binding MusicManager.SelectedPlaylist.CanEdit}"/>
                             <MenuItem Header="{DynamicResource AddDirectories}" Command="{Binding AddFolderToPlaylist}" IsEnabled="{Binding MusicManager.SelectedPlaylist.CanEdit}"/>
                             <Separator />
@@ -98,9 +99,9 @@
                                 <MenuItem Header="{DynamicResource RemoveAllTracks}" Command="{Binding ClearSelectedPlaylist}"/>
                             </MenuItem>
                         </MenuItem>
-                        <MenuItem Header="{DynamicResource Favorites}" Command="{Binding MusicManager.Commands.OpenFavorites}"/>
-                        <MenuItem Header="{DynamicResource Streams}" Command="{Binding OpenOnlineSection}"/>
-                        <MenuItem Header="{DynamicResource Downloads}" Command="{Binding OpenDownloadManager}">
+                        <MenuItem Header="{DynamicResource Favorites}" Command="{Binding MusicManager.Commands.OpenFavorites}" Background="Transparent"/>
+                        <MenuItem Header="{DynamicResource Streams}" Command="{Binding OpenOnlineSection}" Background="Transparent"/>
+                        <MenuItem Header="{DynamicResource Downloads}" Command="{Binding OpenDownloadManager}" Background="Transparent">
                             <MenuItem.Style>
                                 <Style TargetType="MenuItem" BasedOn="{StaticResource MetroMenuItem}">
                                     <Setter Property="Visibility" Value="Collapsed"/>
@@ -114,7 +115,7 @@
                         </MenuItem>
                     </Menu>
                     <TextBox Grid.Column="3" Margin="0,0,10,0" x:Name="txtSearch" VerticalAlignment="Center" controls:TextBoxHelper.ClearTextButton="True" HorizontalAlignment="Right" Width="200" controls:TextBoxHelper.Watermark="{StaticResource Search}" Text="{Binding MusicManager.SelectedPlaylist.SearchText,UpdateSourceTrigger=PropertyChanged}"/>
-                    <ListBox Grid.Row="1" DisplayMemberPath="Name" SelectedItem="{Binding MusicManager.SelectedPlaylist}" Margin="5" ItemsSource="{Binding MusicManager.Playlists}"
+                    <ListBox Grid.Row="1" DisplayMemberPath="Name" SelectedItem="{Binding MusicManager.SelectedPlaylist}" Margin="5" ItemsSource="{Binding MusicManager.Playlists}" Background="Transparent"
                              dd:DragDrop.IsDragSource="True" dd:DragDrop.IsDropTarget="True" dd:DragDrop.DropHandler="{Binding PlaylistListDropHandler}" dd:DragDrop.DragAdornerTemplate="{StaticResource DragAdornerPlaylist}" dd:DragDrop.DefaultDragAdornerOpacity=".8">
                         <ListBox.InputBindings>
                             <KeyBinding Key="Delete" Command="{Binding RemovePlaylist}"/>
@@ -138,7 +139,7 @@
                             <RowDefinition Height="auto"/>
                         </Grid.RowDefinitions>
                         <Grid>
-                            <extensions:AnimatedListView SelectionMode="Extended" ItemsSource="{Binding MusicManager.SelectedPlaylist.ViewSource}" SelectedItem="{Binding MusicManager.SelectedTrack}" BorderThickness="0" SelectionChanged="ListView_SelectionChanged"
+                            <extensions:AnimatedListView SelectionMode="Extended" ItemsSource="{Binding MusicManager.SelectedPlaylist.ViewSource}" SelectedItem="{Binding MusicManager.SelectedTrack}" BorderThickness="0" SelectionChanged="ListView_SelectionChanged" Background="Transparent"
                                   DragEnter="ListView_DragEnter" Drop="ListView_Drop" x:Name="listview" ctrl:ListViewLayoutManager.Enabled="True" Style="{StaticResource VisualizingListView}" dd:DragDrop.IsDragSource="True" dd:DragDrop.IsDropTarget="True" dd:DragDrop.DragAdornerTemplate="{StaticResource DragAdornerTrack}" dd:DragDrop.DropHandler="{Binding TrackListDropHandler}">
                                 <ListView.Resources>
                                     <ContextMenu x:Key="FileContextMenu" DataContext="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}, Path=DataContext}">
@@ -934,7 +935,7 @@
                             <MouseBinding MouseAction="LeftClick" Command="{Binding ToggleVolume}"/>
                         </Image.InputBindings>
                     </Image>
-                    <Slider x:Name="volumeslider" Maximum="1" Minimum="0" IsMoveToPointEnabled="True" Style="{StaticResource AdvancedTimelineSlider}" VerticalAlignment="Center" LargeChange="0.1" Value="{Binding MusicManager.CSCoreEngine.Volume}"/>
+                    <Slider x:Name="volumeslider" Maximum="1" Minimum="0" IsMoveToPointEnabled="True" Style="{StaticResource AdvancedTimelineSlider}" VerticalAlignment="Center" LargeChange="0.1" Value="{Binding MusicManager.CSCoreEngine.Volume}" extensions:SliderExtensions.MoveToPointOnDrag="True"/>
                 </DockPanel>
             </Grid>
         </Grid>

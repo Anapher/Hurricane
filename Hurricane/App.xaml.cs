@@ -54,6 +54,19 @@ namespace Hurricane
                         
                         Current.Shutdown();
                         return;
+                    case "/screenposition":
+                        MessageBox.Show(
+string.Format(
+"Left X: {0}\rRight X: {1}", Utilities.WpfScreen.MostLeftX, Utilities.WpfScreen.MostRightX));
+                        Current.Shutdown();
+                        return;
+                    case "/showlines":
+                        MagicArrow.StrokeWindow.ShowLines = true;
+                        break;
+                    case "/positiontest":
+                        PositionTestWindow positionTest = new PositionTestWindow();
+                        positionTest.Show();
+                        return;
                     default:
                         openfile = true;
                         break;

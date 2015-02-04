@@ -17,6 +17,11 @@ namespace Hurricane.MagicArrow
             this.Height = height;
             this.SetValue(RenderOptions.EdgeModeProperty, EdgeMode.Aliased);
             this.CurrentSide = side;
+            if (ShowLines)
+            {
+                this.Opacity = 1;
+                this.Background = Brushes.Red;
+            }
         }
 
         public Side CurrentSide { get; set; }
@@ -47,5 +52,7 @@ namespace Hurricane.MagicArrow
         {
             return side == Side.Left ? position >= width : position <= screenwidth - width - 1;
         }
+
+        public static bool ShowLines { get; set; }
     }
 }

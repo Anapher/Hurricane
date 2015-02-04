@@ -54,7 +54,6 @@ namespace Hurricane.Music.Track
             Uploader = result.user.username;
             Downloadable = result.downloadable;
 
-
             kHz = soundSourceInfo.kHz;
             SetDuration(soundSourceInfo.Duration);
             return true;

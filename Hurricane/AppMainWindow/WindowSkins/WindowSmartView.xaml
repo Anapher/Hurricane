@@ -205,7 +205,7 @@
                                 <MouseBinding MouseAction="LeftClick" Command="{Binding ToggleVolume}"/>
                             </Image.InputBindings>
                         </Image>
-                        <Slider x:Name="volumeslider" Maximum="1" Minimum="0" IsMoveToPointEnabled="True" Style="{StaticResource VolumeSlider}" VerticalAlignment="Center" LargeChange="0.1" Value="{Binding MusicManager.CSCoreEngine.Volume}"/>
+                        <Slider x:Name="volumeslider" Maximum="1" Minimum="0" IsMoveToPointEnabled="True" Style="{StaticResource VolumeSlider}" VerticalAlignment="Center" LargeChange="0.1" Value="{Binding MusicManager.CSCoreEngine.Volume}" ex:SliderExtensions.MoveToPointOnDrag="True"/>
                     </DockPanel>
                     <StackPanel Orientation="Horizontal">
                         <StackPanel.Resources>

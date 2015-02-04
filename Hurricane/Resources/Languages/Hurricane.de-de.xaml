@@ -285,4 +285,7 @@
     <system:String x:Key="UseThinHeaders">Dünne Schriftstärke für das Hauptmenü verwenden</system:String>
     <system:String x:Key="DownloadAllStreams">Alle Streams herunterladen</system:String>
     <system:String x:Key="SoundCloudLink">SoundCloud Link</system:String>
+    
+    <!-- 0.3.2 -->
+    <system:String x:Key="Background">Hintergrundbild</system:String>
 </ResourceDictionary>
