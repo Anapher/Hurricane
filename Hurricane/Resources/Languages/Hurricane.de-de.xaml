@@ -288,4 +288,9 @@
     
     <!-- 0.3.2 -->
     <system:String x:Key="Background">Hintergrundbild</system:String>
+    <system:String x:Key="AllPictureFiles">Alle Bilddateien</system:String>
+    <system:String x:Key="MinimizeToTray">In den Tray minimieren</system:String>
+    <system:String x:Key="NotifyIfMinimizeToTray">Benachrichtigung anzeigen, wenn in den Tray minimiert wird</system:String>
+    <system:String x:Key="MinimizeToTrayNotification">Hurricane wurde in den Tray minimiert und kann durch einen Doppelklick auf das Icon wiederhergestellt werden</system:String>
+    <system:String x:Key="Tray">Tray</system:String>
 </ResourceDictionary>

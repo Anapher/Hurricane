@@ -4,7 +4,7 @@ using System.Windows;
 namespace Hurricane.Views.Test
 {
     /// <summary>
-    /// Interaktionslogik für PositionTestWindow.xaml
+    /// Interaction logic for PositionTestWindow.xaml
     /// </summary>
     public partial class PositionTestWindow : Window
     {

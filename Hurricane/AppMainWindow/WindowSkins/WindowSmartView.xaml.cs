@@ -30,7 +30,9 @@ namespace Hurricane.AppMainWindow.WindowSkins
                 ShowWindowControls = false,
                 NeedsMovingHelp = true,
                 ShowFullscreenDialogs = false,
-                IsResizable = false
+                IsResizable = false,
+                SupportsCustomBackground = false,
+                SupportsMinimizingToTray = false
             };
         }
 

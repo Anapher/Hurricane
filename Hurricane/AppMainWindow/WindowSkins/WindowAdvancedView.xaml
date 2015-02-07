@@ -25,7 +25,7 @@
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
             <converter:FormatTimespan x:Key="FormatTimespan"/>
             <converter:CollapsedOnNullValue x:Key="CollapsedOnNullValue"/>
-            <converter:FalseOnEmptyString x:Key="FalseOnEmptyString"></converter:FalseOnEmptyString>
+            <converter:FalseOnEmptyString x:Key="FalseOnEmptyString"/>
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
@@ -34,9 +34,9 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
-
-        <Grid MouseLeftButtonDown="Titlebar_MouseLeftButtonDown" MouseLeftButtonUp="Titlebar_MouseLeftButtonUp" MouseMove="Titlebar_OnMouseMove" Background="{StaticResource WhiteColorBrush}" Opacity="0.01">
-            <TextBlock Text="Hurricane" Foreground="#FFAAAAAA" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+        <Grid>
+            <Grid MouseLeftButtonDown="Titlebar_MouseLeftButtonDown" MouseLeftButtonUp="Titlebar_MouseLeftButtonUp" MouseMove="Titlebar_OnMouseMove" Background="{StaticResource WhiteColorBrush}" Opacity="0.0"/>
+            <TextBlock Text="Hurricane" Foreground="#FFAAAAAA" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Center" IsHitTestVisible="False"/>
         </Grid>
         <TabControl Grid.Row="1" SelectedIndex="{Binding MainTabControlIndex}" controls:ControlsHelper.HeaderFontSize="13">
             <TabControl.Resources>

@@ -14,6 +14,7 @@ using Hurricane.ViewModelBase;
 using Hurricane.Views;
 using System.Threading.Tasks;
 using Hurricane.Settings.MirrorManagement;
+using Microsoft.Win32;
 using WPFFolderBrowser;
 
 namespace Hurricane.ViewModels
@@ -71,12 +72,15 @@ namespace Hurricane.ViewModels
                                                               original.Theme.SpectrumAnalyzerColor;
                     bool haveToUpdateSountOut = Config.SoundOutDeviceID != original.SoundOutDeviceID ||
                                                 Config.SoundOutMode != original.SoundOutMode;
+                    bool haveToChangeBackground = Config.CustomBackground.BackgroundPath !=
+                                                  original.CustomBackground.BackgroundPath;
 
                     PropertiesCopier.CopyProperties(Config, original);
+                    var window = Application.Current.MainWindow as MainWindow;
 
                     if (haveToChangeColorTheme || haveToChangeBaseTheme)
                     {
-                        var window = Application.Current.MainWindow as MainWindow;
+                        
                         if (window != null)
                         {
                             await window.MoveOut();
@@ -88,6 +92,7 @@ namespace Hurricane.ViewModels
 
                     if (haveToRefreshSpectrumAnalyserColor) original.Theme.RefreshSpectrumAnalyzerBrush();
                     if (haveToUpdateSountOut) MusicManager.CSCoreEngine.UpdateSoundOut();
+                    if (haveToChangeBackground) await window.BackgroundChanged();
 
                     OnPropertyChanged("CanApply");
                     CurrentLanguage = Config.Languages.First((x) => x.Code == Config.Language);
@@ -250,7 +255,6 @@ namespace Hurricane.ViewModels
                         ApplicationThemeManager.RefreshThemes();
                         Config.Theme.SelectedColorTheme = ApplicationThemeManager.Themes.Count > currentThemeIndex ? ApplicationThemeManager.Themes[currentThemeIndex] : ApplicationThemeManager.Themes.First();
                         OnPropertyChanged("Config");
-                        Debug.Print("test");
                     }
                 }));
             }
@@ -297,6 +301,36 @@ namespace Hurricane.ViewModels
                         MusicManager.DownloadManager.DownloadDirectory = folderBrowserDialog.FileName;
                         StateChanged();
                     }
+                }));
+            }
+        }
+
+        private RelayCommand _selectBackground;
+        public RelayCommand SelectBackground
+        {
+            get
+            {
+                return _selectBackground ?? (_selectBackground = new RelayCommand(parameter =>
+                {
+                    var ofd = new OpenFileDialog { Filter = string.Format("{0}|*.bmp;*.jpg;*.jpeg;*.png;*.tif;*.tiff|{1}|*.*", Application.Current.Resources["AllPictureFiles"], Application.Current.Resources["AllFiles"]) };
+                    if (ofd.ShowDialog() == true)
+                    {
+                        Config.CustomBackground.BackgroundPath = ofd.FileName;
+                        OnPropertyChanged("CanApply");
+                    }
+                }));
+            }
+        }
+
+        private RelayCommand _resetBackground;
+        public RelayCommand ResetBackground
+        {
+            get
+            {
+                return _resetBackground ?? (_resetBackground = new RelayCommand(parameter =>
+                {
+                    Config.CustomBackground.BackgroundPath = string.Empty;
+                    OnPropertyChanged("CanApply");
                 }));
             }
         }

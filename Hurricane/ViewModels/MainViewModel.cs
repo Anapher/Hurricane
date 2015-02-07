@@ -410,7 +410,7 @@ namespace Hurricane.ViewModels
                     if (await _baseWindow.ShowMessage(string.Format(Application.Current.Resources["ReallyDeletePlaylist"].ToString(), MusicManager.SelectedPlaylist.Name), Application.Current.Resources["RemovePlaylist"].ToString(), true, DialogMode.Single))
                     {
                         NormalPlaylist playlistToDelete = (NormalPlaylist)MusicManager.SelectedPlaylist;
-                        NormalPlaylist newPlaylist = MusicManager.Playlists[0];
+                        NormalPlaylist newPlaylist = MusicManager.Playlists.First(x => x != playlistToDelete);
                         bool nexttrack = MusicManager.CurrentPlaylist == playlistToDelete;
                         MusicManager.CurrentPlaylist = newPlaylist;
                         if (nexttrack)

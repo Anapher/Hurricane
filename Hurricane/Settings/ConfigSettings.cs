@@ -10,6 +10,7 @@ using Hurricane.Music;
 using Hurricane.Music.Download;
 using Hurricane.Music.MusicEqualizer;
 using Hurricane.Notification;
+using Hurricane.Settings.Background;
 using Hurricane.Settings.Themes;
 using Hurricane.Settings.MirrorManagement;
 
@@ -55,19 +56,10 @@ namespace Hurricane.Settings
         public bool ShowMagicArrowBelowCursor { get; set; }
         public DockingApplicationState ApplicationState { get; set; }
 
-        //General
-        [CopyableProperty]
-        public string Language { get; set; }
+        //Design
         [CopyableProperty(CopyContainingProperties = true)]
         public ApplicationThemeManager Theme { get; set; }
-        [CopyableProperty]
-        public bool RememberTrackImportPlaylist { get; set; }
-        [CopyableProperty]
-        public string PlaylistToImportTrack { get; set; }
-        [CopyableProperty]
-        public bool ShufflePreferFavoritTracks { get; set; }
-        [CopyableProperty]
-        public bool ShowArtistAndTitle { get; set; }
+
         private bool _useThinHeaders;
         [CopyableProperty]
         public bool UseThinHeaders
@@ -78,6 +70,21 @@ namespace Hurricane.Settings
                 SetProperty(value, ref _useThinHeaders);
             }
         }
+        [CopyableProperty(CopyContainingProperties = true)]
+        public CustomBackground CustomBackground { get; set; }
+
+        //General
+        [CopyableProperty]
+        public string Language { get; set; }
+        [CopyableProperty]
+        public bool RememberTrackImportPlaylist { get; set; }
+        [CopyableProperty]
+        public string PlaylistToImportTrack { get; set; }
+        [CopyableProperty]
+        public bool ShufflePreferFavoritTracks { get; set; }
+        [CopyableProperty]
+        public bool ShowArtistAndTitle { get; set; }
+
         private bool _equalizerIsOpen;
         public bool EqualizerIsOpen
         {
@@ -91,6 +98,10 @@ namespace Hurricane.Settings
         public bool ApiIsEnabled { get; set; }
         [CopyableProperty]
         public int ApiPort { get; set; }
+        [CopyableProperty]
+        public bool MinimizeToTray { get; set; }
+        [CopyableProperty]
+        public bool ShowNotificationIfMinimizeToTray { get; set; }
 
         //Notifications
         [CopyableProperty]
@@ -125,7 +136,7 @@ namespace Hurricane.Settings
                         new Uri("/Resources/Languages/Icons/de.png", UriKind.Relative), "Alkaline", "de"),
                     new LanguageInfo("English", "/Resources/Languages/Hurricane.en-us.xaml",
                         new Uri("/Resources/Languages/Icons/us.png", UriKind.Relative), "Alkaline", "en"),
-                                            new LanguageInfo("Suomi", "/Resources/Languages/Hurricane.fi-fi.xaml",
+                    new LanguageInfo("Suomi", "/Resources/Languages/Hurricane.fi-fi.xaml",
                         new Uri("/Resources/Languages/Icons/fi.png", UriKind.Relative), "Väinämö Vettenranta", "fi")
                 });
             }
@@ -167,9 +178,12 @@ namespace Hurricane.Settings
             SoundOutMode = CSCore.SoundOut.WasapiOut.IsSupportedOnCurrentPlatform ? SoundOutMode.WASAPI : SoundOutMode.DirectSound;
             Latency = 100;
             IsCrossfadeEnabled = false;
-            CrossfadeDuration = 6;
+            CrossfadeDuration = 4;
             Downloader = new DownloadManager();
             UseThinHeaders = true;
+            CustomBackground = new CustomBackground();
+            MinimizeToTray = false;
+            ShowNotificationIfMinimizeToTray = true;
         }
 
         public ConfigSettings()
@@ -239,7 +253,10 @@ namespace Hurricane.Settings
                     CompareTwoValues(this.IsCrossfadeEnabled, other.IsCrossfadeEnabled) &&
                     CompareTwoValues(this.Downloader.DownloadDirectory, other.Downloader.DownloadDirectory) &&
                     CompareTwoValues(this.Downloader.AddTagsToDownloads, other.Downloader.AddTagsToDownloads) &&
-                    CompareTwoValues(this.UseThinHeaders, other.UseThinHeaders));
+                    CompareTwoValues(this.UseThinHeaders, other.UseThinHeaders) &&
+                    CompareTwoValues(this.CustomBackground, other.CustomBackground) &&
+                    CompareTwoValues(this.MinimizeToTray, other.MinimizeToTray) &&
+                    CompareTwoValues(this.ShowNotificationIfMinimizeToTray, other.ShowNotificationIfMinimizeToTray));
         }
 
         protected bool CompareTwoValues(object v1, object v2)

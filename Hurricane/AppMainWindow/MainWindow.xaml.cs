@@ -1,13 +1,16 @@
 ﻿using System;
 using System.ComponentModel;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media.Animation;
+using System.Windows.Media.Imaging;
 using System.Windows.Shell;
 using System.Windows.Threading;
 using CSCore.SoundOut;
+using Hardcodet.Wpf.TaskbarNotification;
 using Hurricane.AppMainWindow.MahAppsExtensions.Dialogs;
 using Hurricane.AppMainWindow.Messages;
 using Hurricane.AppMainWindow.WindowSkins;
@@ -23,6 +26,7 @@ using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
 using InputDialog = Hurricane.Views.InputDialog;
 
+// ReSharper disable once CheckNamespace
 namespace Hurricane
 {
     /// <summary>
@@ -34,18 +38,18 @@ namespace Hurricane
         public bool IsInSmartMode { get; set; }
         public IWindowSkin HostedWindow { get; set; }
 
-        protected IWindowSkin smartwindowskin;
-        public IWindowSkin SmartWindowSkin { get { return smartwindowskin ?? (smartwindowskin = new WindowSmartView()); } }
+        private IWindowSkin _smartWindowSkin;
+        public IWindowSkin SmartWindowSkin { get { return _smartWindowSkin ?? (_smartWindowSkin = new WindowSmartView()); } }
 
-        protected IWindowSkin advancedwindowskin;
-        public IWindowSkin AdvancedWindowSkin { get { return advancedwindowskin ?? (advancedwindowskin = new WindowAdvancedView()); } }
+        private IWindowSkin _advancedWindowSkin;
+        public IWindowSkin AdvancedWindowSkin { get { return _advancedWindowSkin ?? (_advancedWindowSkin = new WindowAdvancedView()); } }
 
         #region Constructor & Load
 
         public MainWindow()
         {
             InitializeComponent();
-            this.HostedWindow = null;
+            HostedWindow = null;
             MagicArrow = new MagicArrow.MagicArrow();
             MagicArrow.Register(this);
             MagicArrow.MoveOut += (s, e) => { HideEqualizer(); HostedWindow.DisableWindow(); };
@@ -54,6 +58,7 @@ namespace Hurricane
 
             Closing += MainWindow_Closing;
             Loaded += MainWindow_Loaded;
+            StateChanged += MainWindow_StateChanged;
 
             MagicArrow.DockManager.Docked += (s, e) => { ApplyHostWindow(SmartWindowSkin); };
             MagicArrow.DockManager.Undocked += (s, e) =>
@@ -95,7 +100,7 @@ namespace Hurricane
             InitializeMessages();
         }
 
-        void MainWindow_Loaded(object sender, RoutedEventArgs e)
+        async void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
             try
             {
@@ -119,6 +124,7 @@ namespace Hurricane
                 AdvancedWindowSkin.MusicManagerEnabled(viewmodel.MusicManager);
                 SmartWindowSkin.MusicManagerEnabled(viewmodel.MusicManager);
                 ResetFlyout();
+                await SetBackground();
             }
             catch (Exception ex)
             {
@@ -145,6 +151,9 @@ namespace Hurricane
                 HostedWindow.ToggleWindowState -= skin_ToggleWindowState;
                 HostedWindow.TitleBarMouseMove -= skin_TitleBarMouseMove;
                 HostedWindow.DisableWindow();
+
+                var element = (FrameworkElement) HostedWindow;
+                ContentGrid.Children.Remove(element);
             }
 
             skin.CloseRequest += (s, e) => Close();
@@ -184,6 +193,8 @@ namespace Hurricane
                 Height = appstate.Height;
             }
 
+            BackgroundImage.Visibility = skin.Configuration.SupportsCustomBackground ? Visibility.Visible : Visibility.Collapsed;
+
             if (skin == SmartWindowSkin)
             {
                 Width = 300;
@@ -195,8 +206,11 @@ namespace Hurricane
             ShowMinButton = skin.Configuration.ShowWindowControls;
             ShowMaxRestoreButton = skin.Configuration.ShowWindowControls;
             ShowCloseButton = skin.Configuration.ShowWindowControls;
-            
-            Content = skin;
+
+            var newUserControl = (FrameworkElement) skin;
+            ContentGrid.Children.Add(newUserControl);
+            var animation = new DoubleAnimation(0, 1, TimeSpan.FromMilliseconds(200));
+            newUserControl.BeginAnimation(OpacityProperty, animation);
             HostedWindow = skin;
             if (MainViewModel.Instance.MusicManager != null) skin.RegisterSoundPlayer(MainViewModel.Instance.MusicManager.CSCoreEngine);
             HostedWindow.EnableWindow();
@@ -205,6 +219,31 @@ namespace Hurricane
         #endregion
 
         #region Events / Closing
+
+        void MainWindow_StateChanged(object sender, EventArgs e)
+        {
+            if (WindowState == WindowState.Minimized && HurricaneSettings.Instance.Config.MinimizeToTray)
+            {
+                Hide();
+                NotifyIcon.Visibility = Visibility.Visible;
+                if (HurricaneSettings.Instance.Config.ShowNotificationIfMinimizeToTray)
+                    NotifyIcon.ShowBalloonTip("Hurricane",
+                        Application.Current.Resources["MinimizeToTrayNotification"].ToString(), BalloonIcon.Info);
+            }
+        }
+
+        private void NotifyIcon_OnTrayMouseDoubleClick(object sender, RoutedEventArgs e)
+        {
+            NotifyIcon.Visibility = Visibility.Hidden;
+            Show();
+            WindowState = WindowState.Normal;
+            Activate();
+        }
+
+        void CSCoreEngine_PlaybackStateChanged(object sender, PlayStateChangedEventArgs e)
+        {
+            taskbarinfo.ProgressState = e.NewPlaybackState == PlaybackState.Playing ? TaskbarItemProgressState.Normal : TaskbarItemProgressState.Paused;
+        }
 
         void skin_ToggleWindowState(object sender, EventArgs e)
         {
@@ -290,15 +329,6 @@ namespace Hurricane
             MainViewModel.Instance.Closing();
             MagicArrow.Dispose();
             Application.Current.Shutdown();
-        }
-
-        #endregion
-
-        #region Taskbar
-
-        void CSCoreEngine_PlaybackStateChanged(object sender, PlayStateChangedEventArgs e)
-        {
-            taskbarinfo.ProgressState = e.NewPlaybackState == PlaybackState.Playing ? TaskbarItemProgressState.Normal : TaskbarItemProgressState.Paused;
         }
 
         #endregion
@@ -406,7 +436,7 @@ namespace Hurricane
             }
             else
             {
-                ProgressWindow progressWindow = new ProgressWindow(e.Title, e.IsIndeterminate) { Owner = this };
+                var progressWindow = new ProgressWindow(e.Title, e.IsIndeterminate) { Owner = this };
                 e.Instance.MessageChanged = ev => progressWindow.SetText(ev);
                 e.Instance.TitleChanged = ev => progressWindow.SetTitle(ev);
                 e.Instance.ProgressChanged = ev => progressWindow.SetProgress(ev);
@@ -422,10 +452,6 @@ namespace Hurricane
         {
             if (HostedWindow.Configuration.ShowFullscreenDialogs)
             {
-                /*var dialog = new EqualizerDialog(this, new MetroDialogSettings() { ColorScheme = GetTheme() });
-                await this.ShowMetroDialogAsync(dialog);
-                await dialog.WaitForCloseAsync();
-                await this.HideMetroDialogAsync(dialog);*/
                 HurricaneSettings.Instance.Config.EqualizerIsOpen = !HurricaneSettings.Instance.Config.EqualizerIsOpen;
             }
             else
@@ -453,13 +479,13 @@ namespace Hurricane
 
         public void OpenTrackInformations(PlayableBase track)
         {
-            TrackInformationWindow trackInformationWindow = new TrackInformationWindow(track) { Owner = this, WindowStartupLocation = this.HostedWindow.Configuration.ShowFullscreenDialogs ? WindowStartupLocation.CenterOwner : WindowStartupLocation.CenterScreen };
+            var trackInformationWindow = new TrackInformationWindow(track) { Owner = this, WindowStartupLocation = HostedWindow.Configuration.ShowFullscreenDialogs ? WindowStartupLocation.CenterOwner : WindowStartupLocation.CenterScreen };
             trackInformationWindow.ShowDialog();
         }
 
         public void OpenTagEditor(LocalTrack track)
         {
-            TagEditorWindow tagEditorWindow = new TagEditorWindow(track) { Owner = this, WindowStartupLocation = this.HostedWindow.Configuration.ShowFullscreenDialogs ? WindowStartupLocation.CenterOwner : WindowStartupLocation.CenterScreen };
+            var tagEditorWindow = new TagEditorWindow(track) { Owner = this, WindowStartupLocation = HostedWindow.Configuration.ShowFullscreenDialogs ? WindowStartupLocation.CenterOwner : WindowStartupLocation.CenterScreen };
             tagEditorWindow.ShowDialog();
         }
 
@@ -470,7 +496,7 @@ namespace Hurricane
         public async Task MoveOut()
         {
             var fadeanimation = new DoubleAnimation(1, 0, TimeSpan.FromMilliseconds(500));
-            var control = (DependencyObject) HostedWindow;
+            var control = (DependencyObject)HostedWindow;
 
             Storyboard.SetTarget(fadeanimation, control);
 
@@ -487,12 +513,12 @@ namespace Hurricane
 
         public async Task ResetAndMoveIn()
         {
-            smartwindowskin.DisableWindow();
-            advancedwindowskin.DisableWindow();
-            bool _isadvancedwindow = HostedWindow != smartwindowskin;
-            smartwindowskin = new WindowSmartView();
-            advancedwindowskin = new WindowAdvancedView();
-            ApplyHostWindow(_isadvancedwindow ? advancedwindowskin : smartwindowskin, false);
+            _smartWindowSkin.DisableWindow();
+            _advancedWindowSkin.DisableWindow();
+            bool isadvancedwindow = HostedWindow != _smartWindowSkin;
+            _smartWindowSkin = new WindowSmartView();
+            _advancedWindowSkin = new WindowAdvancedView();
+            ApplyHostWindow(isadvancedwindow ? _advancedWindowSkin : _smartWindowSkin, false);
 
             var outanimation = new ThicknessAnimation(new Thickness(-100, 0, 100, 0), new Thickness(0),
     TimeSpan.FromMilliseconds(500));
@@ -516,13 +542,42 @@ namespace Hurricane
             ResetFlyout();
         }
 
+
+        public async Task BackgroundChanged()
+        {
+            _image = null;
+            await SetBackground();
+            var animation = new DoubleAnimation(0, 1, TimeSpan.FromMilliseconds(1000));
+            BackgroundImage.BeginAnimation(OpacityProperty, animation);
+        }
+
+        private BitmapImage _image;
+        private async Task SetBackground()
+        {
+            if (_image == null)
+            {
+                if (HurricaneSettings.Instance.Config.CustomBackground == null ||
+                    !File.Exists(HurricaneSettings.Instance.Config.CustomBackground.BackgroundPath))
+                {
+                    BackgroundImage.Source = null;
+                    return;
+                }
+                _image = await Task.Run(() =>
+                {
+                    var img = HurricaneSettings.Instance.Config.CustomBackground.GetImage();
+                    img.Freeze();
+                    return img;
+                });
+            }
+            BackgroundImage.Source = _image;
+        }
+
         private Flyout _oldFlyout;
         private void ResetFlyout()
         {
-            if (_oldFlyout != null) flyoutControl.Items.Remove(_oldFlyout);
-            var newflyout = (Flyout) Resources["DownloadFlyout"];
-            //newflyout.Theme = HurricaneSettings.Instance.Config.Theme.BaseTheme == BaseTheme.Dark ? FlyoutTheme.Dark : FlyoutTheme.Light;
-            flyoutControl.Items.Add(newflyout);
+            if (_oldFlyout != null) FlyoutControl.Items.Remove(_oldFlyout);
+            var newflyout = (Flyout)Resources["DownloadFlyout"];
+            FlyoutControl.Items.Add(newflyout);
             _oldFlyout = newflyout;
         }
 

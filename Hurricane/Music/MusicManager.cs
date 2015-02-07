@@ -352,7 +352,7 @@ namespace Hurricane.Music
             ConfigSettings config = settings.Config;
             config.Volume = CSCoreEngine.Volume;
             config.LastPlaylistIndex = CurrentPlaylist == null ? -1 : PlaylistToIndex(CurrentPlaylist);
-            config.LastTrackIndex = CSCoreEngine.CurrentTrack == null && CurrentPlaylist != null ? -1 : CurrentPlaylist.Tracks.IndexOf(CSCoreEngine.CurrentTrack);
+            config.LastTrackIndex = (CSCoreEngine.CurrentTrack == null || CurrentPlaylist == null) ? -1 : CurrentPlaylist.Tracks.IndexOf(CSCoreEngine.CurrentTrack);
             config.SelectedPlaylist = PlaylistToIndex(SelectedPlaylist); //Its impossible that no playlist is selected
             config.SelectedTrack = SelectedTrack == null ? -1 : SelectedPlaylist.Tracks.IndexOf(SelectedTrack);
             config.IsLoopEnabled = IsLoopEnabled;

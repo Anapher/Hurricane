@@ -58,7 +58,7 @@ namespace Hurricane.Utilities
                 {
                     foreach (var screen in AllScreens())
                     {
-                        if (_mostRightX == null || _mostLeftX > screen.WorkingArea.X) _mostRightX = screen.WorkingArea.X + screen.WorkingArea.Width;
+                        if (_mostRightX == null || _mostRightX <= screen.WorkingArea.X) _mostRightX = screen.WorkingArea.X + screen.WorkingArea.Width;
                     }
                 }
                 return _mostRightX.Value;

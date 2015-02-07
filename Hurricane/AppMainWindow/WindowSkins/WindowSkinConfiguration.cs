@@ -13,5 +13,7 @@
         public bool NeedsMovingHelp { get; set; }
         public bool ShowFullscreenDialogs { get; set; }
         public bool IsResizable { get; set; }
+        public bool SupportsCustomBackground { get; set; }
+        public bool SupportsMinimizingToTray { get; set; }
     }
 }

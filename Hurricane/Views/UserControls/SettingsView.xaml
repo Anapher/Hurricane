@@ -20,6 +20,7 @@
         <Style TargetType="TextBlock">
             <Setter Property="Foreground" Value="{DynamicResource BlackBrush}"/>
         </Style>
+        <converter:EnumToBooleanConverter x:Key="EnumToBooleanConverter"/>
     </UserControl.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
@@ -178,8 +179,17 @@
                             <CheckBox Content="{DynamicResource SpectrumAnalyzerColor}" VerticalAlignment="Center" IsChecked="{Binding Config.Theme.UseCustomSpectrumAnalyzerColor}" Checked="SettingChanged" Unchecked="SettingChanged"/>
                             <tkt:ColorPicker Margin="10,0,0,0" Width="150" HorizontalAlignment="Left" IsEnabled="{Binding Config.Theme.UseCustomSpectrumAnalyzerColor}" SelectedColor="{Binding Config.Theme.SpectrumAnalyzerColor}" SelectedColorChanged="SettingChanged" ColorMode="ColorCanvas" ShowStandardColors="False" ShowAvailableColors="False" ShowAdvancedButton="False"/>
                         </DockPanel>
-                        <TextBlock Text="{DynamicResource Background}" Margin="0,10,0,0"/>
-                        <TextBox Margin="0,5,0,0"/>
+                        <TextBlock Margin="0,30,0,0" extensions:TextBlockHelper.UpperText="{DynamicResource Background}" Style="{StaticResource TextBlockHeader}"/>
+                        <Grid Margin="0,10,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBox IsReadOnly="True" Text="{Binding Config.CustomBackground.BackgroundPath}"/>
+                            <Button Content=" ... " Grid.Column="1" Margin="10,0,10,0" Command="{Binding SelectBackground}"/>
+                            <Button Content="{DynamicResource Reset}" Grid.Column="2" Command="{Binding ResetBackground}"/>
+                        </Grid>
                         <TextBlock Style="{StaticResource TextBlockHeader}" extensions:TextBlockHelper.UpperText="{DynamicResource View}" Margin="0,30,0,0"/>
                         <CheckBox Margin="0,10,0,0" Content="{DynamicResource ShowArtistAndTitle}" IsChecked="{Binding Config.ShowArtistAndTitle}" Checked="SettingChanged" Unchecked="SettingChanged"/>
                         <CheckBox Margin="0,10,0,0" Content="{DynamicResource UseThinHeaders}" IsChecked="{Binding Config.UseThinHeaders}" Checked="SettingChanged" Unchecked="SettingChanged"/>
@@ -224,8 +234,12 @@
                         <CheckBox IsChecked="{Binding Config.DisableNotificationInGame}" Margin="0,10,0,0" Checked="SettingChanged" Unchecked="SettingChanged">
                             <TextBlock Text="{DynamicResource DisableNotificationsInGame}" TextWrapping="Wrap"/>
                         </CheckBox>
+                        <TextBlock extensions:TextBlockHelper.UpperText="{DynamicResource Tray}" Margin="0,30,0,0" Style="{StaticResource TextBlockHeader}"/>
+                        <CheckBox Content="{DynamicResource MinimizeToTray}" Margin="0,10,0,0" x:Name="MinimizeToTrayCheckBox" IsChecked="{Binding Config.MinimizeToTray}" Checked="SettingChanged" Unchecked="SettingChanged"/>
+                        <CheckBox Content="{DynamicResource NotifyIfMinimizeToTray}" Margin="0,10,0,0" IsChecked="{Binding Config.ShowNotificationIfMinimizeToTray}" IsEnabled="{Binding ElementName=MinimizeToTrayCheckBox,Path=IsChecked}" Checked="SettingChanged" Unchecked="SettingChanged"/>
+                        
                         <TextBlock extensions:TextBlockHelper.UpperText="{DynamicResource CoverArt}" Margin="0,30,0,0" Style="{StaticResource TextBlockHeader}"/>
-                        <CheckBox Content="{DynamicResource LoadAlbumCoverFromInternet}" Margin="0,10,0,0" x:Name="chkDownloadCover" IsChecked="{Binding Config.LoadAlbumCoverFromInternet}"  Checked="SettingChanged" Unchecked="SettingChanged"/>
+                        <CheckBox Content="{DynamicResource LoadAlbumCoverFromInternet}" Margin="0,10,0,0" x:Name="chkDownloadCover" IsChecked="{Binding Config.LoadAlbumCoverFromInternet}" Checked="SettingChanged" Unchecked="SettingChanged"/>
                         <Grid IsEnabled="{Binding ElementName=chkDownloadCover,Path=IsChecked}" Margin="0,10,0,0">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="125"/>

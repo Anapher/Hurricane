@@ -27,7 +27,9 @@ namespace Hurricane.AppMainWindow.WindowSkins
                 ShowWindowControls = true,
                 NeedsMovingHelp = true,
                 ShowFullscreenDialogs = true,
-                IsResizable = true
+                IsResizable = true,
+                SupportsCustomBackground = true,
+                SupportsMinimizingToTray = true
             };
 
             SettingsViewModel.Instance.Load();

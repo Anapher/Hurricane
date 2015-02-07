@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using Hurricane.Music.Track;
 using Newtonsoft.Json;
 
@@ -21,13 +22,14 @@ namespace Hurricane.Music.API
 
         protected void InitalizeCommands()
         {
+            var culture = CultureInfo.InvariantCulture;
             Commands = new List<Command>
             {
                 new Command("volume",
                     new List<CommandBase>
                     {
-                        new CommandFunction("get", s => MusicManager.CSCoreEngine.Volume.ToString()),
-                        new CommandAction("set", s => { MusicManager.CSCoreEngine.Volume = float.Parse(s); })
+                        new CommandFunction("get", s => MusicManager.CSCoreEngine.Volume.ToString(culture)),
+                        new CommandAction("set", s => { MusicManager.CSCoreEngine.Volume = float.Parse(s, culture); })
                     }),
                 new Command("move",
                     new List<CommandBase>
