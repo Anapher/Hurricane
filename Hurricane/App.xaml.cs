@@ -134,7 +134,7 @@ namespace Hurricane
 
             messanger.BringWindowToFront += (s, ev) =>
             {
-                window.MagicArrow.BringToFront();
+                window.BringToFront();
             };
 
             messanger.PlayMusicFile += (s, ev) =>

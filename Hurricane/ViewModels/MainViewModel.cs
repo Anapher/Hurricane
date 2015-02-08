@@ -131,9 +131,9 @@ namespace Hurricane.ViewModels
 
         public void Closing()
         {
-            MusicManager.CSCoreEngine.StopPlayback();
             if (MusicManager != null)
             {
+                MusicManager.CSCoreEngine.StopPlayback();
                 MusicManager.SaveToSettings();
                 MySettings.Save();
                 MusicManager.Dispose();

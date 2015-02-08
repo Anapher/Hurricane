@@ -22,7 +22,7 @@ namespace Hurricane.Notification.WindowMessages
                 source.AddHook(WndProc);
             };
         }
-
+        
         private IntPtr WndProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
         {
             switch (msg)

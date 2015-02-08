@@ -69,7 +69,10 @@ namespace Hurricane.ViewModels
                     bool haveToChangeColorTheme = !original.Theme.SelectedColorTheme.Equals(Config.Theme.SelectedColorTheme);
                     bool haveToChangeBaseTheme = original.Theme.BaseTheme != Config.Theme.BaseTheme;
                     bool haveToRefreshSpectrumAnalyserColor = Config.Theme.SpectrumAnalyzerColor !=
-                                                              original.Theme.SpectrumAnalyzerColor;
+                                                              original.Theme.SpectrumAnalyzerColor ||
+                                                              Config.Theme.UseCustomSpectrumAnalyzerColor !=
+                                                              original.Theme.UseCustomSpectrumAnalyzerColor;
+
                     bool haveToUpdateSountOut = Config.SoundOutDeviceID != original.SoundOutDeviceID ||
                                                 Config.SoundOutMode != original.SoundOutMode;
                     bool haveToChangeBackground = Config.CustomBackground.BackgroundPath !=

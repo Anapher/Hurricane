@@ -220,11 +220,13 @@ namespace Hurricane
 
         #region Events / Closing
 
+        private bool _isHiden;
         void MainWindow_StateChanged(object sender, EventArgs e)
         {
             if (WindowState == WindowState.Minimized && HurricaneSettings.Instance.Config.MinimizeToTray)
             {
                 Hide();
+                _isHiden = true;
                 NotifyIcon.Visibility = Visibility.Visible;
                 if (HurricaneSettings.Instance.Config.ShowNotificationIfMinimizeToTray)
                     NotifyIcon.ShowBalloonTip("Hurricane",
@@ -234,8 +236,14 @@ namespace Hurricane
 
         private void NotifyIcon_OnTrayMouseDoubleClick(object sender, RoutedEventArgs e)
         {
+            ShowWindow();
+        }
+
+        void ShowWindow()
+        {
             NotifyIcon.Visibility = Visibility.Hidden;
             Show();
+            _isHiden = false;
             WindowState = WindowState.Normal;
             Activate();
         }
@@ -328,7 +336,18 @@ namespace Hurricane
                 MagicArrow.DockManager.Save();
             MainViewModel.Instance.Closing();
             MagicArrow.Dispose();
-            Application.Current.Shutdown();
+        }
+
+        public void BringToFront()
+        {
+            if (_isHiden)
+            {
+                ShowWindow();
+            }
+            else
+            {
+                MagicArrow.BringToFront();
+            }
         }
 
         #endregion
@@ -407,7 +426,7 @@ namespace Hurricane
                 await this.ShowMetroDialogAsync(dialog);
                 string result = await dialog.WaitForButtonPressAsync();
                 await dialog._WaitForCloseAsync();
-                var asd = this.HideMetroDialogAsync(dialog);
+                var foo = this.HideMetroDialogAsync(dialog);
                 return result;
             }
             else

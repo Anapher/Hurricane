@@ -124,7 +124,15 @@ namespace Hurricane.Music.Track.WebApi
 
             NothingFound = list.Count == 0;
             SortResults(list);
-            _manager.DownloadManager.Searches.Insert(0, SearchText);
+            var str = _manager.DownloadManager.Searches.FirstOrDefault(x => x.ToUpper() == SearchText.ToUpper());
+            if (!string.IsNullOrEmpty(str))
+            {
+                _manager.DownloadManager.Searches.Move(_manager.DownloadManager.Searches.IndexOf(str), 0);
+            }
+            else
+            {
+                _manager.DownloadManager.Searches.Insert(0, SearchText);
+            }
         }
 
         private RelayCommand _playSelectedTrack;

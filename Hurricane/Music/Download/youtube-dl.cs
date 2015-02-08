@@ -70,7 +70,7 @@ namespace Hurricane.Music.Download
         }
 
         private bool _tryagain;
-        public async Task<Uri> GetStreamUri(string YouTubeLink)
+        public async Task<Uri> GetStreamUri(string youTubeLink)
         {
             await Load();
             using (var p = new Process()
@@ -81,7 +81,7 @@ namespace Hurricane.Music.Download
                     RedirectStandardOutput = true,
                     UseShellExecute = false,
                     FileName = ExecutablePath,
-                    Arguments = string.Format("-g {0}", YouTubeLink)
+                    Arguments = string.Format("-g {0}", youTubeLink)
                 }
             })
             {
@@ -94,7 +94,7 @@ namespace Hurricane.Music.Download
                         _tryagain = false; throw new Exception(url);
                     }
                     _tryagain = true;
-                    return await GetStreamUri(YouTubeLink);
+                    return await GetStreamUri(youTubeLink);
                 }
                 if (!url.ToLower().StartsWith("error"))
                 {
@@ -105,7 +105,7 @@ namespace Hurricane.Music.Download
             }
         }
 
-        public async Task<bool> DownloadYouTubeVideo(string YouTubeLink, string fileName, Action<double> progressChangedAction)
+        public async Task<bool> DownloadYouTubeVideo(string youTubeLink, string fileName, Action<double> progressChangedAction)
         {
             await Load();
             using (var p = new Process()
@@ -116,7 +116,7 @@ namespace Hurricane.Music.Download
                     RedirectStandardOutput = true,
                     UseShellExecute = false,
                     FileName = ExecutablePath,
-                    Arguments = string.Format("{0} --extract-audio --output \"{1}\"", YouTubeLink, fileName)
+                    Arguments = string.Format("{0} --extract-audio --output \"{1}\"", youTubeLink, fileName)
                 }
             })
             {

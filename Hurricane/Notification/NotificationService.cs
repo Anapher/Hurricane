@@ -24,7 +24,7 @@ namespace Hurricane.Notification
         }
 
         private Window _lastwindow;
-        protected PlayableBase _lasttrack;
+        private PlayableBase _lasttrack;
 
         void TrackChanged(PlayableBase newtrack)
         {
@@ -42,7 +42,7 @@ namespace Hurricane.Notification
             if (_lastwindow != null && _lastwindow.Visibility == Visibility.Visible) _lastwindow.Close();
             TimeSpan timetostayopen = TimeSpan.FromMilliseconds(config.NotificationShowTime);
 
-            Window messagewindow = null;
+            Window messagewindow;
             switch (type)
             {
                 case NotificationType.Top:

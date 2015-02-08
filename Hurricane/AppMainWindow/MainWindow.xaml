@@ -8,7 +8,7 @@
         DataContext="{x:Static viewmodels:MainViewModel.Instance}"
         xmlns:tb="http://www.hardcodet.net/taskbar"
         Title="Hurricane" SizeToContent="Manual" x:Name="window" Icon="/Resources/App/icon.ico"
-        IsWindowDraggable="False" GlowBrush="{DynamicResource AccentColorBrush}" ShowIconOnTitleBar="False" Height="400" Width="500" Background="{StaticResource WindowBackgroundBrush}">
+        IsWindowDraggable="False" GlowBrush="{DynamicResource AccentColorBrush}" ShowIconOnTitleBar="False" Height="400" Width="500">
     <controls:MetroWindow.Flyouts>
         <controls:FlyoutsControl x:Name="FlyoutControl"/>
     </controls:MetroWindow.Flyouts>
