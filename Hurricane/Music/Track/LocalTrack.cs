@@ -76,6 +76,12 @@ namespace Hurricane.Music.Track
             IsChecked = false;
             Extension = TrackInformation.Extension.ToUpper().Replace(".", string.Empty);
 
+            return await UpdateInformation(TrackInformation);
+        //    return await TryLoadWithTagLibSharp(TrackInformation) || await TryLoadWithCSCore(TrackInformation);
+        }
+
+        protected virtual async Task<bool> UpdateInformation(FileInfo filename)
+        {
             return await TryLoadWithTagLibSharp(TrackInformation) || await TryLoadWithCSCore(TrackInformation);
         }
 
@@ -156,6 +162,11 @@ namespace Hurricane.Music.Track
         }
 
         #endregion
+
+        public void ResetDuration(TimeSpan timeSpan)
+        {
+            SetDuration(timeSpan);
+        }
 
         public override bool TrackExists
         {

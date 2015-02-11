@@ -28,6 +28,7 @@ namespace Hurricane.Music.Track
         public string Album { get; set; }
         public uint Year { get; set; }
         public string Genres { get; set; }
+        public int TrackNumber { get; set; }    // number of this track in album; useful for sorting
 
         private bool _isfavorite;
         public bool IsFavorite

@@ -60,7 +60,8 @@ namespace Hurricane.Music.Playlist
         {
             base.AddTrack(track);
             Tracks.Add(track);
-            ShuffleList.Add(track);
+            if (ShuffleList != null)
+                ShuffleList.Add(track);
 
             track.IsAdded = true;
             DispatcherTimer tmr = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(500) };
