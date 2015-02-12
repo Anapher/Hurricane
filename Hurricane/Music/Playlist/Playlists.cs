@@ -4,22 +4,22 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Hurricane.Music.MusicDatabase.EventArgs;
 
 namespace Hurricane.Music.Playlist
 {
-    public static class PlaylistFactory
-    {
-        public static void Register(PlaylistFormat format)
-        {
-            //TODO: check duplicates?
-            formats_.Add(format);
-        }
+    // Collection of play list importers (classes with [PlaylistFormat] attribute)
+    // Use Playlists.Import to read supported play list file or
+    // use Playlists.ImportFiles to read arbitrary files
 
+    public static class Playlists
+    {
+        // imports play list and returns IPlaylist or null if list cannot be read
         public async static Task<IPlaylist> Import(string file_path)
         {
             return await Task.Run(delegate
             {
-                return PlaylistFactory.IsSupported(file_path) ? PlaylistFactory.DoImport(file_path) : null;
+                return Playlists.IsSupported(file_path) ? Playlists.DoImport(file_path) : null;
             });
         }
 
@@ -47,6 +47,39 @@ namespace Hurricane.Music.Playlist
                 return format.ImportTracks(base_path, reader);
         }
 
+        // import all files:
+        //   if some of them are playlists, read them and return tracks;
+        //   turn normal sources (mp3, wav, etc.) into tracks
+        public static IEnumerable<Track.PlayableBase> ImportFiles(IEnumerable<string> paths, EventHandler<TrackImportProgressChangedEventArgs> progress)
+        {
+            int index = 0;
+            var count = paths.Count();
+
+            foreach (var path in paths)
+            {
+                FileInfo fi = new FileInfo(path);
+                if (fi.Exists)
+                {
+                    if (progress != null)
+                        progress(null, new TrackImportProgressChangedEventArgs(index, count, fi.Name));
+
+                    if (IsSupported(path))  // playlist?
+                    {
+                        var playlist = DoImport(path);
+
+                        if (playlist != null)
+                            foreach (var track in playlist.Tracks)
+                                yield return track;
+                    }
+                    else
+                    {
+                        yield return new Track.LocalTrack { Path = fi.FullName };
+                    }
+                }
+                ++index;
+            }
+        }
+
         static PlaylistFormat MatchExtension(string file_path)
         {
             var ext = Path.GetExtension(file_path).ToLower();
@@ -63,17 +96,28 @@ namespace Hurricane.Music.Playlist
 
         static void RunRegistration()
         {
-            var formats = typeof(PlaylistFactory).Assembly.GetTypes().Where(t => t.GetCustomAttributes(typeof(PlaylistFormatAttribute), false).Length > 0);
+            var formats = typeof(Playlists).Assembly.GetTypes().Where(t => t.GetCustomAttributes(typeof(PlaylistFormatAttribute), false).Length > 0);
 
             foreach (var format in formats)
             {
-                var get = format.GetMethod("GetFormat", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static);
+                var get = format.GetMethod("GetFormat", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static);
                 var info = get.Invoke(null, null) as PlaylistFormat;
                 System.Diagnostics.Debug.Assert(info != null, "Missing PlaylistFormat info for " + format.Name);
                 if (info != null)
                     Register(info);
             }
         }
+
+        static void Register(PlaylistFormat format)
+        {
+#if DEBUG
+            // check for duplicates
+            foreach (var ext in format.SupportedExtensions)
+                System.Diagnostics.Debug.Assert(formats_.Find(f => f.SupportedExtensions.Contains(ext)) == null, "File extensions are already registered. New format: " + format.Name);
+#endif
+            formats_.Add(format);
+        }
+
     }
 
     public class PlaylistFormat

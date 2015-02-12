@@ -175,7 +175,7 @@ namespace Hurricane.Music
 
             SelectedPlaylist = IndexToPlaylist(config.SelectedPlaylist);
 
-            if (config.SelectedTrack > -1)
+            if (config.SelectedTrack > -1 && config.SelectedTrack < SelectedPlaylist.Tracks.Count)
             {
                 SelectedTrack = SelectedPlaylist.Tracks[config.SelectedTrack];
             }
@@ -188,7 +188,7 @@ namespace Hurricane.Music
             favoritePlaylist.LoadList();
             if (config.Queue != null) { Queue = config.Queue; Queue.Initialize(Playlists); }
 
-            if (config.LastTrackIndex > -1)
+            if (config.LastTrackIndex > -1 && config.LastTrackIndex < SelectedPlaylist.Tracks.Count)
             {
                 PlayableBase t = CurrentPlaylist.Tracks[config.LastTrackIndex];
                 if (t.TrackExists)

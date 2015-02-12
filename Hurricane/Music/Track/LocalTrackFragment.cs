@@ -12,14 +12,20 @@ namespace Hurricane.Music.Track
 {
     public class LocalTrackFragment : LocalTrack
     {
-        public LocalTrackFragment()
+        LocalTrackFragment()
         { }
 
-        public LocalTrackFragment(TimeSpan start_from, string title)
+        public LocalTrackFragment(TimeSpan start_from, TimeSpan duration, string title)
         {
-            _offset = start_from;
+            Offset = start_from;
+            _duration = duration;
             _title = title;
             Title = title;
+            if (duration > TimeSpan.Zero)
+                ResetDuration(duration);
+
+            DurationTicks = duration.Ticks;
+            OffsetTicks = Offset.Ticks;
         }
 
         protected override async Task<bool> UpdateInformation(FileInfo filename)
@@ -27,12 +33,10 @@ namespace Hurricane.Music.Track
             try
             {
                 await Task.Run(() => {
+System.Diagnostics.Debug.WriteLine("reading " + filename);
                     using (var source = CodecFactory.Instance.GetCodec(filename.FullName))
-                    {
-                        kHz = source.WaveFormat.SampleRate / 1000;
-                        var duration = source.GetLength();
-                        SetDuration(duration - _offset);
-                    }
+                        UpdateMetadata(source);
+//System.Diagnostics.Debug.WriteLine("done " + filename);
                 });
 
                 IsChecked = true;
@@ -45,8 +49,58 @@ namespace Hurricane.Music.Track
             return true;
         }
 
+        void UpdateMetadata(IWaveSource source)
+        {
+            // duration of the last track imported from a CUE sheet is not initially known;
+            // update it now that we have audio source decoded; this update is only valid for the last track!
+            if (_duration == TimeSpan.Zero)
+            {
+                var duration = source.GetLength();
+                _duration = duration - Offset;
+                SetDuration(_duration);
+            }
+
+            kHz = source.WaveFormat.SampleRate / 1000;
+            kbps = source.WaveFormat.BytesPerSecond * 8 / 1000;
+        }
+
+        // return fragment to play
+        public override Task<IWaveSource> GetSoundSource()
+        {
+            return Task.Run(() => {
+                var source = CodecFactory.Instance.GetCodec(Path);
+                UpdateMetadata(source);
+                return new CutSource(source, Offset, _duration) as IWaveSource;
+            });
+        }
+
+        public override async Task<bool> CheckTrack()
+        {
+            if (!TrackExists)
+                return false;
+            IsChecked = true;
+            return true;
+        }
+
+        [XmlIgnore]
+        TimeSpan Offset { get; set; }
+
+        [XmlIgnore]
+        TimeSpan _duration;
+
         [XmlElement("Offset")]
-        TimeSpan _offset;
+        public long OffsetTicks
+        {
+            get { return Offset.Ticks; }
+            set { Offset = new TimeSpan(value); }
+        }
+
+        [XmlElement("DurationExact")]
+        public long DurationTicks
+        {
+            get { return _duration.Ticks; }
+            set { _duration = new TimeSpan(value); }
+        }
 
         string _title;
     }

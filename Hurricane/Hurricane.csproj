@@ -144,7 +144,8 @@
     <Compile Include="Music\Playlist\CueSharp.cs" />
     <Compile Include="Music\Playlist\ImportCueSheet.cs" />
     <Compile Include="Music\Playlist\ImportM3uPlaylist.cs" />
-    <Compile Include="Music\Playlist\ImportPlaylist.cs" />
+    <Compile Include="Music\Playlist\Playlists.cs" />
+    <Compile Include="Music\Track\CutSource.cs" />
     <Compile Include="Music\Track\LocalTrackFragment.cs" />
     <Compile Include="Music\Track\WebApi\YouTubeApi\DataClasses\MediaDescription.cs" />
     <Compile Include="Settings\Background\CustomBackground.cs" />

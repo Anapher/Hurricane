@@ -10,7 +10,7 @@ using Hurricane.ViewModelBase;
 
 namespace Hurricane.Music.Track
 {
-    [Serializable, XmlInclude(typeof(LocalTrack)), XmlInclude(typeof(SoundCloudTrack)), XmlInclude(typeof(YouTubeTrack)), XmlType(TypeName = "Playable")]
+    [Serializable, XmlInclude(typeof(LocalTrack)), XmlInclude(typeof(LocalTrackFragment)), XmlInclude(typeof(SoundCloudTrack)), XmlInclude(typeof(YouTubeTrack)), XmlType(TypeName = "Playable")]
     public abstract class PlayableBase : PropertyChangedBase, IEquatable<PlayableBase>, IRepresentable, IMusicInformation
     {
         #region Events

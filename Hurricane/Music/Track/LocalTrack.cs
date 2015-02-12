@@ -38,7 +38,7 @@ namespace Hurricane.Music.Track
             return !IsChecked;
         }
 
-        public async Task<bool> CheckTrack()
+        public virtual async Task<bool> CheckTrack()
         {
             TimeSpan duration = TimeSpan.Zero;
             if (!TrackExists) return false;
@@ -77,7 +77,6 @@ namespace Hurricane.Music.Track
             Extension = TrackInformation.Extension.ToUpper().Replace(".", string.Empty);
 
             return await UpdateInformation(TrackInformation);
-        //    return await TryLoadWithTagLibSharp(TrackInformation) || await TryLoadWithCSCore(TrackInformation);
         }
 
         protected virtual async Task<bool> UpdateInformation(FileInfo filename)

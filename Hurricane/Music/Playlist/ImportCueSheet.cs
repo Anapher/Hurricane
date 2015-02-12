@@ -59,21 +59,21 @@ namespace Hurricane.Music.Playlist
                 if (track.Indices.Length == 0)
                     continue;
 
-                TimeSpan offset = track.Offset;
-
-                var element = new Track.LocalTrackFragment(offset, track.Title);
+                var offset = track.Offset;
+                var duration = TimeSpan.Zero;
 
                 if (i < cue.Tracks.Length)
                 {
                     TimeSpan next_offset = cue.Tracks[i].Offset;
-                    element.ResetDuration(next_offset - offset);
+                    duration = next_offset - offset;
                 }
                 else
                 {
                     // there's no way of knowing what's the last track's duration without decoding audio file
                     // and checking it's duration first; deferred to track info reading code
-                    //element.ResetDuration(new TimeSpan(0));
                 }
+
+                var element = new Track.LocalTrackFragment(offset, duration, track.Title);
 
                 element.Path = Path.Combine(base_path, audio_file);
 
