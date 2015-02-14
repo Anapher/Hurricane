@@ -20,7 +20,6 @@
         <Style TargetType="TextBlock">
             <Setter Property="Foreground" Value="{DynamicResource BlackBrush}"/>
         </Style>
-        <converter:EnumToBooleanConverter x:Key="EnumToBooleanConverter"/>
     </UserControl.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
@@ -58,8 +57,8 @@
                                 </Grid.ColumnDefinitions>
                                 <StackPanel Orientation="Vertical" Grid.Column="1">
                                     <TextBlock Text="{DynamicResource Device}" VerticalAlignment="Center"/>
-                                    <WrapPanel>
-                                        <ComboBox ItemsSource="{Binding SoundOutList}" Margin="0,5,10,0" Width="150" HorizontalAlignment="Left" DisplayMemberPath="Name" x:Name="cbbSoundOut" SelectedItem="{Binding SelectedSoundOut}"/>
+                                    <StackPanel Orientation="Horizontal">
+                                        <ComboBox ItemsSource="{Binding SoundOutList}" Margin="0,5,10,0" Width="150" DisplayMemberPath="Name" SelectedItem="{Binding SelectedSoundOut}"/>
                                         <ComboBox Margin="0,5,0,0" ItemsSource="{Binding SelectedSoundOut.AudioDevices}" SelectedItem="{Binding SelectedAudioDevice}" Width="300" HorizontalAlignment="Left">
                                             <ComboBox.Resources>
                                                 <converter:ComboBoxForegroundConverter x:Key="ComboBoxForegroundConverter"/>
@@ -85,12 +84,13 @@
                                                 </DataTemplate>
                                             </ComboBox.ItemTemplate>
                                         </ComboBox>
-                                    </WrapPanel>
+                                        <Button Content="{DynamicResource Apply}" VerticalAlignment="Center" Margin="10,0,0,0" Command="{Binding ApplySoundOut}" IsEnabled="{Binding CanApplySoundOut}"/>
+                                    </StackPanel>
                                 </StackPanel>
                             </Grid>
                             <StackPanel Margin="0,15,0,0" Orientation="Vertical">
                                 <TextBlock Text="{DynamicResource SampleSourceBitrate}" VerticalAlignment="Center"/>
-                                <ComboBox HorizontalAlignment="Left" Margin="0,5,0,0" Width="100" SelectedIndex="{Binding Config.WaveSourceBits,Converter={StaticResource BitrateToIndexConverter}}" SelectionChanged="SettingChanged">
+                                <ComboBox HorizontalAlignment="Left" Margin="0,5,0,0" Width="100" SelectedIndex="{Binding Config.WaveSourceBits,Converter={StaticResource BitrateToIndexConverter}}">
                                     <ComboBoxItem Content="8 Bits"/>
                                     <ComboBoxItem Content="16 Bits"/>
                                     <ComboBoxItem Content="24 Bits"/>
@@ -99,7 +99,7 @@
                             </StackPanel>
                             <StackPanel Margin="0,15,0,0" Orientation="Vertical">
                                 <TextBlock Text="{DynamicResource Samplerate}" VerticalAlignment="Center"/>
-                                <ComboBox HorizontalAlignment="Left" Width="250" Margin="0,5,0,0" SelectedIndex="{Binding Config.SampleRate,Converter={StaticResource SampleRateToIndexConverter}}" SelectionChanged="SettingChanged">
+                                <ComboBox HorizontalAlignment="Left" Width="250" Margin="0,5,0,0" SelectedIndex="{Binding Config.SampleRate,Converter={StaticResource SampleRateToIndexConverter}}">
                                     <ComboBoxItem Content="{DynamicResource DefaultSamplerate}"/>
                                     <ComboBoxItem Content="44100 Hz"/>
                                     <ComboBoxItem Content="48000 Hz"/>
@@ -114,7 +114,7 @@
                                     <converter:LatencyToIndexConverter x:Key="LatencyToIndexConverter"/>
                                 </StackPanel.Resources>
                                 <TextBlock Text="{DynamicResource Latency}" VerticalAlignment="Center"/>
-                                <ComboBox HorizontalAlignment="Left" Width="200" Margin="0,5,0,0" SelectedIndex="{Binding Config.Latency,Converter={StaticResource LatencyToIndexConverter}}" SelectionChanged="SettingChanged">
+                                <ComboBox HorizontalAlignment="Left" Width="200" Margin="0,5,0,0" SelectedIndex="{Binding Config.Latency,Converter={StaticResource LatencyToIndexConverter}}">
                                     <ComboBoxItem Content="50 ms"/>
                                     <ComboBoxItem Content="{DynamicResource DefaultLatency}"/>
                                     <ComboBoxItem Content="150 ms"/>
@@ -128,20 +128,20 @@
                                 </ComboBox>
                             </StackPanel>
                             <StackPanel Orientation="Vertical" Margin="0,15,0,0">
-                                <CheckBox IsChecked="{Binding Config.IsCrossfadeEnabled}" Content="{DynamicResource Crossfade}" Margin="0,0,10,0" x:Name="chkCrossfade" Checked="SettingChanged" Unchecked="SettingChanged"/>
+                                <CheckBox IsChecked="{Binding Config.IsCrossfadeEnabled}" Content="{DynamicResource Crossfade}" Margin="0,0,10,0" x:Name="CrossfadeIsEnabledCheckBox"/>
                                 <Grid Margin="0,10,0,0">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*" MaxWidth="300"/>
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
-                                    <Slider Value="{Binding Config.CrossfadeDuration}" Grid.Column="0" Maximum="10" SmallChange="1" LargeChange="2" IsEnabled="{Binding ElementName=chkCrossfade,Path=IsChecked}" x:Name="sliderCrossfade" Minimum="2" ValueChanged="SettingChanged"/>
+                                    <Slider Value="{Binding Config.CrossfadeDuration}" Grid.Column="0" Maximum="10" SmallChange="1" LargeChange="2" IsEnabled="{Binding ElementName=CrossfadeIsEnabledCheckBox,Path=IsChecked}" x:Name="CrossfadeSlider" Minimum="2"/>
                                     <StackPanel Orientation="Horizontal" Grid.Column="1" Margin="10,0,0,0">
-                                        <TextBlock Text="{Binding ElementName=sliderCrossfade,Path=Value}" Margin="0,0,5,0"/>
+                                        <TextBlock Text="{Binding ElementName=CrossfadeSlider,Path=Value}" Margin="0,0,5,0"/>
                                         <TextBlock Text="{DynamicResource Secounds}"/>
                                     </StackPanel>
                                 </Grid>
                             </StackPanel>
-                            <CheckBox ToolTip="{DynamicResource PreferFavoriteDescription}" Margin="0,15,0,0" Content="{DynamicResource PreferFavoriteTracks}" IsChecked="{Binding Config.ShufflePreferFavoritTracks}" Checked="SettingChanged" Unchecked="SettingChanged"/>
+                            <CheckBox ToolTip="{DynamicResource PreferFavoriteDescription}" Margin="0,15,0,0" Content="{DynamicResource PreferFavoriteTracks}" IsChecked="{Binding Config.ShufflePreferFavoriteTracks}"/>
                         </StackPanel>
                     </Grid>
                 </ScrollViewer>
@@ -151,48 +151,36 @@
                     <StackPanel Orientation="Vertical" Margin="10">
                         <TextBlock Style="{StaticResource TextBlockHeader}" extensions:TextBlockHelper.UpperText="{DynamicResource Theme}"/>
                         <StackPanel Orientation="Vertical" Margin="0,10,0,0">
-                            <StackPanel.Resources>
-                                <converter:BaseThemeToIndexConverter x:Key="BaseThemeToIndexConverter"/>
-                            </StackPanel.Resources>
                             <TextBlock Text="{DynamicResource BaseTheme}" VerticalAlignment="Center"/>
-                            <ComboBox Margin="0,5,0,0" Width="100" HorizontalAlignment="Left" SelectedIndex="{Binding Config.Theme.BaseTheme,Converter={StaticResource BaseThemeToIndexConverter}}" SelectionChanged="SettingChanged">
-                                <ComboBoxItem Content="{DynamicResource Light}"/>
-                                <ComboBoxItem Content="{DynamicResource Dark}"/>
-                            </ComboBox>
+                            <ComboBox Margin="0,5,0,0" Width="100" HorizontalAlignment="Left" SelectedItem="{Binding Config.ApplicationDesign.BaseTheme}" ItemsSource="{Binding ApplicationThemeManager.BaseThemes}" DisplayMemberPath="TranslatedName"/>
                         </StackPanel>
                         <TextBlock Text="{DynamicResource ColorTheme}" Margin="0,15,0,0"/>
-                        <WrapPanel Orientation="Horizontal">
-                            <ComboBox Margin="0,5,10,0" x:Name="cbb" ItemsSource="{Binding Config.Theme.Themes}" SelectedItem="{Binding Config.Theme.SelectedColorTheme}" SelectionChanged="SettingChanged" Width="300" HorizontalAlignment="Left">
-                                <ComboBox.ItemTemplate>
-                                    <DataTemplate>
-                                        <DockPanel>
-                                            <Ellipse Width="16" Height="16" Fill="{Binding ColorBrush}"/>
-                                            <TextBlock Text="{Binding TranslatedName}" Margin="10,0,0,0"/>
-                                        </DockPanel>
-                                    </DataTemplate>
-                                </ComboBox.ItemTemplate>
-                            </ComboBox>
-                            <Button Margin="0,5,0,0" Content="{DynamicResource Edit}" IsEnabled="{Binding ElementName=cbb,Path=SelectedItem.IsEditable}" VerticalAlignment="Bottom" Command="{Binding EditTheme}"/>
-                            <Button Margin="10,5,0,0" Content="{DynamicResource Create}" VerticalAlignment="Bottom" Command="{Binding OpenThemeCreator}"/>
-                        </WrapPanel>
-                        <DockPanel Margin="0,10,0,0">
-                            <CheckBox Content="{DynamicResource SpectrumAnalyzerColor}" VerticalAlignment="Center" IsChecked="{Binding Config.Theme.UseCustomSpectrumAnalyzerColor}" Checked="SettingChanged" Unchecked="SettingChanged"/>
-                            <tkt:ColorPicker Margin="10,0,0,0" Width="150" HorizontalAlignment="Left" IsEnabled="{Binding Config.Theme.UseCustomSpectrumAnalyzerColor}" SelectedColor="{Binding Config.Theme.SpectrumAnalyzerColor}" SelectedColorChanged="SettingChanged" ColorMode="ColorCanvas" ShowStandardColors="False" ShowAvailableColors="False" ShowAdvancedButton="False"/>
-                        </DockPanel>
-                        <TextBlock Margin="0,30,0,0" extensions:TextBlockHelper.UpperText="{DynamicResource Background}" Style="{StaticResource TextBlockHeader}"/>
+                        <ComboBox Margin="0,5,10,0" ItemsSource="{Binding ApplicationThemeManager.ColorThemes}" SelectedItem="{Binding Config.ApplicationDesign.ColorTheme}" Width="300" HorizontalAlignment="Left">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate>
+                                    <DockPanel>
+                                        <Ellipse Width="16" Height="16" Fill="{Binding ColorBrush}"/>
+                                        <TextBlock Text="{Binding TranslatedName}" Margin="10,0,0,0"/>
+                                    </DockPanel>
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
+                        <TextBlock Margin="0,15,0,0" Text="{DynamicResource Background}"/>
                         <Grid Margin="0,10,0,0">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
-                            <TextBox IsReadOnly="True" Text="{Binding Config.CustomBackground.BackgroundPath}"/>
+                            <TextBox IsReadOnly="True" Text="{Binding Config.ApplicationDesign.BackgroundImage.DisplayText}"/>
                             <Button Content=" ... " Grid.Column="1" Margin="10,0,10,0" Command="{Binding SelectBackground}"/>
-                            <Button Content="{DynamicResource Reset}" Grid.Column="2" Command="{Binding ResetBackground}"/>
+                            <Button Content="{DynamicResource Remove}" Grid.Column="2" Command="{Binding ResetBackground}"/>
                         </Grid>
+                        <ListBox ItemsSource="{Binding ApplicationThemeManager.ThemePacks}"/>
+                        
                         <TextBlock Style="{StaticResource TextBlockHeader}" extensions:TextBlockHelper.UpperText="{DynamicResource View}" Margin="0,30,0,0"/>
-                        <CheckBox Margin="0,10,0,0" Content="{DynamicResource ShowArtistAndTitle}" IsChecked="{Binding Config.ShowArtistAndTitle}" Checked="SettingChanged" Unchecked="SettingChanged"/>
-                        <CheckBox Margin="0,10,0,0" Content="{DynamicResource UseThinHeaders}" IsChecked="{Binding Config.UseThinHeaders}" Checked="SettingChanged" Unchecked="SettingChanged"/>
+                        <CheckBox Margin="0,10,0,0" Content="{DynamicResource ShowArtistAndTitle}" IsChecked="{Binding ShowArtistAndTitle}"/>
+                        <CheckBox Margin="0,10,0,0" Content="{DynamicResource UseThinHeaders}" IsChecked="{Binding Config.UseThinHeaders}"/>
                     </StackPanel>
                 </ScrollViewer>
             </TabItem>
@@ -200,7 +188,7 @@
                 <ScrollViewer>
                     <StackPanel Orientation="Vertical" Margin="10">
                         <TextBlock Text="MAGIC ARROW" Style="{StaticResource TextBlockHeader}"/>
-                        <CheckBox Content="{DynamicResource ShowMagicArrowBelowCursor}" IsChecked="{Binding Config.ShowMagicArrowBelowCursor}" Margin="0,10,0,0" Checked="SettingChanged" Unchecked="SettingChanged"/>
+                        <CheckBox Content="{DynamicResource ShowMagicArrowBelowCursor}" IsChecked="{Binding Config.ShowMagicArrowBelowCursor}" Margin="0,10,0,0"/>
                         <TextBlock extensions:TextBlockHelper.UpperText="{DynamicResource Notifications}" Margin="0,30,0,0" Style="{StaticResource TextBlockHeader}"/>
                         <Grid Margin="0,5,0,0">
                             <Grid.ColumnDefinitions>
@@ -215,7 +203,7 @@
                                 <TextBlock Text=":" Margin="0,0,10,0" VerticalAlignment="Center"/>
                             </StackPanel>
                             <StackPanel Orientation="Horizontal" Grid.Column="1">
-                                <ComboBox Width="125" SelectedIndex="{Binding Config.Notification,Converter={StaticResource NotificationTypeConverter}}" SelectionChanged="SettingChanged">
+                                <ComboBox Width="125" SelectedIndex="{Binding Config.Notification,Converter={StaticResource NotificationTypeConverter}}">
                                     <ComboBoxItem Content="{DynamicResource Disabled}"/>
                                     <ComboBoxItem Content="{DynamicResource Top}"/>
                                     <ComboBoxItem Content="{DynamicResource RightBottom}"/>
@@ -229,18 +217,18 @@
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
                             <TextBlock Text="{DynamicResource ShowTime}" VerticalAlignment="Center"/>
-                            <controls:NumericUpDown Minimum="1000" Maximum="1000000" Interval="100" Width="125" Grid.Column="1" HorizontalAlignment="Left" Value="{Binding Config.NotificationShowTime}" ValueChanged="SettingChanged" StringFormat="{}{0} ms"/>
+                            <controls:NumericUpDown Minimum="1000" Maximum="1000000" Interval="100" Width="125" Grid.Column="1" HorizontalAlignment="Left" Value="{Binding Config.NotificationShowTime}" StringFormat="{}{0} ms"/>
                         </Grid>
-                        <CheckBox IsChecked="{Binding Config.DisableNotificationInGame}" Margin="0,10,0,0" Checked="SettingChanged" Unchecked="SettingChanged">
+                        <CheckBox IsChecked="{Binding Config.DisableNotificationInGame}" Margin="0,10,0,0">
                             <TextBlock Text="{DynamicResource DisableNotificationsInGame}" TextWrapping="Wrap"/>
                         </CheckBox>
                         <TextBlock extensions:TextBlockHelper.UpperText="{DynamicResource Tray}" Margin="0,30,0,0" Style="{StaticResource TextBlockHeader}"/>
-                        <CheckBox Content="{DynamicResource MinimizeToTray}" Margin="0,10,0,0" x:Name="MinimizeToTrayCheckBox" IsChecked="{Binding Config.MinimizeToTray}" Checked="SettingChanged" Unchecked="SettingChanged"/>
-                        <CheckBox Content="{DynamicResource NotifyIfMinimizeToTray}" Margin="0,10,0,0" IsChecked="{Binding Config.ShowNotificationIfMinimizeToTray}" IsEnabled="{Binding ElementName=MinimizeToTrayCheckBox,Path=IsChecked}" Checked="SettingChanged" Unchecked="SettingChanged"/>
+                        <CheckBox Content="{DynamicResource MinimizeToTray}" Margin="0,10,0,0" x:Name="MinimizeToTrayCheckBox" IsChecked="{Binding Config.MinimizeToTray}"/>
+                        <CheckBox Content="{DynamicResource NotifyIfMinimizeToTray}" Margin="0,10,0,0" IsChecked="{Binding Config.ShowNotificationIfMinimizeToTray}" IsEnabled="{Binding ElementName=MinimizeToTrayCheckBox,Path=IsChecked}"/>
                         
                         <TextBlock extensions:TextBlockHelper.UpperText="{DynamicResource CoverArt}" Margin="0,30,0,0" Style="{StaticResource TextBlockHeader}"/>
-                        <CheckBox Content="{DynamicResource LoadAlbumCoverFromInternet}" Margin="0,10,0,0" x:Name="chkDownloadCover" IsChecked="{Binding Config.LoadAlbumCoverFromInternet}" Checked="SettingChanged" Unchecked="SettingChanged"/>
-                        <Grid IsEnabled="{Binding ElementName=chkDownloadCover,Path=IsChecked}" Margin="0,10,0,0">
+                        <CheckBox Content="{DynamicResource LoadAlbumCoverFromInternet}" Margin="0,10,0,0" x:Name="DownloadCoverCheckBox" IsChecked="{Binding Config.LoadAlbumCoverFromInternet}"/>
+                        <Grid IsEnabled="{Binding ElementName=DownloadCoverCheckBox,Path=IsChecked}" Margin="0,10,0,0">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="125"/>
                                 <ColumnDefinition Width="*"/>
@@ -252,15 +240,15 @@
                                 <TextBlock Text="{DynamicResource CoverQuality}"/>
                                 <TextBlock Text=":"/>
                             </StackPanel>
-                            <ComboBox Width="150" SelectedIndex="{Binding Config.DownloadAlbumCoverQuality,Converter={StaticResource QualityToIndexConverter}}" SelectionChanged="SettingChanged" Grid.Column="1" HorizontalAlignment="Left">
+                            <ComboBox Width="150" SelectedIndex="{Binding Config.DownloadAlbumCoverQuality,Converter={StaticResource QualityToIndexConverter}}" Grid.Column="1" HorizontalAlignment="Left">
                                 <ComboBoxItem Content="{DynamicResource Small}"/>
                                 <ComboBoxItem Content="{DynamicResource Medium}"/>
                                 <ComboBoxItem Content="{DynamicResource Large}"/>
                                 <ComboBoxItem Content="{DynamicResource Maximum}"/>
                             </ComboBox>
                         </Grid>
-                        <CheckBox Content="{DynamicResource SaveAlbumCoverLocal}" Margin="0,10,0,0" IsChecked="{Binding Config.SaveCoverLocal}" IsEnabled="{Binding ElementName=chkDownloadCover,Path=IsChecked}" Checked="SettingChanged" Unchecked="SettingChanged"/>
-                        <CheckBox Content="{DynamicResource TrimTrackname}" ToolTip="{DynamicResource TrimTracknameDescription}" Margin="0,10,0,0" IsChecked="{Binding Config.TrimTrackname}" IsEnabled="{Binding ElementName=chkDownloadCover,Path=IsChecked}" Checked="SettingChanged" Unchecked="SettingChanged"/>
+                        <CheckBox Content="{DynamicResource SaveAlbumCoverLocal}" Margin="0,10,0,0" IsChecked="{Binding Config.SaveCoverLocal}" IsEnabled="{Binding ElementName=DownloadCoverCheckBox,Path=IsChecked}"/>
+                        <CheckBox Content="{DynamicResource TrimTrackname}" ToolTip="{DynamicResource TrimTracknameDescription}" Margin="0,10,0,0" IsChecked="{Binding Config.TrimTrackname}" IsEnabled="{Binding ElementName=DownloadCoverCheckBox,Path=IsChecked}"/>
                         <TextBlock extensions:TextBlockHelper.UpperText="{DynamicResource Downloads}" Margin="0,30,0,0" Style="{StaticResource TextBlockHeader}"/>
                         <Grid Margin="0,10,0,0">
                             <Grid.ColumnDefinitions>
@@ -275,22 +263,22 @@
                             <TextBox Text="{Binding MusicManager.DownloadManager.DownloadDirectory}" Grid.Column="1" IsReadOnly="True"/>
                             <Button Content="..." Grid.Column="2" Width="35" Margin="10,0,0,0" Command="{Binding SelectDownloadPath}"/>
                         </Grid>
-                        <CheckBox Content="{DynamicResource AddTagsToDownloads}" Margin="0,10,0,0" IsChecked="{Binding MusicManager.DownloadManager.AddTagsToDownloads}" Checked="SettingChanged" Unchecked="SettingChanged"/>
+                        <CheckBox Content="{DynamicResource AddTagsToDownloads}" Margin="0,10,0,0" IsChecked="{Binding MusicManager.DownloadManager.AddTagsToDownloads}"/>
                     </StackPanel>
                 </ScrollViewer>
             </TabItem>
             <TabItem Header="System">
                 <StackPanel Orientation="Vertical" Margin="10">
                     <TextBlock Style="{StaticResource TextBlockHeader}" extensions:TextBlockHelper.UpperText="{DynamicResource General}"/>
-                    <CheckBox Content="{DynamicResource AddToSendTo}" Margin="0,10,0,0" IsChecked="{Binding RegistryManager.SendToShortcut}" Checked="SettingChanged" Unchecked="SettingChanged"/>
+                    <CheckBox Content="{DynamicResource AddToSendTo}" Margin="0,10,0,0" IsChecked="{Binding RegistryManager.SendToShortcut}"/>
                     <TextBlock Style="{StaticResource TextBlockHeader}" Text="API" Margin="0,30,0,0"/>
                     <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
-                        <CheckBox Content="{DynamicResource ApiIsEnabled}" IsChecked="{Binding Config.ApiIsEnabled}" x:Name="chk" Checked="SettingChanged" Unchecked="SettingChanged"/>
+                        <CheckBox Content="{DynamicResource ApiIsEnabled}" IsChecked="{Binding Config.ApiIsEnabled}" x:Name="IsApiEnabledCheckBox"/>
                     </StackPanel>
-                    <StackPanel Orientation="Horizontal" Margin="0,10,0,0" IsEnabled="{Binding ElementName=chk,Path=IsChecked}">
+                    <StackPanel Orientation="Horizontal" Margin="0,10,0,0" IsEnabled="{Binding ElementName=IsApiEnabledCheckBox,Path=IsChecked}">
                         <TextBlock Text="{DynamicResource Port}" VerticalAlignment="Center"/>
                         <TextBlock Text=": " VerticalAlignment="Center"/>
-                        <controls:NumericUpDown Width="100" Minimum="1" Maximum="65535" Value="{Binding Config.ApiPort}" ValueChanged="SettingChanged"/>
+                        <controls:NumericUpDown Width="100" Minimum="1" Maximum="65535" Value="{Binding Config.ApiPort}"/>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal" Margin="0,10,0,0"  VerticalAlignment="Center">
                         <TextBlock Text="Status: "/>

@@ -32,7 +32,7 @@ namespace Hurricane.Utilities
         {
             try
             {
-                using (var client = new WebClient() { Proxy = null })
+                using (var client = new WebClient { Proxy = null })
                 using (var stream = await client.OpenReadTaskAsync("http://www.google.com"))
                 {
                     return true;
@@ -53,19 +53,19 @@ namespace Hurricane.Utilities
 
         public static string EscapeFilename(string filenametoescape)
         {
-            char[] illegalchars = new char[] { '\\', '/', ':', '*', '?', '"', '<', '>', '|' };
+            char[] illegalchars = { '\\', '/', ':', '*', '?', '"', '<', '>', '|' };
             return RemoveChars(filenametoescape, illegalchars);
         }
 
         public static string EscapeArtistName(string artist)
         {
-            char[] illegalchars = new char[] { '.' };
+            char[] illegalchars = { '.' };
             return RemoveChars(artist, illegalchars);
         }
 
         public static string EscapeTitleName(string title)
         {
-            char[] illegalchars = new char[] { '&' };
+            char[] illegalchars = { '&' };
             return RemoveChars(title, illegalchars);
         }
 
@@ -73,17 +73,6 @@ namespace Hurricane.Utilities
         {
             if (string.IsNullOrEmpty(content)) return string.Empty;
             return illegalchars.Aggregate(content, (current, item) => current.Replace(item.ToString(), string.Empty));
-        }
-
-        public static BitmapImage ByteArrayToBitmapImage(byte[] data)
-        {
-            MemoryStream ms = new MemoryStream(data);
-            BitmapImage image = new BitmapImage();
-            image.BeginInit();
-            image.CacheOption = BitmapCacheOption.OnLoad;
-            image.StreamSource = ms;
-            image.EndInit();
-            return image;
         }
 
         public static void CreateShortcut(string path, string targetpath, string iconlocation)

@@ -61,40 +61,32 @@ namespace Hurricane.Music.Track
 
         #region Image
 
-        public async override void Load()
+        protected async override Task LoadImage()
         {
-            IsLoadingImage = true;
+            var diAlbumCover = new DirectoryInfo(HurricaneSettings.Instance.CoverDirectory);
+            Image = MusicCoverManager.GetSoundCloudImage(this, diAlbumCover, HurricaneSettings.Instance.Config.DownloadAlbumCoverQuality, HurricaneSettings.Instance.Config.LoadAlbumCoverFromInternet);
 
             if (Image == null)
+                Image = MusicCoverManager.GetImage(this, diAlbumCover);
+
+            if (Image == null && HurricaneSettings.Instance.Config.LoadAlbumCoverFromInternet)
             {
-                var diAlbumCover = new DirectoryInfo(HurricaneSettings.Instance.CoverDirectory);
-                Image = MusicCoverManager.GetSoundCloudImage(this, diAlbumCover, HurricaneSettings.Instance.Config.DownloadAlbumCoverQuality, HurricaneSettings.Instance.Config.LoadAlbumCoverFromInternet);
-
-                if (Image == null)
-                    Image = MusicCoverManager.GetImage(this, diAlbumCover);
-
-                if (Image == null && HurricaneSettings.Instance.Config.LoadAlbumCoverFromInternet)
+                try
                 {
-                    try
+                    if (!string.IsNullOrEmpty(ArtworkUrl))
                     {
-                        if (!string.IsNullOrEmpty(ArtworkUrl))
-                        {
-                            Image = await SoundCloudApi.LoadBitmapImage(this, HurricaneSettings.Instance.Config.DownloadAlbumCoverQuality, diAlbumCover);
-                        }
-                        if (Image == null)
-                        {
-                            Image = await MusicCoverManager.LoadCoverFromWeb(this, diAlbumCover, Uploader != Artist).ConfigureAwait(false);
-                        }
+                        Image = await SoundCloudApi.LoadBitmapImage(this, HurricaneSettings.Instance.Config.DownloadAlbumCoverQuality, diAlbumCover);
                     }
-                    catch (WebException)
+                    if (Image == null)
                     {
-                        //Happens, doesn't matter
+                        Image = await MusicCoverManager.LoadCoverFromWeb(this, diAlbumCover, Uploader != Artist).ConfigureAwait(false);
                     }
                 }
+                catch (WebException)
+                {
+                    //Happens, doesn't matter
+                }
             }
-
-            IsLoadingImage = false;
-            OnImageLoadComplete();
         }
 
         #endregion

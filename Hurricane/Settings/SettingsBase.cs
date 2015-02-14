@@ -10,13 +10,13 @@ namespace Hurricane.Settings
     {
         public abstract void SetStandardValues();
 
-        public abstract void Save(string programPath); 
+        public abstract void Save(string programPath);
 
         protected void Save<T>(string path)
         {
-            using (StreamWriter writer = new StreamWriter(path))
+            using (var writer = new StreamWriter(path))
             {
-                XmlSerializer serializer = new XmlSerializer(typeof(T));
+                var serializer = new XmlSerializer(typeof(T));
                 serializer.Serialize(writer, this);
             }
         }

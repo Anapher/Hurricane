@@ -16,7 +16,7 @@ namespace Hurricane.AppMainWindow.WindowSkins
         {
             InitializeComponent();
 
-            this.Configuration = new WindowSkinConfiguration()
+            Configuration = new WindowSkinConfiguration()
             {
                 MaxHeight = double.PositiveInfinity,
                 MaxWidth = double.PositiveInfinity,
@@ -50,17 +50,17 @@ namespace Hurricane.AppMainWindow.WindowSkins
 
         public void EnableWindow()
         {
-           spektrum1.RefreshInterval = 20;
+            SpectrumAnalyzer.RefreshInterval = 20;
         }
 
         public void DisableWindow()
         {
-            spektrum1.RefreshInterval = int.MaxValue;
+            SpectrumAnalyzer.RefreshInterval = int.MaxValue;
         }
 
         public void RegisterSoundPlayer(CSCoreEngine engine)
         {
-            spektrum1.RegisterSoundPlayer(engine);
+            SpectrumAnalyzer.RegisterSoundPlayer(engine);
         }
 
         protected WindowSkinConfiguration configuration;

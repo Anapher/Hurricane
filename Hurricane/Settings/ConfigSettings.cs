@@ -5,63 +5,35 @@ using System.Linq;
 using System.Threading;
 using System.Windows;
 using System.Xml.Serialization;
-using Hurricane.MagicArrow.DockManager;
-using Hurricane.Music;
 using Hurricane.Music.Download;
-using Hurricane.Music.MusicEqualizer;
 using Hurricane.Notification;
-using Hurricane.Settings.Background;
 using Hurricane.Settings.Themes;
-using Hurricane.Settings.MirrorManagement;
 
 namespace Hurricane.Settings
 {
     [Serializable, XmlType(TypeName = "Settings")]
     public class ConfigSettings : SettingsBase, IEquatable<ConfigSettings>
     {
-        protected const string Filename = "config.xml";
+        private const string Filename = "config.xml";
 
         //CSCore
-        [CopyableProperty]
         public string SoundOutDeviceID { get; set; }
-        [CopyableProperty]
         public SoundOutMode SoundOutMode { get; set; }
-        public float Volume { get; set; }
-        [CopyableProperty]
         public int Latency { get; set; }
-        [CopyableProperty]
         public bool IsCrossfadeEnabled { get; set; }
-        [CopyableProperty]
         public int CrossfadeDuration { get; set; }
 
-        //Current State
-        public long TrackPosition { get; set; }
-        public int LastPlaylistIndex { get; set; }
-        public int LastTrackIndex { get; set; }
-        public int SelectedPlaylist { get; set; }
-        public int SelectedTrack { get; set; }
-        public QueueManager Queue { get; set; }
-
         //Playback
-        public bool IsLoopEnabled { get; set; }
-        public bool IsShuffleEnabled { get; set; }
-        public EqualizerSettings EqualizerSettings { get; set; }
-        [CopyableProperty]
         public int WaveSourceBits { get; set; }
-        [CopyableProperty]
         public int SampleRate { get; set; }
 
         //Magic Arrow
-        [CopyableProperty]
         public bool ShowMagicArrowBelowCursor { get; set; }
-        public DockingApplicationState ApplicationState { get; set; }
 
         //Design
-        [CopyableProperty(CopyContainingProperties = true)]
-        public ApplicationThemeManager Theme { get; set; }
+        public ApplicationDesign ApplicationDesign { get; set; }
 
         private bool _useThinHeaders;
-        [CopyableProperty]
         public bool UseThinHeaders
         {
             get { return _useThinHeaders; }
@@ -70,58 +42,28 @@ namespace Hurricane.Settings
                 SetProperty(value, ref _useThinHeaders);
             }
         }
-        [CopyableProperty(CopyContainingProperties = true)]
-        public CustomBackground CustomBackground { get; set; }
 
         //General
-        [CopyableProperty]
         public string Language { get; set; }
-        [CopyableProperty]
         public bool RememberTrackImportPlaylist { get; set; }
-        [CopyableProperty]
         public string PlaylistToImportTrack { get; set; }
-        [CopyableProperty]
-        public bool ShufflePreferFavoritTracks { get; set; }
-        [CopyableProperty]
+        public bool ShufflePreferFavoriteTracks { get; set; }
         public bool ShowArtistAndTitle { get; set; }
-
-        private bool _equalizerIsOpen;
-        public bool EqualizerIsOpen
-        {
-            get { return _equalizerIsOpen; }
-            set
-            {
-                SetProperty(value, ref _equalizerIsOpen);
-            }
-        }
-        [CopyableProperty]
         public bool ApiIsEnabled { get; set; }
-        [CopyableProperty]
         public int ApiPort { get; set; }
-        [CopyableProperty]
         public bool MinimizeToTray { get; set; }
-        [CopyableProperty]
         public bool ShowNotificationIfMinimizeToTray { get; set; }
 
         //Notifications
-        [CopyableProperty]
         public NotificationType Notification { get; set; }
-        [CopyableProperty]
         public bool DisableNotificationInGame { get; set; }
-        [CopyableProperty]
         public int NotificationShowTime { get; set; }
 
         //Album Cover
-        [CopyableProperty]
         public bool LoadAlbumCoverFromInternet { get; set; }
-        [CopyableProperty]
         public ImageQuality DownloadAlbumCoverQuality { get; set; }
-        [CopyableProperty]
         public bool SaveCoverLocal { get; set; }
-        [CopyableProperty]
         public bool TrimTrackname { get; set; }
-
-        //Download
         public DownloadManager Downloader { get; set; }
 
         private List<LanguageInfo> _languages;
@@ -145,16 +87,6 @@ namespace Hurricane.Settings
         public override sealed void SetStandardValues()
         {
             SoundOutDeviceID = "-0";
-            LastPlaylistIndex = -10;
-            LastTrackIndex = -1;
-            TrackPosition = 0;
-            Volume = 1.0f;
-            SelectedPlaylist = 0;
-            SelectedTrack = -1;
-            IsLoopEnabled = false;
-            IsShuffleEnabled = false;
-            EqualizerSettings = new EqualizerSettings();
-            EqualizerSettings.CreateNew();
             DisableNotificationInGame = true;
             ShowMagicArrowBelowCursor = true;
             WaveSourceBits = 16;
@@ -162,9 +94,7 @@ namespace Hurricane.Settings
             var language = Languages.FirstOrDefault(x => x.Code == Thread.CurrentThread.CurrentCulture.TwoLetterISOLanguageName);
             Language = language == null ? "en" : language.Code;
             Notification = NotificationType.Top;
-            ApplicationState = null;
-            Theme = new ApplicationThemeManager();
-            Theme.LoadStandard();
+            ApplicationDesign = new ApplicationDesign();
             NotificationShowTime = 5000;
             RememberTrackImportPlaylist = false;
             PlaylistToImportTrack = null;
@@ -179,11 +109,10 @@ namespace Hurricane.Settings
             Latency = 100;
             IsCrossfadeEnabled = false;
             CrossfadeDuration = 4;
-            Downloader = new DownloadManager();
             UseThinHeaders = true;
-            CustomBackground = new CustomBackground();
             MinimizeToTray = false;
             ShowNotificationIfMinimizeToTray = true;
+            Downloader = new DownloadManager();
         }
 
         public ConfigSettings()
@@ -195,34 +124,34 @@ namespace Hurricane.Settings
         public void LoadLanguage()
         {
             if (_lastLanguage != null) Application.Current.Resources.Remove(_lastLanguage);
-            _lastLanguage = new ResourceDictionary() { Source = new Uri(this.Languages.First(x => x.Code == Language).Path, UriKind.Relative) };
+            _lastLanguage = new ResourceDictionary() { Source = new Uri(Languages.First(x => x.Code == Language).Path, UriKind.Relative) };
             Application.Current.Resources.MergedDictionaries.Add(_lastLanguage);
         }
 
         public override void Save(string programPath)
         {
-            this.Save<ConfigSettings>(Path.Combine(programPath, Filename));
+            Save<ConfigSettings>(Path.Combine(programPath, Filename));
         }
 
         public static ConfigSettings Load(string programpath)
         {
-            FileInfo fi = new FileInfo(Path.Combine(programpath, Filename));
+            var fi = new FileInfo(Path.Combine(programpath, Filename));
             ConfigSettings result;
-            if (fi.Exists)
-            {
-                using (StreamReader reader = new StreamReader(Path.Combine(programpath, Filename)))
-                {
-                    XmlSerializer deserializer = new XmlSerializer(typeof(ConfigSettings));
-                    result = (ConfigSettings)deserializer.Deserialize(reader);
-                }
-            }
-            else
+            if (!fi.Exists || string.IsNullOrWhiteSpace(File.ReadAllText(fi.FullName)))
             {
                 result = new ConfigSettings();
             }
-            result.LoadLanguage();
-            result.Theme.LoadTheme();
-            result.Theme.LoadBaseTheme();
+            else
+            {
+                using (var reader = new StreamReader(Path.Combine(programpath, Filename)))
+                {
+                    var deserializer = new XmlSerializer(typeof(ConfigSettings));
+                    result = (ConfigSettings)deserializer.Deserialize(reader);
+                    result.LoadLanguage();
+                }
+            }
+
+            ApplicationThemeManager.Instance.Apply(result.ApplicationDesign);
             return result;
         }
 
@@ -236,7 +165,7 @@ namespace Hurricane.Settings
                     CompareTwoValues(this.Language, other.Language) &&
                     CompareTwoValues(this.Notification, other.Notification) &&
                     CompareTwoValues(this.DisableNotificationInGame, other.DisableNotificationInGame) &&
-                    CompareTwoValues(this.Theme, other.Theme) &&
+                    CompareTwoValues(this.ApplicationDesign, other.ApplicationDesign) &&
                     CompareTwoValues(this.NotificationShowTime, other.NotificationShowTime) &&
                     CompareTwoValues(this.RememberTrackImportPlaylist, other.RememberTrackImportPlaylist) &&
                     CompareTwoValues(this.DownloadAlbumCoverQuality, other.DownloadAlbumCoverQuality) &&
@@ -245,7 +174,7 @@ namespace Hurricane.Settings
                     CompareTwoValues(this.TrimTrackname, other.TrimTrackname) &&
                     CompareTwoValues(this.ApiIsEnabled, other.ApiIsEnabled) &&
                     CompareTwoValues(this.ApiPort, other.ApiPort) &&
-                    CompareTwoValues(this.ShufflePreferFavoritTracks, other.ShufflePreferFavoritTracks) &&
+                    CompareTwoValues(this.ShufflePreferFavoriteTracks, other.ShufflePreferFavoriteTracks) &&
                     CompareTwoValues(this.ShowArtistAndTitle, other.ShowArtistAndTitle) &&
                     CompareTwoValues(this.SoundOutMode, other.SoundOutMode) &&
                     CompareTwoValues(this.Latency, other.Latency) &&
@@ -254,9 +183,9 @@ namespace Hurricane.Settings
                     CompareTwoValues(this.Downloader.DownloadDirectory, other.Downloader.DownloadDirectory) &&
                     CompareTwoValues(this.Downloader.AddTagsToDownloads, other.Downloader.AddTagsToDownloads) &&
                     CompareTwoValues(this.UseThinHeaders, other.UseThinHeaders) &&
-                    CompareTwoValues(this.CustomBackground, other.CustomBackground) &&
                     CompareTwoValues(this.MinimizeToTray, other.MinimizeToTray) &&
-                    CompareTwoValues(this.ShowNotificationIfMinimizeToTray, other.ShowNotificationIfMinimizeToTray));
+                    CompareTwoValues(this.ShowNotificationIfMinimizeToTray, other.ShowNotificationIfMinimizeToTray) &&
+                    this.ApplicationDesign.Equals(other.ApplicationDesign));
         }
 
         protected bool CompareTwoValues(object v1, object v2)

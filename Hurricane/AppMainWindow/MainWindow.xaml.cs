@@ -1,6 +1,5 @@
 ﻿using System;
 using System.ComponentModel;
-using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -18,12 +17,12 @@ using Hurricane.MagicArrow.DockManager;
 using Hurricane.Music.MusicDatabase.EventArgs;
 using Hurricane.Music.Track;
 using Hurricane.Settings;
-using Hurricane.Settings.Themes;
 using Hurricane.Utilities;
 using Hurricane.ViewModels;
 using Hurricane.Views;
 using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
+using WpfAnimatedGif;
 using InputDialog = Hurricane.Views.InputDialog;
 
 // ReSharper disable once CheckNamespace
@@ -66,7 +65,7 @@ namespace Hurricane
                 ApplyHostWindow(AdvancedWindowSkin);
             };
 
-            var appsettings = HurricaneSettings.Instance.Config;
+            var appsettings = HurricaneSettings.Instance.CurrentState;
             if (appsettings.ApplicationState == null)
             {
                 WindowStartupLocation = WindowStartupLocation.CenterScreen;
@@ -162,7 +161,7 @@ namespace Hurricane
             skin.ToggleWindowState += skin_ToggleWindowState;
             skin.TitleBarMouseMove += skin_TitleBarMouseMove;
 
-            var appstate = HurricaneSettings.Instance.Config.ApplicationState;
+            var appstate = HurricaneSettings.Instance.CurrentState.ApplicationState;
             if (skin != AdvancedWindowSkin && saveinformation)
             {
                 appstate.Height = Height;
@@ -324,8 +323,8 @@ namespace Hurricane
         {
             if (MagicArrow.DockManager.CurrentSide == DockingSide.None)
             {
-                if (HurricaneSettings.Instance.Config.ApplicationState == null) HurricaneSettings.Instance.Config.ApplicationState = new DockingApplicationState();
-                var appstate = HurricaneSettings.Instance.Config.ApplicationState;
+                if (HurricaneSettings.Instance.CurrentState.ApplicationState == null) HurricaneSettings.Instance.CurrentState.ApplicationState = new DockingApplicationState();
+                var appstate = HurricaneSettings.Instance.CurrentState.ApplicationState;
                 appstate.Height = Height;
                 appstate.Width = Width;
                 appstate.Left = Left;
@@ -379,7 +378,7 @@ namespace Hurricane
 
         private MetroDialogColorScheme GetTheme()
         {
-            return HurricaneSettings.Instance.Config.Theme.BaseTheme == BaseTheme.Light
+            return HurricaneSettings.Instance.Config.ApplicationDesign.BaseTheme.UseLightDialogs
                 ? MetroDialogColorScheme.Theme
                 : MetroDialogColorScheme.Accented;
         }
@@ -424,7 +423,7 @@ namespace Hurricane
             {
                 var dialog = new AdvancedInputDialog(this, new MetroDialogSettings() { AffirmativeButtonText = buttonok, DefaultText = defaulttext, NegativeButtonText = Application.Current.Resources["Cancel"].ToString(), ColorScheme = GetTheme(), AnimateHide = ShowHideAnimation(mode), AnimateShow = ShowShowAnimation(mode) }) { Title = title, Message = message };
                 await this.ShowMetroDialogAsync(dialog);
-                string result = await dialog.WaitForButtonPressAsync();
+                var result = await dialog.WaitForButtonPressAsync();
                 await dialog._WaitForCloseAsync();
                 var foo = this.HideMetroDialogAsync(dialog);
                 return result;
@@ -471,7 +470,7 @@ namespace Hurricane
         {
             if (HostedWindow.Configuration.ShowFullscreenDialogs)
             {
-                HurricaneSettings.Instance.Config.EqualizerIsOpen = !HurricaneSettings.Instance.Config.EqualizerIsOpen;
+                HurricaneSettings.Instance.CurrentState.EqualizerIsOpen = !HurricaneSettings.Instance.CurrentState.EqualizerIsOpen;
             }
             else
             {
@@ -539,8 +538,7 @@ namespace Hurricane
             _advancedWindowSkin = new WindowAdvancedView();
             ApplyHostWindow(isadvancedwindow ? _advancedWindowSkin : _smartWindowSkin, false);
 
-            var outanimation = new ThicknessAnimation(new Thickness(-100, 0, 100, 0), new Thickness(0),
-    TimeSpan.FromMilliseconds(500));
+            var outanimation = new ThicknessAnimation(new Thickness(-100, 0, 100, 0), new Thickness(0), TimeSpan.FromMilliseconds(500));
             var fadeanimation = new DoubleAnimation(0, 1, TimeSpan.FromMilliseconds(500));
             var control = (DependencyObject)HostedWindow;
 
@@ -575,20 +573,26 @@ namespace Hurricane
         {
             if (_image == null)
             {
-                if (HurricaneSettings.Instance.Config.CustomBackground == null ||
-                    !File.Exists(HurricaneSettings.Instance.Config.CustomBackground.BackgroundPath))
+                if (HurricaneSettings.Instance.Config.ApplicationDesign.BackgroundImage == null || !HurricaneSettings.Instance.Config.ApplicationDesign.BackgroundImage.IsAvailable)
                 {
                     BackgroundImage.Source = null;
                     return;
                 }
                 _image = await Task.Run(() =>
                 {
-                    var img = HurricaneSettings.Instance.Config.CustomBackground.GetImage();
+                    var img = HurricaneSettings.Instance.Config.ApplicationDesign.BackgroundImage.GetBackgroundImage();
                     img.Freeze();
                     return img;
                 });
             }
-            BackgroundImage.Source = _image;
+            if (HurricaneSettings.Instance.Config.ApplicationDesign.BackgroundImage.IsAnimated)
+            {
+                ImageBehavior.SetAnimatedSource(BackgroundImage, _image);
+            }
+            else
+            {
+                BackgroundImage.Source = _image;
+            }
         }
 
         private Flyout _oldFlyout;

@@ -132,7 +132,6 @@
     <system:String x:Key="Teal">Teal</system:String>
     <system:String x:Key="Violet">Violett</system:String>
     <system:String x:Key="Yellow">Gelb</system:String>
-    <system:String x:Key="SpectrumAnalyzerColor">Spektrumanalysator Farbe:</system:String>
 
     <system:String x:Key="UpdateChangelogText">Änderungen in der Version {0} (Veröffentlicht am {1})</system:String>
     <system:String x:Key="UpdatesAvailable">Aktualisierungen verfügbar</system:String>
@@ -239,9 +238,7 @@
     <system:String x:Key="Crossfade">Crossfade</system:String>
     <system:String x:Key="Secounds">Sekunden</system:String>
     <system:String x:Key="View">Anzeige</system:String>
-    <system:String x:Key="BaseTheme">Basis Theme</system:String>
-    <system:String x:Key="Light">Hell</system:String>
-    <system:String x:Key="Dark">Dunkel</system:String>
+    <system:String x:Key="BaseTheme">Basistheme</system:String>
     <system:String x:Key="Latency">Latenz</system:String>
     
     <system:String x:Key="DefaultLatency">100 ms (Standard)</system:String>
@@ -293,4 +290,20 @@
     <system:String x:Key="NotifyIfMinimizeToTray">Benachrichtigung anzeigen, wenn in den Tray minimiert wird</system:String>
     <system:String x:Key="MinimizeToTrayNotification">Hurricane wurde in den Tray minimiert und kann durch einen Doppelklick auf das Icon wiederhergestellt werden</system:String>
     <system:String x:Key="Tray">Tray</system:String>
+
+    <!-- 0.3.3 -->
+    <system:String x:Key="Designer">Designer</system:String>
+    <system:String x:Key="Project">Projekt</system:String>
+    <system:String x:Key="New">Neu</system:String>
+    <system:String x:Key="ThemePack">Themepack</system:String>
+    <system:String x:Key="FromThemePack">[Von Themepack]</system:String>
+    <system:String x:Key="BaseLight">Hell</system:String>
+    <system:String x:Key="BaseDark">Dunkel</system:String>
+    <system:String x:Key="Creator">Ersteller</system:String>
+    <system:String x:Key="Thumbnail">Vorschaubild</system:String>
+    <system:String x:Key="No2">Kein</system:String>
+    <system:String x:Key="Include">Enthalten</system:String>
+    <system:String x:Key="SpectrumAnalyzerColor">Spektrum Analysator</system:String>
+    <system:String x:Key="Skin">Skin</system:String>
+    <system:String x:Key="Default">Standard</system:String>
 </ResourceDictionary>

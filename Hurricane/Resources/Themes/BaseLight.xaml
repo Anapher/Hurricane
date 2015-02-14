@@ -1,13 +1,15 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:system="clr-namespace:System;assembly=mscorlib">
+                    xmlns:system="clr-namespace:System;assembly=mscorlib"
+                    xmlns:options="http://schemas.microsoft.com/winfx/2006/xaml/presentation/options">
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/BaseLight.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
-    <SolidColorBrush x:Key="PicturePreviewBackgroundBrush" Color="#FFFBFBFB"/>
-    <SolidColorBrush x:Key="PicturePreviewForegroundBrush" Color="#FFCECECE"/>
-    <SolidColorBrush x:Key="SliderBackground" Color="LightGray"></SolidColorBrush>
+    <SolidColorBrush x:Key="PicturePreviewBackgroundBrush" Color="#FFFBFBFB" options:Freeze="true"/>
+    <SolidColorBrush x:Key="PicturePreviewForegroundBrush" Color="#FFCECECE" options:Freeze="true"/>
+    <SolidColorBrush x:Key="SliderBackground" Color="LightGray" options:Freeze="true"/>
     <system:Boolean x:Key="LightPlaceHolder">False</system:Boolean>
     <system:Boolean x:Key="LightVolumeIcon">False</system:Boolean>
+    <system:Boolean x:Key="UseDialogsForWhiteTheme">True</system:Boolean>
 </ResourceDictionary>

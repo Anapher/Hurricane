@@ -1,141 +1,169 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Windows;
-using System.Windows.Media;
-using System.Xml.Serialization;
-using Hurricane.Settings.MirrorManagement;
+using Hurricane.Designer.Data;
+using Hurricane.Settings.Themes.AudioVisualisation;
+using Hurricane.Settings.Themes.Visual.BaseThemes;
+using Hurricane.Settings.Themes.Visual.ColorThemes;
 using MahApps.Metro;
+using Application = System.Windows.Application;
 
 namespace Hurricane.Settings.Themes
 {
-    [Serializable]
     public class ApplicationThemeManager
     {
-        [CopyableProperty]
-        public ThemeBase SelectedColorTheme { get; set; }
-        [CopyableProperty]
-        public bool UseCustomSpectrumAnalyzerColor { get; set; }
-        [CopyableProperty]
-        public string SpectrumAnalyzerHexColor { get; set; }
-        [CopyableProperty]
-        public BaseTheme BaseTheme { get; set; }
+        #region "Singleton & Constructor"
 
-        [XmlIgnore]
-        public Color SpectrumAnalyzerColor
+        private static ApplicationThemeManager _instance;
+        public static ApplicationThemeManager Instance
+        {
+            get { return _instance ?? (_instance = new ApplicationThemeManager()); }
+        }
+
+
+        private ApplicationThemeManager()
+        {
+            _loadedResources = new Dictionary<string, ResourceDictionary>();
+        }
+
+        #endregion
+
+        private ObservableCollection<ColorThemeBase> _colorThemes;
+        public ObservableCollection<ColorThemeBase> ColorThemes
         {
             get
             {
-                if (string.IsNullOrWhiteSpace(SpectrumAnalyzerHexColor)) return Colors.Black;
-                return (Color)ColorConverter.ConvertFromString(SpectrumAnalyzerHexColor);
-            }
-            set
-            {
-                SpectrumAnalyzerHexColor = string.Format("#{0:X2}{1:X2}{2:X2}{3:X2}", value.A, value.R, value.G, value.B);
+                return _colorThemes;
             }
         }
 
-        private static ObservableCollection<ThemeBase> themes;
-        [XmlIgnore]
-        public static ObservableCollection<ThemeBase> Themes
+        private ObservableCollection<BaseThemeBase> _baseThemes;
+        public ObservableCollection<BaseThemeBase> BaseThemes
         {
             get
             {
-                if (themes == null)
-                {
-                    RefreshThemes();
-                }
-                return themes;
+                return _baseThemes;
             }
         }
 
-        public static void RefreshThemes()
+        private ObservableCollection<ThemePack> _themePacks;
+        public ObservableCollection<ThemePack> ThemePacks
         {
-            if (themes == null)
+            get
             {
-                themes = new ObservableCollection<ThemeBase>();
+                return _themePacks;
             }
-            else
+        }
+
+        private ObservableCollection<IAudioVisualisationContainer> _audioVisualisations;
+        public ObservableCollection<IAudioVisualisationContainer> AudioVisualisations
+        {
+            get
             {
-                themes.Clear();
+                return _audioVisualisations;
+            }
+        }
+
+        public void Refresh()
+        {
+            _colorThemes = new ObservableCollection<ColorThemeBase>();
+            _baseThemes = new ObservableCollection<BaseThemeBase>();
+            _themePacks = new ObservableCollection<ThemePack>();
+            _audioVisualisations = new ObservableCollection<IAudioVisualisationContainer>();
+
+            foreach (var t in ThemeManager.Accents.Select(a => new AccentColorTheme { Name = a.Name }).OrderBy(x => x.TranslatedName))
+            {
+                _colorThemes.Add(t);
             }
 
-            foreach (var t in ThemeManager.Accents.Select(a => new AccentColorTheme() { Name = a.Name }).OrderBy((x) => x.TranslatedName))
+            foreach (var t in ThemeManager.AppThemes.Select(a => new BaseTheme { Name = a.Name }).OrderBy(x => x.TranslatedName))
             {
-                themes.Add(t);
+                _baseThemes.Add(t);
             }
-            DirectoryInfo themefolder = new DirectoryInfo(HurricaneSettings.Instance.ThemeDirectory);
-            if (themefolder.Exists)
+
+            _audioVisualisations.Add(DefaultAudioVisualisation.GetDefault());
+
+            var colorThemesFolder = new DirectoryInfo(HurricaneSettings.Instance.ColorThemesDirectory);
+            if (colorThemesFolder.Exists)
             {
-                foreach (var file in themefolder.GetFiles("*.xaml"))
+                foreach (var file in colorThemesFolder.GetFiles("*.xaml"))
                 {
-                    CustomColorTheme theme = new CustomColorTheme();
-                    if (theme.Load(file.Name)) themes.Add(theme);
+                    CustomColorTheme theme;
+                    if (CustomColorTheme.FromFile(file.FullName, out theme))
+                        _colorThemes.Add(theme);
+                }
+            }
+
+            var baseThemesFolder = new DirectoryInfo(HurricaneSettings.Instance.BaseThemesDirectory);
+            if (baseThemesFolder.Exists)
+            {
+                foreach (var file in baseThemesFolder.GetFiles("*.xaml"))
+                {
+                    CustomBaseTheme theme;
+                    if (CustomBaseTheme.FromFile(file.FullName, out theme))
+                        _baseThemes.Add(theme);
+                }
+            }
+
+            var themePacksFolder = new DirectoryInfo(HurricaneSettings.Instance.ThemePacksDirectory);
+            if (themePacksFolder.Exists)
+            {
+                foreach (var file in themePacksFolder.GetFiles("*.htp"))
+                {
+                    _themePacks.Add(ThemePack.LoadFromFile(file.FullName));
+                }
+            }
+
+            var audioVisualisations = new DirectoryInfo(HurricaneSettings.Instance.AudioVisualisationsDirectory);
+            if (audioVisualisations.Exists)
+            {
+                foreach (var file in audioVisualisations.GetFiles("*.dll"))
+                {
+                    _audioVisualisations.Add(new CustomAudioVisualisation {FileName = file.Name});
                 }
             }
         }
 
-        public void LoadTheme()
+        public ThemePack GetThemePack(string name)
+        {
+            return null;
+        }
+
+        public void Apply(ApplicationDesign design)
         {
             try
             {
-                SelectedColorTheme.ApplyTheme();
+                design.ColorTheme.ApplyTheme();
             }
             catch (Exception)
             {
-                this.SelectedColorTheme = Themes.First(x => x.Name == "Blue");
-                SelectedColorTheme.ApplyTheme();
+                design.ColorTheme = ColorThemes.First(x => x.Name == "Blue");
+                design.ColorTheme.ApplyTheme();
             }
-            RefreshSpectrumAnalyzerBrush();
-        }
 
-        public void RefreshSpectrumAnalyzerBrush()
-        {
-            if (UseCustomSpectrumAnalyzerColor)
+            try
             {
-                Application.Current.Resources["SpectrumAnalyzerBrush"] = new SolidColorBrush((Color)ColorConverter.ConvertFromString(SpectrumAnalyzerHexColor));
+                design.BaseTheme.ApplyTheme();
             }
-            else
+            catch (Exception)
             {
-                Application.Current.Resources["SpectrumAnalyzerBrush"] = Application.Current.FindResource("AccentColorBrush");
+                design.BaseTheme = BaseThemes.First();
+                design.BaseTheme.ApplyTheme();
             }
         }
 
-        public void LoadBaseTheme()
+        private readonly Dictionary<string, ResourceDictionary> _loadedResources;
+        public void LoadResource(string key, ResourceDictionary resource)
         {
-            var resource = new ResourceDictionary() { Source = new Uri(string.Format("/Resources/Themes/{0}.xaml", BaseTheme == BaseTheme.Dark ? "BaseDark" : "BaseLight"), UriKind.Relative) };
+            if (_loadedResources.ContainsKey(key))
+            {
+                Application.Current.Resources.MergedDictionaries.Remove(_loadedResources[key]);
+            }
+            _loadedResources.Add(key, resource);
             Application.Current.Resources.MergedDictionaries.Add(resource);
         }
-
-        public void LoadStandard()
-        {
-            this.SelectedColorTheme = Themes.First(x => x.Name == "Blue");
-            this.UseCustomSpectrumAnalyzerColor = false;
-            this.SpectrumAnalyzerHexColor = null;
-            this.BaseTheme = BaseTheme.Light;
-        }
-
-        public override bool Equals(object obj)
-        {
-            var other = obj as ApplicationThemeManager;
-            if (other == null) return false;
-            if (other.SelectedColorTheme == null) return false;
-            return this.SelectedColorTheme.Name == other.SelectedColorTheme.Name && this.UseCustomSpectrumAnalyzerColor == other.UseCustomSpectrumAnalyzerColor && this.SpectrumAnalyzerColor == other.SpectrumAnalyzerColor && this.BaseTheme == other.BaseTheme;
-        }
-
-        public override int GetHashCode()
-        {
-            return base.GetHashCode();
-        }
-
-        protected static ResourceDictionary appliedResource;
-        public static void RegisterTheme(ResourceDictionary resource)
-        {
-            if (appliedResource != null) Application.Current.Resources.MergedDictionaries.Remove(appliedResource);
-            appliedResource = resource;
-        }
     }
-
-    public enum BaseTheme { Light, Dark }
 }

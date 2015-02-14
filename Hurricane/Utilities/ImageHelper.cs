@@ -102,5 +102,20 @@ namespace Hurricane.Utilities
                     encoder.Save(filestream);
             });
         }
+
+        public static BitmapImage ByteArrayToBitmapImage(byte[] data)
+        {
+            return StreamToBitmapImage(new MemoryStream(data));
+        }
+
+        public static BitmapImage StreamToBitmapImage(Stream stream)
+        {
+            BitmapImage image = new BitmapImage();
+            image.BeginInit();
+            image.CacheOption = BitmapCacheOption.OnLoad;
+            image.StreamSource = stream;
+            image.EndInit();
+            return image;
+        }
     }
 }

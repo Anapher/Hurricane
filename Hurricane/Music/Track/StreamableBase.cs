@@ -9,7 +9,7 @@ namespace Hurricane.Music.Track
     public abstract class StreamableBase : PlayableBase, IDownloadable
     {
         public override abstract Task<bool> LoadInformation();
-        public override abstract void Load();
+        protected abstract override Task LoadImage();
         public override abstract void OpenTrackLocation();
         public override abstract Task<IWaveSource> GetSoundSource();
         public override abstract bool Equals(PlayableBase other);

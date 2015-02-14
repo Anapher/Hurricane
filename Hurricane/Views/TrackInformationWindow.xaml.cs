@@ -26,7 +26,7 @@ namespace Hurricane.Views
                 CurrentTrack.Load();
                 if (CurrentTrack.Image == null)
                 {
-                    CurrentTrack.ImageLoadComplete +=
+                    CurrentTrack.ImageLoadedComplete +=
                         (s, e) => { if (CurrentTrack.Image != null) Dispatcher.Invoke(() => image = CurrentTrack.Image.Clone()); };
                     return;
                 }

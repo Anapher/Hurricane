@@ -10,12 +10,10 @@ using CSCore;
 using CSCore.Codecs;
 using Hurricane.Settings;
 using System.Windows;
-using System.Windows.Media.Imaging;
 using Hurricane.Music.Download;
 using Hurricane.Music.MusicDatabase;
 using Hurricane.Music.Track.WebApi.YouTubeApi;
 using Hurricane.Music.Track.WebApi.YouTubeApi.DataClasses;
-using Hurricane.Utilities;
 using Newtonsoft.Json;
 
 namespace Hurricane.Music.Track
@@ -29,9 +27,9 @@ namespace Hurricane.Music.Track
             get { return string.Format("https://img.youtube.com/vi/{0}/mqdefault.jpg", YouTubeId); }
         }
 
-        public static string GetYouTubeIdFromLink(string YouTubeLink)
+        public static string GetYouTubeIdFromLink(string youTubeLink)
         {
-            var youtubeMatch = Regex.Match(YouTubeLink, @"youtu(?:\.be|be\.com)/(?:.*v(?:/|=)|(?:.*/)?)(?<id>[a-zA-Z0-9-_]+)");
+            var youtubeMatch = Regex.Match(youTubeLink, @"youtu(?:\.be|be\.com)/(?:.*v(?:/|=)|(?:.*/)?)(?<id>[a-zA-Z0-9-_]+)");
             if (!youtubeMatch.Success) return string.Empty;
             return youtubeMatch.Groups["id"].Value;
         }
@@ -76,43 +74,6 @@ namespace Hurricane.Music.Track
             {
               return LoadInformation(ytResult, SoundSourceInfo.FromSoundSource(soundSource));
             }
-        }
-
-        public async override void Load()
-        {
-            IsLoadingImage = true;
-
-            if (Image == null)
-            {
-                var diAlbumCover = new DirectoryInfo(HurricaneSettings.Instance.CoverDirectory);
-                Image = MusicCoverManager.GetYouTubeImage(this, diAlbumCover);
-
-                if (Image == null)
-                    Image = MusicCoverManager.GetImage(this, diAlbumCover);
-
-                if (Image == null && HurricaneSettings.Instance.Config.LoadAlbumCoverFromInternet)
-                {
-                    try
-                    {
-                        if (!string.IsNullOrEmpty(ThumbnailUrl))
-                        {
-                            Image = await YouTubeApi.LoadBitmapImage(this, diAlbumCover);
-                        }
-
-                        if (Image == null)
-                        {
-                            Image = await MusicCoverManager.LoadCoverFromWeb(this, diAlbumCover, Uploader != Artist).ConfigureAwait(false);
-                        }
-                    }
-                    catch (WebException)
-                    {
-                        //Happens, doesn't matter
-                    }
-                }
-            }
-
-            IsLoadingImage = false;
-            OnImageLoadComplete();
         }
 
         public override void OpenTrackLocation()
@@ -177,6 +138,35 @@ namespace Hurricane.Music.Track
         public override string Website
         {
             get { return "https://www.youtube.com/"; }
+        }
+
+        protected async override Task LoadImage()
+        {
+            var diAlbumCover = new DirectoryInfo(HurricaneSettings.Instance.CoverDirectory);
+            Image = MusicCoverManager.GetYouTubeImage(this, diAlbumCover);
+
+            if (Image == null)
+                Image = MusicCoverManager.GetImage(this, diAlbumCover);
+
+            if (Image == null && HurricaneSettings.Instance.Config.LoadAlbumCoverFromInternet)
+            {
+                try
+                {
+                    if (!string.IsNullOrEmpty(ThumbnailUrl))
+                    {
+                        Image = await YouTubeApi.LoadBitmapImage(this, diAlbumCover);
+                    }
+
+                    if (Image == null)
+                    {
+                        Image = await MusicCoverManager.LoadCoverFromWeb(this, diAlbumCover, Uploader != Artist).ConfigureAwait(false);
+                    }
+                }
+                catch (WebException)
+                {
+                    //Happens, doesn't matter
+                }
+            }
         }
     }
 }
