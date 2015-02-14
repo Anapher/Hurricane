@@ -33,10 +33,9 @@ namespace Hurricane.Music.Track
             try
             {
                 await Task.Run(() => {
-System.Diagnostics.Debug.WriteLine("reading " + filename);
+//System.Diagnostics.Debug.WriteLine("reading " + filename);
                     using (var source = CodecFactory.Instance.GetCodec(filename.FullName))
                         UpdateMetadata(source);
-//System.Diagnostics.Debug.WriteLine("done " + filename);
                 });
 
                 IsChecked = true;
@@ -80,6 +79,11 @@ System.Diagnostics.Debug.WriteLine("reading " + filename);
                 return false;
             IsChecked = true;
             return true;
+        }
+
+        public override string UniqueId
+        {
+            get { return string.Format("{0}-{1}", Path, TrackNumber); }
         }
 
         [XmlIgnore]

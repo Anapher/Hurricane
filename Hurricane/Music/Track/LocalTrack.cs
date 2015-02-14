@@ -231,6 +231,11 @@ namespace Hurricane.Music.Track
             return Task.Run(() => CodecFactory.Instance.GetCodec(Path));
         }
 
+        public virtual string UniqueId
+        {
+            get { return TrackInformation.FullName; }
+        }
+
         private string _FileHash;
 
         public override bool Equals(PlayableBase other)
@@ -240,16 +245,17 @@ namespace Hurricane.Music.Track
             if (GetType() != other.GetType()) return false;
 
             var otherAsLocalTrack = (LocalTrack) other;
-            if (TrackInformation.FullName == otherAsLocalTrack.TrackInformation.FullName) return true;
+            if (UniqueId == otherAsLocalTrack.UniqueId) return true;
 
-            if (TrackInformation.Length == otherAsLocalTrack.TrackInformation.Length)
-            {
-                if (string.IsNullOrEmpty(_FileHash))
-                    _FileHash = GeneralHelper.FileToMD5Hash(TrackInformation.FullName);
-                if (string.IsNullOrEmpty(otherAsLocalTrack._FileHash))
-                    otherAsLocalTrack._FileHash = GeneralHelper.FileToMD5Hash(TrackInformation.FullName);
-                if (otherAsLocalTrack._FileHash == _FileHash) return true;
-            }
+            // Mike: commented out temporarily; this is drastic measure, why is it needed?
+            //if (TrackInformation.Length == otherAsLocalTrack.TrackInformation.Length)
+            //{
+            //    if (string.IsNullOrEmpty(_FileHash))
+            //        _FileHash = GeneralHelper.FileToMD5Hash(TrackInformation.FullName);
+            //    if (string.IsNullOrEmpty(otherAsLocalTrack._FileHash))
+            //        otherAsLocalTrack._FileHash = GeneralHelper.FileToMD5Hash(TrackInformation.FullName);
+            //    if (otherAsLocalTrack._FileHash == _FileHash) return true;
+            //}
             return false;
         }
 
