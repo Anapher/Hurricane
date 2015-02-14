@@ -21,27 +21,24 @@ namespace Hurricane.Settings
 
         public override void Save(string programPath)
         {
-            this.Save<PlaylistSettings>(Path.Combine(programPath, Filename));
+            Save<PlaylistSettings>(Path.Combine(programPath, Filename));
         }
 
         public static PlaylistSettings Load(string programpath)
         {
-            FileInfo fi = new FileInfo(Path.Combine(programpath, Filename));
-            if (fi.Exists)
+            var fi = new FileInfo(Path.Combine(programpath, Filename));
+            if (!fi.Exists || string.IsNullOrWhiteSpace(File.ReadAllText(fi.FullName)))
             {
-                using (StreamReader reader = new StreamReader(fi.FullName))
-                {
-                    XmlSerializer deserializer = new XmlSerializer(typeof(PlaylistSettings));
-                    return (PlaylistSettings)deserializer.Deserialize(reader);
-                }
-            }
-            else
-            {
-                PlaylistSettings result = new PlaylistSettings();
+                var result = new PlaylistSettings();
                 result.SetStandardValues();
                 return result;
             }
 
+            using (StreamReader reader = new StreamReader(fi.FullName))
+            {
+                var deserializer = new XmlSerializer(typeof(PlaylistSettings));
+                return (PlaylistSettings)deserializer.Deserialize(reader);
+            }
         }
     }
 }

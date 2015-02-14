@@ -14,7 +14,7 @@ namespace Hurricane.Music.Track
     public abstract class PlayableBase : PropertyChangedBase, IEquatable<PlayableBase>, IRepresentable, IMusicInformation
     {
         #region Events
-        public event EventHandler ImageLoadComplete;
+        public event EventHandler ImageLoadedComplete;
 
         #endregion
 
@@ -127,16 +127,37 @@ namespace Hurricane.Music.Track
 
         public abstract bool TrackExists { get; }
         public abstract Task<bool> LoadInformation();
-        public abstract void Load();
         public abstract void OpenTrackLocation();
         public abstract TrackType TrackType { get; }
         public abstract Task<IWaveSource> GetSoundSource();
         public abstract bool Equals(PlayableBase other);
 
-        public virtual void Unload()
+        protected abstract Task LoadImage();
+
+        public async void Load()
+        {
+            if(_disposeImageCancellationToken != null) _disposeImageCancellationToken.Cancel();
+            IsLoadingImage = true;
+            if (Image == null) await LoadImage();
+            IsLoadingImage = false;
+            OnImageLoadComplete();
+        }
+
+        private CancellationTokenSource _disposeImageCancellationToken;
+        public async virtual void Unload()
         {
             if (Image != null)
             {
+                _disposeImageCancellationToken = new CancellationTokenSource();
+                try
+                {
+                    await Task.Delay(2000, _disposeImageCancellationToken.Token); //Some animations need that
+                }
+                catch (TaskCanceledException)
+                {
+                    return;
+                }
+
                 if (Image.StreamSource != null) Image.StreamSource.Dispose();
                 Image = null;
             }
@@ -184,7 +205,7 @@ namespace Hurricane.Music.Track
 
         protected virtual void OnImageLoadComplete()
         {
-            var handler = ImageLoadComplete;
+            var handler = ImageLoadedComplete;
             if (handler != null) handler(this, EventArgs.Empty);
         }
 
@@ -215,7 +236,7 @@ namespace Hurricane.Music.Track
             {
                 using (var waiter = new AutoResetEvent(false))
                 {
-                    ImageLoadComplete += (s, e) => { waiter.Set(); };
+                    ImageLoadedComplete += (s, e) => { waiter.Set(); };
                     Load();
                     await Task.Run(() => waiter.WaitOne(2000));
                 }

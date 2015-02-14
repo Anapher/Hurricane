@@ -58,6 +58,7 @@ namespace Hurricane.Music.Track.WebApi
                     IsLoadingImage = true;
                     Image = await Utilities.ImageHelper.DownloadImage(client, ImageUrl);
                     IsLoadingImage = false;
+                    if (ImageLoadedComplete != null) ImageLoadedComplete(this, EventArgs.Empty);
                 }
             }
             catch
@@ -97,6 +98,9 @@ namespace Hurricane.Music.Track.WebApi
         public string Genres { get; set; }
 
         public string Album { get; set; }
+
+
+        public event EventHandler ImageLoadedComplete;
     }
 
     public enum ProviderName { SoundCloud, YouTube}

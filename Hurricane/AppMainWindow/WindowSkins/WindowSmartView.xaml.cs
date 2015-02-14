@@ -39,12 +39,16 @@ namespace Hurricane.AppMainWindow.WindowSkins
         #region CurrentTrackAnimation
         private void Grid_MouseEnter(object sender, MouseEventArgs e)
         {
-            CurrentTrackAnimation(txtCurrentTrack, polyplay, true);
+            var textBlock = TitleTransitioningControl.Content as TextBlock;
+            if (textBlock == null) return;
+            CurrentTrackAnimation(textBlock, polyplay, true);
         }
 
         private void Grid_MouseLeave(object sender, MouseEventArgs e)
         {
-            CurrentTrackAnimation(txtCurrentTrack, polyplay, false);
+            var textBlock = TitleTransitioningControl.Content as TextBlock;
+            if (textBlock == null) return;
+            CurrentTrackAnimation(textBlock, polyplay, false);
         }
 
         private void CurrentTrackAnimation(TextBlock txt, Polygon poly, bool inAnimate)
@@ -83,20 +87,20 @@ namespace Hurricane.AppMainWindow.WindowSkins
 
         private void listview_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            listview.ScrollIntoView(listview.SelectedItem);
+            TracksListView.ScrollIntoView(TracksListView.SelectedItem);
         }
 
-        private void btnClose_Click(object sender, RoutedEventArgs e)
+        private void CloseButton_Click(object sender, RoutedEventArgs e)
         {
             if (CloseRequest != null) CloseRequest(this, EventArgs.Empty);
         }
 
-        private void titlebar_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        private void Titlebar_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             if (DragMoveStart != null) DragMoveStart(this, EventArgs.Empty);
         }
 
-        private void titlebar_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        private void Titlebar_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             if (DragMoveStop != null) DragMoveStop(this, EventArgs.Empty);
         }

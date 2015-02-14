@@ -123,7 +123,6 @@
     <system:String x:Key="Teal">tavi</system:String>
     <system:String x:Key="Violet">violetti</system:String>
     <system:String x:Key="Yellow">keltainen</system:String>
-    <system:String x:Key="SpectrumAnalyzerColor">spektrin väri:</system:String>
     <system:String x:Key="UpdateChangelogText">muutokset versio {0} (julkaistu {1})</system:String>
     <system:String x:Key="UpdatesAvailable">päivitys saatavilla</system:String>
     <system:String x:Key="CurrentVersion">nykyiseen versioon:</system:String>
@@ -221,8 +220,6 @@
     <system:String x:Key="Secounds">sekuntia</system:String>
     <system:String x:Key="View">näyttö</system:String>
     <system:String x:Key="BaseTheme">base teema</system:String>
-    <system:String x:Key="Light">kirkas</system:String>
-    <system:String x:Key="Dark">tumma</system:String>
     <system:String x:Key="Latency">latenssi</system:String>
     <system:String x:Key="DefaultLatency">100 ms (standardi)</system:String>
     <system:String x:Key="PreferFavoriteDescription">Suosikkeja sekoitetaan kaksinkertainen todennäköisyys.</system:String>
@@ -273,4 +270,20 @@
     <system:String x:Key="NotifyIfMinimizeToTray">Show notification if minimized to tray</system:String>
     <system:String x:Key="MinimizeToTrayNotification">Hurricane was minimized to the tray and can be restored with a double click on this icon</system:String>
     <system:String x:Key="Tray">Tray</system:String>
+
+    <!-- 0.3.3 -->
+    <system:String x:Key="Designer">Designer</system:String>
+    <system:String x:Key="Project">Project</system:String>
+    <system:String x:Key="New">New</system:String>
+    <system:String x:Key="ThemePack">Theme pack</system:String>
+    <system:String x:Key="FromThemePack">[From theme pack]</system:String>
+    <system:String x:Key="BaseLight">kirkas</system:String>
+    <system:String x:Key="BaseDark">tumma</system:String>
+    <system:String x:Key="Creator">Creator</system:String>
+    <system:String x:Key="Thumbnail">Thumbnail</system:String>
+    <system:String x:Key="No2">No</system:String>
+    <system:String x:Key="Include">Include</system:String>
+    <system:String x:Key="SpectrumAnalyzer">Spektrin</system:String>
+    <system:String x:Key="Skin">Skin</system:String>
+    <system:String x:Key="Default">Default</system:String>
 </ResourceDictionary>

@@ -1,4 +1,7 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using Hurricane.Music.Data;
 
@@ -18,19 +21,52 @@ namespace Hurricane.Extensions
 
         private static void TrackChangedCallback(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs dependencyPropertyChangedEventArgs)
         {
-            var imagepresenter = (TrackImagePreseter) dependencyObject;
+            var imagepresenter = (TrackImagePreseter)dependencyObject;
             imagepresenter.TrackChanged((IRepresentable)dependencyPropertyChangedEventArgs.NewValue);
         }
 
         protected void TrackChanged(IRepresentable newTrack)
         {
-            if(PropertyChanged != null)PropertyChanged(this, new PropertyChangedEventArgs("Track"));
+            SetTrack(newTrack);
         }
 
         public IRepresentable Track
         {
             get { return (IRepresentable)GetValue(TrackProperty); }
             set { SetValue(TrackProperty, value); }
+        }
+
+        public IRepresentable TrackToRepresent { get; private set; }
+
+        private CancellationTokenSource _cts;
+        private async void SetTrack(IRepresentable newTrack)
+        {
+            if (_cts != null)
+                _cts.Cancel();
+
+            _cts = new CancellationTokenSource();
+            var token = _cts.Token;
+
+            var counter = 0;
+            while (newTrack.Image == null)
+            {
+                counter++;
+                if (counter > 15) break;
+                try
+                {
+                    await Task.Delay(100, token);
+                }
+                catch (TaskCanceledException)
+                {
+                    return;
+                }
+            }
+
+            if (!token.IsCancellationRequested)
+            {
+                TrackToRepresent = newTrack;
+                if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs("TrackToRepresent"));
+            }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

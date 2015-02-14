@@ -220,7 +220,7 @@ namespace Hurricane.ViewModels
             {
                 return _closeEqualizer ?? (_closeEqualizer = new RelayCommand(parameter =>
                 {
-                    HurricaneSettings.Instance.Config.EqualizerIsOpen = false;
+                    HurricaneSettings.Instance.CurrentState.EqualizerIsOpen = false;
                 }));
             }
         }
@@ -377,19 +377,6 @@ namespace Hurricane.ViewModels
                             MusicManager.SelectedPlaylist.RemoveTrack(t);
                         }
                     }
-                }));
-            }
-        }
-
-        private RelayCommand _opensettings;
-        public RelayCommand OpenSettings
-        {
-            get
-            {
-                return _opensettings ?? (_opensettings = new RelayCommand(parameter =>
-                {
-                    SettingsWindow window = new SettingsWindow() { Owner = _baseWindow };
-                    window.ShowDialog();
                 }));
             }
         }

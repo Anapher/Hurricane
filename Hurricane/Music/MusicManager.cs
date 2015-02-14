@@ -159,42 +159,42 @@ namespace Hurricane.Music
         {
             HurricaneSettings settings = HurricaneSettings.Instance;
             Playlists = settings.Playlists.Playlists;
-            ConfigSettings config = settings.Config;
-            CSCoreEngine.EqualizerSettings = config.EqualizerSettings;
+            var currentState = settings.CurrentState;
+            CSCoreEngine.EqualizerSettings = currentState.EqualizerSettings;
             CSCoreEngine.EqualizerSettings.Loaded();
-            CSCoreEngine.Volume = config.Volume;
-            DownloadManager = config.Downloader;
+            CSCoreEngine.Volume = currentState.Volume;
+            DownloadManager = settings.Config.Downloader;
 
             favoritePlaylist = new FavoriteList();
             favoritePlaylist.Initalize(this.Playlists);
 
-            if (config.LastPlaylistIndex > -10)
+            if (currentState.LastPlaylistIndex > -10)
             {
-                CurrentPlaylist = IndexToPlaylist(config.LastPlaylistIndex);
+                CurrentPlaylist = IndexToPlaylist(currentState.LastPlaylistIndex);
             }
 
-            SelectedPlaylist = IndexToPlaylist(config.SelectedPlaylist);
+            SelectedPlaylist = IndexToPlaylist(currentState.SelectedPlaylist);
 
-            if (config.SelectedTrack > -1)
+            if (currentState.SelectedTrack > -1)
             {
-                SelectedTrack = SelectedPlaylist.Tracks[config.SelectedTrack];
+                SelectedTrack = SelectedPlaylist.Tracks[currentState.SelectedTrack];
             }
-            IsLoopEnabled = config.IsLoopEnabled;
-            IsShuffleEnabled = config.IsShuffleEnabled;
+            IsLoopEnabled = currentState.IsLoopEnabled;
+            IsShuffleEnabled = currentState.IsShuffleEnabled;
             foreach (NormalPlaylist lst in Playlists)
             {
                 lst.LoadList();
             }
             favoritePlaylist.LoadList();
-            if (config.Queue != null) { Queue = config.Queue; Queue.Initialize(Playlists); }
+            if (currentState.Queue != null) { Queue = currentState.Queue; Queue.Initialize(Playlists); }
 
-            if (config.LastTrackIndex > -1)
+            if (currentState.LastTrackIndex > -1)
             {
-                PlayableBase t = CurrentPlaylist.Tracks[config.LastTrackIndex];
+                PlayableBase t = CurrentPlaylist.Tracks[currentState.LastTrackIndex];
                 if (t.TrackExists)
                 {
                     await CSCoreEngine.OpenTrack(t);
-                    CSCoreEngine.Position = config.TrackPosition;
+                    CSCoreEngine.Position = currentState.TrackPosition;
                     CSCoreEngine.OnPropertyChanged("Position");
                 }
             }
@@ -347,19 +347,19 @@ namespace Hurricane.Music
         #region Save and Deconstruction
         public void SaveToSettings()
         {
-            HurricaneSettings settings = HurricaneSettings.Instance;
-            settings.Playlists.Playlists = this.Playlists;
-            ConfigSettings config = settings.Config;
-            config.Volume = CSCoreEngine.Volume;
-            config.LastPlaylistIndex = CurrentPlaylist == null ? -1 : PlaylistToIndex(CurrentPlaylist);
-            config.LastTrackIndex = (CSCoreEngine.CurrentTrack == null || CurrentPlaylist == null) ? -1 : CurrentPlaylist.Tracks.IndexOf(CSCoreEngine.CurrentTrack);
-            config.SelectedPlaylist = PlaylistToIndex(SelectedPlaylist); //Its impossible that no playlist is selected
-            config.SelectedTrack = SelectedTrack == null ? -1 : SelectedPlaylist.Tracks.IndexOf(SelectedTrack);
-            config.IsLoopEnabled = IsLoopEnabled;
-            config.IsShuffleEnabled = IsShuffleEnabled;
-            config.TrackPosition = CSCoreEngine.CurrentTrack == null ? 0 : CSCoreEngine.Position;
-            config.EqualizerSettings = CSCoreEngine.EqualizerSettings;
-            config.Queue = Queue.Count > 0 ? Queue : null;
+            var settings = HurricaneSettings.Instance;
+            settings.Playlists.Playlists = Playlists;
+            var currentState = settings.CurrentState;
+            currentState.Volume = CSCoreEngine.Volume;
+            currentState.LastPlaylistIndex = CurrentPlaylist == null ? -1 : PlaylistToIndex(CurrentPlaylist);
+            currentState.LastTrackIndex = (CSCoreEngine.CurrentTrack == null || CurrentPlaylist == null) ? -1 : CurrentPlaylist.Tracks.IndexOf(CSCoreEngine.CurrentTrack);
+            currentState.SelectedPlaylist = PlaylistToIndex(SelectedPlaylist); //Its impossible that no playlist is selected
+            currentState.SelectedTrack = SelectedTrack == null ? -1 : SelectedPlaylist.Tracks.IndexOf(SelectedTrack);
+            currentState.IsLoopEnabled = IsLoopEnabled;
+            currentState.IsShuffleEnabled = IsShuffleEnabled;
+            currentState.TrackPosition = CSCoreEngine.CurrentTrack == null ? 0 : CSCoreEngine.Position;
+            currentState.EqualizerSettings = CSCoreEngine.EqualizerSettings;
+            currentState.Queue = Queue.Count > 0 ? Queue : null;
         }
 
         public IPlaylist IndexToPlaylist(int index)

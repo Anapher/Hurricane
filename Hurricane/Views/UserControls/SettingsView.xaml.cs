@@ -1,13 +1,11 @@
 ﻿using System.Windows;
-using System.Windows.Controls;
-using Hurricane.ViewModels;
 
 namespace Hurricane.Views.UserControls
 {
     /// <summary>
     /// Interaction logic for SettingsView.xaml
     /// </summary>
-    public partial class SettingsView : UserControl
+    public partial class SettingsView
     {
         public static readonly DependencyProperty ShowAboutProperty = DependencyProperty.Register("ShowAbout", typeof(bool), typeof(SettingsView), new PropertyMetadata(true, ShowAboutPropertyChangedCallback));
 
@@ -31,11 +29,6 @@ namespace Hurricane.Views.UserControls
         public SettingsView()
         {
             InitializeComponent();
-        }
-
-        private void SettingChanged(object sender, RoutedEventArgs e)
-        {
-            SettingsViewModel.Instance.StateChanged();
         }
     }
 }

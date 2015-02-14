@@ -8,9 +8,11 @@ using System.Windows;
 using System.Windows.Threading;
 using Exceptionless;
 using Exceptionless.Extensions;
+using Hurricane.Music.Track.WebApi.YouTubeApi.DataClasses;
 using Hurricane.Notification.WindowMessages;
 using Hurricane.Settings;
 using Hurricane.Settings.RegistryManager;
+using Hurricane.Settings.Themes;
 using Hurricane.Utilities;
 using Hurricane.Utilities.Native;
 using Hurricane.ViewModels;
@@ -23,7 +25,7 @@ namespace Hurricane
     /// <summary>
     /// Interaction logic for "App.xaml"
     /// </summary>
-    public partial class App : Application
+    public partial class App
     {
         Mutex _myMutex;
         protected override void OnStartup(StartupEventArgs e)
@@ -36,15 +38,21 @@ namespace Hurricane
                 switch (Environment.GetCommandLineArgs()[1])
                 {
                     case "/test":
-                        TestWindow view = new TestWindow();
+                        var view = new TestWindow();
                         view.Show();
                         return;
                     case "/language_creator":
-                        LanguageCreatorWindow languageCreator = new LanguageCreatorWindow();
+                        var languageCreator = new LanguageCreatorWindow();
                         languageCreator.ShowDialog();
                         return;
+                    case "/designer":
+                        var resource = new ResourceDictionary { Source = new Uri("/Resources/Themes/Cyan.xaml", UriKind.Relative) };
+                        ApplicationThemeManager.Instance.LoadResource("colortheme", resource);
+                        var designer = new Designer.DesignerWindow();
+                        designer.ShowDialog();
+                        return;
                     case "/registry":
-                        RegistryManager manager = new RegistryManager();
+                        var manager = new RegistryManager();
                         var item = manager.ContextMenuItems.First(x => x.Extension == Environment.GetCommandLineArgs()[2]);
                         try
                         {

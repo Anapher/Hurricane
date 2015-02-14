@@ -6,6 +6,7 @@
              xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
              xmlns:converter="clr-namespace:Hurricane.Extensions.Converter"
              xmlns:ex="clr-namespace:Hurricane.Extensions"
+             xmlns:mahAppsExtensions="clr-namespace:Hurricane.Extensions.MahApps"
              xmlns:track="clr-namespace:Hurricane.Music.Track"
              DataContext="{x:Static viewmodels:MainViewModel.Instance}" Width="300" MinWidth="300" MaxWidth="300" MinHeight="400">
     <UserControl.Resources>
@@ -27,46 +28,20 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <DockPanel LastChildFill="True">
-            <Border x:Name="titlebar" Margin="0,0,0,0" Height="40" DockPanel.Dock="Top" Background="Transparent" MouseLeftButtonDown="titlebar_MouseLeftButtonDown" MouseLeftButtonUp="titlebar_MouseLeftButtonUp">
+            <Border x:Name="Titlebar" Margin="0,0,0,0" Height="40" DockPanel.Dock="Top" Background="Transparent" MouseLeftButtonDown="Titlebar_MouseLeftButtonDown" MouseLeftButtonUp="Titlebar_MouseLeftButtonUp">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="auto"/>
                     </Grid.ColumnDefinitions>
-                    <StackPanel Orientation="Horizontal">
-                        <Button Width="28" Height="28" Focusable="False" Margin="5,2,0,0" Command="{Binding OpenSettings}" Background="{StaticResource WhiteBrush}">
-                            <Button.Style>
-                                <Style TargetType="Button" BasedOn="{StaticResource {x:Static ToolBar.ButtonStyleKey}}">
-                                    <Setter Property="BorderThickness" Value="0"/>
-                                    <Setter Property="Template">
-                                        <Setter.Value>
-                                            <ControlTemplate TargetType="Button">
-                                                <Grid Background="{StaticResource WhiteBrush}">
-                                                    <Path x:Name="img" Stretch="UniformToFill" Stroke="{StaticResource BlackBrush}" Width="20" Height="20" Data="M31.229,17.736c0.064-0.571,0.104-1.148,0.104-1.736s-0.04-1.166-0.104-1.737l-4.377-1.557c-0.218-0.716-0.504-1.401-0.851-2.05l1.993-4.192c-0.725-0.91-1.549-1.734-2.458-2.459l-4.193,1.994c-0.647-0.347-1.334-0.632-2.049-0.849l-1.558-4.378C17.165,0.708,16.588,0.667,16,0.667s-1.166,0.041-1.737,0.105L12.707,5.15c-0.716,0.217-1.401,0.502-2.05,0.849L6.464,4.005C5.554,4.73,4.73,5.554,4.005,6.464l1.994,4.192c-0.347,0.648-0.632,1.334-0.849,2.05l-4.378,1.557C0.708,14.834,0.667,15.412,0.667,16s0.041,1.165,0.105,1.736l4.378,1.558c0.217,0.715,0.502,1.401,0.849,2.049l-1.994,4.193c0.725,0.909,1.549,1.733,2.459,2.458l4.192-1.993c0.648,0.347,1.334,0.633,2.05,0.851l1.557,4.377c0.571,0.064,1.148,0.104,1.737,0.104c0.588,0,1.165-0.04,1.736-0.104l1.558-4.377c0.715-0.218,1.399-0.504,2.049-0.851l4.193,1.993c0.909-0.725,1.733-1.549,2.458-2.458l-1.993-4.193c0.347-0.647,0.633-1.334,0.851-2.049L31.229,17.736zM16,20.871c-2.69,0-4.872-2.182-4.872-4.871c0-2.69,2.182-4.872,4.872-4.872c2.689,0,4.871,2.182,4.871,4.872C20.871,18.689,18.689,20.871,16,20.871z"/>
-                                                </Grid>
-                                                <ControlTemplate.Triggers>
-                                                    <Trigger Property="IsMouseOver" Value="True">
-                                                        <Setter TargetName="img" Property="Stroke" Value="{StaticResource GrayBrush5}"/>
-                                                    </Trigger>
-                                                    <Trigger Property="IsPressed" Value="True">
-                                                        <Setter TargetName="img" Property="Stroke" Value="{StaticResource GrayBrush7}"/>
-                                                    </Trigger>
-                                                </ControlTemplate.Triggers>
-                                            </ControlTemplate>
-                                        </Setter.Value>
-                                    </Setter>
-                                </Style>
-                            </Button.Style>
-                        </Button>
-                    </StackPanel>
                     <TextBlock Margin="10,10,0,10" VerticalAlignment="Center" 
                                                        Foreground="#FFAAAAAA" TextWrapping="NoWrap" 
                                                        Text="Hurricane" FontSize="16" HorizontalAlignment="Center" Grid.ColumnSpan="2"/>
-                    <Button x:Name="btnClose" Grid.Column="1"
+                    <Button Grid.Column="1"
                                                     VerticalAlignment="Center" Margin="5,0,10,0"
                                                     Height="20" Width="20" 
                                                     Style="{StaticResource WindowButtonStyle}"
-                                                    Click="btnClose_Click"/>
+                                                    Click="CloseButton_Click"/>
                 </Grid>
             </Border>
         </DockPanel>
@@ -92,11 +67,11 @@
             <DockPanel Grid.Row="1" Margin="5,5,0,0" Visibility="{Binding MusicManager.CSCoreEngine.CurrentTrack,Converter={StaticResource CollapsedOnNullValue}}">
                 <Polygon Points="0,0 8,5, 0,10" Stroke="{StaticResource AccentColorBrush}" StrokeThickness="2" VerticalAlignment="Center" Margin="0,2,0,0" x:Name="polyplay"/>
                 <Grid Margin="5,0,5,0" VerticalAlignment="Center" MouseEnter="Grid_MouseEnter" MouseLeave="Grid_MouseLeave" Background="{StaticResource WhiteBrush}">
-                    <TextBlock Text="{Binding MusicManager.CSCoreEngine.CurrentTrack}" TextTrimming="CharacterEllipsis" x:Name="txtCurrentTrack" Margin="1" Foreground="{StaticResource BlackBrush}">
-                        <TextBlock.InputBindings>
+                    <controls:TransitioningContentControl Transition="Down" x:Name="TitleTransitioningControl" mahAppsExtensions:TransitioningExtensions.DisplayText="{Binding MusicManager.CSCoreEngine.CurrentTrack}">
+                        <controls:TransitioningContentControl.InputBindings>
                             <MouseBinding Command="{Binding MusicManager.Commands.JumpToPlayingTrack}" MouseAction="LeftClick"/>
-                        </TextBlock.InputBindings>
-                    </TextBlock>
+                        </controls:TransitioningContentControl.InputBindings>
+                    </controls:TransitioningContentControl>
                 </Grid>
             </DockPanel>
             <StackPanel Grid.Row="2" Margin="5">
@@ -108,14 +83,14 @@
                                 <Setter Property="BarStyle">
                                     <Setter.Value>
                                         <Style TargetType="{x:Type Rectangle}">
-                                            <Setter Property="Fill" Value="{DynamicResource SpectrumAnalyzerBrush}"/>
+                                            <Setter Property="Fill" Value="{StaticResource AccentColorBrush}"/>
                                         </Style>
                                     </Setter.Value>
                                 </Setter>
                                 <Setter Property="PeakStyle">
                                     <Setter.Value>
                                         <Style TargetType="{x:Type Rectangle}">
-                                            <Setter Property="Fill" Value="{DynamicResource SpectrumAnalyzerBrush}"/>
+                                            <Setter Property="Fill" Value="{StaticResource AccentColorBrush}"/>
                                         </Style>
                                     </Setter.Value>
                                 </Setter>
@@ -200,14 +175,14 @@
                         <DockPanel.Resources>
                             <converter:VolumeToImage x:Key="VolumeToImage"/>
                         </DockPanel.Resources>
-                        <Image Source="{Binding ElementName=volumeslider,Path=Value,Converter={StaticResource VolumeToImage}}" Width="24" Height="24">
+                        <Image Source="{Binding ElementName=VolumeSlider,Path=Value,Converter={StaticResource VolumeToImage}}" Width="24" Height="24">
                             <Image.InputBindings>
                                 <MouseBinding MouseAction="LeftClick" Command="{Binding ToggleVolume}"/>
                             </Image.InputBindings>
                         </Image>
-                        <Slider x:Name="volumeslider" Maximum="1" Minimum="0" IsMoveToPointEnabled="True" Style="{StaticResource VolumeSlider}" VerticalAlignment="Center" LargeChange="0.1" Value="{Binding MusicManager.CSCoreEngine.Volume}" ex:SliderExtensions.MoveToPointOnDrag="True"/>
+                        <Slider x:Name="VolumeSlider" Maximum="1" Minimum="0" IsMoveToPointEnabled="True" Style="{StaticResource VolumeSliderStyle}" VerticalAlignment="Center" LargeChange="0.1" Value="{Binding MusicManager.CSCoreEngine.Volume}" ex:SliderExtensions.MoveToPointOnDrag="True"/>
                     </DockPanel>
-                    <StackPanel Orientation="Horizontal">
+                    <StackPanel Orientation="Horizontal" Grid.Column="0">
                         <StackPanel.Resources>
                             <Style TargetType="Path" x:Key="TogglePath">
                                 <Setter Property="Fill" Value="{StaticResource BlackBrush}"/>
@@ -223,12 +198,12 @@
                                 <Path Data="{StaticResource VectorEqualizer}" Fill="{StaticResource BlackBrush}"/>
                             </Viewbox>
                         </Button>
-                        <ToggleButton Width="24" Height="24" Focusable="False" Margin="5,0,0,0" x:Name="tbtn_random" IsChecked="{Binding MusicManager.IsShuffleEnabled}">
+                        <ToggleButton Width="24" Height="24" Focusable="False" Margin="5,0,0,0" IsChecked="{Binding MusicManager.IsShuffleEnabled}">
                             <Viewbox>
                                 <Path Data="{StaticResource VectorRandom}" Style="{StaticResource TogglePath}"/>
                             </Viewbox>
                         </ToggleButton>
-                        <ToggleButton Width="24" Height="24" Focusable="False" Margin="5,0,0,0" x:Name="tbtn_repeat" IsChecked="{Binding MusicManager.IsLoopEnabled}">
+                        <ToggleButton Width="24" Height="24" Focusable="False" Margin="5,0,0,0" IsChecked="{Binding MusicManager.IsLoopEnabled}">
                             <Viewbox Stretch="UniformToFill">
                                 <Path Data="{StaticResource VectorRepeat}" Style="{StaticResource TogglePath}"/>
                             </Viewbox>
@@ -285,7 +260,7 @@
                             <EventTrigger RoutedEvent="ComboBox.SelectionChanged">
                                 <BeginStoryboard>
                                     <Storyboard>
-                                        <DoubleAnimation From="0.5" To="1" Storyboard.TargetProperty="Opacity" Storyboard.Target="{Binding ElementName=listview}"/>
+                                        <DoubleAnimation From="0.5" To="1" Storyboard.TargetProperty="Opacity" Storyboard.Target="{Binding ElementName=TracksListView}"/>
                                     </Storyboard>
                                 </BeginStoryboard>
                             </EventTrigger>
@@ -365,14 +340,14 @@
                         </ex:VectorMenuItem>
                     </Menu>
                 </Grid>
-                <ListView ItemsSource="{Binding MusicManager.SelectedPlaylist.ViewSource}" SelectionMode="Extended" Grid.Row="1" Drop="listview_Drop" DragEnter="listview_DragEnter" x:Name="listview" SelectedItem="{Binding MusicManager.SelectedTrack}" ScrollViewer.VerticalScrollBarVisibility="Visible"
+                <ListView ItemsSource="{Binding MusicManager.SelectedPlaylist.ViewSource}" SelectionMode="Extended" Grid.Row="1" Drop="listview_Drop" DragEnter="listview_DragEnter" x:Name="TracksListView" SelectedItem="{Binding MusicManager.SelectedTrack}" ScrollViewer.VerticalScrollBarVisibility="Visible"
                           Margin="0,5,-1,0" HorizontalContentAlignment="Stretch" ScrollViewer.HorizontalScrollBarVisibility="Disabled" SelectionChanged="listview_SelectionChanged" IsSynchronizedWithCurrentItem="True" Style="{StaticResource VisualizingListView}" Background="{StaticResource WhiteBrush}">
                     <ListView.InputBindings>
-                        <KeyBinding Key="Delete" Command="{Binding RemoveSelectedTracks}" CommandParameter="{Binding ElementName=listview,Path=SelectedItems}"/>
+                        <KeyBinding Key="Delete" Command="{Binding RemoveSelectedTracks}" CommandParameter="{Binding ElementName=TracksListView,Path=SelectedItems}"/>
                         <KeyBinding Key="Enter" Command="{Binding MusicManager.Commands.PlaySelectedTrack}"/>
                         <KeyBinding Key="O" Modifiers="Alt" Command="{Binding MusicManager.Commands.OpenTrackLocation}"/>
                         <KeyBinding Key="Space" Command="{Binding MusicManager.Commands.TogglePlayPause}"/>
-                        <KeyBinding Key="Q" Command="{Binding MusicManager.Commands.AddTracksToQueue}" CommandParameter="{Binding ElementName=listview,Path=SelectedItems}"/>
+                        <KeyBinding Key="Q" Command="{Binding MusicManager.Commands.AddTracksToQueue}" CommandParameter="{Binding ElementName=TracksListView,Path=SelectedItems}"/>
                         <KeyBinding Key="Q" Modifiers="Alt" Command="{Binding MusicManager.Commands.RemoveFromQueue}"/>
                         <KeyBinding Key="Q" Modifiers="Control" Command="{Binding OpenQueueManager}"/>
                         <KeyBinding Key="Insert" Command="{Binding AddFilesToPlaylist}"/>
@@ -381,7 +356,7 @@
                         <KeyBinding Key="F3" Command="{Binding OpenTagEditor}"/>
                     </ListView.InputBindings>
                     <ListView.Resources>
-                        <converter:TrueFalseValueConverter x:Key="boldifplaying" FalseValue="Normal" TrueValue="Bold"/>
+                        <converter:TrueFalseValueConverter x:Key="BoldIfPlayingConverter" FalseValue="Normal" TrueValue="Bold"/>
                         <ContextMenu x:Key="FileContextMenu" DataContext="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}, Path=DataContext}">
                             <MenuItem Header="{DynamicResource Play}" Command="{Binding MusicManager.Commands.PlaySelectedTrack}" IsEnabled="{Binding MusicManager.SelectedTrack.TrackExists}" InputGestureText="Enter"/>
                             <Separator />
@@ -504,14 +479,14 @@
                                                 <TextBlock Text="{Binding QueueID}"/>
                                                 <TextBlock Text="]"/>
                                             </StackPanel>
-                                            <TextBlock Text="{Binding Title}" TextTrimming="CharacterEllipsis" FontWeight="{Binding IsOpened,Converter={StaticResource boldifplaying}}" Grid.Column="1"/>
-                                            <TextBlock Text="{Binding Duration}" TextAlignment="Right" x:Name="txt2" FontWeight="{Binding IsOpened,Converter={StaticResource boldifplaying}}" Grid.Column="2"/>
+                                            <TextBlock Text="{Binding Title}" TextTrimming="CharacterEllipsis" FontWeight="{Binding IsOpened,Converter={StaticResource BoldIfPlayingConverter}}" Grid.Column="1"/>
+                                            <TextBlock Text="{Binding Duration}" TextAlignment="Right" x:Name="txt2" FontWeight="{Binding IsOpened,Converter={StaticResource BoldIfPlayingConverter}}" Grid.Column="2"/>
                                         </Grid>
                                         <DockPanel LastChildFill="False">
                                             <DockPanel.Resources>
                                                 <Style TargetType="TextBlock">
                                                     <Setter Property="FontSize" Value="10"/>
-                                                    <Setter Property="FontWeight" Value="{Binding IsOpened,Converter={StaticResource boldifplaying}}"/>
+                                                    <Setter Property="FontWeight" Value="{Binding IsOpened,Converter={StaticResource BoldIfPlayingConverter}}"/>
                                                 </Style>
                                                 <converter:TrueFalseValueConverter x:Key="TrueFalseValueConverter" FalseValue="#FFB4B4B4" TrueValue="White"/>
                                             </DockPanel.Resources>

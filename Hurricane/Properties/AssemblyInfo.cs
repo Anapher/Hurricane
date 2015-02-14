@@ -2,12 +2,13 @@
 using System.Runtime.InteropServices;
 using System.Windows;
 using Exceptionless.Configuration;
+using System.Resources;
 
 // Allgemeine Informationen über eine Assembly werden über die folgenden 
 // Attribute gesteuert. Ändern Sie diese Attributwerte, um die Informationen zu ändern,
 // die mit einer Assembly verknüpft sind.
 [assembly: AssemblyTitle("Hurricane")]
-[assembly: AssemblyDescription("Hurricane is a powerful music player based on CSCore")]
+[assembly: AssemblyDescription("The music player with style")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Alkaline")]
 [assembly: AssemblyProduct("Hurricane")]
@@ -51,5 +52,6 @@ using Exceptionless.Configuration;
 // Sie können alle Werte angeben oder die standardmäßigen Build- und Revisionsnummern 
 // übernehmen, indem Sie "*" eingeben:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("0.3.2.*")]
-[assembly: AssemblyFileVersion("0.3.2")]
+[assembly: AssemblyVersion("0.3.3.*")]
+[assembly: AssemblyFileVersion("0.3.3")]
+[assembly: NeutralResourcesLanguageAttribute("")]

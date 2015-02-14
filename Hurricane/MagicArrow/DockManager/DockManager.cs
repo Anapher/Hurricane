@@ -29,11 +29,11 @@ namespace Hurricane.MagicArrow.DockManager
 
         #region Constructor
 
-        protected Window basewindow;
+        private readonly Window _basewindow;
         public DockManager(Window window)
         {
-            basewindow = window;
-            if (HurricaneSettings.Instance.Config.ApplicationState != null) CurrentSide = HurricaneSettings.Instance.Config.ApplicationState.CurrentSide;
+            _basewindow = window;
+            if (HurricaneSettings.Instance.CurrentState.ApplicationState != null) CurrentSide = HurricaneSettings.Instance.CurrentState.ApplicationState.CurrentSide;
         }
 
         #endregion
@@ -63,14 +63,14 @@ namespace Hurricane.MagicArrow.DockManager
             HookManager.MouseMove += HookManager_MouseMove;
         }
 
-        protected bool MouseIsLeftRightOrTop(int MouseX, int MouseY, out WindowPositionSide? side)
+        protected bool MouseIsLeftRightOrTop(int mouseX, int MouseY, out WindowPositionSide? side)
         {
-            if (MouseX < WpfScreen.MostLeftX + 5)
+            if (mouseX < WpfScreen.MostLeftX + 5)
             {
                 side = WindowPositionSide.Left;
                 return true;
             }
-            if (MouseX >= WpfScreen.MostRightX - 5)
+            if (mouseX >= WpfScreen.MostRightX - 5)
             {
                 side = WindowPositionSide.Right;
                 return true;
@@ -86,7 +86,7 @@ namespace Hurricane.MagicArrow.DockManager
 
         protected bool WindowIsLeftOrRight()
         {
-            return basewindow.Left == WpfScreen.MostLeftX || (basewindow.Left == WpfScreen.MostRightX - basewindow.Width);
+            return _basewindow.Left == WpfScreen.MostLeftX || (_basewindow.Left == WpfScreen.MostRightX - _basewindow.Width);
         }
 
         void HookManager_MouseMove(object sender, MouseEventArgs e)
@@ -149,10 +149,10 @@ namespace Hurricane.MagicArrow.DockManager
         public bool IsAtTop { get; set; }
         public string DisplayingScreen { get; set; }
 
-        private DockRangeWindow window;
+        private DockRangeWindow _window;
         private void CloseWindowIfExists()
         {
-            if (window != null) { window.Close(); window = null; }
+            if (_window != null) { _window.Close(); _window = null; }
         }
 
         private void OpenWindow(WindowPositionSide side, WpfScreen screen)
@@ -180,13 +180,11 @@ namespace Hurricane.MagicArrow.DockManager
                     throw new ArgumentOutOfRangeException("side");
             }
 
-            window = new DockRangeWindow(screen.WorkingArea.Top, dockwindowLeft, screen.WorkingArea.Height, dockwindowWidth);
-            window.Show();
+            _window = new DockRangeWindow(screen.WorkingArea.Top, dockwindowLeft, screen.WorkingArea.Height, dockwindowWidth);
+            _window.Show();
         }
+
         #endregion
-
-
-        protected bool dragstopped = true;
 
         public void DragStop()
         {
@@ -205,7 +203,7 @@ namespace Hurricane.MagicArrow.DockManager
                         if (Docked != null) Docked(this, EventArgs.Empty);
                         return;
                     case WindowPositionSide.Top:
-                        basewindow.WindowState = WindowState.Maximized;
+                        _basewindow.WindowState = WindowState.Maximized;
                         break;
                     case WindowPositionSide.None:
                         break;
@@ -218,18 +216,18 @@ namespace Hurricane.MagicArrow.DockManager
         {
             if (CurrentSide == DockingSide.Left || CurrentSide == DockingSide.Right)
             {
-                basewindow.Left = CurrentSide == DockingSide.Left ? WpfScreen.MostLeftX : WpfScreen.MostRightX - 300;
-                var screen = WpfScreen.GetScreenFrom(new Point(basewindow.Left, 0));
-                basewindow.Top = screen.WorkingArea.Top;
+                _basewindow.Left = CurrentSide == DockingSide.Left ? WpfScreen.MostLeftX : WpfScreen.MostRightX - 300;
+                var screen = WpfScreen.GetScreenFrom(new Point(_basewindow.Left, 0));
+                _basewindow.Top = screen.WorkingArea.Top;
                 WindowHeight = screen.WorkingArea.Height;
             }
         }
 
         public void Save()
         {
-            if (HurricaneSettings.Instance.Config.ApplicationState == null)
-                HurricaneSettings.Instance.Config.ApplicationState = new DockingApplicationState();
-            HurricaneSettings.Instance.Config.ApplicationState.CurrentSide = CurrentSide;
+            if (HurricaneSettings.Instance.CurrentState.ApplicationState == null)
+                HurricaneSettings.Instance.CurrentState.ApplicationState = new DockingApplicationState();
+            HurricaneSettings.Instance.CurrentState.ApplicationState.CurrentSide = CurrentSide;
         }
 
         public void Dispose()

@@ -1,0 +1,93 @@
+﻿<UserControl x:Class="Hurricane.Designer.Pages.ThemePackPage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:converter="clr-namespace:Hurricane.Extensions.Converter"
+             xmlns:designer="clr-namespace:Hurricane.Designer"
+             mc:Ignorable="d" 
+             d:DesignHeight="600" d:DesignWidth="1000" Background="White" x:Name="UserControl" DataContext="{x:Static designer:ThemePackViewModel.Instance}">
+    <UserControl.Resources>
+        <converter:InvertBooleanConverter x:Key="InvertBooleanConverter"/>
+    </UserControl.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <TextBlock Text="{StaticResource ThemePack}" FontSize="30" Margin="15" FontFamily="Segoe UI Light"/>
+        <Separator VerticalAlignment="Bottom" Grid.Row="0"/>
+        <Grid Grid.Row="1" Margin="20,20,20,10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <StackPanel Orientation="Vertical">
+                <StackPanel Orientation="Vertical">
+                    <TextBlock Text="{StaticResource Name}"/>
+                    <TextBox Margin="0,5,0,0" Width="300" HorizontalAlignment="Left" Text="{Binding ThemePack.Name}"/>
+                </StackPanel>
+                <StackPanel Orientation="Vertical" Margin="0,10,0,0">
+                    <TextBlock Text="{StaticResource Creator}"/>
+                    <TextBox Margin="0,5,0,0" Width="300" HorizontalAlignment="Left" Text="{Binding ThemePack.Creator}"/>
+                </StackPanel>
+            </StackPanel>
+            <StackPanel Orientation="Vertical" Grid.Column="1">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="{StaticResource Thumbnail}"/>
+                    <TextBlock Text=" (100 x 100)"></TextBlock>
+                </StackPanel>
+                <Grid Background="WhiteSmoke" Width="100" Height="100" HorizontalAlignment="Left" Margin="0,5,0,0">
+                    <Image Source="{Binding ThemePack.PreviewImage}"/>
+                </Grid>
+            </StackPanel>
+        </Grid>
+        <Separator Grid.Row="2"/>
+        <Grid Grid.Row="3" Margin="20,10,20,20">
+            <StackPanel Orientation="Vertical">
+                <StackPanel Orientation="Vertical">
+                    <TextBlock Text="{StaticResource Skin}" FontSize="16"/>
+                    <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
+                        <RadioButton Content="{StaticResource No2}" IsChecked="{Binding ThemePack.ContainsWindowSkin,Converter={StaticResource InvertBooleanConverter}}"/>
+                        <RadioButton Content="{StaticResource Include}" IsChecked="{Binding ThemePack.ContainsWindowSkin}" Margin="10,0,0,0"/>
+                        <Button Content="..." Margin="10,0,0,0" Width="30"/>
+                    </StackPanel>
+                </StackPanel>
+                <StackPanel Orientation="Vertical" Margin="0,15,0,0">
+                    <TextBlock Text="{StaticResource ColorTheme}" FontSize="16"/>
+                    <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
+                        <RadioButton Content="{StaticResource No2}" IsChecked="{Binding ThemePack.ContainsColorTheme,Converter={StaticResource InvertBooleanConverter}}"/>
+                        <RadioButton Content="{StaticResource Include}" IsChecked="{Binding ThemePack.ContainsColorTheme}" Margin="10,0,0,0"/>
+                        <Button Content="..." Margin="10,0,0,0" Width="30"/>
+                    </StackPanel>
+                </StackPanel>
+                <StackPanel Orientation="Vertical" Margin="0,15,0,0">
+                    <TextBlock Text="{StaticResource BaseTheme}" FontSize="16"/>
+                    <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
+                        <RadioButton Content="{StaticResource No2}" IsChecked="{Binding ThemePack.ContainsBaseTheme,Converter={StaticResource InvertBooleanConverter}}"/>
+                        <RadioButton Content="{StaticResource Include}" IsChecked="{Binding ThemePack.ContainsBaseTheme}" Margin="10,0,0,0"/>
+                        <Button Content="..." Margin="10,0,0,0" Width="30"/>
+                    </StackPanel>
+                </StackPanel>
+                <StackPanel Orientation="Vertical" Margin="0,15,0,0">
+                    <TextBlock Text="{StaticResource Background}" FontSize="16"/>
+                    <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
+                        <RadioButton Content="{StaticResource No2}" IsChecked="{Binding ThemePack.ContainsBackgroundImage,Converter={StaticResource InvertBooleanConverter}}"/>
+                        <RadioButton Content="{StaticResource Include}" IsChecked="{Binding ThemePack.ContainsBackgroundImage}" Margin="10,0,0,0"/>
+                        <Button Content="..." Margin="10,0,0,0" Width="30"/>
+                    </StackPanel>
+                </StackPanel>
+                <StackPanel Orientation="Vertical" Margin="0,15,0,0">
+                    <TextBlock Text="{StaticResource SpectrumAnalyzerColor}" FontSize="16"/>
+                    <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
+                        <RadioButton Content="{StaticResource No2}" IsChecked="{Binding ThemePack.ContainsSpectrumAnalyzer,Converter={StaticResource InvertBooleanConverter}}"/>
+                        <RadioButton Content="{StaticResource Include}" IsChecked="{Binding ThemePack.ContainsSpectrumAnalyzer}" Margin="10,0,0,0"/>
+                        <Button Content="..." Margin="10,0,0,0" Width="30"/>
+                    </StackPanel>
+                </StackPanel>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</UserControl>

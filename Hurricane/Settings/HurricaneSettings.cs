@@ -1,13 +1,18 @@
 ﻿using System;
 using System.IO;
+using Hurricane.Settings.Themes;
 
 namespace Hurricane.Settings
 {
     public class HurricaneSettings
     {
         public readonly string BaseDirectory;
-        public readonly string ThemeDirectory;
         public readonly string CoverDirectory;
+
+        public readonly string ColorThemesDirectory;
+        public readonly string BaseThemesDirectory;
+        public readonly string ThemePacksDirectory;
+        public readonly string AudioVisualisationsDirectory;
 
         private static HurricaneSettings _instance;
         public static HurricaneSettings Instance
@@ -17,6 +22,7 @@ namespace Hurricane.Settings
 
         public PlaylistSettings Playlists { get; set; }
         public ConfigSettings Config { get; set; }
+        public CurrentState CurrentState { get; set; }
 
         public bool IsLoaded { get; set; }
 
@@ -32,14 +38,28 @@ namespace Hurricane.Settings
             {
                 BaseDirectory = AppDomain.CurrentDomain.BaseDirectory;
             }
-            ThemeDirectory = Path.Combine(BaseDirectory, "Themes");
             CoverDirectory = Path.Combine(BaseDirectory, "AlbumCover");
+
+            var themeDirectory = CheckDirectory(Path.Combine(BaseDirectory, "Themes"));
+            ColorThemesDirectory = CheckDirectory(Path.Combine(themeDirectory, "ColorThemes"));
+            BaseThemesDirectory = CheckDirectory(Path.Combine(themeDirectory, "BaseThemes"));
+            ThemePacksDirectory = CheckDirectory(Path.Combine(themeDirectory, "ThemePacks"));
+            AudioVisualisationsDirectory = CheckDirectory(Path.Combine(themeDirectory, "AudioVisualisations"));
+        }
+
+        private static string CheckDirectory(string path)
+        {
+            var folder = new DirectoryInfo(path);
+            if (!folder.Exists) folder.Create();
+            return folder.FullName;
         }
 
         public void Load()
         {
+            ApplicationThemeManager.Instance.Refresh();
             Playlists = PlaylistSettings.Load(BaseDirectory);
             Config = ConfigSettings.Load(BaseDirectory);
+            CurrentState = CurrentState.Load(BaseDirectory);
             IsLoaded = true;
         }
 
@@ -47,6 +67,7 @@ namespace Hurricane.Settings
         {
             if (Playlists != null) Playlists.Save(BaseDirectory);
             if (Config != null) Config.Save(BaseDirectory);
+            if (CurrentState != null) CurrentState.Save(BaseDirectory);
         }
     }
 }

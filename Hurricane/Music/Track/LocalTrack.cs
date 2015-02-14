@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Serialization;
@@ -163,15 +161,15 @@ namespace Hurricane.Music.Track
         }
 
         #region Image
-        public override async void Load()
+
+        protected async override Task LoadImage()
         {
-            IsLoadingImage = true;
             try
             {
-                using (File file = File.Create(Path))
+                using (var file = File.Create(Path))
                 {
                     if (file.Tag.Pictures != null && file.Tag.Pictures.Any())
-                    { Image = GeneralHelper.ByteArrayToBitmapImage(file.Tag.Pictures.First().Data.ToArray()); }
+                    { Image = ImageHelper.ByteArrayToBitmapImage(file.Tag.Pictures.First().Data.ToArray()); }
                 }
             }
             catch (Exception)
@@ -195,8 +193,6 @@ namespace Hurricane.Music.Track
                     }
                 }
             }
-            IsLoadingImage = false;
-            OnImageLoadComplete();
         }
 
         #endregion
@@ -221,7 +217,7 @@ namespace Hurricane.Music.Track
             return Task.Run(() => CodecFactory.Instance.GetCodec(Path));
         }
 
-        private string _FileHash;
+        private string _fileHash;
 
         public override bool Equals(PlayableBase other)
         {
@@ -234,11 +230,11 @@ namespace Hurricane.Music.Track
 
             if (TrackInformation.Length == otherAsLocalTrack.TrackInformation.Length)
             {
-                if (string.IsNullOrEmpty(_FileHash))
-                    _FileHash = GeneralHelper.FileToMD5Hash(TrackInformation.FullName);
-                if (string.IsNullOrEmpty(otherAsLocalTrack._FileHash))
-                    otherAsLocalTrack._FileHash = GeneralHelper.FileToMD5Hash(TrackInformation.FullName);
-                if (otherAsLocalTrack._FileHash == _FileHash) return true;
+                if (string.IsNullOrEmpty(_fileHash))
+                    _fileHash = GeneralHelper.FileToMD5Hash(TrackInformation.FullName);
+                if (string.IsNullOrEmpty(otherAsLocalTrack._fileHash))
+                    otherAsLocalTrack._fileHash = GeneralHelper.FileToMD5Hash(TrackInformation.FullName);
+                if (otherAsLocalTrack._fileHash == _fileHash) return true;
             }
             return false;
         }

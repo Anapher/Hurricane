@@ -50,7 +50,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>Resources\App\icon.ico</ApplicationIcon>
+    <ApplicationIcon>icon.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject>Hurricane.App</StartupObject>
@@ -77,6 +77,9 @@
     </Reference>
     <Reference Include="Hardcodet.Wpf.TaskbarNotification">
       <HintPath>..\packages\Hardcodet.NotifyIcon.Wpf.1.0.5\lib\net45\Hardcodet.Wpf.TaskbarNotification.dll</HintPath>
+    </Reference>
+    <Reference Include="ICSharpCode.SharpZipLib">
+      <HintPath>..\packages\SharpZipLib.0.86.0\lib\20\ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
     <Reference Include="MahApps.Metro, Version=0.14.0.0, Culture=neutral, PublicKeyToken=f4fb5a3c4d1e5b4f, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -108,6 +111,9 @@
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="WpfAnimatedGif">
+      <HintPath>..\packages\WpfAnimatedGif.1.4.12\lib\net\WpfAnimatedGif.dll</HintPath>
+    </Reference>
     <Reference Include="WPFFolderBrowser">
       <HintPath>..\Libraries\WPFFolderBrowser.dll</HintPath>
     </Reference>
@@ -132,6 +138,25 @@
     <Compile Include="AppMainWindow\Messages\MessageDialog.cs" />
     <Compile Include="AppMainWindow\Messages\MessageManager.cs" />
     <Compile Include="AppMainWindow\Messages\ProgressDialog.cs" />
+    <Compile Include="Designer\Data\BaseThemeData.cs" />
+    <Compile Include="Designer\Data\ColorThemeData.cs" />
+    <Compile Include="Designer\Data\ISaveable.cs" />
+    <Compile Include="Designer\Data\ThemeBoolean.cs" />
+    <Compile Include="Designer\Data\DataThemeBase.cs" />
+    <Compile Include="Designer\Data\ThemeColor.cs" />
+    <Compile Include="Designer\Data\ThemePack.cs" />
+    <Compile Include="Designer\Data\IThemeSetting.cs" />
+    <Compile Include="Designer\DesignerViewModel.cs" />
+    <Compile Include="Designer\DesignerWindow.xaml.cs">
+      <DependentUpon>DesignerWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Designer\Pages\HomePage.xaml.cs">
+      <DependentUpon>HomePage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Designer\Pages\ThemePackPage.xaml.cs">
+      <DependentUpon>ThemePackPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Designer\ThemePackViewModel.cs" />
     <Compile Include="DragDrop\DropTargetAdorners\DropTargetInsertionAdorner.cs" />
     <Compile Include="DragDrop\PlaylistListDropHandler.cs" />
     <Compile Include="DragDrop\TrackListDropHandler.cs" />
@@ -140,9 +165,16 @@
     <Compile Include="Extensions\AnimatedStackPanel.cs" />
     <Compile Include="Extensions\ControlDoubleClick.cs" />
     <Compile Include="Extensions\Converter\CollapsedOnNullValue.cs" />
+    <Compile Include="Extensions\Converter\InvertBooleanConverter.cs" />
+    <Compile Include="Extensions\MahApps\TransitioningExtensions.cs" />
     <Compile Include="Extensions\TextBlockTextFormat.cs" />
+    <Compile Include="Music\CutSource.cs" />
     <Compile Include="Music\Track\WebApi\YouTubeApi\DataClasses\MediaDescription.cs" />
-    <Compile Include="Settings\Background\CustomBackground.cs" />
+    <Compile Include="Settings\Themes\AudioVisualisation\AudioVisualisationPluginHelper.cs" />
+    <Compile Include="Settings\Themes\AudioVisualisation\CustomAudioVisualisation.cs" />
+    <Compile Include="Settings\Themes\AudioVisualisation\DefaultAudioVisualisation.cs" />
+    <Compile Include="Settings\Themes\AudioVisualisation\IAudioVisualisationContainer.cs" />
+    <Compile Include="Settings\Themes\Background\CustomBackground.cs" />
     <Compile Include="Settings\Converter\ComboBoxForegroundConverter.cs" />
     <Compile Include="Extensions\Converter\FalseOnNullValue.cs" />
     <Compile Include="Extensions\Converter\FormatLargeNumber.cs" />
@@ -266,26 +298,30 @@
     <Compile Include="Music\API\TcpConnection.cs" />
     <Compile Include="Music\API\TcpServer.cs" />
     <Compile Include="Settings\ConfigSettings.cs" />
-    <Compile Include="Settings\Converter\BaseThemeToIndexConverter.cs" />
     <Compile Include="Settings\Converter\BitrateToIndexConverter.cs" />
     <Compile Include="Settings\Converter\EnumToBooleanConverter.cs" />
     <Compile Include="Settings\Converter\LatencyToIndexConverter.cs" />
     <Compile Include="Settings\Converter\NotificationTypeConverter.cs" />
     <Compile Include="Settings\Converter\QualityToIndexConverter.cs" />
     <Compile Include="Settings\Converter\SampleRateToIndexConverter.cs" />
+    <Compile Include="Settings\CurrentState.cs" />
     <Compile Include="Settings\LanguageInfo.cs" />
-    <Compile Include="Settings\MirrorManagement\CopyablePropertyAttribute.cs" />
     <Compile Include="Settings\PlaylistSettings.cs" />
     <Compile Include="Settings\RegistryManager\RegistryContextMenuItem.cs" />
     <Compile Include="Settings\RegistryManager\RegistryManager.cs" />
     <Compile Include="Settings\RegistryManager\RegistryRegister.cs" />
     <Compile Include="Settings\SensitiveInformation.cs" />
     <Compile Include="Settings\SettingsBase.cs" />
-    <Compile Include="Settings\Themes\AccentColorTheme.cs" />
+    <Compile Include="Settings\Themes\Background\IBackgroundImage.cs" />
+    <Compile Include="Settings\Themes\Visual\BaseThemes\BaseTheme.cs" />
+    <Compile Include="Settings\Themes\Visual\BaseThemes\BaseThemeBase.cs" />
+    <Compile Include="Settings\Themes\Visual\BaseThemes\CustomBaseTheme.cs" />
+    <Compile Include="Settings\Themes\Visual\ColorThemes\AccentColorTheme.cs" />
     <Compile Include="Settings\Themes\ApplicationThemeManager.cs" />
-    <Compile Include="Settings\Themes\CustomColorTheme.cs" />
-    <Compile Include="Settings\Themes\ThemeBase.cs" />
-    <Compile Include="Settings\Themes\ThemeSource.cs" />
+    <Compile Include="Settings\Themes\Visual\ColorThemes\ColorThemeBase.cs" />
+    <Compile Include="Settings\Themes\Visual\ColorThemes\CustomColorTheme.cs" />
+    <Compile Include="Settings\Themes\Visual\ThemeBase.cs" />
+    <Compile Include="Settings\Themes\ApplicationDesign.cs" />
     <Compile Include="Settings\UpdateService.cs" />
     <Compile Include="Utilities\ActiveWindowHook.cs" />
     <Compile Include="Utilities\GeneralHelper.cs" />
@@ -296,9 +332,7 @@
     <Compile Include="Utilities\Native\POINT.cs" />
     <Compile Include="Utilities\Native\RECT.cs" />
     <Compile Include="Utilities\Native\WINDOWPLACEMENT.cs" />
-    <Compile Include="Settings\MirrorManagement\ObjectCopier.cs" />
     <Compile Include="Utilities\Native\UnsafeNativeMethods.cs" />
-    <Compile Include="Settings\MirrorManagement\PropertiesCopier.cs" />
     <Compile Include="Utilities\RegistryExtensions.cs" />
     <Compile Include="Utilities\UIHelper.cs" />
     <Compile Include="Utilities\WindowHelper.cs" />
@@ -352,14 +386,8 @@
     <Compile Include="Views\UserControls\SettingsView.xaml.cs">
       <DependentUpon>SettingsView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\SettingsWindow.xaml.cs">
-      <DependentUpon>SettingsWindow.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Views\Test\TestWindow.xaml.cs">
       <DependentUpon>TestWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\ThemeEditorWindow.xaml.cs">
-      <DependentUpon>ThemeEditorWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\TrackImportWindow.xaml.cs">
       <DependentUpon>TrackImportWindow.xaml</DependentUpon>
@@ -375,6 +403,18 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="AppMainWindow\MahAppsExtensions\Dialogs\EqualizerDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Designer\DesignerWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Designer\Pages\HomePage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Designer\Pages\ThemePackPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -638,15 +678,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\SettingsWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Views\Test\TestWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\ThemeEditorWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -725,9 +757,6 @@
     <Resource Include="Resources\MediaIcons\ThumbButtons\play.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\App\icon.ico" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Resources\Languages\Icons\de.png" />
   </ItemGroup>
   <ItemGroup>
@@ -748,9 +777,18 @@
     <Content Include="ffmpeg.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Resource Include="icon.ico" />
+    <Resource Include="Resources\App\Icon.ico" />
     <Content Include="youtube-dl.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\AudioVisualisation\AudioVisualisation.csproj">
+      <Project>{3374a3e8-73da-48e8-bf53-5574a714ed8b}</Project>
+      <Name>AudioVisualisation</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

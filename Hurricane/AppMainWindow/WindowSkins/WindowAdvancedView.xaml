@@ -402,7 +402,7 @@
                                     <Setter Property="Opacity" Value="0"/>
                                     <Setter Property="Margin" Value="0,0,0,-200"></Setter>
                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding MySettings.Config.EqualizerIsOpen}" Value="true">
+                                        <DataTrigger Binding="{Binding MySettings.CurrentState.EqualizerIsOpen}" Value="true">
                                             <DataTrigger.EnterActions>
                                                 <BeginStoryboard>
                                                     <Storyboard>
@@ -526,7 +526,7 @@
                             </TextBlock>
                             <ToggleButton Foreground="#FFB4B4B4" Background="{StaticResource NormalColorBrush}" Style="{StaticResource FavoriteToggleButton}" Height="18" Width="18" HorizontalAlignment="Left" Margin="0,10,0,10" IsChecked="{Binding MusicManager.CSCoreEngine.CurrentTrack.IsFavorite}"/>
                         </extensions:AnimatedStackPanel>
-                        <wpfsvl:SpectrumAnalyzer x:Name="spektrum1" Grid.Row="1" BarCount="50" Height="100" VerticalAlignment="Bottom" Focusable="False" Margin="0,0,0,10">
+                        <wpfsvl:SpectrumAnalyzer x:Name="SpectrumAnalyzer" Grid.Row="1" BarCount="50" Height="100" VerticalAlignment="Bottom" Focusable="False" Margin="0,0,0,10">
                             <wpfsvl:SpectrumAnalyzer.Style>
                                 <Style TargetType="{x:Type wpfsvl:SpectrumAnalyzer}">
                                     <Setter Property="Opacity" Value="0"/>
@@ -542,7 +542,7 @@
                                     <Setter Property="PeakStyle">
                                         <Setter.Value>
                                             <Style TargetType="{x:Type Rectangle}">
-                                                <Setter Property="Fill" Value="{DynamicResource SpectrumAnalyzerBrush}"/>
+                                                <Setter Property="Fill" Value="{StaticResource AccentColorBrush}"/>
                                             </Style>
                                         </Setter.Value>
                                     </Setter>
@@ -571,16 +571,7 @@
                 </Grid>
             </TabItem>
             <TabItem Header="{DynamicResource Settings}">
-                <Grid DataContext="{x:Static viewmodels:SettingsViewModel.Instance}">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="25"/>
-                        <RowDefinition Height="*"/>
-                    </Grid.RowDefinitions>
-                    <Grid Grid.ColumnSpan="2">
-                        <Button Content="{DynamicResource Apply}" HorizontalAlignment="Right" Width="150" Margin="0,0,10,0" Command="{Binding ApplyChanges}" IsEnabled="{Binding CanApply}"/>
-                    </Grid>
-                    <userControls:SettingsView Grid.Row="1" Margin="-5"/>
-                </Grid>
+                <userControls:SettingsView Grid.Row="1" Margin="-5,0,0,0"/>
             </TabItem>
             <TabItem Header="Online" Visibility="Collapsed">
                 <Grid>
@@ -604,7 +595,7 @@
                                 </CompositeCollection>
                             </ComboBox.ItemsSource>
                         </ComboBox>
-                        <ComboBox Text="{Binding TrackSearcher.SearchText,UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding MusicManager.DownloadManager.Searches}" IsEditable="True" x:Name="txtSearchOnline" controls:TextBoxHelper.ClearTextButton="True" Grid.Column="1" ToolTipService.ShowDuration="12000">
+                        <ComboBox Text="{Binding TrackSearcher.SearchText,UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding MusicManager.DownloadManager.Searches}" IsEditable="True" controls:TextBoxHelper.ClearTextButton="True" Grid.Column="1" ToolTipService.ShowDuration="12000">
                             <ComboBox.InputBindings>
                                 <KeyBinding Key="Enter" Command="{Binding TrackSearcher.SearchCommand}"/>
                             </ComboBox.InputBindings>

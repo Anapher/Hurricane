@@ -180,15 +180,15 @@ namespace Hurricane.Music
 
         #region Members
         private string _currentDeviceId;
-        protected ISoundOut _soundOut;
-        protected MMNotificationClient _client;
-        protected bool _manualstop;
-        protected VolumeFading _fader;
-        protected bool _isfadingout;
-        protected Crossfade _Crossfade;
-        protected SimpleNotificationSource simpleNotificationSource;
-        protected SingleBlockNotificationStream singleBlockNotificationStream;
-        protected bool PlayAfterLoading;
+        private ISoundOut _soundOut;
+        private MMNotificationClient _client;
+        private bool _manualstop;
+        private readonly VolumeFading _fader;
+        private bool _isfadingout;
+        private readonly Crossfade _crossfade;
+        private SimpleNotificationSource _simpleNotificationSource;
+        private SingleBlockNotificationStream _singleBlockNotificationStream;
+        private bool _playAfterLoading;
 
         #endregion
 
@@ -213,7 +213,7 @@ namespace Hurricane.Music
         protected void SetEqualizerValue(double value, int number)
         {
             if (MusicEqualizer == null) return;
-            double perc = (value / 100);
+            var perc = (value / 100);
             var newvalue = (float)(perc * MaxDB);
             //the tag of the trackbar contains the index of the filter
             EqualizerFilter filter = MusicEqualizer.SampleFilters[number];
@@ -233,11 +233,11 @@ namespace Hurricane.Music
         #region Public Methods
         public async Task<bool> OpenTrack(PlayableBase track)
         {
-            PlayAfterLoading = false;
+            _playAfterLoading = false;
             IsLoading = true;
             StopPlayback();
             if (CurrentTrack != null) { CurrentTrack.IsOpened = false; CurrentTrack.Unload(); }
-            if (SoundSource != null && !_Crossfade.IsCrossfading) { SoundSource.Dispose(); }
+            if (SoundSource != null && !_crossfade.IsCrossfading) { SoundSource.Dispose(); }
             track.IsOpened = true;
             CurrentTrack = track;
             var t = Task.Run(() => track.Load());
@@ -262,15 +262,15 @@ namespace Hurricane.Music
             }
             else if (Settings.SampleRate > -1) { SoundSource.ChangeSampleRate(Settings.SampleRate); }
             SoundSource = SoundSource
-.AppendSource(Equalizer.Create10BandEqualizer, out equalizer)
-.AppendSource(x => new SingleBlockNotificationStream(x), out singleBlockNotificationStream)
-.AppendSource(x => new SimpleNotificationSource(x) { Interval = 100 }, out simpleNotificationSource)
-.ToWaveSource(Settings.WaveSourceBits);
+                .AppendSource(Equalizer.Create10BandEqualizer, out equalizer)
+                .AppendSource(x => new SingleBlockNotificationStream(x), out _singleBlockNotificationStream)
+                .AppendSource(x => new SimpleNotificationSource(x) { Interval = 100 }, out _simpleNotificationSource)
+                .ToWaveSource(Settings.WaveSourceBits);
 
             MusicEqualizer = equalizer;
             SetAllEqualizerSettings();
-            simpleNotificationSource.BlockRead += notifysource_BlockRead;
-            singleBlockNotificationStream.SingleBlockRead += notificationSource_SingleBlockRead;
+            _simpleNotificationSource.BlockRead += notifysource_BlockRead;
+            _singleBlockNotificationStream.SingleBlockRead += notificationSource_SingleBlockRead;
 
             _analyser = new SampleAnalyser(FFTSize);
             _analyser.Initialize(SoundSource.WaveFormat);
@@ -283,10 +283,10 @@ namespace Hurricane.Music
             _soundOut.Volume = Volume;
             if (StartVisualization != null) StartVisualization(this, EventArgs.Empty);
             track.LastTimePlayed = DateTime.Now;
-            if (_Crossfade.IsCrossfading)
+            if (_crossfade.IsCrossfading)
                 _fader.CrossfadeIn(_soundOut, Volume);
             IsLoading = false;
-            if (PlayAfterLoading) TogglePlayPause();
+            if (_playAfterLoading) TogglePlayPause();
             await t;
             return true;
         }
@@ -344,7 +344,7 @@ namespace Hurricane.Music
         {
             if (IsLoading)
             {
-                PlayAfterLoading = !PlayAfterLoading;
+                _playAfterLoading = !_playAfterLoading;
                 return;
             }
 
@@ -352,7 +352,7 @@ namespace Hurricane.Music
             if (_fader != null && _fader.IsFading) { _fader.CancelFading(); _fader.WaitForCancel(); }
             if (_soundOut.PlaybackState == PlaybackState.Playing)
             {
-                if (_Crossfade != null && _Crossfade.IsCrossfading) { _Crossfade.CancelFading(); }
+                if (_crossfade != null && _crossfade.IsCrossfading) { _crossfade.CancelFading(); }
                 _isfadingout = true;
                 await _fader.FadeOut(_soundOut, this.Volume);
                 _soundOut.Pause();
@@ -390,12 +390,12 @@ namespace Hurricane.Music
             var totalsecounds = (int)CurrentTrackLength.TotalSeconds;
             if (PositionChanged != null)
                 Application.Current.Dispatcher.Invoke(() => PositionChanged(this, new PositionChangedEventArgs(secounds, totalsecounds)));
-            if (Settings.IsCrossfadeEnabled && totalsecounds - Settings.CrossfadeDuration > 6 && !_Crossfade.IsCrossfading && totalsecounds - secounds < Settings.CrossfadeDuration)
+            if (Settings.IsCrossfadeEnabled && totalsecounds - Settings.CrossfadeDuration > 6 && !_crossfade.IsCrossfading && totalsecounds - secounds < Settings.CrossfadeDuration)
             {
                 _fader.OutDuration = totalsecounds - secounds;
-                _Crossfade.FadeOut(Settings.CrossfadeDuration, _soundOut);
-                simpleNotificationSource.BlockRead -= notifysource_BlockRead;
-                singleBlockNotificationStream.SingleBlockRead -= notificationSource_SingleBlockRead;
+                _crossfade.FadeOut(Settings.CrossfadeDuration, _soundOut);
+                _simpleNotificationSource.BlockRead -= notifysource_BlockRead;
+                _singleBlockNotificationStream.SingleBlockRead -= notificationSource_SingleBlockRead;
                 _soundOut.Stopped -= soundOut_Stopped;
                 Application.Current.Dispatcher.Invoke(() =>
                 {
@@ -413,7 +413,7 @@ namespace Hurricane.Music
             RefreshSoundOut();
             //_client.DefaultDeviceChanged += client_DefaultDeviceChanged;
             _fader = new VolumeFading();
-            _Crossfade = new Crossfade();
+            _crossfade = new Crossfade();
         }
 
         #endregion
@@ -490,21 +490,16 @@ namespace Hurricane.Music
             _soundOut.Stopped += soundOut_Stopped;
         }
 
-        public void UpdateSoundOut()
+        public async void UpdateSoundOut()
         {
             long position = Position;
             bool isplaying = IsPlaying;
             if (_soundOut != null) { StopPlayback(); _soundOut.Dispose(); }
             RefreshSoundOut();
-            if (!IsLoading)
+            if (CurrentTrack != null)
             {
-                if (SoundSource != null)
-                {
-                    _soundOut.Initialize(SoundSource);
-                    _soundOut.Volume = Volume;
-                    Position = position;
-                    if (isplaying) TogglePlayPause();
-                }
+                await OpenTrack(CurrentTrack); Position = position;
+                if (isplaying) TogglePlayPause();
             }
         }
 
@@ -551,7 +546,7 @@ namespace Hurricane.Music
                 if (_fader.IsFading) { _fader.CancelFading(); _fader.WaitForCancel(); }
                 _soundOut.Dispose();
                 _fader.Dispose();
-                _Crossfade.CancelFading();
+                _crossfade.CancelFading();
             }
             if (SoundSource != null) SoundSource.Dispose();
             if (_client != null) _client.Dispose();

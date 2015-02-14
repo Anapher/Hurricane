@@ -4,7 +4,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
-             mc:Ignorable="d" 
+             xmlns:mahAppsExtensions="clr-namespace:Hurricane.Extensions.MahApps"
+             mc:Ignorable="d"
              d:DesignHeight="180" d:DesignWidth="180" x:Name="UserControl">
     <Border BorderThickness="0" Margin="10" Background="White">
         <Border.Effect>
@@ -18,10 +19,10 @@
                             <Style TargetType="Path">
                                 <Setter Property="Visibility" Value="Hidden"/>
                                 <Style.Triggers>
-                                    <DataTrigger Binding="{Binding ElementName=UserControl,Path=Track.Image}" Value="{x:Null}">
+                                    <DataTrigger Binding="{Binding ElementName=UserControl,Path=TrackToRepresent.Image}" Value="{x:Null}">
                                         <Setter Property="Visibility" Value="Visible"/>
                                     </DataTrigger>
-                                    <DataTrigger Binding="{Binding ElementName=UserControl,Path=Track.IsLoadingImage}" Value="True">
+                                    <DataTrigger Binding="{Binding ElementName=UserControl,Path=TrackToRepresent.IsLoadingImage}" Value="True">
                                         <Setter Property="Visibility" Value="Hidden"/>
                                     </DataTrigger>
                                 </Style.Triggers>
@@ -29,18 +30,22 @@
                         </Path.Style>
                     </Path>
                 </Grid>
-                <Image Source="{Binding ElementName=UserControl,Path=Track.Image}" Stretch="UniformToFill">
-                    <Image.Style>
+                <controls:TransitioningContentControl Transition="Default" mahAppsExtensions:TransitioningExtensions.DisplayImage="{Binding ElementName=UserControl,Path=TrackToRepresent.Image}">
+                    <controls:TransitioningContentControl.Resources>
                         <Style TargetType="Image">
+                            <Setter Property="Stretch" Value="UniformToFill"/>
+                            <Setter Property="UseLayoutRounding" Value="True"/>
+                            <Setter Property="RenderOptions.BitmapScalingMode" Value="HighQuality"/>
+                            <Setter Property="RenderOptions.EdgeMode" Value="Aliased"/>
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding ElementName=UserControl,Path=Track.Image}" Value="{x:Null}">
+                                <DataTrigger Binding="{Binding ElementName=UserControl,Path=TrackToRepresent.Image}" Value="{x:Null}">
                                     <Setter Property="Visibility" Value="Hidden"/>
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
-                    </Image.Style>
-                </Image>
-                <controls:ProgressRing IsActive="{Binding ElementName=UserControl,Path=Track.IsLoadingImage}" />
+                    </controls:TransitioningContentControl.Resources>
+                </controls:TransitioningContentControl>
+                <controls:ProgressRing IsActive="{Binding ElementName=UserControl,Path=TrackToRepresent.IsLoadingImage}" />
             </Grid>
         </Border>
     </Border>
