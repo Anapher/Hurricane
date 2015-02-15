@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using CSCore;
 
-namespace Hurricane.Music.Track
+namespace Hurricane.Music
 {
     class CutSource : WaveAggregatorBase
     {

@@ -33,7 +33,6 @@ namespace Hurricane.Music.Track
             try
             {
                 await Task.Run(() => {
-//System.Diagnostics.Debug.WriteLine("reading " + filename);
                     using (var source = CodecFactory.Instance.GetCodec(filename.FullName))
                         UpdateMetadata(source);
                 });
