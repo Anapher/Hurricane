@@ -155,7 +155,8 @@ namespace Hurricane.Settings.Themes
                 design.BaseTheme.ApplyTheme();
             }
 
-            design.AudioVisualisation.AudioVisualisationPlugin.Refresh();
+            if (design.AudioVisualisation != null)
+                design.AudioVisualisation.AudioVisualisationPlugin.Refresh();
         }
 
         private readonly Dictionary<string, ResourceDictionary> _loadedResources;

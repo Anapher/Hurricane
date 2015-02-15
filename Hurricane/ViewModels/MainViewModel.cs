@@ -114,13 +114,6 @@ namespace Hurricane.ViewModels
 
             await playlist.AddFiles(tracks);
 
-            //await playlist.AddFiles((s, e) =>
-            //{
-            //    controller.SetProgress(e.Percentage);
-            //    controller.SetMessage(e.CurrentFile);
-            //    controller.SetTitle(string.Format(Application.Current.Resources["FilesGetImported"].ToString(), e.FilesImported, e.TotalFiles));
-            //}, paths);
-
             MusicManager.SaveToSettings();
             MySettings.Save();
             await controller.Close();
@@ -155,7 +148,6 @@ namespace Hurricane.ViewModels
         {
             if (!MusicManager.SelectedPlaylist.CanEdit) return;
             await ImportFiles(CollectFiles(files, IsFileSupported), (NormalPlaylist)MusicManager.SelectedPlaylist);
-                //files.Where(file => LocalTrack.IsSupported(new FileInfo(file))).ToArray(), (NormalPlaylist)MusicManager.SelectedPlaylist);
         }
 
         public void Closing()
