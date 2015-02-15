@@ -6,7 +6,6 @@
              xmlns:viewmodels="clr-namespace:Hurricane.ViewModels"
              xmlns:converter="clr-namespace:Hurricane.Extensions.Converter"
              xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
-             xmlns:wpfsvl="clr-namespace:WPFSoundVisualizationLib;assembly=WPFSoundVisualizationLib"
              xmlns:extensions="clr-namespace:Hurricane.Extensions"
              xmlns:ctrl="clr-namespace:Hurricane.Extensions.ListViewLayoutManager"
              xmlns:userControls="clr-namespace:Hurricane.Views.UserControls"
@@ -140,7 +139,7 @@
                         </Grid.RowDefinitions>
                         <Grid>
                             <extensions:AnimatedListView SelectionMode="Extended" ItemsSource="{Binding MusicManager.SelectedPlaylist.ViewSource}" SelectedItem="{Binding MusicManager.SelectedTrack}" BorderThickness="0" SelectionChanged="ListView_SelectionChanged" Background="Transparent"
-                                  DragEnter="ListView_DragEnter" Drop="ListView_Drop" x:Name="listview" ctrl:ListViewLayoutManager.Enabled="True" Style="{StaticResource VisualizingListView}" dd:DragDrop.IsDragSource="True" dd:DragDrop.IsDropTarget="True" dd:DragDrop.DragAdornerTemplate="{StaticResource DragAdornerTrack}" dd:DragDrop.DropHandler="{Binding TrackListDropHandler}">
+                                  DragEnter="ListView_DragEnter" Drop="ListView_Drop" x:Name="TracksListView" ctrl:ListViewLayoutManager.Enabled="True" Style="{StaticResource VisualizingListView}" dd:DragDrop.IsDragSource="True" dd:DragDrop.IsDropTarget="True" dd:DragDrop.DragAdornerTemplate="{StaticResource DragAdornerTrack}" dd:DragDrop.DropHandler="{Binding TrackListDropHandler}">
                                 <ListView.Resources>
                                     <ContextMenu x:Key="FileContextMenu" DataContext="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}, Path=DataContext}">
                                         <MenuItem Header="{DynamicResource Play}" Command="{Binding MusicManager.Commands.PlaySelectedTrack}" IsEnabled="{Binding MusicManager.SelectedTrack.TrackExists}" InputGestureText="Enter"/>
@@ -218,11 +217,11 @@
                                     <converter:TrueFalseValueConverter x:Key="TrueFalseValueConverter" FalseValue="#FFB4B4B4" TrueValue="White"/>
                                 </ListView.Resources>
                                 <ListView.InputBindings>
-                                    <KeyBinding Key="Delete" Command="{Binding RemoveSelectedTracks}" CommandParameter="{Binding ElementName=listview,Path=SelectedItems}"/>
+                                    <KeyBinding Key="Delete" Command="{Binding RemoveSelectedTracks}" CommandParameter="{Binding ElementName=TracksListView,Path=SelectedItems}"/>
                                     <KeyBinding Key="Enter" Command="{Binding MusicManager.Commands.PlaySelectedTrack}"/>
                                     <KeyBinding Key="O" Modifiers="Alt" Command="{Binding MusicManager.Commands.OpenTrackLocation}"/>
                                     <KeyBinding Key="Space" Command="{Binding MusicManager.Commands.TogglePlayPause}"/>
-                                    <KeyBinding Key="Q" Command="{Binding MusicManager.Commands.AddTracksToQueue}" CommandParameter="{Binding ElementName=listview,Path=SelectedItems}"/>
+                                    <KeyBinding Key="Q" Command="{Binding MusicManager.Commands.AddTracksToQueue}" CommandParameter="{Binding ElementName=TracksListView,Path=SelectedItems}"/>
                                     <KeyBinding Key="Q" Modifiers="Alt" Command="{Binding MusicManager.Commands.RemoveFromQueue}"/>
                                     <KeyBinding Key="Q" Modifiers="Control" Command="{Binding OpenQueueManager}"/>
                                     <KeyBinding Key="Insert" Command="{Binding AddFilesToPlaylist}"/>
@@ -303,7 +302,7 @@
                                                                         <MultiDataTrigger>
                                                                             <MultiDataTrigger.Conditions>
                                                                                 <Condition Binding="{Binding IsOpened}" Value="True"/>
-                                                                                <Condition Binding="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=DataContext.MusicManager.CSCoreEngine.IsPlaying}" Value="True"/>
+                                                                                <Condition Binding="{Binding RelativeSource={RelativeSource AncestorType={x:Type ListView}}, Path=DataContext.MusicManager.CSCoreEngine.IsPlaying}" Value="True"/>
                                                                             </MultiDataTrigger.Conditions>
                                                                             <Setter Property="Visibility" Value="Visible"/>
                                                                             <MultiDataTrigger.EnterActions>
@@ -338,8 +337,8 @@
                                                                         <MultiDataTrigger>
                                                                             <MultiDataTrigger.Conditions>
                                                                                 <Condition Binding="{Binding IsOpened}" Value="True"/>
-                                                                                <Condition Binding="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=DataContext.MusicManager.CSCoreEngine.IsPlaying}" Value="False"/>
-                                                                                <Condition Binding="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=DataContext.MusicManager.CSCoreEngine.IsLoading}" Value="False"/>
+                                                                                <Condition Binding="{Binding RelativeSource={RelativeSource AncestorType={x:Type ListView}}, Path=DataContext.MusicManager.CSCoreEngine.IsPlaying}" Value="False"/>
+                                                                                <Condition Binding="{Binding RelativeSource={RelativeSource AncestorType={x:Type ListView}}, Path=DataContext.MusicManager.CSCoreEngine.IsLoading}" Value="False"/>
                                                                             </MultiDataTrigger.Conditions>
                                                                             <Setter Property="Visibility" Value="Visible"/>
                                                                             <MultiDataTrigger.EnterActions>
@@ -526,26 +525,10 @@
                             </TextBlock>
                             <ToggleButton Foreground="#FFB4B4B4" Background="{StaticResource NormalColorBrush}" Style="{StaticResource FavoriteToggleButton}" Height="18" Width="18" HorizontalAlignment="Left" Margin="0,10,0,10" IsChecked="{Binding MusicManager.CSCoreEngine.CurrentTrack.IsFavorite}"/>
                         </extensions:AnimatedStackPanel>
-                        <wpfsvl:SpectrumAnalyzer x:Name="SpectrumAnalyzer" Grid.Row="1" BarCount="50" Height="100" VerticalAlignment="Bottom" Focusable="False" Margin="0,0,0,10">
-                            <wpfsvl:SpectrumAnalyzer.Style>
-                                <Style TargetType="{x:Type wpfsvl:SpectrumAnalyzer}">
+                        <ContentControl Grid.Row="1" Height="100" VerticalAlignment="Bottom" Focusable="False" Margin="0,0,0,10" x:Name="AudioVisualisationContentControl" extensions:AudioVisualisationExtensions.AudioVisualisationForAdvancedWindow="{Binding MySettings.Config.ApplicationDesign.AudioVisualisation.AudioVisualisationPlugin}">
+                            <ContentControl.Style>
+                                <Style TargetType="ContentControl">
                                     <Setter Property="Opacity" Value="0"/>
-                                    <Setter Property="BarStyle">
-                                        <Setter.Value>
-                                            <Style TargetType="{x:Type Rectangle}">
-                                                <Setter Property="Fill" Value="LightGray"/>
-                                                <Setter Property="StrokeDashArray" Value="4 4"/>
-                                                <Setter Property="StrokeThickness" Value="1"/>
-                                            </Style>
-                                        </Setter.Value>
-                                    </Setter>
-                                    <Setter Property="PeakStyle">
-                                        <Setter.Value>
-                                            <Style TargetType="{x:Type Rectangle}">
-                                                <Setter Property="Fill" Value="{StaticResource AccentColorBrush}"/>
-                                            </Style>
-                                        </Setter.Value>
-                                    </Setter>
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding MusicManager.CSCoreEngine.IsPlaying}" Value="True">
                                             <DataTrigger.EnterActions>
@@ -565,13 +548,13 @@
                                         </DataTrigger>
                                     </Style.Triggers>
                                 </Style>
-                            </wpfsvl:SpectrumAnalyzer.Style>
-                        </wpfsvl:SpectrumAnalyzer>
+                            </ContentControl.Style>
+                        </ContentControl>
                     </Grid>
                 </Grid>
             </TabItem>
             <TabItem Header="{DynamicResource Settings}">
-                <userControls:SettingsView Grid.Row="1" Margin="-5,0,0,0"/>
+                <userControls:SettingsView Margin="-5,0,0,0"/>
             </TabItem>
             <TabItem Header="Online" Visibility="Collapsed">
                 <Grid>

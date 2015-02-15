@@ -3,7 +3,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:tkt="http://schemas.xceed.com/wpf/xaml/toolkit"
              xmlns:vm="clr-namespace:Hurricane.ViewModels"
              xmlns:extensions="clr-namespace:Hurricane.Extensions"
              xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
@@ -20,13 +19,15 @@
         <Style TargetType="TextBlock">
             <Setter Property="Foreground" Value="{DynamicResource BlackBrush}"/>
         </Style>
+        <converter:GroupConverter x:Key="GroupConverter"/>
+        <extensions:ComboBoxItemTemplateChooser x:Key="ComboBoxItemTemplateChooser"/>
     </UserControl.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="200"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-        <ListBox x:Name="lst" SelectedIndex="{Binding SelectedTab}" Background="Transparent">
+        <ListBox SelectedIndex="{Binding SelectedTab}" Background="Transparent">
             <ListBoxItem Content="{DynamicResource Playback}"/>
             <ListBoxItem Content="{DynamicResource Appearance}"/>
             <ListBoxItem Content="{DynamicResource Behaviour}"/>
@@ -57,13 +58,10 @@
                                 </Grid.ColumnDefinitions>
                                 <StackPanel Orientation="Vertical" Grid.Column="1">
                                     <TextBlock Text="{DynamicResource Device}" VerticalAlignment="Center"/>
-                                    <StackPanel Orientation="Horizontal">
-                                        <ComboBox ItemsSource="{Binding SoundOutList}" Margin="0,5,10,0" Width="150" DisplayMemberPath="Name" SelectedItem="{Binding SelectedSoundOut}"/>
-                                        <ComboBox Margin="0,5,0,0" ItemsSource="{Binding SelectedSoundOut.AudioDevices}" SelectedItem="{Binding SelectedAudioDevice}" Width="300" HorizontalAlignment="Left">
-                                            <ComboBox.Resources>
-                                                <converter:ComboBoxForegroundConverter x:Key="ComboBoxForegroundConverter"/>
-                                            </ComboBox.Resources>
-                                            <ComboBox.ItemTemplate>
+                                    <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
+                                        <ComboBox ItemsSource="{Binding SoundOutList}" Width="150" DisplayMemberPath="Name" SelectedItem="{Binding SelectedSoundOut}"/>
+                                        <ComboBox ItemsSource="{Binding SelectedSoundOut.AudioDevices}" Margin="10,0,0,0" SelectedItem="{Binding SelectedAudioDevice}" Width="300" HorizontalAlignment="Left" ItemTemplateSelector="{StaticResource ComboBoxItemTemplateChooser}">
+                                            <extensions:ComboBoxItemTemplateChooser.DropDownTemplate>
                                                 <DataTemplate>
                                                     <Grid x:Name="grid">
                                                         <TextBlock Text="{Binding}" x:Name="txt"/>
@@ -72,17 +70,24 @@
                                                         <DataTrigger Binding="{Binding IsDefault}" Value="True">
                                                             <Setter TargetName="txt" Property="Foreground" Value="#FFC15757"/>
                                                         </DataTrigger>
-                                                        <MultiDataTrigger>
-                                                            <MultiDataTrigger.Conditions>
-                                                                <Condition Binding="{Binding IsDefault}" Value="True"/>
-                                                                <Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=FrameworkElement},Converter={StaticResource ComboBoxForegroundConverter}}" Value="True"/>
-                                                                <Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=ComboBox},Path=DataContext.SelectedAudioDevice.IsDefault}" Value="true"/>
-                                                            </MultiDataTrigger.Conditions>
+                                                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=ComboBoxItem},Path=IsSelected}" Value="True">
                                                             <Setter TargetName="txt" Property="Foreground" Value="White"/>
-                                                        </MultiDataTrigger>
+                                                        </DataTrigger>
                                                     </DataTemplate.Triggers>
                                                 </DataTemplate>
-                                            </ComboBox.ItemTemplate>
+                                            </extensions:ComboBoxItemTemplateChooser.DropDownTemplate>
+                                            <extensions:ComboBoxItemTemplateChooser.SelectedTemplate>
+                                                <DataTemplate>
+                                                    <Grid x:Name="grid">
+                                                        <TextBlock Text="{Binding}" x:Name="txt"/>
+                                                    </Grid>
+                                                    <DataTemplate.Triggers>
+                                                        <DataTrigger Binding="{Binding IsDefault}" Value="True">
+                                                            <Setter TargetName="txt" Property="Foreground" Value="#FFC15757"/>
+                                                        </DataTrigger>
+                                                    </DataTemplate.Triggers>
+                                                </DataTemplate>
+                                            </extensions:ComboBoxItemTemplateChooser.SelectedTemplate>
                                         </ComboBox>
                                         <Button Content="{DynamicResource Apply}" VerticalAlignment="Center" Margin="10,0,0,0" Command="{Binding ApplySoundOut}" IsEnabled="{Binding CanApplySoundOut}"/>
                                     </StackPanel>
@@ -150,20 +155,46 @@
                 <ScrollViewer>
                     <StackPanel Orientation="Vertical" Margin="10">
                         <TextBlock Style="{StaticResource TextBlockHeader}" extensions:TextBlockHelper.UpperText="{DynamicResource Theme}"/>
-                        <StackPanel Orientation="Vertical" Margin="0,10,0,0">
-                            <TextBlock Text="{DynamicResource BaseTheme}" VerticalAlignment="Center"/>
-                            <ComboBox Margin="0,5,0,0" Width="100" HorizontalAlignment="Left" SelectedItem="{Binding Config.ApplicationDesign.BaseTheme}" ItemsSource="{Binding ApplicationThemeManager.BaseThemes}" DisplayMemberPath="TranslatedName"/>
-                        </StackPanel>
+                        <Grid Margin="0,10,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Orientation="Vertical">
+                                <TextBlock Text="{DynamicResource BaseTheme}" VerticalAlignment="Center"/>
+                                <ComboBox Margin="0,5,0,0" Width="100" HorizontalAlignment="Left" SelectedItem="{Binding Config.ApplicationDesign.BaseTheme}" ItemsSource="{Binding ApplicationThemeManager.BaseThemes,Converter={StaticResource GroupConverter}}" DisplayMemberPath="TranslatedName">
+                                    <ComboBox.GroupStyle>
+                                        <GroupStyle>
+                                            <GroupStyle.HeaderTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock Text="{Binding Name}" FontWeight="Bold" Margin="2,5,0,2" FontSize="14"/>
+                                                </DataTemplate>
+                                            </GroupStyle.HeaderTemplate>
+                                        </GroupStyle>
+                                    </ComboBox.GroupStyle>
+                                </ComboBox>
+                            </StackPanel>
+                            <Button Content="{DynamicResource Apply}" Command="{Binding ApplyTheme}" HorizontalAlignment="Right" VerticalAlignment="Top"/>
+                        </Grid>
                         <TextBlock Text="{DynamicResource ColorTheme}" Margin="0,15,0,0"/>
-                        <ComboBox Margin="0,5,10,0" ItemsSource="{Binding ApplicationThemeManager.ColorThemes}" SelectedItem="{Binding Config.ApplicationDesign.ColorTheme}" Width="300" HorizontalAlignment="Left">
+                        <ComboBox Margin="0,5,10,0" ItemsSource="{Binding ApplicationThemeManager.ColorThemes,Converter={StaticResource GroupConverter}}" SelectedItem="{Binding Config.ApplicationDesign.ColorTheme}" Width="300" HorizontalAlignment="Left">
                             <ComboBox.ItemTemplate>
                                 <DataTemplate>
                                     <DockPanel>
-                                        <Ellipse Width="16" Height="16" Fill="{Binding ColorBrush}"/>
-                                        <TextBlock Text="{Binding TranslatedName}" Margin="10,0,0,0"/>
+                                        <Ellipse Width="16" Height="16" Margin="2,0,10,0" Fill="{Binding ColorBrush}"/>
+                                        <TextBlock Text="{Binding TranslatedName}"/>
                                     </DockPanel>
                                 </DataTemplate>
                             </ComboBox.ItemTemplate>
+                            <ComboBox.GroupStyle>
+                                <GroupStyle>
+                                    <GroupStyle.HeaderTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Name}" FontWeight="Bold" Margin="2,5,0,2" FontSize="14"/>
+                                        </DataTemplate>
+                                    </GroupStyle.HeaderTemplate>
+                                </GroupStyle>
+                            </ComboBox.GroupStyle>
                         </ComboBox>
                         <TextBlock Margin="0,15,0,0" Text="{DynamicResource Background}"/>
                         <Grid Margin="0,10,0,0">
@@ -172,12 +203,33 @@
                                 <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
-                            <TextBox IsReadOnly="True" Text="{Binding Config.ApplicationDesign.BackgroundImage.DisplayText}"/>
+                            <TextBox IsReadOnly="True" Text="{Binding Config.ApplicationDesign.ApplicationBackground.DisplayText,Mode=OneWay}"/>
                             <Button Content=" ... " Grid.Column="1" Margin="10,0,10,0" Command="{Binding SelectBackground}"/>
-                            <Button Content="{DynamicResource Remove}" Grid.Column="2" Command="{Binding ResetBackground}"/>
+                            <Button Content="{DynamicResource Remove}" Grid.Column="2" Command="{Binding RemoveBackground}"/>
                         </Grid>
-                        <ListBox ItemsSource="{Binding ApplicationThemeManager.ThemePacks}"/>
-                        
+                        <TextBlock Margin="0,15,0,0" Text="{DynamicResource AudioVisualisation}"/>
+                        <ComboBox Margin="0,5,0,0" Width="300" HorizontalAlignment="Left" SelectedItem="{Binding Config.ApplicationDesign.AudioVisualisation}" ItemsSource="{Binding ApplicationThemeManager.AudioVisualisations}" ItemTemplateSelector="{StaticResource ComboBoxItemTemplateChooser}">
+                            <extensions:ComboBoxItemTemplateChooser.DropDownTemplate>
+                                <DataTemplate>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="32"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Image Source="{Binding AudioVisualisationPlugin.Thumbnail}" Height="32" Stretch="UniformToFill"/>
+                                        <StackPanel Orientation="Vertical" Grid.Column="1" Margin="10,5,5,5">
+                                            <TextBlock Text="{Binding Name}" FontSize="16"/>
+                                            <TextBlock Text="{Binding AudioVisualisationPlugin.Creator}" Margin="0,2,0,0"/>
+                                        </StackPanel>
+                                    </Grid>
+                                </DataTemplate>
+                            </extensions:ComboBoxItemTemplateChooser.DropDownTemplate>
+                            <extensions:ComboBoxItemTemplateChooser.SelectedTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Name}"/>
+                                </DataTemplate>
+                            </extensions:ComboBoxItemTemplateChooser.SelectedTemplate>
+                        </ComboBox>
                         <TextBlock Style="{StaticResource TextBlockHeader}" extensions:TextBlockHelper.UpperText="{DynamicResource View}" Margin="0,30,0,0"/>
                         <CheckBox Margin="0,10,0,0" Content="{DynamicResource ShowArtistAndTitle}" IsChecked="{Binding ShowArtistAndTitle}"/>
                         <CheckBox Margin="0,10,0,0" Content="{DynamicResource UseThinHeaders}" IsChecked="{Binding Config.UseThinHeaders}"/>
@@ -271,31 +323,6 @@
                 <StackPanel Orientation="Vertical" Margin="10">
                     <TextBlock Style="{StaticResource TextBlockHeader}" extensions:TextBlockHelper.UpperText="{DynamicResource General}"/>
                     <CheckBox Content="{DynamicResource AddToSendTo}" Margin="0,10,0,0" IsChecked="{Binding RegistryManager.SendToShortcut}"/>
-                    <TextBlock Style="{StaticResource TextBlockHeader}" Text="API" Margin="0,30,0,0"/>
-                    <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
-                        <CheckBox Content="{DynamicResource ApiIsEnabled}" IsChecked="{Binding Config.ApiIsEnabled}" x:Name="IsApiEnabledCheckBox"/>
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal" Margin="0,10,0,0" IsEnabled="{Binding ElementName=IsApiEnabledCheckBox,Path=IsChecked}">
-                        <TextBlock Text="{DynamicResource Port}" VerticalAlignment="Center"/>
-                        <TextBlock Text=": " VerticalAlignment="Center"/>
-                        <controls:NumericUpDown Width="100" Minimum="1" Maximum="65535" Value="{Binding Config.ApiPort}"/>
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal" Margin="0,10,0,0"  VerticalAlignment="Center">
-                        <TextBlock Text="Status: "/>
-                        <TextBlock Text="{Binding ApiState}"/>
-                    </StackPanel>
-                    <!--
-                        <TextBlock Style="{StaticResource TextBlockHeader}" extensions:TextBlockHelper.UpperText="{DynamicResource ContextMenuItemForExtensions}" Margin="0,30,0,0"/>
-                        <ItemsControl ItemsSource="{Binding RegistryManager.ContextMenuItems}" Margin="0,10,0,0">
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate>
-                                    <StackPanel Orientation="Horizontal">
-                                        <controls:ToggleSwitchButton IsChecked="{Binding IsRegistered}"/>
-                                        <TextBlock Text="{Binding Extension}" VerticalAlignment="Center"/>
-                                    </StackPanel>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl> #registrydisable-->
                 </StackPanel>
             </TabItem>
             <TabItem Header="Reset">

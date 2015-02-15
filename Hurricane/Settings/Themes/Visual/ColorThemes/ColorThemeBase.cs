@@ -1,15 +1,17 @@
 ﻿using System;
 using System.Windows.Media;
 using System.Xml.Serialization;
+using Hurricane.Settings.Converter;
 
 namespace Hurricane.Settings.Themes.Visual.ColorThemes
 {
     [Serializable, XmlInclude(typeof(AccentColorTheme)), XmlInclude(typeof(CustomColorTheme))]
-    public abstract class ColorThemeBase : IColorTheme
+    public abstract class ColorThemeBase : IColorTheme, IGroupable
     {
         public abstract Brush ColorBrush { get; }
         public abstract string TranslatedName { get; }
         public abstract void ApplyTheme();
+        public abstract string Group { get; }
 
         public string Name { get; set; }
 

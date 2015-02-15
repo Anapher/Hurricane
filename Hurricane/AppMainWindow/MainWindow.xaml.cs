@@ -22,7 +22,6 @@ using Hurricane.ViewModels;
 using Hurricane.Views;
 using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
-using WpfAnimatedGif;
 using InputDialog = Hurricane.Views.InputDialog;
 
 // ReSharper disable once CheckNamespace
@@ -104,6 +103,10 @@ namespace Hurricane
             try
             {
                 MagicArrow.DockManager.ApplyCurrentSide();
+
+                var viewmodel = MainViewModel.Instance;
+                viewmodel.Loaded(this);
+
                 if (MagicArrow.DockManager.CurrentSide == DockingSide.None)
                 {
                     ApplyHostWindow(AdvancedWindowSkin, false);
@@ -114,22 +117,16 @@ namespace Hurricane
                     Height = WpfScreen.GetScreenFrom(new Point(Left, 0)).WorkingArea.Height;
                 }
 
-                MainViewModel viewmodel = MainViewModel.Instance;
-                viewmodel.StartVisualization += CSCoreEngine_StartVisualization;
-
-                viewmodel.Loaded(this);
                 viewmodel.MusicManager.CSCoreEngine.PlaybackStateChanged += CSCoreEngine_PlaybackStateChanged;
 
-                AdvancedWindowSkin.MusicManagerEnabled(viewmodel.MusicManager);
-                SmartWindowSkin.MusicManagerEnabled(viewmodel.MusicManager);
                 ResetFlyout();
                 await SetBackground();
             }
             catch (Exception ex)
             {
 #if (!DEBUG)
-                Views.ReportExceptionWindow window = new Views.ReportExceptionWindow(ex) { Owner = this };
-                window.ShowDialog();
+                var reportExceptionWindow = new ReportExceptionWindow(ex) { Owner = this };
+                reportExceptionWindow.ShowDialog();
 #else
                 MessageBox.Show(ex.ToString());
 #endif
@@ -192,6 +189,18 @@ namespace Hurricane
                 Height = appstate.Height;
             }
 
+            if (skin.Configuration.SupportsCustomBackground)
+            {
+                SetBackground();
+            }
+            else
+            {
+                BackgroundImage.Visibility = Visibility.Collapsed;
+                BackgroundImage.Source = null;
+                BackgroundMediaElement.Stop();
+                BackgroundMediaElement.Source = null;
+                BackgroundMediaElement.Visibility = Visibility.Collapsed;
+            }
             BackgroundImage.Visibility = skin.Configuration.SupportsCustomBackground ? Visibility.Visible : Visibility.Collapsed;
 
             if (skin == SmartWindowSkin)
@@ -211,7 +220,6 @@ namespace Hurricane
             var animation = new DoubleAnimation(0, 1, TimeSpan.FromMilliseconds(200));
             newUserControl.BeginAnimation(OpacityProperty, animation);
             HostedWindow = skin;
-            if (MainViewModel.Instance.MusicManager != null) skin.RegisterSoundPlayer(MainViewModel.Instance.MusicManager.CSCoreEngine);
             HostedWindow.EnableWindow();
         }
 
@@ -313,11 +321,6 @@ namespace Hurricane
         }
 
         #endregion
-
-        void CSCoreEngine_StartVisualization(object sender, EventArgs e)
-        {
-            HostedWindow.RegisterSoundPlayer(MainViewModel.Instance.MusicManager.CSCoreEngine);
-        }
 
         void MainWindow_Closing(object sender, CancelEventArgs e)
         {
@@ -547,7 +550,7 @@ namespace Hurricane
 
             Storyboard.SetTargetProperty(outanimation, new PropertyPath(MarginProperty));
             Storyboard.SetTargetProperty(fadeanimation, new PropertyPath(OpacityProperty));
-
+            
             var story = new Storyboard();
             story.Children.Add(outanimation);
             story.Children.Add(fadeanimation);
@@ -562,36 +565,42 @@ namespace Hurricane
 
         public async Task BackgroundChanged()
         {
-            _image = null;
             await SetBackground();
             var animation = new DoubleAnimation(0, 1, TimeSpan.FromMilliseconds(1000));
-            BackgroundImage.BeginAnimation(OpacityProperty, animation);
+            BackgroundContainer.BeginAnimation(OpacityProperty, animation);
+            
         }
 
-        private BitmapImage _image;
         private async Task SetBackground()
         {
-            if (_image == null)
+            if (HurricaneSettings.Instance.Config.ApplicationDesign.ApplicationBackground == null || !HurricaneSettings.Instance.Config.ApplicationDesign.ApplicationBackground.IsAvailable)
             {
-                if (HurricaneSettings.Instance.Config.ApplicationDesign.BackgroundImage == null || !HurricaneSettings.Instance.Config.ApplicationDesign.BackgroundImage.IsAvailable)
-                {
-                    BackgroundImage.Source = null;
-                    return;
-                }
-                _image = await Task.Run(() =>
-                {
-                    var img = HurricaneSettings.Instance.Config.ApplicationDesign.BackgroundImage.GetBackgroundImage();
-                    img.Freeze();
-                    return img;
-                });
+                BackgroundImage.Source = null;
+                BackgroundMediaElement.Visibility = Visibility.Collapsed;
+                return;
             }
-            if (HurricaneSettings.Instance.Config.ApplicationDesign.BackgroundImage.IsAnimated)
+
+            if (HurricaneSettings.Instance.Config.ApplicationDesign.ApplicationBackground.IsAnimated)
             {
-                ImageBehavior.SetAnimatedSource(BackgroundImage, _image);
+                BackgroundImage.Source = null;
+                BackgroundMediaElement.Visibility = Visibility.Visible;
+                BackgroundMediaElement.Source =
+                    HurricaneSettings.Instance.Config.ApplicationDesign.ApplicationBackground.GetBackground();
+                BackgroundMediaElement.Play();
             }
             else
             {
-                BackgroundImage.Source = _image;
+                BackgroundMediaElement.Source = null;
+                BackgroundMediaElement.Visibility = Visibility.Collapsed;
+                BackgroundImage.Visibility = Visibility.Visible;
+                BackgroundImage.Source = await Task.Run(() =>
+                {
+                    var img =
+                        new BitmapImage(
+                            HurricaneSettings.Instance.Config.ApplicationDesign.ApplicationBackground.GetBackground());
+                    img.Freeze();
+                    return img;
+                });
             }
         }
 
@@ -605,6 +614,12 @@ namespace Hurricane
         }
 
         #endregion
+
+        private void BackgroundMediaElement_OnMediaEnded(object sender, RoutedEventArgs e)
+        {
+            BackgroundMediaElement.Position = TimeSpan.Zero;
+            BackgroundMediaElement.Play();
+        }
     }
 
     public enum DialogMode { Single, First, Last, Following }

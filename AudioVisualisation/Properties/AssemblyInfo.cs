@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // Allgemeine Informationen über eine Assembly werden über die folgenden 
 // Attribute gesteuert. Ändern Sie diese Attributwerte, um die Informationen zu ändern,
 // die mit einer Assembly verknüpft sind.
-[assembly: AssemblyTitle("AudioVisualisation")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("Audio Visualisation Plugin Interface")]
+[assembly: AssemblyDescription("This library contains the interface of audio visualisation plugins for Hurricane")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("AudioVisualisation")]
-[assembly: AssemblyCopyright("Copyright ©  2015")]
+[assembly: AssemblyCompany("Alkaline")]
+[assembly: AssemblyProduct("Audio Visualisation")]
+[assembly: AssemblyCopyright("Copyright © Alkaline  2015")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

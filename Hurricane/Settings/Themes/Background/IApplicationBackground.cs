@@ -1,10 +1,10 @@
-﻿using System.Windows.Media.Imaging;
+﻿using System;
 
 namespace Hurricane.Settings.Themes.Background
 {
-    public interface IBackgroundImage
+    public interface IApplicationBackground
     {
-        BitmapImage GetBackgroundImage();
+        Uri GetBackground();
         bool IsAnimated { get; }
         bool IsAvailable { get; }
         string DisplayText { get; }

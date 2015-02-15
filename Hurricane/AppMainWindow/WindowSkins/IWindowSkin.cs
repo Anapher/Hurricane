@@ -14,8 +14,6 @@ namespace Hurricane.AppMainWindow.WindowSkins
 
         void EnableWindow();
         void DisableWindow();
-        void RegisterSoundPlayer(CSCoreEngine engine);
-        void MusicManagerEnabled(object manager);
 
         WindowSkinConfiguration Configuration { get; set; }
     }

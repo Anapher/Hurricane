@@ -12,7 +12,7 @@ namespace Hurricane.Settings.Themes.Visual.ColorThemes
     {
         public static bool FromFile(string filename, out CustomColorTheme result)
         {
-            var colorTheme = new CustomColorTheme {Name = Path.GetFileNameWithoutExtension(filename)};
+            var colorTheme = new CustomColorTheme { Name = new FileInfo(filename).Name };
 
             try
             {
@@ -28,12 +28,10 @@ namespace Hurricane.Settings.Themes.Visual.ColorThemes
             return true;
         }
 
-        public string Filename { get { return Name + ".xaml"; } }
-
         [XmlIgnore]
         public override string TranslatedName
         {
-            get { return Name; }
+            get { return Path.GetFileNameWithoutExtension(Name); }
         }
 
         private Brush _colorBrush;
@@ -45,13 +43,18 @@ namespace Hurricane.Settings.Themes.Visual.ColorThemes
 
         private ResourceDictionary GetResource()
         {
-            var foo = new Uri(Path.Combine(HurricaneSettings.Instance.ColorThemesDirectory, Name + ".xaml"), UriKind.RelativeOrAbsolute);
+            var foo = new Uri(Path.Combine(HurricaneSettings.Instance.ColorThemesDirectory, Name), UriKind.RelativeOrAbsolute);
             return new ResourceDictionary { Source = foo };
         }
 
         public override void ApplyTheme()
         {
             ApplicationThemeManager.Instance.LoadResource("colortheme", GetResource());
+        }
+
+        public override string Group
+        {
+            get { return Application.Current.Resources["Custom"].ToString(); }
         }
     }
 }

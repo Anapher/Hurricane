@@ -303,7 +303,10 @@
     <system:String x:Key="Thumbnail">Vorschaubild</system:String>
     <system:String x:Key="No2">Kein</system:String>
     <system:String x:Key="Include">Enthalten</system:String>
-    <system:String x:Key="SpectrumAnalyzerColor">Spektrum Analysator</system:String>
+    <system:String x:Key="AudioVisualisation">Audio Visualisierung</system:String>
     <system:String x:Key="Skin">Skin</system:String>
     <system:String x:Key="Default">Standard</system:String>
+    <system:String x:Key="Custom">Eigene</system:String>
+    <system:String x:Key="AllValidFiles">Alle erlaubten Dateien</system:String>
+    <system:String x:Key="AllVideoFiles">Alle Videodateien</system:String>
 </ResourceDictionary>

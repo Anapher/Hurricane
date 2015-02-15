@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using AudioVisualisation;
 
 namespace Hurricane.Settings.Themes.AudioVisualisation
