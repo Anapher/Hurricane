@@ -1,13 +1,12 @@
 ﻿using System;
 using System.IO;
-using System.Windows.Media.Imaging;
 using Hurricane.ViewModelBase;
 
 namespace Hurricane.Settings.Themes.Background
 {
-    public class CustomBackground : PropertyChangedBase, IBackgroundImage
+    public class CustomApplicationBackground : PropertyChangedBase, IApplicationBackground
     {
-        protected bool Equals(CustomBackground other)
+        protected bool Equals(CustomApplicationBackground other)
         {
             if (other.BackgroundPath == null && BackgroundPath == null) return true;
             return string.Equals(BackgroundPath, other.BackgroundPath);
@@ -28,21 +27,21 @@ namespace Hurricane.Settings.Themes.Background
             }
         }
 
-        public BitmapImage GetBackgroundImage()
+        public Uri GetBackground()
         {
-            return new BitmapImage(new Uri(BackgroundPath));
+            return new Uri(BackgroundPath);
         }
 
         public override bool Equals(object obj)
         {
             if (obj == null) return false;
-            var other = obj as CustomBackground;
+            var other = obj as CustomApplicationBackground;
             return Equals(other);
         }
 
         public bool IsAnimated
         {
-            get { return BackgroundPath.EndsWith(".gif"); }
+            get { return Utilities.GeneralHelper.IsVideo(BackgroundPath); }
         }
 
         public bool IsAvailable

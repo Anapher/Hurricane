@@ -5,9 +5,11 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Shapes;
+using AudioVisualisation;
 using Hurricane.Music;
 using Hurricane.Utilities;
 using Hurricane.ViewModels;
+using WPFSoundVisualizationLib;
 
 namespace Hurricane.AppMainWindow.WindowSkins
 {
@@ -125,35 +127,16 @@ namespace Hurricane.AppMainWindow.WindowSkins
 
         public void EnableWindow()
         {
-            SpectrumAnalyzer.RefreshInterval = 20;
+            var visulisation = AudioVisualisationContentControl.Tag as IAudioVisualisation;
+            if (visulisation != null) visulisation.Enable();
         }
 
         public void DisableWindow()
         {
-            SpectrumAnalyzer.RefreshInterval = int.MaxValue;
+            var visulisation = AudioVisualisationContentControl.Tag as IAudioVisualisation;
+            if (visulisation != null) visulisation.Disable();
         }
 
-        public void RegisterSoundPlayer(CSCoreEngine engine)
-        {
-            this.SpectrumAnalyzer.RegisterSoundPlayer(engine);
-        }
-
-        protected WindowSkinConfiguration configuration;
-        public WindowSkinConfiguration Configuration
-        {
-            get
-            {
-                return configuration;
-            }
-            set
-            {
-                configuration = value;
-            }
-        }
-
-        public void MusicManagerEnabled(object manager)
-        {
-            
-        }
+        public WindowSkinConfiguration Configuration { get; set; }
     }
 }

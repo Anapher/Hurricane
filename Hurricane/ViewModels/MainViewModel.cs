@@ -57,7 +57,6 @@ namespace Hurricane.ViewModels
             MySettings = HurricaneSettings.Instance;
 
             MusicManager = new MusicManager();
-            MusicManager.CSCoreEngine.StartVisualization += CSCoreEngine_StartVisualization;
             MusicManager.CSCoreEngine.TrackChanged += CSCoreEngine_TrackChanged;
             MusicManager.CSCoreEngine.ExceptionOccurred += CSCoreEngine_ExceptionOccurred;
             MusicManager.LoadFromSettings();
@@ -71,11 +70,6 @@ namespace Hurricane.ViewModels
         #endregion
 
         #region Events
-        public event EventHandler StartVisualization; //This is ok so, trust me ;)
-        void CSCoreEngine_StartVisualization(object sender, EventArgs e)
-        {
-            if (StartVisualization != null) StartVisualization(sender, e);
-        }
 
         public event EventHandler<TrackChangedEventArgs> TrackChanged;
         void CSCoreEngine_TrackChanged(object sender, TrackChangedEventArgs e)

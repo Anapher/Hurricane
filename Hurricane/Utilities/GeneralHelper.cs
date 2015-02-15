@@ -115,5 +115,10 @@ namespace Hurricane.Utilities
                 return false;
             }
         }
+
+        public static bool IsVideo(string fileName)
+        {
+            return fileName.EndsWith(".mp4") || fileName.EndsWith(".wmv");
+        }
     }
 }

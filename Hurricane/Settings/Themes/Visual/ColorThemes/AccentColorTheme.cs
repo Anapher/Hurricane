@@ -33,5 +33,10 @@ namespace Hurricane.Settings.Themes.Visual.ColorThemes
             var resource = new ResourceDictionary { Source = new Uri(string.Format("/Resources/Themes/{0}.xaml", Name), UriKind.Relative) };
             ApplicationThemeManager.Instance.LoadResource("colortheme", resource);
         }
+
+        public override string Group
+        {
+            get { return Application.Current.Resources["Default"].ToString(); }
+        }
     }
 }

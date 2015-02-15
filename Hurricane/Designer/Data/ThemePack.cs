@@ -10,16 +10,17 @@ using Hurricane.Settings.Themes.AudioVisualisation;
 using Hurricane.Settings.Themes.Background;
 using Hurricane.Settings.Themes.Visual;
 using Hurricane.ViewModelBase;
+using ICSharpCode.SharpZipLib.Core;
 using ICSharpCode.SharpZipLib.Zip;
 using Newtonsoft.Json;
 
 namespace Hurricane.Designer.Data
 {
-    public class ThemePack : PropertyChangedBase, ISaveable, IDisposable, IBackgroundImage, IBaseTheme, IColorTheme, IAudioVisualisationContainer
+    public class ThemePack : PropertyChangedBase, ISaveable, IDisposable, IApplicationBackground, IBaseTheme, IColorTheme, IAudioVisualisationContainer
     {
         private const string ColorThemeName = "ColorTheme.xaml";
         private const string BaseThemeName = "BaseTheme.xaml";
-        private const string SpectrumAnalyzerName = "SpectrumAnalyzer.dll";
+        private const string AudioVisualisationName = "AudioVisualisation.dll";
 
         [XmlIgnore]
         public string Creator { get; set; }
@@ -44,12 +45,6 @@ namespace Hurricane.Designer.Data
 
         [JsonIgnore, XmlIgnore]
         public ColorThemeData ColorTheme { get; set; }
-
-        [JsonIgnore, XmlIgnore]
-        public UIElement SpectrumAnalyzer { get; set; }
-
-        [JsonIgnore, XmlIgnore]
-        public BitmapImage BackgroundImage { get; set; }
 
         #endregion
 
@@ -76,25 +71,25 @@ namespace Hurricane.Designer.Data
             }
         }
 
-        private bool _containsSpectrumAnalyzer;
+        private bool _containsAudioVisualisation;
         [XmlIgnore]
-        public bool ContainsSpectrumAnalyzer
+        public bool ContainsAudioVisualisation
         {
-            get { return _containsSpectrumAnalyzer; }
+            get { return _containsAudioVisualisation; }
             set
             {
-                SetProperty(value, ref _containsSpectrumAnalyzer);
+                SetProperty(value, ref _containsAudioVisualisation);
             }
         }
 
-        private bool _containsBackgroundImage;
+        private bool _containsBackground;
         [XmlIgnore]
-        public bool ContainsBackgroundImage
+        public bool ContainsBackground
         {
-            get { return _containsBackgroundImage; }
+            get { return _containsBackground; }
             set
             {
-                SetProperty(value, ref _containsBackgroundImage);
+                SetProperty(value, ref _containsBackground);
             }
         }
 
@@ -117,6 +112,9 @@ namespace Hurricane.Designer.Data
         [JsonIgnore]
         public string FileName { get; set; }
 
+        [XmlIgnore, JsonIgnore]
+        public string AbsolutePath { get; set; }
+
         public static ThemePack CreateNew()
         {
             return new ThemePack();
@@ -137,14 +135,7 @@ namespace Hurricane.Designer.Data
                 using(var reader = new StreamReader(s))
                 {
                     var themePack = JsonConvert.DeserializeObject<ThemePack>(reader.ReadToEnd());
-
-                    if (themePack.ContainsBackgroundImage)
-                    {
-                        var backgroundZipEntry = zf.GetEntry(themePack.BackgroundName);
-                        themePack.BackgroundImage =
-                            Utilities.ImageHelper.StreamToBitmapImage(zf.GetInputStream(backgroundZipEntry));
-                    }
-
+                    themePack.AbsolutePath = path;
                     if (themePack.ContainsColorTheme)
                     {
                         using (var colorThemeReader = new StreamReader(zf.GetInputStream(zf.GetEntry(ColorThemeName))))
@@ -152,6 +143,12 @@ namespace Hurricane.Designer.Data
                             var data = new ColorThemeData();
                             data.LoadFromString(colorThemeReader.ReadToEnd());
                         }
+                    }
+
+                    if (themePack.ContainsBackground)
+                    {
+                        themePack._backgroundPath = Path.Combine(Path.GetTempPath(),
+                            "HurricaneBackground" + new FileInfo(themePack.AbsolutePath).Extension);
                     }
 
                     if (themePack.ContainsBaseTheme)
@@ -163,16 +160,17 @@ namespace Hurricane.Designer.Data
                         }
                     }
 
-                    if (themePack.ContainsSpectrumAnalyzer)
+                    if (themePack.ContainsAudioVisualisation)
                     {
-                        using (var stream = zf.GetInputStream(zf.GetEntry(SpectrumAnalyzerName)))
+                        using (var stream = zf.GetInputStream(zf.GetEntry(AudioVisualisationName)))
                         {
-                            themePack._spectrumAnalyzerPlugin =
-                                Settings.Themes.AudioVisualisation.AudioVisualisationPluginHelper.FromStream(stream);
+                            themePack._audioVisualisationPlugin =
+                                AudioVisualisationPluginHelper.FromStream(stream);
                         }
                     }
 
-                    themePack.FileName = path;
+                    
+                    themePack.FileName = new FileInfo(path).Name;
                     return themePack;
                 }
             }
@@ -190,7 +188,8 @@ namespace Hurricane.Designer.Data
 
         public void Dispose()
         {
-            if(BackgroundImage != null) BackgroundImage.StreamSource.Dispose();
+            var fi = new FileInfo(_backgroundPath);
+            if (fi.Exists) fi.Delete();
         }
 
         #region BaseTheme
@@ -242,34 +241,50 @@ namespace Hurricane.Designer.Data
 
         #endregion
 
-        #region BackgroundImage
+        #region ApplicationBackground
 
-        BitmapImage IBackgroundImage.GetBackgroundImage()
+        private string _backgroundPath;
+
+        Uri IApplicationBackground.GetBackground()
         {
-            return BackgroundImage;
+            if (!ContainsBackground) return null;
+            using (var fs = new FileStream(FileName, FileMode.Open, FileAccess.Read))
+            using (var zf = new ZipFile(fs))
+            {
+                var backgroundZipEntry = zf.GetEntry(BackgroundName);
+                var zipStream = zf.GetInputStream(backgroundZipEntry);
+                var buffer = new byte[4096];
+                var file = new FileInfo(_backgroundPath);
+                if (file.Exists) file.Delete();
+                using (var streamWriter = File.Create(file.FullName))
+                {
+                    StreamUtils.Copy(zipStream, streamWriter, buffer);
+                }
+                return new Uri(file.FullName);
+            }
         }
 
-        bool IBackgroundImage.IsAnimated
+        bool IApplicationBackground.IsAnimated
         {
-            get { return BackgroundName.EndsWith(".gif"); }
+            get { return Utilities.GeneralHelper.IsVideo(BackgroundName); }
         }
 
-        bool IBackgroundImage.IsAvailable
+        bool IApplicationBackground.IsAvailable
         {
             get { return true; }
         }
 
-        string IBackgroundImage.DisplayText
+        string IApplicationBackground.DisplayText
         {
             get { return GetDefaultText(); }
         }
 
         #endregion
 
-        private IAudioVisualisationPlugin _spectrumAnalyzerPlugin;
+        private IAudioVisualisationPlugin _audioVisualisationPlugin;
         IAudioVisualisationPlugin IAudioVisualisationContainer.AudioVisualisationPlugin
         {
-            get { return _spectrumAnalyzerPlugin;; }
+            get { return _audioVisualisationPlugin; }
         }
     }
 }

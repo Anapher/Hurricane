@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using AudioVisualisation;
 using CSCore;
 using CSCore.CoreAudioAPI;
 using CSCore.SoundOut;
@@ -16,12 +17,11 @@ using Hurricane.Music.Track;
 using Hurricane.Music.Visualization;
 using Hurricane.Settings;
 using Hurricane.ViewModelBase;
-using WPFSoundVisualizationLib;
 using Equalizer = CSCore.Streams.Equalizer;
 
 namespace Hurricane.Music
 {
-    public class CSCoreEngine : PropertyChangedBase, IDisposable, ISpectrumPlayer
+    public class CSCoreEngine : PropertyChangedBase, IDisposable, ISpectrumProvider
     {
         #region Consts
         const int FFTSize = 4096;
@@ -37,6 +37,7 @@ namespace Hurricane.Music
         public event EventHandler<PositionChangedEventArgs> PositionChanged;
         public event EventHandler VolumeChanged;
         public event EventHandler<Exception> ExceptionOccurred;
+        public event EventHandler PlayStateChanged;
 
         #endregion
 
@@ -122,7 +123,10 @@ namespace Hurricane.Music
 
         public bool IsPlaying
         {
-            get { return (_soundOut != null && (!_isfadingout && _soundOut.PlaybackState == PlaybackState.Playing)); }
+            get
+            {
+                return (_soundOut != null && (!_isfadingout && _soundOut.PlaybackState == PlaybackState.Playing));
+            }
         }
 
         public PlaybackState CurrentState
@@ -373,6 +377,7 @@ namespace Hurricane.Music
         {
             OnPropertyChanged("IsPlaying");
             OnPropertyChanged("CurrentState");
+            if (PlayStateChanged != null) PlayStateChanged(this, EventArgs.Empty);
             if (PlaybackStateChanged != null) PlaybackStateChanged(this, new PlayStateChangedEventArgs(this.CurrentState));
         }
 

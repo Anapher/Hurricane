@@ -1,11 +1,34 @@
-﻿using System.Windows;
-using WPFSoundVisualizationLib;
+﻿using System.Windows.Media.Imaging;
 
 namespace AudioVisualisation
 {
+    /// <summary>
+    /// The audio visualisation plugin interface
+    /// </summary>
     public interface IAudioVisualisationPlugin
     {
-        UIElement GetUIElement(ISpectrumPlayer spectrumPlayer);
+        /// <summary>
+        /// This function should return the audio visualisation for the advanced window
+        /// </summary>
+        /// <returns>The audio visualisation</returns>
+        IAudioVisualisation AdvancedWindowVisualisation { get; }
+
+        /// <summary>
+        /// This property should return the audio visualisation for the smart window
+        /// </summary>
+        /// <returns>The audio visualisation</returns>
+        IAudioVisualisation SmartWindowVisualisation { get; }
+
+        void Refresh();
+
+        /// <summary>
+        /// Your name
+        /// </summary>
         string Creator { get; }
+
+        /// <summary>
+        /// A preview image. Size: 32x32 px
+        /// </summary>
+        BitmapImage Thumbnail { get; }
     }
 }

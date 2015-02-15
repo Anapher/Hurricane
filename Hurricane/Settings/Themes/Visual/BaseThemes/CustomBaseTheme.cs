@@ -45,5 +45,10 @@ namespace Hurricane.Settings.Themes.Visual.BaseThemes
         {
             get { return (bool)GetResource()["UseDialogsForWhiteTheme"]; }
         }
+
+        public override string Group
+        {
+            get { return Application.Current.Resources["Custom"].ToString(); }
+        }
     }
 }

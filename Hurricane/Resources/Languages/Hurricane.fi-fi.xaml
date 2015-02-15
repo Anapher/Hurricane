@@ -283,7 +283,10 @@
     <system:String x:Key="Thumbnail">Thumbnail</system:String>
     <system:String x:Key="No2">No</system:String>
     <system:String x:Key="Include">Include</system:String>
-    <system:String x:Key="SpectrumAnalyzer">Spektrin</system:String>
+    <system:String x:Key="AudioVisualisation">Audio visualisation</system:String>
     <system:String x:Key="Skin">Skin</system:String>
     <system:String x:Key="Default">Default</system:String>
+    <system:String x:Key="Custom">Custom</system:String>
+    <system:String x:Key="AllValidFiles">All valid files</system:String>
+    <system:String x:Key="AllVideoFiles">All video files</system:String>
 </ResourceDictionary>

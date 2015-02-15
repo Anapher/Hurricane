@@ -50,7 +50,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>icon.ico</ApplicationIcon>
+    <ApplicationIcon>Resources\App\Icon.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject>Hurricane.App</StartupObject>
@@ -111,9 +111,6 @@
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
-    <Reference Include="WpfAnimatedGif">
-      <HintPath>..\packages\WpfAnimatedGif.1.4.12\lib\net\WpfAnimatedGif.dll</HintPath>
-    </Reference>
     <Reference Include="WPFFolderBrowser">
       <HintPath>..\Libraries\WPFFolderBrowser.dll</HintPath>
     </Reference>
@@ -163,6 +160,8 @@
     <Compile Include="Extensions\AnimatedFrameworkElement.cs" />
     <Compile Include="Extensions\AnimatedListView.cs" />
     <Compile Include="Extensions\AnimatedStackPanel.cs" />
+    <Compile Include="Extensions\AudioVisualisationExtensions.cs" />
+    <Compile Include="Extensions\ComboBoxItemTemplateChooser.cs" />
     <Compile Include="Extensions\ControlDoubleClick.cs" />
     <Compile Include="Extensions\Converter\CollapsedOnNullValue.cs" />
     <Compile Include="Extensions\Converter\InvertBooleanConverter.cs" />
@@ -170,12 +169,15 @@
     <Compile Include="Extensions\TextBlockTextFormat.cs" />
     <Compile Include="Music\CutSource.cs" />
     <Compile Include="Music\Track\WebApi\YouTubeApi\DataClasses\MediaDescription.cs" />
+    <Compile Include="Settings\Converter\GroupConverter.cs" />
     <Compile Include="Settings\Themes\AudioVisualisation\AudioVisualisationPluginHelper.cs" />
     <Compile Include="Settings\Themes\AudioVisualisation\CustomAudioVisualisation.cs" />
-    <Compile Include="Settings\Themes\AudioVisualisation\DefaultAudioVisualisation.cs" />
+    <Compile Include="Settings\Themes\AudioVisualisation\DefaultAudioVisualisation\AdvancedWindowAudioVisualisation.cs" />
+    <Compile Include="Settings\Themes\AudioVisualisation\DefaultAudioVisualisation\DefaultAudioVisualisation.cs" />
+    <Compile Include="Settings\Themes\AudioVisualisation\DefaultAudioVisualisation\SmartWindowAudioVisualisation.cs" />
+    <Compile Include="Settings\Themes\AudioVisualisation\DefaultAudioVisualisation\SpectrumPlayerWrapper.cs" />
     <Compile Include="Settings\Themes\AudioVisualisation\IAudioVisualisationContainer.cs" />
-    <Compile Include="Settings\Themes\Background\CustomBackground.cs" />
-    <Compile Include="Settings\Converter\ComboBoxForegroundConverter.cs" />
+    <Compile Include="Settings\Themes\Background\CustomApplicationBackground.cs" />
     <Compile Include="Extensions\Converter\FalseOnNullValue.cs" />
     <Compile Include="Extensions\Converter\FormatLargeNumber.cs" />
     <Compile Include="Extensions\Converter\FormatTimespan.cs" />
@@ -312,7 +314,7 @@
     <Compile Include="Settings\RegistryManager\RegistryRegister.cs" />
     <Compile Include="Settings\SensitiveInformation.cs" />
     <Compile Include="Settings\SettingsBase.cs" />
-    <Compile Include="Settings\Themes\Background\IBackgroundImage.cs" />
+    <Compile Include="Settings\Themes\Background\IApplicationBackground.cs" />
     <Compile Include="Settings\Themes\Visual\BaseThemes\BaseTheme.cs" />
     <Compile Include="Settings\Themes\Visual\BaseThemes\BaseThemeBase.cs" />
     <Compile Include="Settings\Themes\Visual\BaseThemes\CustomBaseTheme.cs" />
@@ -324,6 +326,7 @@
     <Compile Include="Settings\Themes\ApplicationDesign.cs" />
     <Compile Include="Settings\UpdateService.cs" />
     <Compile Include="Utilities\ActiveWindowHook.cs" />
+    <Compile Include="Utilities\DependencyObjectExtensions.cs" />
     <Compile Include="Utilities\GeneralHelper.cs" />
     <Compile Include="Utilities\Keyboard.cs" />
     <Compile Include="Utilities\LevenshteinDistance.cs" />
@@ -777,8 +780,8 @@
     <Content Include="ffmpeg.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Resource Include="icon.ico" />
     <Resource Include="Resources\App\Icon.ico" />
+    <Resource Include="Resources\App\AudioVisualisation.png" />
     <Content Include="youtube-dl.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

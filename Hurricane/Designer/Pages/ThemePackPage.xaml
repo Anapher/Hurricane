@@ -74,16 +74,16 @@
                 <StackPanel Orientation="Vertical" Margin="0,15,0,0">
                     <TextBlock Text="{StaticResource Background}" FontSize="16"/>
                     <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
-                        <RadioButton Content="{StaticResource No2}" IsChecked="{Binding ThemePack.ContainsBackgroundImage,Converter={StaticResource InvertBooleanConverter}}"/>
-                        <RadioButton Content="{StaticResource Include}" IsChecked="{Binding ThemePack.ContainsBackgroundImage}" Margin="10,0,0,0"/>
+                        <RadioButton Content="{StaticResource No2}" IsChecked="{Binding ThemePack.ContainsBackground,Converter={StaticResource InvertBooleanConverter}}"/>
+                        <RadioButton Content="{StaticResource Include}" IsChecked="{Binding ThemePack.ContainsBackground}" Margin="10,0,0,0"/>
                         <Button Content="..." Margin="10,0,0,0" Width="30"/>
                     </StackPanel>
                 </StackPanel>
                 <StackPanel Orientation="Vertical" Margin="0,15,0,0">
-                    <TextBlock Text="{StaticResource SpectrumAnalyzerColor}" FontSize="16"/>
+                    <TextBlock Text="{StaticResource AudioVisualisation}" FontSize="16"/>
                     <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
-                        <RadioButton Content="{StaticResource No2}" IsChecked="{Binding ThemePack.ContainsSpectrumAnalyzer,Converter={StaticResource InvertBooleanConverter}}"/>
-                        <RadioButton Content="{StaticResource Include}" IsChecked="{Binding ThemePack.ContainsSpectrumAnalyzer}" Margin="10,0,0,0"/>
+                        <RadioButton Content="{StaticResource No2}" IsChecked="{Binding ThemePack.ContainsAudioVisualisation,Converter={StaticResource InvertBooleanConverter}}"/>
+                        <RadioButton Content="{StaticResource Include}" IsChecked="{Binding ThemePack.ContainsAudioVisualisation}" Margin="10,0,0,0"/>
                         <Button Content="..." Margin="10,0,0,0" Width="30"/>
                     </StackPanel>
                 </StackPanel>

@@ -3,11 +3,11 @@ using System.IO;
 using System.Linq;
 using System.Windows;
 using Hurricane.Music;
-using Hurricane.Music.API;
 using Hurricane.Music.Data;
 using Hurricane.Settings;
 using Hurricane.Settings.RegistryManager;
 using Hurricane.Settings.Themes;
+using Hurricane.Settings.Themes.Background;
 using Hurricane.ViewModelBase;
 using Microsoft.Win32;
 using WPFFolderBrowser;
@@ -25,7 +25,7 @@ namespace Hurricane.ViewModels
 
         private SettingsViewModel()
         {
-            RegistryManager = new RegistryManager();
+            RegistryManager = new RegistryManager(); //import for shortcut
         }
 
         public void Load()
@@ -36,15 +36,21 @@ namespace Hurricane.ViewModels
         }
 
         public MusicManager MusicManager { get { return MainViewModel.Instance.MusicManager; } }
-        public TcpServer ApiServer { get { return MusicManager != null ? MusicManager.ApiServer : null; } }
         public ApplicationThemeManager ApplicationThemeManager { get { return ApplicationThemeManager.Instance; } }
-
-        #endregion
+        public RegistryManager RegistryManager { get; set; }
 
         public ConfigSettings Config
         {
             get { return HurricaneSettings.Instance.Config; }
         }
+
+        public MainWindow BaseWindow
+        {
+            get { return (MainWindow)Application.Current.MainWindow; }
+        }
+
+
+        #endregion
 
         private int _selectedtab;
         public int SelectedTab
@@ -57,9 +63,6 @@ namespace Hurricane.ViewModels
                 {
                     case 2:
                         OnPropertyChanged("MusicManager");
-                        break;
-                    case 3:
-                        OnPropertyChanged("ApiState");
                         break;
                 }
             }
@@ -140,6 +143,60 @@ namespace Hurricane.ViewModels
             }
         }
 
+        private RelayCommand _selectBackground;
+        public RelayCommand SelectBackground
+        {
+            get
+            {
+                return _selectBackground ?? (_selectBackground = new RelayCommand(async parameter =>
+                {
+                    var ofd = new OpenFileDialog
+                    {
+                        Filter = string.Format("{0}|{4};{5}|{1}|{4}|{2}|{5}|{3}|*.*",
+                            Application.Current.Resources["AllValidFiles"],
+                            Application.Current.Resources["AllPictureFiles"],
+                            Application.Current.Resources["AllVideoFiles"],
+                            Application.Current.Resources["AllFiles"],
+                            "*.bmp;*.jpg;*.jpeg;*.png;*.tif;*.tiff;*.gif",
+                            "*.mp4;*.wmv")
+                    };
+
+                    if (ofd.ShowDialog() == true)
+                    {
+                        Config.ApplicationDesign.ApplicationBackground = new CustomApplicationBackground { BackgroundPath = ofd.FileName };
+                        await BaseWindow.BackgroundChanged();
+                    }
+                }));
+            }
+        }
+
+        private RelayCommand _removeBackground;
+        public RelayCommand RemoveBackground
+        {
+            get
+            {
+                return _removeBackground ?? (_removeBackground = new RelayCommand(async parameter =>
+                {
+                    Config.ApplicationDesign.ApplicationBackground = null;
+                    await BaseWindow.BackgroundChanged();
+                }));
+            }
+        }
+
+        private RelayCommand _applyTheme;
+        public RelayCommand ApplyTheme
+        {
+            get
+            {
+                return _applyTheme ?? (_applyTheme = new RelayCommand(async parameter =>
+                {
+                    await BaseWindow.MoveOut();
+                    ApplicationThemeManager.Instance.Apply(Config.ApplicationDesign);
+                    await BaseWindow.ResetAndMoveIn();
+                }));
+            }
+        }
+
         #endregion
 
         #region Languages
@@ -217,47 +274,5 @@ namespace Hurricane.ViewModels
                 }));
             }
         }
-
-        private RelayCommand _selectBackground;
-        public RelayCommand SelectBackground
-        {
-            get
-            {
-                return _selectBackground ?? (_selectBackground = new RelayCommand(parameter =>
-                {
-                    var ofd = new OpenFileDialog { Filter = string.Format("{0}|*.bmp;*.jpg;*.jpeg;*.png;*.tif;*.tiff|{1}|*.*", Application.Current.Resources["AllPictureFiles"], Application.Current.Resources["AllFiles"]) };
-                    if (ofd.ShowDialog() == true)
-                    {
-                        //Config.CustomBackground.BackgroundPath = ofd.FileName;
-                        //OnPropertyChanged("CanApply");
-                    }
-                }));
-            }
-        }
-
-        private RelayCommand _resetBackground;
-        public RelayCommand ResetBackground
-        {
-            get
-            {
-                return _resetBackground ?? (_resetBackground = new RelayCommand(parameter =>
-                {
-                    //Config.CustomBackground.BackgroundPath = string.Empty;
-                    OnPropertyChanged("CanApply");
-                }));
-            }
-        }
-
-        public string ApiState
-        {
-            get
-            {
-                if (ApiServer == null) return Application.Current.Resources["Deactivated"].ToString();
-                if (ApiServer.IsRunning) { return Application.Current.Resources["Activated"].ToString(); }
-                return ApiServer.GotProblems ? Application.Current.Resources["FailedToBindToPort"].ToString() : Application.Current.Resources["Deactivated"].ToString();
-            }
-        }
-
-        public RegistryManager RegistryManager { get; set; }
     }
 }

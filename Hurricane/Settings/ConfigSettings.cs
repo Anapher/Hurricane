@@ -95,6 +95,7 @@ namespace Hurricane.Settings
             Language = language == null ? "en" : language.Code;
             Notification = NotificationType.Top;
             ApplicationDesign = new ApplicationDesign();
+            ApplicationDesign.SetStandard();
             NotificationShowTime = 5000;
             RememberTrackImportPlaylist = false;
             PlaylistToImportTrack = null;
@@ -123,8 +124,8 @@ namespace Hurricane.Settings
         private ResourceDictionary _lastLanguage;
         public void LoadLanguage()
         {
-            if (_lastLanguage != null) Application.Current.Resources.Remove(_lastLanguage);
-            _lastLanguage = new ResourceDictionary() { Source = new Uri(Languages.First(x => x.Code == Language).Path, UriKind.Relative) };
+            if (_lastLanguage != null) Application.Current.Resources.MergedDictionaries.Remove(_lastLanguage);
+            _lastLanguage = new ResourceDictionary { Source = new Uri(Languages.First(x => x.Code == Language).Path, UriKind.Relative) };
             Application.Current.Resources.MergedDictionaries.Add(_lastLanguage);
         }
 

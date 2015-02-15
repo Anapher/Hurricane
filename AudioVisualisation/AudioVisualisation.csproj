@@ -33,17 +33,18 @@
     <Reference Include="PresentationCore" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
     <Reference Include="WindowsBase" />
-    <Reference Include="WPFSoundVisualizationLib">
-      <HintPath>..\Libraries\WPFSoundVisualizationLib.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ColorInformation.cs" />
+    <Compile Include="ISpectrumProvider.cs" />
+    <Compile Include="IAudioVisualisation.cs" />
     <Compile Include="IAudioVisualisationPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

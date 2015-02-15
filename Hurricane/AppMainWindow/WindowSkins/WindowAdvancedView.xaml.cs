@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using AudioVisualisation;
 using Hurricane.Music;
 using Hurricane.ViewModels;
 
@@ -50,31 +51,17 @@ namespace Hurricane.AppMainWindow.WindowSkins
 
         public void EnableWindow()
         {
-            SpectrumAnalyzer.RefreshInterval = 20;
+            var visulisation = AudioVisualisationContentControl.Tag as IAudioVisualisation;
+            if (visulisation != null) visulisation.Enable();
         }
 
         public void DisableWindow()
         {
-            SpectrumAnalyzer.RefreshInterval = int.MaxValue;
+            var visulisation = AudioVisualisationContentControl.Tag as IAudioVisualisation;
+            if (visulisation != null) visulisation.Disable();
         }
 
-        public void RegisterSoundPlayer(CSCoreEngine engine)
-        {
-            SpectrumAnalyzer.RegisterSoundPlayer(engine);
-        }
-
-        protected WindowSkinConfiguration configuration;
-        public WindowSkinConfiguration Configuration
-        {
-            get
-            {
-                return configuration;
-            }
-            set
-            {
-                configuration = value;
-            }
-        }
+        public WindowSkinConfiguration Configuration { get; set; }
 
         #region Titlebar
 
@@ -101,16 +88,11 @@ namespace Hurricane.AppMainWindow.WindowSkins
         }
 
         #endregion
-        private MusicManager _manager;
-        public void MusicManagerEnabled(object manager)
-        {
-            _manager = (MusicManager)manager;
-        }
 
         private void ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            var listview = (ListView)sender;
-            listview.ScrollIntoView(listview.SelectedItem);
+            var trackListView = (ListView)sender;
+            trackListView.ScrollIntoView(trackListView.SelectedItem);
         }
 
         private void ListView_DragEnter(object sender, DragEventArgs e)

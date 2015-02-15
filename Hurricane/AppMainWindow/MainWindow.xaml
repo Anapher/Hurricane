@@ -5,7 +5,6 @@
         xmlns:converter="clr-namespace:Hurricane.Extensions.Converter"
         xmlns:ex="clr-namespace:Hurricane.Extensions"
         xmlns:viewmodels="clr-namespace:Hurricane.ViewModels"
-        xmlns:gif="http://wpfanimatedgif.codeplex.com"
         DataContext="{x:Static viewmodels:MainViewModel.Instance}"
         xmlns:tb="http://www.hardcodet.net/taskbar"
         Title="Hurricane" SizeToContent="Manual" x:Name="window" Icon="/Resources/App/icon.ico" 
@@ -112,7 +111,10 @@
         <KeyBinding Key="E" Modifiers="Control" Command="{Binding ToggleEqualizer}"/>
     </Window.InputBindings>
     <Grid x:Name="ContentGrid">
-        <Image x:Name="BackgroundImage" Stretch="UniformToFill" gif:ImageBehavior.RepeatBehavior="Forever"/>
+        <Grid x:Name="BackgroundContainer">
+            <Image x:Name="BackgroundImage" Stretch="UniformToFill"/>
+            <MediaElement x:Name="BackgroundMediaElement" Volume="0" MediaEnded="BackgroundMediaElement_OnMediaEnded" LoadedBehavior="Manual" Stretch="UniformToFill"/>
+        </Grid>
         <tb:TaskbarIcon x:Name="NotifyIcon" IconSource="/Resources/App/icon.ico" ToolTipText="Hurricane" Visibility="Hidden" TrayMouseDoubleClick="NotifyIcon_OnTrayMouseDoubleClick"/>
     </Grid>
 </controls:MetroWindow>

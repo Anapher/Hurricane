@@ -6,6 +6,7 @@ using System.Linq;
 using System.Windows;
 using Hurricane.Designer.Data;
 using Hurricane.Settings.Themes.AudioVisualisation;
+using Hurricane.Settings.Themes.AudioVisualisation.DefaultAudioVisualisation;
 using Hurricane.Settings.Themes.Visual.BaseThemes;
 using Hurricane.Settings.Themes.Visual.ColorThemes;
 using MahApps.Metro;
@@ -153,17 +154,21 @@ namespace Hurricane.Settings.Themes
                 design.BaseTheme = BaseThemes.First();
                 design.BaseTheme.ApplyTheme();
             }
+
+            design.AudioVisualisation.AudioVisualisationPlugin.Refresh();
         }
 
         private readonly Dictionary<string, ResourceDictionary> _loadedResources;
         public void LoadResource(string key, ResourceDictionary resource)
         {
+            Application.Current.Resources.MergedDictionaries.Add(resource);
+
             if (_loadedResources.ContainsKey(key))
             {
                 Application.Current.Resources.MergedDictionaries.Remove(_loadedResources[key]);
+                _loadedResources.Remove(key);
             }
             _loadedResources.Add(key, resource);
-            Application.Current.Resources.MergedDictionaries.Add(resource);
         }
     }
 }
