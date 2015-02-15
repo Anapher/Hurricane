@@ -40,7 +40,12 @@ namespace Hurricane.Music.Track
         public override long Position
         {
             get { return base.Position - this.GetBytes(StartPosition); }
-            set { base.Position = value + this.GetBytes(StartPosition); }
+            set {
+                var position = value + this.GetBytes(StartPosition);
+                if (value < 0 || position < 0)
+                    throw new ArgumentOutOfRangeException("Invalid Position");
+                base.Position = position;
+            }
         }
     }
 }

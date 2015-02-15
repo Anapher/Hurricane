@@ -191,7 +191,7 @@ namespace Hurricane.Music
             if (currentState.LastTrackIndex > -1 && currentState.LastTrackIndex < SelectedPlaylist.Tracks.Count)
             {
                 PlayableBase t = CurrentPlaylist.Tracks[currentState.LastTrackIndex];
-                if (t.TrackExists)
+                if (t.TrackExists && currentState.TrackPosition >= 0)
                 {
                     await CSCoreEngine.OpenTrack(t);
                     CSCoreEngine.Position = currentState.TrackPosition;
