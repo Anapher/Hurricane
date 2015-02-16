@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Hurricane.Music.MusicDatabase.EventArgs;
 
@@ -15,36 +14,33 @@ namespace Hurricane.Music.Playlist
     public static class Playlists
     {
         // imports play list and returns IPlaylist or null if list cannot be read
-        public async static Task<IPlaylist> Import(string file_path)
+        public async static Task<IPlaylist> Import(string filePath)
         {
-            return await Task.Run(delegate
-            {
-                return Playlists.IsSupported(file_path) ? Playlists.DoImport(file_path) : null;
-            });
+            return await Task.Run(() => IsSupported(filePath) ? DoImport(filePath) : null);
         }
 
-        public static bool IsSupported(string file_path)
+        public static bool IsSupported(string filePath)
         {
             CheckRegistration();
-            return MatchExtension(file_path) != null;
+            return MatchExtension(filePath) != null;
         }
 
-        public static IPlaylist DoImport(string file_path)
+        public static IPlaylist DoImport(string filePath)
         {
             CheckRegistration();
 
-            var format = MatchExtension(file_path);
+            var format = MatchExtension(filePath);
             if (format == null)
                 return null;
 
-            using (var reader = new StreamReader(file_path))
+            using (var reader = new StreamReader(filePath))
                 if (!format.IsPlaylistSupported(reader))
                     return null;
 
-            var base_path = Path.GetDirectoryName(file_path);
+            var basePath = Path.GetDirectoryName(filePath);
 
-            using (var reader = new StreamReader(file_path))
-                return format.ImportTracks(base_path, reader);
+            using (var reader = new StreamReader(filePath))
+                return format.ImportTracks(basePath, reader);
         }
 
         // import all files:
@@ -55,17 +51,16 @@ namespace Hurricane.Music.Playlist
             int index = 0;
             var count = paths.Count();
 
-            foreach (var path in paths)
+            foreach (var fi in paths.Select(x => new FileInfo(x)))
             {
-                FileInfo fi = new FileInfo(path);
                 if (fi.Exists)
                 {
                     if (progress != null)
                         progress(null, new TrackImportProgressChangedEventArgs(index, count, fi.Name));
 
-                    if (IsSupported(path))  // playlist?
+                    if (IsSupported(fi.FullName))  // playlist?
                     {
-                        var playlist = DoImport(path);
+                        var playlist = DoImport(fi.FullName);
 
                         if (playlist != null)
                             foreach (var track in playlist.Tracks)
@@ -80,17 +75,18 @@ namespace Hurricane.Music.Playlist
             }
         }
 
-        static PlaylistFormat MatchExtension(string file_path)
+        static PlaylistFormat MatchExtension(string filePath)
         {
-            var ext = Path.GetExtension(file_path).ToLower();
-            return formats_.Find(c => c.SupportedExtensions.Contains(ext));
+            if (string.IsNullOrEmpty(filePath)) throw new ArgumentException();
+            var ext = Path.GetExtension(filePath).ToLower();
+            return Formats.Find(c => c.SupportedExtensions.Contains(ext));
         }
 
-        static List<PlaylistFormat> formats_ = new List<PlaylistFormat>();
+        static readonly List<PlaylistFormat> Formats = new List<PlaylistFormat>();
 
         static void CheckRegistration()
         {
-            if (formats_.Count == 0)
+            if (Formats.Count == 0)
                 RunRegistration();
         }
 
@@ -103,8 +99,7 @@ namespace Hurricane.Music.Playlist
                 var get = format.GetMethod("GetFormat", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static);
                 var info = get.Invoke(null, null) as PlaylistFormat;
                 System.Diagnostics.Debug.Assert(info != null, "Missing PlaylistFormat info for " + format.Name);
-                if (info != null)
-                    Register(info);
+                Register(info);
             }
         }
 
@@ -113,26 +108,26 @@ namespace Hurricane.Music.Playlist
 #if DEBUG
             // check for duplicates
             foreach (var ext in format.SupportedExtensions)
-                System.Diagnostics.Debug.Assert(formats_.Find(f => f.SupportedExtensions.Contains(ext)) == null, "File extensions are already registered. New format: " + format.Name);
+                System.Diagnostics.Debug.Assert(Formats.Find(f => f.SupportedExtensions.Contains(ext)) == null, "File extensions are already registered. New format: " + format.Name);
 #endif
-            formats_.Add(format);
+            Formats.Add(format);
         }
 
     }
 
     public class PlaylistFormat
     {
-        public PlaylistFormat(string name, string[] extensions, Func<StreamReader, bool> is_supported, Func<string, StreamReader, IPlaylist> import_tracks)
+        public PlaylistFormat(string name, string[] extensions, Func<StreamReader, bool> isSupported, Func<string, StreamReader, IPlaylist> importTracks)
         {
             System.Diagnostics.Debug.Assert(!string.IsNullOrWhiteSpace(name));
             System.Diagnostics.Debug.Assert(extensions != null);
-            System.Diagnostics.Debug.Assert(is_supported != null);
-            System.Diagnostics.Debug.Assert(import_tracks != null);
+            System.Diagnostics.Debug.Assert(isSupported != null);
+            System.Diagnostics.Debug.Assert(importTracks != null);
 
             Name = name;
             SupportedExtensions = extensions;
-            IsPlaylistSupported = is_supported;
-            ImportTracks = import_tracks;
+            IsPlaylistSupported = isSupported;
+            ImportTracks = importTracks;
         }
 
         // name of the playlist format

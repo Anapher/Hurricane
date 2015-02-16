@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 using CSCore;
@@ -15,11 +12,10 @@ namespace Hurricane.Music.Track
         LocalTrackFragment()
         { }
 
-        public LocalTrackFragment(TimeSpan start_from, TimeSpan duration, string title)
+        public LocalTrackFragment(TimeSpan startFrom, TimeSpan duration, string title)
         {
-            Offset = start_from;
+            Offset = startFrom;
             _duration = duration;
-            _title = title;
             Title = title;
             if (duration > TimeSpan.Zero)
                 ResetDuration(duration);
@@ -104,7 +100,5 @@ namespace Hurricane.Music.Track
             get { return _duration.Ticks; }
             set { _duration = new TimeSpan(value); }
         }
-
-        string _title;
     }
 }

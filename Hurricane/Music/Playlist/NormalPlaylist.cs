@@ -41,9 +41,8 @@ namespace Hurricane.Music.Playlist
             int index = 0;
             var count = paths.Count();
 
-            foreach (var path in paths)
+            foreach (FileInfo fi in paths.Select(path => new FileInfo(path)))
             {
-                FileInfo fi = new FileInfo(path);
                 if (fi.Exists)
                 {
                     if (progresschanged != null) progresschanged(this, new TrackImportProgressChangedEventArgs(index, count, fi.Name));
@@ -69,7 +68,7 @@ namespace Hurricane.Music.Playlist
 
         public async Task ReloadTrackInformation(EventHandler<TrackImportProgressChangedEventArgs> progresschanged)
         {
-            foreach (PlayableBase t in Tracks)
+            foreach (var t in Tracks)
             {
                 if (progresschanged != null) progresschanged(this, new TrackImportProgressChangedEventArgs(Tracks.IndexOf(t), Tracks.Count, t.ToString()));
                 if (t.TrackExists)
@@ -87,7 +86,7 @@ namespace Hurricane.Music.Playlist
                 ShuffleList.Add(track);
 
             track.IsAdded = true;
-            DispatcherTimer tmr = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(500) };
+            var tmr = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(500) };
             tmr.Tick += (s, e) =>
             {
                 track.IsAdded = false;
@@ -101,7 +100,7 @@ namespace Hurricane.Music.Playlist
             base.RemoveTrack(track);
             ShuffleList.Remove(track);
             track.IsRemoving = true;
-            DispatcherTimer tmr = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(500) };
+            var tmr = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(500) };
             tmr.Tick += (s, e) =>
             {
                 if (!track.TrackExists)

@@ -128,10 +128,10 @@ namespace Hurricane.Music.Track
 
                 await Task.Run(() =>
                 {
-                    using (var SoundSource = CodecFactory.Instance.GetCodec(filename.FullName))
+                    using (var soundSource = CodecFactory.Instance.GetCodec(filename.FullName))
                     {
-                        samplerate = SoundSource.WaveFormat.SampleRate;
-                        duration = SoundSource.GetLength();
+                        samplerate = soundSource.WaveFormat.SampleRate;
+                        duration = soundSource.GetLength();
                     }
                 });
 

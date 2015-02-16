@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Hurricane.Music.Track;
 
 namespace Hurricane.Music.Playlist
 {
@@ -12,7 +10,7 @@ namespace Hurricane.Music.Playlist
     {
         public static PlaylistFormat GetFormat()
         {
-            return new PlaylistFormat("WinAmp Playlist", new string[] { ".m3u", ".pls" }, IsSupported, Import);
+            return new PlaylistFormat("WinAmp Playlist", new [] { ".m3u", ".pls" }, IsSupported, Import);
         }
 
         public static bool IsSupported(StreamReader reader)
@@ -30,18 +28,18 @@ namespace Hurricane.Music.Playlist
             //if (line.StartsWith("http"))
             //	return true;
 
-            if (Track.LocalTrack.IsSupported(new FileInfo(line)))
+            if (LocalTrack.IsSupported(new FileInfo(line)))
                 return true;
 
             return false;
         }
 
-        public static IPlaylist Import(string base_path, StreamReader reader)
+        public static IPlaylist Import(string basePath, StreamReader reader)
         {
             var playlist = new NormalPlaylist();
-            Track.LocalTrack track = null;
+            LocalTrack track = null;
 
-            for (int track_number = 1; ; )
+            for (int trackNumber = 1; ; )
             {
                 var line = reader.ReadLine();
 
@@ -60,31 +58,31 @@ namespace Hurricane.Music.Playlist
                     try
                     {
                         var split = line.Substring(8).TrimStart(',');
-                        var parts = split.Split(new char[] { ',' }, 2);
+                        var parts = split.Split(new [] { ',' }, 2);
 
                         if (parts.Length == 2)
                         {
-                            track = new Track.LocalTrack { Title = parts[1].Trim() };
+                            track = new LocalTrack { Title = parts[1].Trim() };
                             track.ResetDuration(new TimeSpan(0, 0, int.Parse(parts[0])));
                         }
                         else
                         {
-                            track = new Track.LocalTrack { Title = split.Trim() };
+                            track = new LocalTrack { Title = split.Trim() };
                         }
                     }
                     catch (Exception ex)
                     {
                         // ignore it
-                        System.Diagnostics.Debug.WriteLine("M3U ext track import error: " + ex.Message);
+                        Debug.WriteLine("M3U ext track import error: " + ex.Message);
                     }
                 }
                 else if (line[0] != '#')	// skip comments
                 {
                     if (track == null)
-                        track = new Track.LocalTrack();
+                        track = new LocalTrack();
 
-                    track.Path = Path.Combine(base_path, line);
-                    track.TrackNumber = track_number++;
+                    track.Path = Path.Combine(basePath, line);
+                    track.TrackNumber = trackNumber++;
 
                     playlist.AddTrack(track);
 

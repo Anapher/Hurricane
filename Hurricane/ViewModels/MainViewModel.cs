@@ -121,7 +121,7 @@ namespace Hurricane.ViewModels
         }
 
         // flatten out directories, if any, and return list of files
-        IEnumerable<string> CollectFiles(string[] paths, Func<string, bool> is_supported)
+        IEnumerable<string> CollectFiles(IEnumerable<string> paths, Func<string, bool> isSupported)
         {
             var files = new List<string>();
 
@@ -135,13 +135,13 @@ namespace Hurricane.ViewModels
                     files.Add(path);
             }
 
-            return files.Where(is_supported);
+            return files.Where(isSupported);
         }
 
         // simple check using file extension
-        bool IsFileSupported(string file_path)
+        bool IsFileSupported(string filePath)
         {
-            return LocalTrack.IsSupported(new FileInfo(file_path)) || Playlists.IsSupported(file_path);
+            return LocalTrack.IsSupported(new FileInfo(filePath)) || Playlists.IsSupported(filePath);
         }
 
         public async void DragDropFiles(string[] files)
@@ -164,7 +164,7 @@ namespace Hurricane.ViewModels
             if (Updater != null) Updater.Dispose();
         }
 
-        private bool _remember = false;
+        private bool _remember;
         private NormalPlaylist _rememberedPlaylist;
 
         public async void OpenFile(FileInfo file, bool play)
@@ -199,8 +199,8 @@ namespace Hurricane.ViewModels
                 }
                 else
                 {
-                    var _selectedPlaylist = _musicmanager.SelectedPlaylist.CanEdit ? (NormalPlaylist)_musicmanager.SelectedPlaylist : _musicmanager.Playlists[0];
-                    TrackImportWindow window = new TrackImportWindow(_musicmanager.Playlists, _selectedPlaylist, file.Name) { Owner = _baseWindow };
+                    var selectedPlaylist = _musicmanager.SelectedPlaylist.CanEdit ? (NormalPlaylist)_musicmanager.SelectedPlaylist : _musicmanager.Playlists[0];
+                    var window = new TrackImportWindow(_musicmanager.Playlists, selectedPlaylist, file.Name) { Owner = _baseWindow };
                     if (window.ShowDialog() == false) return;
                     selectedplaylist = window.SelectedPlaylist;
                     if (window.RememberChoice)
@@ -349,7 +349,7 @@ namespace Hurricane.ViewModels
                 return _addfoldertoplaylist ?? (_addfoldertoplaylist = new RelayCommand(async parameter =>
                 {
                     if (!MusicManager.SelectedPlaylist.CanEdit) return;
-                    FolderImportWindow window = new FolderImportWindow { Owner = _baseWindow };
+                    var window = new FolderImportWindow { Owner = _baseWindow };
                     if (window.ShowDialog() != true) return;
                     DirectoryInfo di = new DirectoryInfo(window.SelectedPath);
                     await ImportFiles((from fi in di.GetFiles("*.*", window.IncludeSubfolder ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly) where LocalTrack.IsSupported(fi) select fi.FullName).ToArray(), (NormalPlaylist)MusicManager.SelectedPlaylist);
@@ -498,7 +498,7 @@ namespace Hurricane.ViewModels
         }
 
         private RelayCommand _toggleVolume;
-        private float oldVolume;
+        private float _oldVolume;
         public RelayCommand ToggleVolume
         {
             get
@@ -507,11 +507,11 @@ namespace Hurricane.ViewModels
                 {
                     if (MusicManager.CSCoreEngine.Volume == 0)
                     {
-                        MusicManager.CSCoreEngine.Volume = oldVolume;
+                        MusicManager.CSCoreEngine.Volume = _oldVolume;
                     }
                     else
                     {
-                        oldVolume = MusicManager.CSCoreEngine.Volume;
+                        _oldVolume = MusicManager.CSCoreEngine.Volume;
                         MusicManager.CSCoreEngine.Volume = 0;
                     }
                 }));
@@ -710,16 +710,16 @@ namespace Hurricane.ViewModels
 
         #endregion
 
-        private TrackListDropHandler trackListDropHandler;
+        private TrackListDropHandler _trackListDropHandler;
         public TrackListDropHandler TrackListDropHandler
         {
-            get { return trackListDropHandler ?? (trackListDropHandler = new TrackListDropHandler()); }
+            get { return _trackListDropHandler ?? (_trackListDropHandler = new TrackListDropHandler()); }
         }
 
-        private PlaylistListDropHandler playlistListDropHandler;
+        private PlaylistListDropHandler _playlistListDropHandler;
         public PlaylistListDropHandler PlaylistListDropHandler
         {
-            get { return playlistListDropHandler ?? (playlistListDropHandler = new PlaylistListDropHandler()); }
+            get { return _playlistListDropHandler ?? (_playlistListDropHandler = new PlaylistListDropHandler()); }
         }
     }
 }

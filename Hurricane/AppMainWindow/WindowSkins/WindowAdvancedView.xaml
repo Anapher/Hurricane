@@ -394,12 +394,13 @@
                             </extensions:AnimatedListView>
                             <TextBlock extensions:AnimatedFrameworkElement.AnimationTrigger="{Binding MusicManager.SelectedPlaylist}" Visibility="{Binding MusicManager.SelectedPlaylist.ViewSource.IsEmpty,Converter={StaticResource BooleanToVisibilityConverter}}" Text="{DynamicResource NoTracksFound}" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="16" FontWeight="Light"/>
                         </Grid>
-                        <userControls:EqualizerView Grid.Row="1" SliderThickness="10" ShowLabelBelowSlider="True" WantCloseCommand="{Binding CloseEqualizer}">
+                        <userControls:EqualizerView Grid.Row="1" SliderThickness="10" ShowLabelBelowSlider="True" WantCloseCommand="{Binding CloseEqualizer}" ShowSeparator="True">
                             <userControls:EqualizerView.Style>
                                 <Style TargetType="userControls:EqualizerView">
                                     <Setter Property="Height" Value="200"/>
                                     <Setter Property="Opacity" Value="0"/>
-                                    <Setter Property="Margin" Value="0,0,0,-200"></Setter>
+                                    <Setter Property="Margin" Value="0,0,0,-200"/>
+                                    <Setter Property="IsHitTestVisible" Value="{Binding MySettings.CurrentState.EqualizerIsOpen}"/>
                                    <Style.Triggers>
                                         <DataTrigger Binding="{Binding MySettings.CurrentState.EqualizerIsOpen}" Value="true">
                                             <DataTrigger.EnterActions>
@@ -408,18 +409,18 @@
                                                         <ThicknessAnimation To="0" Duration="0:0:0.3" Storyboard.TargetProperty="Margin"/>
                                                         <DoubleAnimation To="1" Duration="0:0:0.2" Storyboard.TargetProperty="Opacity"/>
                                                     </Storyboard>
-                                               </BeginStoryboard>
-                                           </DataTrigger.EnterActions>
-                                           <DataTrigger.ExitActions>
-                                               <BeginStoryboard>
-                                                   <Storyboard>
+                                                </BeginStoryboard>
+                                            </DataTrigger.EnterActions>
+                                            <DataTrigger.ExitActions>
+                                                <BeginStoryboard>
+                                                    <Storyboard>
                                                         <ThicknessAnimation To="0,0,0,-200" Duration="0:0:0.3" Storyboard.TargetProperty="Margin"/>
                                                         <DoubleAnimation To="0" Duration="0:0:0.2" Storyboard.TargetProperty="Opacity"/>
                                                     </Storyboard>
-                                               </BeginStoryboard>
-                                           </DataTrigger.ExitActions>
-                                       </DataTrigger>
-                                   </Style.Triggers>
+                                                </BeginStoryboard>
+                                            </DataTrigger.ExitActions>
+                                        </DataTrigger>
+                                    </Style.Triggers>
                                 </Style>
                             </userControls:EqualizerView.Style>
                         </userControls:EqualizerView>

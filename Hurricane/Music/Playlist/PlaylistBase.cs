@@ -15,12 +15,12 @@ namespace Hurricane.Music.Playlist
 {
     public abstract class PlaylistBase : PropertyChangedBase, IPlaylist
     {
-        protected Random _Random;
+        protected Random _random;
 
         protected PlaylistBase()
         {
             _tracks = new ObservableCollection<PlayableBase>();
-            _Random = new Random();
+            _random = new Random();
         }
 
         protected ObservableCollection<PlayableBase> _tracks;
@@ -70,7 +70,7 @@ namespace Hurricane.Music.Playlist
                     track.IsAdded = false;
                 };
                 ViewSource = CollectionViewSource.GetDefaultView(Tracks);
-                ViewSource.Filter = (item) => string.IsNullOrWhiteSpace(SearchText) || item.ToString().ToUpper().Contains(SearchText.ToUpper());
+                ViewSource.Filter = item => string.IsNullOrWhiteSpace(SearchText) || item.ToString().ToUpper().Contains(SearchText.ToUpper());
                 ShuffleList = new List<PlayableBase>(Tracks);
             }
         }
@@ -85,10 +85,10 @@ namespace Hurricane.Music.Playlist
         private bool _addedFavoriteTracksTwoTimes;
         protected void CreateShuffleList()
         {
-            this.ShuffleList = new List<PlayableBase>(this.Tracks);
+            ShuffleList = new List<PlayableBase>(Tracks);
             if (Settings.HurricaneSettings.Instance.Config.ShufflePreferFavoriteTracks)
             {
-                ShuffleList.AddRange(this.Tracks.Where(x => x.IsFavorite));
+                ShuffleList.AddRange(Tracks.Where(x => x.IsFavorite));
                 _addedFavoriteTracksTwoTimes = true;
             }
             else
@@ -111,7 +111,7 @@ namespace Hurricane.Music.Playlist
             bool hasrefreshed = false;
             while (true)
             {
-                int i = _Random.Next(0, ShuffleList.Count);
+                int i = _random.Next(0, ShuffleList.Count);
                 var track = ShuffleList[i];
 
                 if (track != currentTrack && track.TrackExists)
@@ -146,24 +146,23 @@ namespace Hurricane.Music.Playlist
 
         public async Task<int> RemoveDuplicates()
         {
-            int counter = this.Tracks.Count;
+            int counter = Tracks.Count;
             List<PlayableBase> noduplicates = null;
             await Task.Run(() => noduplicates = Tracks.Distinct(new TrackComparer()).ToList());
 
-            if (noduplicates.Count > 0 && noduplicates.Count != this.Tracks.Count)
-            {
-                var duplicateList = this.Tracks.ToList();
-                foreach (var noduplicate in noduplicates)
-                {
-                    duplicateList.Remove(noduplicate);
-                }
+            if (noduplicates.Count <= 0 || noduplicates.Count == Tracks.Count) return counter - noduplicates.Count;
 
-                foreach (var track in duplicateList)
-                {
-                    this.RemoveTrack(track);
-                }
-                ViewSource.Refresh();
+            var duplicateList = Tracks.ToList();
+            foreach (var noduplicate in noduplicates)
+            {
+                duplicateList.Remove(noduplicate);
             }
+
+            foreach (var track in duplicateList)
+            {
+                RemoveTrack(track);
+            }
+            ViewSource.Refresh();
 
             return counter - noduplicates.Count;
         }

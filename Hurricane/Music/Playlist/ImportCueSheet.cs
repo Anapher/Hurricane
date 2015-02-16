@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using CueSharp;
+using Hurricane.Music.Track;
 
 namespace Hurricane.Music.Playlist
 {
@@ -12,7 +10,7 @@ namespace Hurricane.Music.Playlist
     {
         public static PlaylistFormat GetFormat()
         {
-            return new PlaylistFormat("Cue Sheet", new string[] { ".cue" }, IsSupported, Import);
+            return new PlaylistFormat("Cue Sheet", new [] { ".cue" }, IsSupported, Import);
         }
 
         public static bool IsSupported(StreamReader reader)
@@ -22,14 +20,14 @@ namespace Hurricane.Music.Playlist
                 return false;
 
             line = line.Trim();
-            return line.StartsWith("REM") || line.StartsWith("PERFORMER") || line.StartsWith("TITLE") || line.StartsWith("FILE") || line.StartsWith("CATALOG") || Track.LocalTrack.IsSupported(new FileInfo(line));
+            return line.StartsWith("REM") || line.StartsWith("PERFORMER") || line.StartsWith("TITLE") || line.StartsWith("FILE") || line.StartsWith("CATALOG") || LocalTrack.IsSupported(new FileInfo(line));
         }
 
-        public static IPlaylist Import(string base_path, StreamReader reader)
+        public static IPlaylist Import(string basePath, StreamReader reader)
         {
             var playlist = new NormalPlaylist();
 
-            var cue = new CueSharp.CueSheet(reader);
+            var cue = new CueSheet(reader);
 
             if (cue.Tracks.Length == 0 || cue.Tracks[0].DataFile.Filename == null)
                 return null;
@@ -50,7 +48,7 @@ namespace Hurricane.Music.Playlist
             }
 
 
-            var audio_file = cue.Tracks[0].DataFile.Filename;
+            var audioFile = cue.Tracks[0].DataFile.Filename;
 
             int i = 1;
 
@@ -64,8 +62,8 @@ namespace Hurricane.Music.Playlist
 
                 if (i < cue.Tracks.Length)
                 {
-                    TimeSpan next_offset = cue.Tracks[i].Offset;
-                    duration = next_offset - offset;
+                    TimeSpan nextOffset = cue.Tracks[i].Offset;
+                    duration = nextOffset - offset;
                 }
                 else
                 {
@@ -73,15 +71,15 @@ namespace Hurricane.Music.Playlist
                     // and checking it's duration first; deferred to track info reading code
                 }
 
-                var element = new Track.LocalTrackFragment(offset, duration, track.Title);
-
-                element.Path = Path.Combine(base_path, audio_file);
-
-                element.Artist = track.Performer ?? cue.Performer;
-                element.Album = track.Title ?? cue.Title;
-                element.TrackNumber = track.TrackNumber;
-                element.Genres = genre;
-                element.Year = year;
+                var element = new LocalTrackFragment(offset, duration, track.Title)
+                {
+                    Path = Path.Combine(basePath, audioFile),
+                    Artist = track.Performer ?? cue.Performer,
+                    Album = track.Title ?? cue.Title,
+                    TrackNumber = track.TrackNumber,
+                    Genres = genre,
+                    Year = year
+                };
 
                 playlist.AddTrack(element);
 

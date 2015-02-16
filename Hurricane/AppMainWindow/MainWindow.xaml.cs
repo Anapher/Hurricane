@@ -561,7 +561,6 @@ namespace Hurricane
             ResetFlyout();
         }
 
-
         public async Task BackgroundChanged()
         {
             await SetBackground();

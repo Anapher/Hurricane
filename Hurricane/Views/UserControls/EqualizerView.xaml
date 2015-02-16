@@ -11,15 +11,18 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/Resources/Styles/MetroWindowStyle.xaml"/>
             </ResourceDictionary.MergedDictionaries>
+            <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid Margin="5">
         <Grid.RowDefinitions>
-            <RowDefinition Height="auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <Menu>
-            <MenuItem Header="{DynamicResource Presets}">
+        <Separator Visibility="{Binding ElementName=UserControl,Path=ShowSeparator,Converter={StaticResource BooleanToVisibilityConverter}}"/>
+        <Menu Background="Transparent" Grid.Row="1">
+            <MenuItem Header="{DynamicResource Presets}" Background="Transparent">
                 <MenuItem Header="{DynamicResource Bass}" Command="{Binding MusicManager.CSCoreEngine.EqualizerSettings.LoadPresetBass}"/>
                 <MenuItem Header="{DynamicResource BassExtreme}" Command="{Binding MusicManager.CSCoreEngine.EqualizerSettings.LoadPresetBassExteme}"/>
                 <MenuItem Header="{DynamicResource BassAndHeights}" Command="{Binding MusicManager.CSCoreEngine.EqualizerSettings.LoadPresetBassAndHeights}"/>
@@ -32,10 +35,10 @@
                 <MenuItem Header="{DynamicResource SoftBass}" Command="{Binding MusicManager.CSCoreEngine.EqualizerSettings.LoadPresetSoftBass}"/>
                 <MenuItem Header="{DynamicResource SoftHeights}" Command="{Binding MusicManager.CSCoreEngine.EqualizerSettings.LoadPresetSoftHeights}"/>
             </MenuItem>
-            <MenuItem Header="{DynamicResource Reset}" Command="{Binding MusicManager.CSCoreEngine.EqualizerSettings.ResetEqualizer}"/>
+            <MenuItem Header="{DynamicResource Reset}" Command="{Binding MusicManager.CSCoreEngine.EqualizerSettings.ResetEqualizer}" Background="Transparent"/>
         </Menu>
-        <Button Style="{StaticResource WindowButtonStyle}" Click="PART_CLOSE_Click" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="5" Width="20" Height="20"/>
-        <ItemsControl Margin="5,10,5,10" Grid.Row="1" ItemsSource="{Binding MusicManager.CSCoreEngine.EqualizerSettings.Bands}" HorizontalAlignment="Center">
+        <Button Grid.Row="1" Style="{StaticResource WindowButtonStyle}" Click="PART_CLOSE_Click" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="5" Width="20" Height="20"/>
+        <ItemsControl Margin="5,10,5,10" Grid.Row="2" ItemsSource="{Binding MusicManager.CSCoreEngine.EqualizerSettings.Bands}" HorizontalAlignment="Center">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
                     <StackPanel Orientation="Horizontal"/>

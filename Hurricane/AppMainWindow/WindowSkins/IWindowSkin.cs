@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Windows.Input;
-using Hurricane.Music;
 
 namespace Hurricane.AppMainWindow.WindowSkins
 {
