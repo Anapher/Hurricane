@@ -1,4 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using CSCore;
 
 namespace Hurricane.Music
@@ -18,8 +22,12 @@ namespace Hurricane.Music
         public override int Read(byte[] buffer, int offset, int count)
         {
             var position = TimeSpan.FromMilliseconds(this.GetMilliseconds(base.Position));
-            if (position.Seconds < StartPosition.Seconds) Position = 0;
-            if (position.Seconds > StartPosition.Seconds + TrackLength.Seconds) return 0;
+
+            if (position < StartPosition)
+                Position = 0;
+
+            if (position > StartPosition + TrackLength)
+                return 0;
 
             return base.Read(buffer, offset, count);
         }
@@ -32,7 +40,12 @@ namespace Hurricane.Music
         public override long Position
         {
             get { return base.Position - this.GetBytes(StartPosition); }
-            set { base.Position = value + this.GetBytes(StartPosition); }
+            set {
+                var position = value + this.GetBytes(StartPosition);
+                if (value < 0 || position < 0)
+                    throw new ArgumentOutOfRangeException("Invalid Position");
+                base.Position = position;
+            }
         }
     }
 }

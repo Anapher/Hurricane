@@ -36,7 +36,7 @@ namespace Hurricane.Music.Track
             return !IsChecked;
         }
 
-        public async Task<bool> CheckTrack()
+        public virtual async Task<bool> CheckTrack()
         {
             TimeSpan duration = TimeSpan.Zero;
             if (!TrackExists) return false;
@@ -74,6 +74,11 @@ namespace Hurricane.Music.Track
             IsChecked = false;
             Extension = TrackInformation.Extension.ToUpper().Replace(".", string.Empty);
 
+            return await UpdateInformation(TrackInformation);
+        }
+
+        protected virtual async Task<bool> UpdateInformation(FileInfo filename)
+        {
             return await TryLoadWithTagLibSharp(TrackInformation) || await TryLoadWithCSCore(TrackInformation);
         }
 
@@ -155,6 +160,11 @@ namespace Hurricane.Music.Track
 
         #endregion
 
+        public void ResetDuration(TimeSpan timeSpan)
+        {
+            SetDuration(timeSpan);
+        }
+
         public override bool TrackExists
         {
             get { return TrackInformation.Exists; }
@@ -217,6 +227,11 @@ namespace Hurricane.Music.Track
             return Task.Run(() => CodecFactory.Instance.GetCodec(Path));
         }
 
+        public virtual string UniqueId
+        {
+            get { return TrackInformation.FullName; }
+        }
+
         private string _fileHash;
 
         public override bool Equals(PlayableBase other)
@@ -226,16 +241,19 @@ namespace Hurricane.Music.Track
             if (GetType() != other.GetType()) return false;
 
             var otherAsLocalTrack = (LocalTrack) other;
-            if (TrackInformation.FullName == otherAsLocalTrack.TrackInformation.FullName) return true;
 
-            if (TrackInformation.Length == otherAsLocalTrack.TrackInformation.Length)
-            {
-                if (string.IsNullOrEmpty(_fileHash))
-                    _fileHash = GeneralHelper.FileToMD5Hash(TrackInformation.FullName);
-                if (string.IsNullOrEmpty(otherAsLocalTrack._fileHash))
-                    otherAsLocalTrack._fileHash = GeneralHelper.FileToMD5Hash(TrackInformation.FullName);
-                if (otherAsLocalTrack._fileHash == _fileHash) return true;
-            }
+            if (UniqueId == otherAsLocalTrack.UniqueId) return true;
+
+            // Mike: commented out temporarily; this is drastic measure, why is it needed?
+            //if (TrackInformation.Length == otherAsLocalTrack.TrackInformation.Length)
+            //{
+            //    if (string.IsNullOrEmpty(_fileHash))
+            //        _fileHash = GeneralHelper.FileToMD5Hash(TrackInformation.FullName);
+            //    if (string.IsNullOrEmpty(otherAsLocalTrack._fileHash))
+            //        otherAsLocalTrack._fileHash = GeneralHelper.FileToMD5Hash(TrackInformation.FullName);
+            //    if (otherAsLocalTrack._fileHash == _fileHash) return true;
+            //}
+
             return false;
         }
 

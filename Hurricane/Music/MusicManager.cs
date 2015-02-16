@@ -175,7 +175,7 @@ namespace Hurricane.Music
 
             SelectedPlaylist = IndexToPlaylist(currentState.SelectedPlaylist);
 
-            if (currentState.SelectedTrack > -1)
+            if (currentState.SelectedTrack > -1 && currentState.SelectedTrack < SelectedPlaylist.Tracks.Count)
             {
                 SelectedTrack = SelectedPlaylist.Tracks[currentState.SelectedTrack];
             }
@@ -188,10 +188,10 @@ namespace Hurricane.Music
             favoritePlaylist.LoadList();
             if (currentState.Queue != null) { Queue = currentState.Queue; Queue.Initialize(Playlists); }
 
-            if (currentState.LastTrackIndex > -1)
+            if (currentState.LastTrackIndex > -1 && currentState.LastTrackIndex < SelectedPlaylist.Tracks.Count)
             {
                 PlayableBase t = CurrentPlaylist.Tracks[currentState.LastTrackIndex];
-                if (t.TrackExists)
+                if (t.TrackExists && currentState.TrackPosition >= 0)
                 {
                     await CSCoreEngine.OpenTrack(t);
                     CSCoreEngine.Position = currentState.TrackPosition;

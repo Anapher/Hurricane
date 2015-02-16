@@ -10,7 +10,7 @@ using Hurricane.ViewModelBase;
 
 namespace Hurricane.Music.Track
 {
-    [Serializable, XmlInclude(typeof(LocalTrack)), XmlInclude(typeof(SoundCloudTrack)), XmlInclude(typeof(YouTubeTrack)), XmlType(TypeName = "Playable")]
+    [Serializable, XmlInclude(typeof(LocalTrack)), XmlInclude(typeof(LocalTrackFragment)), XmlInclude(typeof(SoundCloudTrack)), XmlInclude(typeof(YouTubeTrack)), XmlType(TypeName = "Playable")]
     public abstract class PlayableBase : PropertyChangedBase, IEquatable<PlayableBase>, IRepresentable, IMusicInformation
     {
         #region Events
@@ -28,6 +28,7 @@ namespace Hurricane.Music.Track
         public string Album { get; set; }
         public uint Year { get; set; }
         public string Genres { get; set; }
+        public int TrackNumber { get; set; }    // number of this track in album; useful for sorting
 
         private bool _isfavorite;
         public bool IsFavorite

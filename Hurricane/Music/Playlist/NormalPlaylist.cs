@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Threading;
 using System.Xml.Serialization;
@@ -22,24 +23,46 @@ namespace Hurricane.Music.Playlist
             }
         }
 
-        public async Task AddFiles(EventHandler<TrackImportProgressChangedEventArgs> progresschanged, params string[] paths)
+        public async Task AddFiles(IEnumerable<PlayableBase> tracks)
         {
-            for (int i = 0; i < paths.Length; i++)
+            foreach (var track in tracks)
             {
-                FileInfo fi = new FileInfo(paths[i]);
+                if (!await track.LoadInformation())
+                    continue;
+                track.TimeAdded = DateTime.Now;
+                AddTrack(track);
+            }
+
+            AsyncTrackLoader.Instance.RunAsync(new List<NormalPlaylist> { this });
+        }
+
+        public async Task AddFiles(EventHandler<TrackImportProgressChangedEventArgs> progresschanged, IEnumerable<string> paths)
+        {
+            int index = 0;
+            var count = paths.Count();
+
+            foreach (var path in paths)
+            {
+                FileInfo fi = new FileInfo(path);
                 if (fi.Exists)
                 {
-                    if (progresschanged != null) progresschanged(this, new TrackImportProgressChangedEventArgs(i, paths.Length, fi.Name));
+                    if (progresschanged != null) progresschanged(this, new TrackImportProgressChangedEventArgs(index, count, fi.Name));
                     var t = new LocalTrack() { Path = fi.FullName };
                     if (!await t.LoadInformation()) continue;
                     t.TimeAdded = DateTime.Now;
                     AddTrack(t);
                 }
+                ++index;
             }
             AsyncTrackLoader.Instance.RunAsync(new List<NormalPlaylist> {this});
         }
 
         public async Task AddFiles(params string[] paths)
+        {
+            await AddFiles(null, paths);
+        }
+
+        public async Task AddFiles(IEnumerable<string> paths)
         {
             await AddFiles(null, paths);
         }
@@ -60,7 +83,8 @@ namespace Hurricane.Music.Playlist
         {
             base.AddTrack(track);
             Tracks.Add(track);
-            ShuffleList.Add(track);
+            if (ShuffleList != null)
+                ShuffleList.Add(track);
 
             track.IsAdded = true;
             DispatcherTimer tmr = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(500) };

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -100,16 +101,18 @@ namespace Hurricane.ViewModels
         #endregion
 
         #region Methods
-        async Task ImportFiles(string[] paths, NormalPlaylist playlist, EventHandler finished = null)
+        async Task ImportFiles(IEnumerable<string> paths, NormalPlaylist playlist, EventHandler finished = null)
         {
             var controller = _baseWindow.Messages.CreateProgressDialog(string.Empty, false);
 
-            await playlist.AddFiles((s, e) =>
+            var tracks = Playlists.ImportFiles(paths, (s, e) =>
             {
                 controller.SetProgress(e.Percentage);
                 controller.SetMessage(e.CurrentFile);
                 controller.SetTitle(string.Format(Application.Current.Resources["FilesGetImported"].ToString(), e.FilesImported, e.TotalFiles));
-            }, paths);
+            });
+
+            await playlist.AddFiles(tracks);
 
             MusicManager.SaveToSettings();
             MySettings.Save();
@@ -117,10 +120,34 @@ namespace Hurricane.ViewModels
             if (finished != null) Application.Current.Dispatcher.Invoke(() => finished(this, EventArgs.Empty));
         }
 
+        // flatten out directories, if any, and return list of files
+        IEnumerable<string> CollectFiles(string[] paths, Func<string, bool> is_supported)
+        {
+            var files = new List<string>();
+
+            foreach (var path in paths)
+            {
+                var attribs = File.GetAttributes(path);
+
+                if ((attribs & FileAttributes.Directory) == FileAttributes.Directory)
+                    files.AddRange(Directory.GetFiles(path));
+                else
+                    files.Add(path);
+            }
+
+            return files.Where(is_supported);
+        }
+
+        // simple check using file extension
+        bool IsFileSupported(string file_path)
+        {
+            return LocalTrack.IsSupported(new FileInfo(file_path)) || Playlists.IsSupported(file_path);
+        }
+
         public async void DragDropFiles(string[] files)
         {
             if (!MusicManager.SelectedPlaylist.CanEdit) return;
-            await ImportFiles(files.Where(file => LocalTrack.IsSupported(new FileInfo(file))).ToArray(), (NormalPlaylist)MusicManager.SelectedPlaylist);
+            await ImportFiles(CollectFiles(files, IsFileSupported), (NormalPlaylist)MusicManager.SelectedPlaylist);
         }
 
         public void Closing()
