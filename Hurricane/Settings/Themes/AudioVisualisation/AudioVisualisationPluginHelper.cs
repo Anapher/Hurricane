@@ -10,7 +10,8 @@ namespace Hurricane.Settings.Themes.AudioVisualisation
     {
         public static IAudioVisualisationPlugin FromFile(string fileName)
         {
-            var library = Assembly.LoadFrom(fileName);
+            var assembly = AssemblyName.GetAssemblyName(fileName);
+            var library = Assembly.Load(assembly);
             foreach (var type in library.GetTypes().Where(type => type.GetInterface("IAudioVisualisationPlugin") != null))
             {
                 return Activator.CreateInstance(type) as IAudioVisualisationPlugin;

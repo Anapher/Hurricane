@@ -132,7 +132,12 @@ namespace Hurricane.Settings.Themes
                 }
                 else if (value is CustomAudioVisualisation)
                 {
-                    AudioVisualisation = (CustomAudioVisualisation) value;
+                    var visualisation = (CustomAudioVisualisation) value;
+
+                    AudioVisualisation =
+                        ApplicationThemeManager.Instance.AudioVisualisations.OfType<CustomAudioVisualisation>().FirstOrDefault(
+                            x => x.FileName == visualisation.FileName);
+                    if (AudioVisualisation == null) AudioVisualisation = DefaultAudioVisualisation.GetDefault();
                 }
                 else if (value is ThemePack)
                 {

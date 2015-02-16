@@ -52,14 +52,24 @@ namespace Hurricane.Music.Track
         public string Title
         {
             get { return _title; }
-            set { _title = value; OnPropertyChanged("DisplayText"); }
+            set
+            {
+                _title = value;
+                OnPropertyChanged("DisplayText");
+                OnPropertyChanged();
+            }
         }
 
         private string _artist;
         public string Artist
         {
             get { return _artist; }
-            set { _artist = value; OnPropertyChanged("DisplayText"); }
+            set
+            {
+                _artist = value;
+                OnPropertyChanged("DisplayText");
+                OnPropertyChanged();
+            }
         }
 
         private bool _isOpened;

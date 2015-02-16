@@ -98,7 +98,7 @@ namespace Hurricane
             InitializeMessages();
         }
 
-        async void MainWindow_Loaded(object sender, RoutedEventArgs e)
+        void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
             try
             {
@@ -120,7 +120,6 @@ namespace Hurricane
                 viewmodel.MusicManager.CSCoreEngine.PlaybackStateChanged += CSCoreEngine_PlaybackStateChanged;
 
                 ResetFlyout();
-                await SetBackground();
             }
             catch (Exception ex)
             {

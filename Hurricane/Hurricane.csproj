@@ -135,14 +135,20 @@
     <Compile Include="AppMainWindow\Messages\MessageDialog.cs" />
     <Compile Include="AppMainWindow\Messages\MessageManager.cs" />
     <Compile Include="AppMainWindow\Messages\ProgressDialog.cs" />
+    <Compile Include="Designer\Converter\BrushFromThemeDataConverter.cs" />
+    <Compile Include="Designer\Converter\ColorFromThemeDataConverter.cs" />
     <Compile Include="Designer\Data\BaseThemeData.cs" />
     <Compile Include="Designer\Data\ColorThemeData.cs" />
+    <Compile Include="Designer\Data\EditableThemePack.cs" />
+    <Compile Include="Designer\Data\IPreviewable.cs" />
     <Compile Include="Designer\Data\ISaveable.cs" />
     <Compile Include="Designer\Data\ThemeBoolean.cs" />
     <Compile Include="Designer\Data\DataThemeBase.cs" />
     <Compile Include="Designer\Data\ThemeColor.cs" />
     <Compile Include="Designer\Data\ThemePack.cs" />
+    <Compile Include="Designer\Data\ThemePack2.cs" />
     <Compile Include="Designer\Data\IThemeSetting.cs" />
+    <Compile Include="Designer\Data\ThemePackConsts.cs" />
     <Compile Include="Designer\DesignerViewModel.cs" />
     <Compile Include="Designer\DesignerWindow.xaml.cs">
       <DependentUpon>DesignerWindow.xaml</DependentUpon>
@@ -150,8 +156,14 @@
     <Compile Include="Designer\Pages\HomePage.xaml.cs">
       <DependentUpon>HomePage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Designer\Pages\LivePreview.xaml.cs">
+      <DependentUpon>LivePreview.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Designer\Pages\ThemePackPage.xaml.cs">
       <DependentUpon>ThemePackPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Designer\Pages\ThemePage.xaml.cs">
+      <DependentUpon>ThemePage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Designer\ThemePackViewModel.cs" />
     <Compile Include="DragDrop\DropTargetAdorners\DropTargetInsertionAdorner.cs" />
@@ -175,6 +187,7 @@
     <Compile Include="Music\CutSource.cs" />
     <Compile Include="Music\Track\WebApi\YouTubeApi\DataClasses\MediaDescription.cs" />
     <Compile Include="Settings\Converter\GroupConverter.cs" />
+    <Compile Include="Settings\Converter\TransitionConverter.cs" />
     <Compile Include="Settings\Themes\AudioVisualisation\AudioVisualisationPluginHelper.cs" />
     <Compile Include="Settings\Themes\AudioVisualisation\CustomAudioVisualisation.cs" />
     <Compile Include="Settings\Themes\AudioVisualisation\DefaultAudioVisualisation\AdvancedWindowAudioVisualisation.cs" />
@@ -422,7 +435,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Designer\Pages\LivePreview.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Designer\Pages\ThemePackPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Designer\Pages\ThemePage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

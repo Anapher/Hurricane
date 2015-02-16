@@ -1,4 +1,5 @@
-﻿using System.Windows.Controls;
+﻿using System.Windows;
+using System.Windows.Controls;
 using Hurricane.Designer.Data;
 using Hurricane.Designer.Pages;
 using Hurricane.ViewModelBase;
@@ -43,6 +44,17 @@ namespace Hurricane.Designer
             }
         }
 
+        
+        private IPreviewable _previewData;
+        public IPreviewable PreviewData
+        {
+            get { return _previewData; }
+            set
+            {
+                SetProperty(value, ref _previewData);
+            }
+        }
+
         private RelayCommand _createNewThemePack;
         public RelayCommand CreateNewThemePack
         {
@@ -50,8 +62,24 @@ namespace Hurricane.Designer
             {
                 return _createNewThemePack ?? (_createNewThemePack = new RelayCommand(parameter =>
                 {
-                    ThemePackViewModel.Instance.ThemePack = ThemePack.CreateNew();
+                    ThemePackViewModel.Instance.ThemePack = new ThemePack();
                     CurrentView = new ThemePackPage();
+                }));
+            }
+        }
+
+        public string CurrentMode { get; set; }
+
+        private RelayCommand _createNewBaseColor;
+        public RelayCommand CreateNewBaseColor
+        {
+            get
+            {
+                return _createNewBaseColor ?? (_createNewBaseColor = new RelayCommand(parameter =>
+                {
+                    CurrentMode = Application.Current.Resources["BaseTheme"].ToString();
+                    CurrentElement = new BaseThemeData();
+                    CurrentView = new ThemePage();
                 }));
             }
         }

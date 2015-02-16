@@ -37,7 +37,7 @@
             <Grid MouseLeftButtonDown="Titlebar_MouseLeftButtonDown" MouseLeftButtonUp="Titlebar_MouseLeftButtonUp" MouseMove="Titlebar_OnMouseMove" Background="{StaticResource WhiteColorBrush}" Opacity="0.0"/>
             <TextBlock Text="Hurricane" Foreground="#FFAAAAAA" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Center" IsHitTestVisible="False"/>
         </Grid>
-        <TabControl Grid.Row="1" SelectedIndex="{Binding MainTabControlIndex}" controls:ControlsHelper.HeaderFontSize="13">
+        <TabControl Grid.Row="1" SelectedIndex="{Binding MainTabControlIndex}" controls:ControlsHelper.HeaderFontSize="13" controls:TabControlHelper.Transition="{Binding MySettings.Config.TabControlTransition}">
             <TabControl.Resources>
                 <Style TargetType="TabItem" BasedOn="{StaticResource MetroTabItem}">
                     <Style.Triggers>
@@ -440,8 +440,8 @@
                                 <ContentControl.Resources>
                                     <DataTemplate DataType="{x:Type track:LocalTrack}">
                                         <extensions:AnimatedStackPanel AnimationInterval="300" UpdateObject="{Binding RelativeSource={RelativeSource AncestorType=ContentControl},Path=DataContext.MusicManager.CSCoreEngine.CurrentTrack}" Orientation="Vertical">
-                                            <TextBlock Text="{Binding Title}" Foreground="{StaticResource NormalColorBrush}" TextWrapping="Wrap"/>
-                                            <TextBlock FontSize="22" FontFamily="Segoe UI Light" Text="{Binding Artist}"  extensions:TextBlockHelper.PlaceHolderText="{DynamicResource NoArtist}" TextWrapping="Wrap"/>
+                                            <TextBlock Text="{Binding Artist}" Foreground="{StaticResource NormalColorBrush}" TextWrapping="Wrap"/>
+                                            <TextBlock FontSize="22" FontFamily="Segoe UI Light" Text="{Binding Title}" extensions:TextBlockHelper.PlaceHolderText="{DynamicResource NoArtist}" TextWrapping="Wrap"/>
                                             <ToggleButton Foreground="#FFB4B4B4" Background="{StaticResource NormalColorBrush}" Style="{StaticResource FavoriteToggleButton}" Height="16" Width="16" HorizontalAlignment="Left" Margin="0,10,0,10" IsChecked="{Binding IsFavorite}"/>
                                             <StackPanel Orientation="Horizontal" Margin="0,30,0,0">
                                                 <TextBlock Text="{DynamicResource Bitrate}"/>
@@ -510,8 +510,8 @@
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
                         <extensions:AnimatedStackPanel AnimationInterval="300" UpdateObject="{Binding MusicManager.CSCoreEngine.CurrentTrack}" Orientation="Vertical">
-                            <TextBlock Text="{Binding MusicManager.CSCoreEngine.CurrentTrack.Title}" Foreground="{StaticResource NormalColorBrush}" FontSize="14"/>
-                            <TextBlock FontSize="32" Margin="0,5,0,0" FontFamily="Segoe UI Light" Text="{Binding MusicManager.CSCoreEngine.CurrentTrack.Artist}" extensions:TextBlockHelper.PlaceHolderText="{DynamicResource NoArtist}" TextWrapping="Wrap"/>
+                            <TextBlock Text="{Binding MusicManager.CSCoreEngine.CurrentTrack.Artist}" Foreground="{StaticResource NormalColorBrush}" FontSize="14"/>
+                            <TextBlock FontSize="32" Margin="0,5,0,0" FontFamily="Segoe UI Light" Text="{Binding MusicManager.CSCoreEngine.CurrentTrack.Title}" extensions:TextBlockHelper.PlaceHolderText="{DynamicResource NoArtist}" TextWrapping="Wrap"/>
                             <TextBlock Text="{Binding MusicManager.CSCoreEngine.CurrentTrack.Album}" Margin="0,5,0,0" FontSize="18" FontFamily="Segoe UI Light" Foreground="DarkGray">
                                 <TextBlock.Style>
                                     <Style TargetType="TextBlock">

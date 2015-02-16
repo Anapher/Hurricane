@@ -1,0 +1,31 @@
+﻿<UserControl x:Class="Hurricane.Designer.Pages.LivePreview"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:designer="clr-namespace:Hurricane.Designer"
+             xmlns:converter="clr-namespace:Hurricane.Designer.Converter"
+             xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="500" DataContext="{x:Static designer:DesignerViewModel.Instance}">
+    <UserControl.Resources>
+        <converter:ColorFromThemeDataConverter x:Key="ColorFromThemeDataConverter"/>
+        <converter:BrushFromThemeDataConverter x:Key="BrushFromThemeDataConverter"/>
+    </UserControl.Resources>
+    <Grid Margin="5" Background="{Binding PreviewData.BaseThemeData,Converter={StaticResource BrushFromThemeDataConverter},ConverterParameter=WhiteColor}">
+        <Grid.Effect>
+            <DropShadowEffect Color="{Binding PreviewData.ColorThemeData,Converter={StaticResource ColorFromThemeDataConverter},ConverterParameter=AccentColor}" Direction="0" BlurRadius="4" ShadowDepth="0"/>
+        </Grid.Effect>
+        <TabControl>
+            <TabControl.Resources>
+                <Style TargetType="TabItem" BasedOn="{StaticResource MetroTabItem}">
+                    <Setter Property="controls:ControlsHelper.HeaderFontWeight" Value="Light"/>
+                    <Setter Property="Foreground" Value="Red"></Setter>
+                </Style>
+            </TabControl.Resources>
+            <TabItem Header="{StaticResource General}">
+                
+            </TabItem>
+        </TabControl>
+    </Grid>
+</UserControl>

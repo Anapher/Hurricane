@@ -8,17 +8,9 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <Menu>
-            <MenuItem Header="{StaticResource Project}">
-                <MenuItem Header="{StaticResource New}">
-                    <MenuItem Header="{StaticResource ThemePack}"/>
-                    <Separator />
-                    <MenuItem Header="{StaticResource ColorTheme}"/>
-                    <MenuItem Header="{StaticResource BaseTheme}"/>
-                </MenuItem>
-            </MenuItem>
-        </Menu>
-        <ContentControl Content="{Binding CurrentView}" Grid.Row="1"/>
+        <TextBlock Text="Hurricane Designer" FontSize="30" Margin="15" FontFamily="Segoe UI Light"/>
+        <ContentPresenter Grid.Row="1" Content="{Binding CurrentView}" Margin="15"/>
     </Grid>
 </controls:MetroWindow>

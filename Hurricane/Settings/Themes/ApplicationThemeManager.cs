@@ -114,7 +114,11 @@ namespace Hurricane.Settings.Themes
             {
                 foreach (var file in themePacksFolder.GetFiles("*.htp"))
                 {
-                    _themePacks.Add(ThemePack.LoadFromFile(file.FullName));
+                    ThemePack pack;
+                    if (ThemePack.FromFile(file.FullName, out pack))
+                    {
+                        _themePacks.Add(pack);
+                    }
                 }
             }
 
@@ -123,7 +127,7 @@ namespace Hurricane.Settings.Themes
             {
                 foreach (var file in audioVisualisations.GetFiles("*.dll"))
                 {
-                    _audioVisualisations.Add(new CustomAudioVisualisation {FileName = file.Name});
+                    _audioVisualisations.Add(new CustomAudioVisualisation { FileName = file.Name });
                 }
             }
         }

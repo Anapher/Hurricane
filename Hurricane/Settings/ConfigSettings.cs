@@ -8,6 +8,7 @@ using System.Xml.Serialization;
 using Hurricane.Music.Download;
 using Hurricane.Notification;
 using Hurricane.Settings.Themes;
+using MahApps.Metro.Controls;
 
 namespace Hurricane.Settings
 {
@@ -40,6 +41,16 @@ namespace Hurricane.Settings
             set
             {
                 SetProperty(value, ref _useThinHeaders);
+            }
+        }
+        
+        private TransitionType _tabControlTransition;
+        public TransitionType TabControlTransition
+        {
+            get { return _tabControlTransition; }
+            set
+            {
+                SetProperty(value, ref _tabControlTransition);
             }
         }
 
@@ -114,6 +125,7 @@ namespace Hurricane.Settings
             MinimizeToTray = false;
             ShowNotificationIfMinimizeToTray = true;
             Downloader = new DownloadManager();
+            TabControlTransition = TransitionType.Left;
         }
 
         public ConfigSettings()

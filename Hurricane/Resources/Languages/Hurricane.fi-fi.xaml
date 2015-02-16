@@ -289,4 +289,11 @@
     <system:String x:Key="Custom">Custom</system:String>
     <system:String x:Key="AllValidFiles">All valid files</system:String>
     <system:String x:Key="AllVideoFiles">All video files</system:String>
+    <system:String x:Key="TabControlTransition">Tab control transition</system:String>
+    <system:String x:Key="Left">Left</system:String>
+    <system:String x:Key="Right">Right</system:String>
+    <system:String x:Key="Up">Up</system:String>
+    <system:String x:Key="Down">Down</system:String>
+    <system:String x:Key="Fade">Fade</system:String>
+    <system:String x:Key="None">None</system:String>
 </ResourceDictionary>

@@ -309,4 +309,11 @@
     <system:String x:Key="Custom">Eigene</system:String>
     <system:String x:Key="AllValidFiles">Alle erlaubten Dateien</system:String>
     <system:String x:Key="AllVideoFiles">Alle Videodateien</system:String>
+    <system:String x:Key="TabControlTransition">Hauptmenü Übergangsanimation</system:String>
+    <system:String x:Key="Left">Links</system:String>
+    <system:String x:Key="Right">Rechts</system:String>
+    <system:String x:Key="Up">Oben</system:String>
+    <system:String x:Key="Down">Unten</system:String>
+    <system:String x:Key="Fade">Überblenden</system:String>
+    <system:String x:Key="None">Keine</system:String>
 </ResourceDictionary>
