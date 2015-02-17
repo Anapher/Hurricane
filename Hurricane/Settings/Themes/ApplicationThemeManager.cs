@@ -93,6 +93,7 @@ namespace Hurricane.Settings.Themes
                 foreach (var file in colorThemesFolder.GetFiles("*.xaml"))
                 {
                     CustomColorTheme theme;
+
                     if (CustomColorTheme.FromFile(file.FullName, out theme))
                         _colorThemes.Add(theme);
                 }

@@ -441,8 +441,8 @@
                                 <ContentControl.Resources>
                                     <DataTemplate DataType="{x:Type track:LocalTrack}">
                                         <extensions:AnimatedStackPanel AnimationInterval="300" UpdateObject="{Binding RelativeSource={RelativeSource AncestorType=ContentControl},Path=DataContext.MusicManager.CSCoreEngine.CurrentTrack}" Orientation="Vertical">
-                                            <TextBlock Text="{Binding Artist}" Foreground="{StaticResource NormalColorBrush}" TextWrapping="Wrap"/>
-                                            <TextBlock FontSize="22" FontFamily="Segoe UI Light" Text="{Binding Title}" extensions:TextBlockHelper.PlaceHolderText="{DynamicResource NoArtist}" TextWrapping="Wrap"/>
+                                            <TextBlock Text="{Binding Artist}" Foreground="{StaticResource NormalColorBrush}" TextWrapping="Wrap" extensions:TextBlockHelper.PlaceHolderText="{DynamicResource NoArtist}"/>
+                                            <TextBlock FontSize="22" FontFamily="Segoe UI Light" Text="{Binding Title}" TextWrapping="Wrap"/>
                                             <ToggleButton Foreground="#FFB4B4B4" Background="{StaticResource NormalColorBrush}" Style="{StaticResource FavoriteToggleButton}" Height="16" Width="16" HorizontalAlignment="Left" Margin="0,10,0,10" IsChecked="{Binding IsFavorite}"/>
                                             <StackPanel Orientation="Horizontal" Margin="0,30,0,0">
                                                 <TextBlock Text="{DynamicResource Bitrate}"/>
@@ -462,8 +462,8 @@
                                     </DataTemplate>
                                     <DataTemplate DataType="{x:Type track:StreamableBase}">
                                         <extensions:AnimatedStackPanel AnimationInterval="300" UpdateObject="{Binding RelativeSource={RelativeSource AncestorType=ContentControl},Path=DataContext.MusicManager.CSCoreEngine.CurrentTrack}" Orientation="Vertical">
-                                            <TextBlock Text="{Binding Title}" Foreground="{StaticResource NormalColorBrush}" TextWrapping="Wrap"/>
-                                            <TextBlock FontSize="22" FontFamily="Segoe UI Light" Text="{Binding Artist}" extensions:TextBlockHelper.PlaceHolderText="{DynamicResource NoArtist}" TextWrapping="Wrap"/>
+                                            <TextBlock Text="{Binding Artist}" Foreground="{StaticResource NormalColorBrush}" TextWrapping="Wrap" extensions:TextBlockHelper.PlaceHolderText="{DynamicResource NoArtist}"/>
+                                            <TextBlock FontSize="22" FontFamily="Segoe UI Light" Text="{Binding Title}" TextWrapping="Wrap"/>
                                             <ToggleButton Foreground="#FFB4B4B4" Background="{StaticResource NormalColorBrush}" Style="{StaticResource FavoriteToggleButton}" Height="16" Width="16" HorizontalAlignment="Left" Margin="0,10,0,10" IsChecked="{Binding IsFavorite}"/>
                                             <StackPanel Orientation="Horizontal" Margin="0,30,0,0">
                                                 <TextBlock Text="{DynamicResource Uploader}"/>

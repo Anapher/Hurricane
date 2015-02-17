@@ -10,7 +10,7 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <TextBlock Text="Hurricane Designer" FontSize="30" Margin="15" FontFamily="Segoe UI Light"/>
-        <ContentPresenter Grid.Row="1" Content="{Binding CurrentView}" Margin="15"/>
+        <TextBlock Text="{Binding CurrentTitle}" FontSize="26" Margin="15" FontFamily="Segoe UI Light"/>
+        <controls:TransitioningContentControl Grid.Row="1" Content="{Binding CurrentView}" Margin="15" RestartTransitionOnContentChange="True" Transition="Left"/>
     </Grid>
 </controls:MetroWindow>

@@ -19,11 +19,11 @@ namespace Hurricane.Designer
 
         private DesignerViewModel()
         {
+            CurrentTitle = "Hurricane Designer";
         }
 
         #endregion
 
-        
         private object _currentElement;
         public object CurrentElement
         {
@@ -67,8 +67,16 @@ namespace Hurricane.Designer
                 }));
             }
         }
-
-        public string CurrentMode { get; set; }
+        
+        private string _currentTitle;
+        public string CurrentTitle
+        {
+            get { return _currentTitle; }
+            set
+            {
+                SetProperty(value, ref _currentTitle);
+            }
+        }
 
         private RelayCommand _createNewBaseColor;
         public RelayCommand CreateNewBaseColor
@@ -77,8 +85,22 @@ namespace Hurricane.Designer
             {
                 return _createNewBaseColor ?? (_createNewBaseColor = new RelayCommand(parameter =>
                 {
-                    CurrentMode = Application.Current.Resources["BaseTheme"].ToString();
+                    CurrentTitle = Application.Current.Resources["BaseTheme"].ToString();
                     CurrentElement = new BaseThemeData();
+                    CurrentView = new ThemePage();
+                }));
+            }
+        }
+
+        private RelayCommand _createNewColorTheme;
+        public RelayCommand CreateNewColorTheme
+        {
+            get
+            {
+                return _createNewColorTheme ?? (_createNewColorTheme = new RelayCommand(parameter =>
+                {
+                    CurrentTitle = Application.Current.Resources["ColorTheme"].ToString();
+                    CurrentElement = new ColorThemeData();
                     CurrentView = new ThemePage();
                 }));
             }

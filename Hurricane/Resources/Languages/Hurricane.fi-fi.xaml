@@ -296,4 +296,5 @@
     <system:String x:Key="Down">Down</system:String>
     <system:String x:Key="Fade">Fade</system:String>
     <system:String x:Key="None">None</system:String>
+    <system:String x:Key="Path">Path</system:String>
 </ResourceDictionary>

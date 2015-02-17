@@ -4,6 +4,7 @@ using System.Windows;
 using System.Windows.Markup;
 using System.Windows.Media;
 using System.Xml.Serialization;
+using MahApps.Metro;
 
 namespace Hurricane.Settings.Themes.Visual.ColorThemes
 {
@@ -16,7 +17,11 @@ namespace Hurricane.Settings.Themes.Visual.ColorThemes
 
             try
             {
-                colorTheme.GetResource();
+                if (!ThemeManager.IsAccentDictionary(colorTheme.GetResource()))
+                {
+                    result = null;
+                    return false;
+                }
             }
             catch (XamlParseException)
             {

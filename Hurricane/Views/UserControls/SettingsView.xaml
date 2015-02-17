@@ -285,6 +285,7 @@
                         <CheckBox IsChecked="{Binding Config.DisableNotificationInGame}" Margin="0,10,0,0">
                             <TextBlock Text="{DynamicResource DisableNotificationsInGame}" TextWrapping="Wrap"/>
                         </CheckBox>
+                        <CheckBox Margin="0,10,0,0" Content="{DynamicResource ShowProgressInTaskbar}" IsChecked="{Binding ShowProgressInTaskbar}"/>
                         <TextBlock extensions:TextBlockHelper.UpperText="{DynamicResource Tray}" Margin="0,30,0,0" Style="{StaticResource TextBlockHeader}"/>
                         <CheckBox Content="{DynamicResource MinimizeToTray}" Margin="0,10,0,0" x:Name="MinimizeToTrayCheckBox" IsChecked="{Binding Config.MinimizeToTray}"/>
                         <CheckBox Content="{DynamicResource NotifyIfMinimizeToTray}" Margin="0,10,0,0" IsChecked="{Binding Config.ShowNotificationIfMinimizeToTray}" IsEnabled="{Binding ElementName=MinimizeToTrayCheckBox,Path=IsChecked}"/>

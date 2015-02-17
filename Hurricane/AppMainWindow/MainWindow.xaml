@@ -96,7 +96,7 @@
         </controls:Flyout>
     </Window.Resources>
     <Window.TaskbarItemInfo>
-        <TaskbarItemInfo x:Name="taskbarinfo" Description="{Binding MusicManager.CSCoreEngine.CurrentTrack}" ex:TaskbarItemInfoEx.Progress="{Binding MusicManager.CSCoreEngine.CurrentTrackPosition.TotalSeconds}" ex:TaskbarItemInfoEx.Maximum="{Binding MusicManager.CSCoreEngine.CurrentTrackLength.TotalSeconds}">
+        <TaskbarItemInfo x:Name="TaskbarInfo" Description="{Binding MusicManager.CSCoreEngine.CurrentTrack}" ex:TaskbarItemInfoEx.Progress="{Binding MusicManager.CSCoreEngine.CurrentTrackPosition.TotalSeconds}" ex:TaskbarItemInfoEx.Maximum="{Binding MusicManager.CSCoreEngine.CurrentTrackLength.TotalSeconds}">
             <TaskbarItemInfo.ThumbButtonInfos>
                 <ThumbButtonInfoCollection>
                     <ThumbButtonInfo Description="{DynamicResource PreviousTrack}" ImageSource="pack://application:,,,/Hurricane;component/Resources/MediaIcons/ThumbButtons/backward.png" Command="{Binding MusicManager.Commands.GoBackward}"/>
@@ -109,11 +109,15 @@
     <Window.InputBindings>
         <KeyBinding Key="Space" Command="{Binding MusicManager.Commands.TogglePlayPause}"/>
         <KeyBinding Key="E" Modifiers="Control" Command="{Binding ToggleEqualizer}"/>
+        <KeyBinding Key="Left" Modifiers="Windows" Command="{Binding MoveLeftCommand}"/>
+        <KeyBinding Key="Right" Modifiers="Windows" Command="{Binding MoveRightCommand}"/>
+        <KeyBinding Key="Left" Modifiers="Control" Command="{Binding MoveLeftCommand}"/>
+        <KeyBinding Key="Right" Modifiers="Control" Command="{Binding MoveRightCommand}"/>
     </Window.InputBindings>
     <Grid x:Name="ContentGrid">
         <Grid x:Name="BackgroundContainer">
             <Image x:Name="BackgroundImage" Stretch="UniformToFill"/>
-            <MediaElement x:Name="BackgroundMediaElement" Volume="0" MediaEnded="BackgroundMediaElement_OnMediaEnded" LoadedBehavior="Manual" Stretch="UniformToFill"/>
+            <MediaElement x:Name="BackgroundMediaElement" Volume="0" MediaEnded="BackgroundMediaElement_OnMediaEnded" LoadedBehavior="Manual" Stretch="UniformToFill" Visibility="Collapsed"/>
         </Grid>
         <tb:TaskbarIcon x:Name="NotifyIcon" IconSource="/Resources/App/icon.ico" ToolTipText="Hurricane" Visibility="Hidden" TrayMouseDoubleClick="NotifyIcon_OnTrayMouseDoubleClick"/>
     </Grid>

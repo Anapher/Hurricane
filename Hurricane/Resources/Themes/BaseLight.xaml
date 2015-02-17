@@ -9,7 +9,6 @@
     <SolidColorBrush x:Key="PicturePreviewBackgroundBrush" Color="#FFFBFBFB" options:Freeze="true"/>
     <SolidColorBrush x:Key="PicturePreviewForegroundBrush" Color="#FFCECECE" options:Freeze="true"/>
     <SolidColorBrush x:Key="SliderBackground" Color="LightGray" options:Freeze="true"/>
-    <system:Boolean x:Key="LightPlaceHolder">False</system:Boolean>
     <system:Boolean x:Key="LightVolumeIcon">False</system:Boolean>
     <system:Boolean x:Key="UseDialogsForWhiteTheme">True</system:Boolean>
 </ResourceDictionary>

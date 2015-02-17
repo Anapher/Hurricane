@@ -1,0 +1,36 @@
+﻿<UserControl x:Class="Hurricane.Designer.Pages.ThemeEditControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:themes="clr-namespace:Hurricane.Designer.Data"
+             xmlns:toolkit="http://schemas.xceed.com/wpf/xaml/toolkit"
+             xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="600" x:Name="MainControl">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="2*"/>
+        </Grid.ColumnDefinitions>
+        <ListBox ItemsSource="{Binding ElementName=MainControl,Path=ThemeData.ThemeSettings}" DisplayMemberPath="DisplayName" x:Name="ThemeSettingsListBox"/>
+        <Grid Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <TextBlock Text="{Binding ElementName=ThemeSettingsListBox,Path=SelectedItem.DisplayName}" Margin="10"/>
+            <ContentControl Grid.Row="1" Content="{Binding ElementName=ThemeSettingsListBox,Path=SelectedItem}">
+                <ContentControl.Resources>
+                    <DataTemplate DataType="{x:Type themes:ThemeColor}">
+                        <toolkit:ColorPicker Margin="5" SelectedColor="{Binding Color}" UsingAlphaChannel="{Binding IsTransparencyEnabled}" ColorMode="ColorCanvas" DisplayColorAndName="True" ShowAvailableColors="False"
+                                             VerticalAlignment="Center" HorizontalAlignment="Center" Width="250"/>
+                    </DataTemplate>
+                    <DataTemplate DataType="{x:Type themes:ThemeBoolean}">
+                        <controls:ToggleSwitchButton VerticalAlignment="Center" HorizontalAlignment="Center" IsChecked="{Binding BooleanValue}"/>
+                    </DataTemplate>
+                </ContentControl.Resources>
+            </ContentControl>
+        </Grid>
+    </Grid>
+</UserControl>

@@ -316,4 +316,6 @@
     <system:String x:Key="Down">Unten</system:String>
     <system:String x:Key="Fade">Überblenden</system:String>
     <system:String x:Key="None">Keine</system:String>
+    <system:String x:Key="Path">Pfad</system:String>
+    <system:String x:Key="ShowProgressInTaskbar">Fortschritt in Taskbar anzeigen</system:String>
 </ResourceDictionary>

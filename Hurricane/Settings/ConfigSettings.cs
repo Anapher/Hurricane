@@ -64,6 +64,7 @@ namespace Hurricane.Settings
         public int ApiPort { get; set; }
         public bool MinimizeToTray { get; set; }
         public bool ShowNotificationIfMinimizeToTray { get; set; }
+        public bool ShowProgressInTaskbar { get; set; }
 
         //Notifications
         public NotificationType Notification { get; set; }
@@ -126,6 +127,7 @@ namespace Hurricane.Settings
             ShowNotificationIfMinimizeToTray = true;
             Downloader = new DownloadManager();
             TabControlTransition = TransitionType.Left;
+            ShowProgressInTaskbar = true;
         }
 
         public ConfigSettings()

@@ -4,13 +4,29 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:designer="clr-namespace:Hurricane.Designer"
+             xmlns:pages="clr-namespace:Hurricane.Designer.Pages"
              mc:Ignorable="d" 
-             d:DesignHeight="600" d:DesignWidth="1000" DataContext="{x:Static designer:DesignerViewModel.Instance}">
+             d:DesignHeight="300" d:DesignWidth="1000" DataContext="{x:Static designer:DesignerViewModel.Instance}">
     <Grid>
-         <Grid.RowDefinitions>
-             <RowDefinition Height="Auto"/>
-             <RowDefinition Height="*"/>
-         </Grid.RowDefinitions>
-        <TextBlock Text="{Binding CurrentMode}" FontSize="30" Margin="15" FontFamily="Segoe UI Light"/>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <StackPanel Orientation="Vertical">
+            <Grid Margin="10,0,10,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Orientation="Horizontal" Margin="0,0,10,0" VerticalAlignment="Center">
+                    <TextBlock Text="{StaticResource Path}"/>
+                    <TextBlock Text=":"/>
+                </StackPanel>
+                <TextBox Text="{Binding CurrentElement.Name}" Grid.Column="1"/>
+                <Button Content="..." Margin="10,0,0,0" Width="25" Grid.Column="2"/>
+            </Grid>
+        </StackPanel>
+        <pages:ThemeEditControl Grid.Row="1" ThemeData="{Binding CurrentElement}" Margin="0,10,0,0"/>
     </Grid>
 </UserControl>

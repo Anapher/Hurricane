@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using System.Windows;
+using CSCore.SoundOut;
 using Hurricane.Music;
 using Hurricane.Music.Data;
 using Hurricane.Settings;
@@ -194,6 +195,21 @@ namespace Hurricane.ViewModels
                     ApplicationThemeManager.Instance.Apply(Config.ApplicationDesign);
                     await BaseWindow.ResetAndMoveIn();
                 }));
+            }
+        }
+
+        #endregion
+
+        #region Behaviour
+
+        
+        public bool ShowProgressInTaskbar
+        {
+            get { return Config.ShowProgressInTaskbar; }
+            set
+            {
+                Config.ShowProgressInTaskbar = value;
+                BaseWindow.RefreshTaskbarInfo(MainViewModel.Instance.MusicManager.CSCoreEngine.IsPlaying ? PlaybackState.Playing : PlaybackState.Paused);
             }
         }
 

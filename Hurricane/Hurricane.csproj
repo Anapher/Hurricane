@@ -159,6 +159,9 @@
     <Compile Include="Designer\Pages\LivePreview.xaml.cs">
       <DependentUpon>LivePreview.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Designer\Pages\ThemeEditControl.xaml.cs">
+      <DependentUpon>ThemeEditControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Designer\Pages\ThemePackPage.xaml.cs">
       <DependentUpon>ThemePackPage.xaml</DependentUpon>
     </Compile>
@@ -436,6 +439,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Designer\Pages\LivePreview.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Designer\Pages\ThemeEditControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

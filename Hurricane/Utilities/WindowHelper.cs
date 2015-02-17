@@ -23,7 +23,7 @@ namespace Hurricane.Utilities
 
         public static bool WindowIsFullscreen(IntPtr window)
         {
-            WINDOWPLACEMENT placement = new WINDOWPLACEMENT();
+            var placement = new WINDOWPLACEMENT();
             placement.length = Marshal.SizeOf(placement);
             UnsafeNativeMethods.GetWindowPlacement(window, ref placement);
             var workarea = SystemParameters.WorkArea;

@@ -30,7 +30,7 @@ namespace Hurricane
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : MetroWindow
+    public partial class MainWindow
     {
         public MagicArrow.MagicArrow MagicArrow { get; set; }
         public bool IsInSmartMode { get; set; }
@@ -98,6 +98,26 @@ namespace Hurricane
             InitializeMessages();
         }
 
+        public void CenterWindowOnScreen()
+        {
+            var screen = WpfScreen.GetScreenFrom(this).WorkingArea;
+            Left = (screen.Width / 2) - (Width / 2);
+            Top = (screen.Height / 2) - (Height / 2);
+        }
+
+        public void RefreshHostWindow(bool saveInformation)
+        {
+            if (MagicArrow.DockManager.CurrentSide == DockingSide.None)
+            {
+                ApplyHostWindow(AdvancedWindowSkin, saveInformation);
+            }
+            else
+            {
+                ApplyHostWindow(SmartWindowSkin, saveInformation);
+                Height = WpfScreen.GetScreenFrom(new Point(Left, 0)).WorkingArea.Height;
+            }
+        }
+
         void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
             try
@@ -107,15 +127,7 @@ namespace Hurricane
                 var viewmodel = MainViewModel.Instance;
                 viewmodel.Loaded(this);
 
-                if (MagicArrow.DockManager.CurrentSide == DockingSide.None)
-                {
-                    ApplyHostWindow(AdvancedWindowSkin, false);
-                }
-                else
-                {
-                    ApplyHostWindow(SmartWindowSkin, false);
-                    Height = WpfScreen.GetScreenFrom(new Point(Left, 0)).WorkingArea.Height;
-                }
+                RefreshHostWindow(false);
 
                 viewmodel.MusicManager.CSCoreEngine.PlaybackStateChanged += CSCoreEngine_PlaybackStateChanged;
 
@@ -256,7 +268,17 @@ namespace Hurricane
 
         void CSCoreEngine_PlaybackStateChanged(object sender, PlayStateChangedEventArgs e)
         {
-            taskbarinfo.ProgressState = e.NewPlaybackState == PlaybackState.Playing ? TaskbarItemProgressState.Normal : TaskbarItemProgressState.Paused;
+            RefreshTaskbarInfo(e.NewPlaybackState);
+        }
+
+        public void RefreshTaskbarInfo(PlaybackState playbackState)
+        {
+            if (!HurricaneSettings.Instance.Config.ShowProgressInTaskbar)
+            {
+                TaskbarInfo.ProgressState = TaskbarItemProgressState.None;
+                return;
+            }
+            TaskbarInfo.ProgressState = playbackState == PlaybackState.Playing ? TaskbarItemProgressState.Normal : TaskbarItemProgressState.Paused;
         }
 
         void skin_ToggleWindowState(object sender, EventArgs e)
@@ -337,6 +359,7 @@ namespace Hurricane
                 MagicArrow.DockManager.Save();
             MainViewModel.Instance.Closing();
             MagicArrow.Dispose();
+            Application.Current.Shutdown(); //Important if other windows like the track notification are open
         }
 
         public void BringToFront()

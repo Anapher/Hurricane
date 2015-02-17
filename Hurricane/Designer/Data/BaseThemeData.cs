@@ -11,122 +11,146 @@ namespace Hurricane.Designer.Data
                 new ThemeColor
                 {
                     RegexPattern = "x:Key=\"BlackColor\">(?<content>(.*?))<",
-                    ID = "BlackColor"
+                    ID = "BlackColor",
+                    DisplayName ="Black color"
                 },
                 new ThemeColor
                 {
                     RegexPattern = "x:Key=\"WhiteColor\">(?<content>(.*?))<",
-                    ID = "WhiteColor"
+                    ID = "WhiteColor",
+                    DisplayName ="White color"
                 },
                 new ThemeColor
                 {
                     RegexPattern = "x:Key=\"Gray1\">(?<content>(.*?))<",
-                    ID = "Gray1"
+                    ID = "Gray1",
+                    DisplayName ="Gray #1"
                 },
                 new ThemeColor
                 {
                     RegexPattern = "x:Key=\"Gray2\">(?<content>(.*?))<",
-                    ID = "Gray2"
+                    ID = "Gray2",
+                    DisplayName ="Gray #2"
                 },
                 new ThemeColor
                 {
                     RegexPattern = "x:Key=\"Gray7\">(?<content>(.*?))<",
-                    ID = "Gray7"
+                    ID = "Gray7",
+                    DisplayName ="Gray #7"
                 },
                 new ThemeColor
                 {
                     RegexPattern = "x:Key=\"Gray8\">(?<content>(.*?))<",
-                    ID = "Gray8"
+                    ID = "Gray8",
+                    DisplayName ="Gray #8"
                 },
                 new ThemeColor
                 {
                     RegexPattern = "x:Key=\"Gray10\" Color=\"(?<content>(.*?))\"",
-                    ID = "Gray10"
+                    ID = "Gray10",
+                    DisplayName ="Gray #10"
                 },
                 new ThemeColor
                 {
                     RegexPattern = "x:Key=\"GrayNormal\">(?<content>(.*?))<",
-                    ID = "GrayNormal"
+                    ID = "GrayNormal",
+                    DisplayName ="Gray normal"
                 },
                 new ThemeColor
                 {
                     RegexPattern = "x:Key=\"GrayHover\">(?<content>(.*?))<",
-                    ID = "GrayHover"
+                    ID = "GrayHover",
+                    DisplayName ="Gray hover"
                 },
                 new ThemeColor
                 {
                     RegexPattern = "x:Key=\"FlyoutColor\">(?<content>(.*?))<",
-                    ID = "FlyoutColor"
+                    ID = "FlyoutColor",
+                    DisplayName ="Flyout color"
                 },
                 new ThemeColor
                 {
                     RegexPattern = "x:Key=\"SliderValueDisabled\" Color=\"(?<content>(.*?))\"",
-                    ID = "SliderValueDisabled"
+                    ID = "SliderValueDisabled",
+                    DisplayName ="Slider value disabled"
                 },
                 new ThemeColor
                 {
                     RegexPattern = "x:Key=\"SliderTrackDisabled\" Color=\"(?<content>(.*?))\"",
-                    ID = "SliderTrackDisabled"
+                    ID = "SliderTrackDisabled",
+                    DisplayName ="Slider track disabled"
                 },
                 new ThemeColor
                 {
                     RegexPattern = "x:Key=\"SliderThumbDisabled\" Color=\"(?<content>(.*?))\"",
-                    ID = "SliderThumbDisabled"
+                    ID = "SliderThumbDisabled",
+                    DisplayName ="Slider thumb disabled"
                 },
                 new ThemeColor
                 {
                     RegexPattern = "x:Key=\"SliderThumbDisabled\" Color=\"(?<content>(.*?))\"",
-                    ID = "SliderThumbDisabled"
+                    ID = "SliderThumbDisabled",
+                    DisplayName ="Slider thumb disabled"
                 },
                 new ThemeColor
                 {
                     RegexPattern = "x:Key=\"SliderTrackHover\" Color=\"(?<content>(.*?))\"",
-                    ID = "SliderTrackHover"
+                    ID = "SliderTrackHover",
+                    DisplayName ="Slider track hover"
                 },
                 new ThemeColor
                 {
                     RegexPattern = "x:Key=\"SliderTrackNormal\" Color=\"(?<content>(.*?))\"",
-                    ID = "SliderTrackNormal"
+                    ID = "SliderTrackNormal",
+                    DisplayName ="Slider track normal"
                 },
                 new ThemeColor
                 {
                     RegexPattern = "x:Key=\"FlatButtonPressedBackgroundBrush\" Color=\"(?<content>(.*?))\"",
-                    ID = "FlatButtonPressedBackgroundBrush"
+                    ID = "FlatButtonPressedBackgroundBrush",
+                    DisplayName ="Flat button pressed background brush"
                 },
                 new ThemeColor
                 {
                     RegexPattern = "x:Key=\"MenuItemSelectionFill\" Color=\"(?<content>(.*?))\"",
-                    ID = "MenuItemSelectionFill"
+                    ID = "MenuItemSelectionFill",
+                    DisplayName ="Menu item selection fill"
                 },
                 new ThemeColor
                 {
                     RegexPattern = "x:Key=\"MenuItemSelectionStroke\" Color=\"(?<content>(.*?))\"",
-                    ID = "MenuItemSelectionStroke"
+                    ID = "MenuItemSelectionStroke",
+                    DisplayName ="Menu item selection stroke"
                 },
                 new ThemeColor
                 {
                     RegexPattern = "x:Key=\"TopMenuItemPressedFill\" Color=\"(?<content>(.*?))\"",
-                    ID = "TopMenuItemPressedFill"
+                    ID = "TopMenuItemPressedFill",
+                    DisplayName ="Top menu item pressed fill"
                 },
                 new ThemeColor
                 {
                     RegexPattern = "x:Key=\"TopMenuItemPressedStroke\" Color=\"(?<content>(.*?))\"",
-                    ID = "TopMenuItemPressedStroke"
+                    ID = "TopMenuItemPressedStroke",
+                    DisplayName ="Top menu item pressed stroke"
                 },
                 new ThemeColor
                 {
                     RegexPattern = "x:Key=\"TopMenuItemSelectionStroke\" Color=\"(?<content>(.*?))\"",
-                    ID = "TopMenuItemSelectionStroke"
+                    ID = "TopMenuItemSelectionStroke",
+                    DisplayName ="Top menu item selection stroke"
                 },
                 new ThemeColor
                 {
                     RegexPattern = "x:Key=\"DisabledMenuItemForeground\" Color=\"(?<content>(.*?))\"",
-                    ID = "DisabledMenuItemForeground"
+                    ID = "DisabledMenuItemForeground",
+                    DisplayName ="Diabled menu item foreground"
                 },
                 new ThemeColor
                 {
                     RegexPattern = "x:Key=\"MenuShadowColor\">(?<content>(.*?))<",
-                    ID = "MenuShadowColor"
+                    ID = "MenuShadowColor",
+                    DisplayName ="Menu shadow color"
                 },
                 new ThemeColor
                 {
@@ -145,12 +169,6 @@ namespace Hurricane.Designer.Data
                     RegexPattern = "x:Key=\"SliderBackground\" Color=\"(?<content>(.*?))\"",
                     ID = "SliderBackground",
                     DisplayName ="Slider background"
-                },
-                new ThemeBoolean
-                {
-                    RegexPattern ="x:Key=\"LightPlaceHolder\">(?<content>(.*?))<",
-                    ID ="LightPlaceHolder",
-                    DisplayName ="Use light place holder"
                 },
                 new ThemeBoolean
                 {
