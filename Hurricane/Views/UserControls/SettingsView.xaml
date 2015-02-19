@@ -157,13 +157,9 @@
                     <StackPanel Orientation="Vertical" Margin="10">
                         <TextBlock Style="{StaticResource TextBlockHeader}" extensions:TextBlockHelper.UpperText="{DynamicResource Theme}"/>
                         <Grid Margin="0,10,0,0">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="Auto"/>
-                            </Grid.ColumnDefinitions>
                             <StackPanel Orientation="Vertical">
                                 <TextBlock Text="{DynamicResource BaseTheme}" VerticalAlignment="Center"/>
-                                <ComboBox Margin="0,5,0,0" Width="100" HorizontalAlignment="Left" SelectedItem="{Binding Config.ApplicationDesign.BaseTheme}" ItemsSource="{Binding ApplicationThemeManager.BaseThemes,Converter={StaticResource GroupConverter}}" DisplayMemberPath="TranslatedName">
+                                <ComboBox Margin="0,5,0,0" Width="100" HorizontalAlignment="Left" SelectedItem="{Binding SelectedBaseTheme}" ItemsSource="{Binding ApplicationThemeManager.BaseThemes,Converter={StaticResource GroupConverter}}" DisplayMemberPath="TranslatedName">
                                     <ComboBox.GroupStyle>
                                         <GroupStyle>
                                             <GroupStyle.HeaderTemplate>
@@ -175,10 +171,10 @@
                                     </ComboBox.GroupStyle>
                                 </ComboBox>
                             </StackPanel>
-                            <Button Content="{DynamicResource Apply}" Command="{Binding ApplyTheme}" HorizontalAlignment="Right" VerticalAlignment="Top"/>
+                            <Button Content="{DynamicResource Apply}" Command="{Binding ApplyTheme}" IsEnabled="{Binding CanApplyNewTheme}" HorizontalAlignment="Right" VerticalAlignment="Top"/>
                         </Grid>
                         <TextBlock Text="{DynamicResource ColorTheme}" Margin="0,15,0,0"/>
-                        <ComboBox Margin="0,5,10,0" ItemsSource="{Binding ApplicationThemeManager.ColorThemes,Converter={StaticResource GroupConverter}}" SelectedItem="{Binding Config.ApplicationDesign.ColorTheme}" Width="300" HorizontalAlignment="Left">
+                        <ComboBox Margin="0,5,10,0" ItemsSource="{Binding ApplicationThemeManager.ColorThemes,Converter={StaticResource GroupConverter}}" SelectedItem="{Binding SelectedColorTheme}" Width="300" HorizontalAlignment="Left">
                             <ComboBox.ItemTemplate>
                                 <DataTemplate>
                                     <DockPanel>
@@ -212,12 +208,25 @@
                         <ComboBox Margin="0,5,0,0" Width="300" HorizontalAlignment="Left" SelectedItem="{Binding Config.ApplicationDesign.AudioVisualisation}" ItemsSource="{Binding ApplicationThemeManager.AudioVisualisations}" ItemTemplateSelector="{StaticResource ComboBoxItemTemplateChooser}">
                             <extensions:ComboBoxItemTemplateChooser.DropDownTemplate>
                                 <DataTemplate>
-                                    <Grid>
+                                    <Grid Margin="2">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="32"/>
                                             <ColumnDefinition Width="*"/>
                                         </Grid.ColumnDefinitions>
-                                        <Image Source="{Binding AudioVisualisationPlugin.Thumbnail}" Height="32" Stretch="UniformToFill"/>
+                                        <Viewbox Height="30" Width="30" Stretch="Uniform">
+                                            <Path Data="{Binding AudioVisualisationPlugin.Thumbnail}">
+                                                <Path.Style>
+                                                    <Style TargetType="Path">
+                                                        <Setter Property="Fill" Value="{StaticResource BlackBrush}"/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=ComboBoxItem},Path=IsSelected}" Value="True">
+                                                                <Setter Property="Fill" Value="{StaticResource IdealForegroundColorBrush}"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Path.Style>
+                                            </Path>
+                                        </Viewbox>
                                         <StackPanel Orientation="Vertical" Grid.Column="1" Margin="10,5,5,5">
                                             <TextBlock Text="{Binding Name}" FontSize="16"/>
                                             <TextBlock Text="{Binding AudioVisualisationPlugin.Creator}" Margin="0,2,0,0"/>

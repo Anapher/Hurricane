@@ -47,18 +47,21 @@ namespace Hurricane.Extensions
             _cts = new CancellationTokenSource();
             var token = _cts.Token;
 
-            var counter = 0;
-            while (newTrack.Image == null)
+            if (newTrack != null)
             {
-                counter++;
-                if (counter > 15) break;
-                try
+                var counter = 0;
+                while (newTrack.Image == null)
                 {
-                    await Task.Delay(100, token);
-                }
-                catch (TaskCanceledException)
-                {
-                    return;
+                    counter++;
+                    if (counter > 15) break;
+                    try
+                    {
+                        await Task.Delay(100, token);
+                    }
+                    catch (TaskCanceledException)
+                    {
+                        return;
+                    }
                 }
             }
 

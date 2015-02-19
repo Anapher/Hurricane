@@ -297,8 +297,8 @@
     <system:String x:Key="New">New</system:String>
     <system:String x:Key="ThemePack">Theme pack</system:String>
     <system:String x:Key="FromThemePack">[From theme pack]</system:String>
-    <system:String x:Key="BaseLight">Dark</system:String>
-    <system:String x:Key="BaseDark">Light</system:String>
+    <system:String x:Key="BaseLight">Light</system:String>
+    <system:String x:Key="BaseDark">Dark</system:String>
     <system:String x:Key="Creator">Creator</system:String>
     <system:String x:Key="Thumbnail">Thumbnail</system:String>
     <system:String x:Key="No2">No</system:String>

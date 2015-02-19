@@ -95,7 +95,7 @@ namespace Hurricane.Views.UserControls
                 new Component
                 {
                     Name = "UpdateSystem.Net",
-                    Url = "http://www.updatesystem.net/",
+                    Url = "https://github.com/maximilian-krauss/updateSystem.NET",
                     LicenceUrl = "https://github.com/maximilian-krauss/updateSystem.NET/blob/master/LICENSE.md",
                     Description = "UpdateSystem.Net is a free update solution for .net applications"
                 },

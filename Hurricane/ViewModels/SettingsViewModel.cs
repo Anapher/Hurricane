@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows;
@@ -9,6 +10,8 @@ using Hurricane.Settings;
 using Hurricane.Settings.RegistryManager;
 using Hurricane.Settings.Themes;
 using Hurricane.Settings.Themes.Background;
+using Hurricane.Settings.Themes.Visual;
+using Hurricane.Settings.Themes.Visual.BaseThemes;
 using Hurricane.ViewModelBase;
 using Microsoft.Win32;
 using WPFFolderBrowser;
@@ -27,6 +30,8 @@ namespace Hurricane.ViewModels
         private SettingsViewModel()
         {
             RegistryManager = new RegistryManager(); //import for shortcut
+            _appliedBaseTheme = Config.ApplicationDesign.BaseTheme;
+            _appliedColorTheme = Config.ApplicationDesign.ColorTheme;
         }
 
         public void Load()
@@ -144,6 +149,33 @@ namespace Hurricane.ViewModels
             }
         }
 
+        private IBaseTheme _appliedBaseTheme;
+        private IColorTheme _appliedColorTheme;
+        public bool CanApplyNewTheme
+        {
+            get { return !_appliedColorTheme.Equals(Config.ApplicationDesign.ColorTheme) || !_appliedBaseTheme.Equals(Config.ApplicationDesign.BaseTheme); }
+        }
+
+        public IBaseTheme SelectedBaseTheme
+        {
+            get { return Config.ApplicationDesign.BaseTheme; }
+            set
+            {
+                Config.ApplicationDesign.BaseTheme = value;
+                OnPropertyChanged("CanApplyNewTheme");
+            }
+        }
+
+        public IColorTheme SelectedColorTheme
+        {
+            get { return Config.ApplicationDesign.ColorTheme; }
+            set
+            {
+                Config.ApplicationDesign.ColorTheme = value;
+                OnPropertyChanged("CanApplyNewTheme");
+            }
+        }
+
         private RelayCommand _selectBackground;
         public RelayCommand SelectBackground
         {
@@ -193,6 +225,8 @@ namespace Hurricane.ViewModels
                 {
                     await BaseWindow.MoveOut();
                     ApplicationThemeManager.Instance.Apply(Config.ApplicationDesign);
+                    _appliedBaseTheme = Config.ApplicationDesign.BaseTheme;
+                    _appliedColorTheme = Config.ApplicationDesign.ColorTheme;
                     await BaseWindow.ResetAndMoveIn();
                 }));
             }
@@ -202,7 +236,6 @@ namespace Hurricane.ViewModels
 
         #region Behaviour
 
-        
         public bool ShowProgressInTaskbar
         {
             get { return Config.ShowProgressInTaskbar; }

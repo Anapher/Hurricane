@@ -98,8 +98,6 @@ namespace Hurricane.Music
 
         public QueueManager Queue { get; set; }
 
-        public TcpServer ApiServer { get; set; }
-
         private DownloadManager _downloadManager;
         public DownloadManager DownloadManager
         {
@@ -149,9 +147,6 @@ namespace Hurricane.Music
             Random = new Random();
             Lasttracks = new List<TrackPlaylistPair>();
             Queue = new QueueManager();
-
-            ApiServer = new TcpServer(this);
-            if (HurricaneSettings.Instance.Config.ApiIsEnabled) ApiServer.StartListening();
             DownloadManager = new DownloadManager();
         }
 
@@ -396,7 +391,6 @@ namespace Hurricane.Music
             if (disposing)
             {
                 CSCoreEngine.Dispose();
-                ApiServer.Dispose();
             }
         }
 

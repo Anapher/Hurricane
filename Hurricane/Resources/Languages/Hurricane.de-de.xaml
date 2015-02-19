@@ -284,7 +284,7 @@
     <system:String x:Key="SoundCloudLink">SoundCloud Link</system:String>
     
     <!-- 0.3.2 -->
-    <system:String x:Key="Background">Hintergrundbild</system:String>
+    <system:String x:Key="Background">Hintergrund</system:String>
     <system:String x:Key="AllPictureFiles">Alle Bilddateien</system:String>
     <system:String x:Key="MinimizeToTray">In den Tray minimieren</system:String>
     <system:String x:Key="NotifyIfMinimizeToTray">Benachrichtigung anzeigen, wenn in den Tray minimiert wird</system:String>
@@ -303,7 +303,7 @@
     <system:String x:Key="Thumbnail">Vorschaubild</system:String>
     <system:String x:Key="No2">Kein</system:String>
     <system:String x:Key="Include">Enthalten</system:String>
-    <system:String x:Key="AudioVisualisation">Audio Visualisierung</system:String>
+    <system:String x:Key="AudioVisualisation">Audiovisualisierung</system:String>
     <system:String x:Key="Skin">Skin</system:String>
     <system:String x:Key="Default">Standard</system:String>
     <system:String x:Key="Custom">Eigene</system:String>

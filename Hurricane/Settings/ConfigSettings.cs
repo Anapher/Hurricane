@@ -9,11 +9,12 @@ using Hurricane.Music.Download;
 using Hurricane.Notification;
 using Hurricane.Settings.Themes;
 using MahApps.Metro.Controls;
+// ReSharper disable InconsistentNaming
 
 namespace Hurricane.Settings
 {
     [Serializable, XmlType(TypeName = "Settings")]
-    public class ConfigSettings : SettingsBase, IEquatable<ConfigSettings>
+    public class ConfigSettings : SettingsBase
     {
         private const string Filename = "config.xml";
 
@@ -60,8 +61,6 @@ namespace Hurricane.Settings
         public string PlaylistToImportTrack { get; set; }
         public bool ShufflePreferFavoriteTracks { get; set; }
         public bool ShowArtistAndTitle { get; set; }
-        public bool ApiIsEnabled { get; set; }
-        public int ApiPort { get; set; }
         public bool MinimizeToTray { get; set; }
         public bool ShowNotificationIfMinimizeToTray { get; set; }
         public bool ShowProgressInTaskbar { get; set; }
@@ -115,8 +114,8 @@ namespace Hurricane.Settings
             DownloadAlbumCoverQuality = ImageQuality.Maximum;
             SaveCoverLocal = false;
             TrimTrackname = true;
-            ApiIsEnabled = false;
-            ApiPort = 10898; //10.08.1998
+            //ApiIsEnabled = false;
+            //ApiPort = 10898; //10.08.1998
             ShowArtistAndTitle = true;
             SoundOutMode = CSCore.SoundOut.WasapiOut.IsSupportedOnCurrentPlatform ? SoundOutMode.WASAPI : SoundOutMode.DirectSound;
             Latency = 100;
@@ -168,39 +167,6 @@ namespace Hurricane.Settings
 
             ApplicationThemeManager.Instance.Apply(result.ApplicationDesign);
             return result;
-        }
-
-        public bool Equals(ConfigSettings other)
-        {
-            if (other == null) return false;
-            return (CompareTwoValues(this.SoundOutDeviceID, other.SoundOutDeviceID) &&
-                    CompareTwoValues(this.WaveSourceBits, other.WaveSourceBits) &&
-                    CompareTwoValues(this.ShowMagicArrowBelowCursor, other.ShowMagicArrowBelowCursor) &&
-                    CompareTwoValues(this.SampleRate, other.SampleRate) &&
-                    CompareTwoValues(this.Language, other.Language) &&
-                    CompareTwoValues(this.Notification, other.Notification) &&
-                    CompareTwoValues(this.DisableNotificationInGame, other.DisableNotificationInGame) &&
-                    CompareTwoValues(this.ApplicationDesign, other.ApplicationDesign) &&
-                    CompareTwoValues(this.NotificationShowTime, other.NotificationShowTime) &&
-                    CompareTwoValues(this.RememberTrackImportPlaylist, other.RememberTrackImportPlaylist) &&
-                    CompareTwoValues(this.DownloadAlbumCoverQuality, other.DownloadAlbumCoverQuality) &&
-                    CompareTwoValues(this.LoadAlbumCoverFromInternet, other.LoadAlbumCoverFromInternet) &&
-                    CompareTwoValues(this.SaveCoverLocal, other.SaveCoverLocal) &&
-                    CompareTwoValues(this.TrimTrackname, other.TrimTrackname) &&
-                    CompareTwoValues(this.ApiIsEnabled, other.ApiIsEnabled) &&
-                    CompareTwoValues(this.ApiPort, other.ApiPort) &&
-                    CompareTwoValues(this.ShufflePreferFavoriteTracks, other.ShufflePreferFavoriteTracks) &&
-                    CompareTwoValues(this.ShowArtistAndTitle, other.ShowArtistAndTitle) &&
-                    CompareTwoValues(this.SoundOutMode, other.SoundOutMode) &&
-                    CompareTwoValues(this.Latency, other.Latency) &&
-                    CompareTwoValues(this.CrossfadeDuration, other.CrossfadeDuration) &&
-                    CompareTwoValues(this.IsCrossfadeEnabled, other.IsCrossfadeEnabled) &&
-                    CompareTwoValues(this.Downloader.DownloadDirectory, other.Downloader.DownloadDirectory) &&
-                    CompareTwoValues(this.Downloader.AddTagsToDownloads, other.Downloader.AddTagsToDownloads) &&
-                    CompareTwoValues(this.UseThinHeaders, other.UseThinHeaders) &&
-                    CompareTwoValues(this.MinimizeToTray, other.MinimizeToTray) &&
-                    CompareTwoValues(this.ShowNotificationIfMinimizeToTray, other.ShowNotificationIfMinimizeToTray) &&
-                    this.ApplicationDesign.Equals(other.ApplicationDesign));
         }
 
         protected bool CompareTwoValues(object v1, object v2)

@@ -26,11 +26,11 @@ namespace Hurricane.Music.API
         public bool StartListening()
         {
             this.Connections = new List<TcpConnection>();
-            IPEndPoint ipendpoint = new IPEndPoint(IPAddress.Any, HurricaneSettings.Instance.Config.ApiPort);
+            //IPEndPoint ipendpoint = new IPEndPoint(IPAddress.Any, HurricaneSettings.Instance.Config.ApiPort);
             try
             {
-                listener = new TcpListener(ipendpoint);
-                listener.Start();
+                //listener = new TcpListener(ipendpoint);
+                //listener.Start();
             }
             catch (SocketException)
             {

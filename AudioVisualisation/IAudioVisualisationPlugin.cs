@@ -1,4 +1,4 @@
-﻿using System.Windows.Media.Imaging;
+﻿using System.Windows.Media;
 
 namespace AudioVisualisation
 {
@@ -27,8 +27,8 @@ namespace AudioVisualisation
         string Creator { get; }
 
         /// <summary>
-        /// A preview image. Size: 32x32 px
+        /// A preview image
         /// </summary>
-        BitmapImage Thumbnail { get; }
+        GeometryGroup Thumbnail { get; }
     }
 }

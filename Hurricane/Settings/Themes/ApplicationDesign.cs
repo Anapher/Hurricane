@@ -72,7 +72,7 @@ namespace Hurricane.Settings.Themes
                 var colorTheme = (IColorTheme) value;
                 if (colorTheme is ColorThemeBase)
                 {
-                    ColorTheme = ApplicationThemeManager.Instance.ColorThemes.First(x => x.Equals(colorTheme));
+                    ColorTheme = ApplicationThemeManager.Instance.ColorThemes.FirstOrDefault(x => x.Equals(colorTheme));
                 }
                 else if(colorTheme is ThemePack)
                 {
@@ -91,7 +91,7 @@ namespace Hurricane.Settings.Themes
                 var baseTheme = (IBaseTheme)value;
                 if (baseTheme is BaseThemeBase)
                 {
-                    BaseTheme = ApplicationThemeManager.Instance.BaseThemes.First(x => x.Equals(baseTheme));
+                    BaseTheme = ApplicationThemeManager.Instance.BaseThemes.FirstOrDefault(x => x.Equals(baseTheme));
                 }
                 else if (baseTheme is ThemePack)
                 {

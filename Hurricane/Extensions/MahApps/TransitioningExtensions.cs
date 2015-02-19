@@ -16,7 +16,17 @@ namespace Hurricane.Extensions.MahApps
         {
             var control = dependencyObject as TransitioningContentControl;
             if (control == null) throw new ArgumentException();
-            control.Content = new TextBlock { Text = dependencyPropertyChangedEventArgs.NewValue.ToString(), SnapsToDevicePixels = true, TextTrimming = TextTrimming.CharacterEllipsis, Margin = new Thickness(1), VerticalAlignment = VerticalAlignment.Center, Foreground = (Brush)Application.Current.Resources["BlackBrush"] };
+            control.Content = dependencyPropertyChangedEventArgs.NewValue == null
+                ? null
+                : new TextBlock
+                {
+                    Text = dependencyPropertyChangedEventArgs.NewValue.ToString(),
+                    SnapsToDevicePixels = true,
+                    TextTrimming = TextTrimming.CharacterEllipsis,
+                    Margin = new Thickness(1),
+                    VerticalAlignment = VerticalAlignment.Center,
+                    Foreground = (Brush) Application.Current.Resources["BlackBrush"]
+                };
         }
 
         public static void SetDisplayText(DependencyObject element, object value)
