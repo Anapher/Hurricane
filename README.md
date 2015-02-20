@@ -3,7 +3,7 @@ Hurricane
 
 Hurricane is a music player written in C# based on the [CSCore sound library](https://cscore.codeplex.com/).
 
-![Playlists](http://www.vincentgri.de/hurricane/images/GitHub/advancedWindowPlaylists.png)
+![Overview](http://fs2.directupload.net/images/150220/vp9sem88.png)
 
 ##Smart/Advanced view
 
@@ -25,22 +25,22 @@ If you click on it, Hurricane appears.
  - 23 Colorthemes (you can also create your own)
  - Two base themes: Light and dark
  - Multilanguage
- - Api for developer
  - Supported codecs: MP3, WAVE(PCM, IeeeFloat, GSM, ADPCM,…), FLAC, AAC, AC3, WMA, Raw data
+ - Supports playlist import (m3u and cue sheet)
  - Works well with games
  - Supports DirectSound and WASAPI
  
  
 ##Screenshots
 Now Playing tab, advanced view:
-![NowPlaying](http://www.vincentgri.de/hurricane/images/GitHub/advancedWindowNowPlaying.png)
+![NowPlaying](http://fs2.directupload.net/images/150220/nscgvlkp.png)
 
 Base theme = dark, color theme = lime, advanced view:
-![DarkTheme](http://www.vincentgri.de/hurricane/images/GitHub/advancedWindowRestyle.png)
+![DarkTheme](http://fs1.directupload.net/images/150220/f4gosfmx.png)
 
 Smart view:
 
-![SmartView](http://www.vincentgri.de/hurricane/images/GitHub/SmartWindow.png)
+![SmartView](http://fs2.directupload.net/images/150220/ulturivm.png)
 
 ##License
 Hurricane is licensed under the [GNU General Public License](LICENSE.txt)
