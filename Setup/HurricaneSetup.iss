@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "Hurricane"
-#define MyAppVersion "0.3.2"
+#define MyAppVersion "0.3.4"
 #define MyAppPublisher "Alkaline"
 #define MyAppURL "http://www.hurricane.vincentgri.de"
 #define MyAppExeName "Hurricane.exe"
@@ -40,7 +40,6 @@ Name: "quicklaunchicon"; Description: "{cm:CreateQuickLaunchIcon}"; GroupDescrip
 
 [Files]
 Source: "dependencies\dotNetFx45_Full_setup.exe"; DestDir: {tmp}; Flags: deleteafterinstall; AfterInstall: InstallFramework; Check: FrameworkIsNotInstalled
-Source: "..\Hurricane\bin\Release\Xceed.Wpf.Toolkit.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\Hurricane\bin\Release\Hurricane.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\Hurricane\bin\Release\CSCore.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\Hurricane\bin\Release\Exceptionless.dll"; DestDir: "{app}"; Flags: ignoreversion
@@ -58,6 +57,8 @@ Source: "..\Hurricane\bin\Release\ffmpeg.exe"; DestDir: "{app}"; Flags: ignoreve
 Source: "..\Hurricane\bin\Release\youtube-dl.exe"; DestDir: "{userappdata}\Hurricane"; Flags: ignoreversion
 Source: "..\Hurricane\bin\Release\GongSolutions.Wpf.DragDrop.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\Hurricane\bin\Release\Hardcodet.Wpf.TaskbarNotification.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\Hurricane\bin\Release\AudioVisualisation.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\Hurricane\bin\Release\ICSharpCode.SharpZipLib.dll"; DestDir: "{app}"; Flags: ignoreversion
 
 Source: "special_files\.IsInstalled"; DestDir: "{app}"; Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files

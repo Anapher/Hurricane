@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Hurricane.Music.MusicDatabase.EventArgs;
 
@@ -23,6 +24,17 @@ namespace Hurricane.Music.Playlist
         {
             CheckRegistration();
             return MatchExtension(filePath) != null;
+        }
+
+        public static string[] GetSupportedFileExtensions()
+        {
+            CheckRegistration();
+            var formats = new List<string>();
+            foreach (var format in Formats)
+            {
+                formats.AddRange(format.SupportedExtensions);
+            }
+            return formats.ToArray();
         }
 
         public static IPlaylist DoImport(string filePath)

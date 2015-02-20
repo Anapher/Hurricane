@@ -198,8 +198,8 @@
     <system:String x:Key="Open">Open</system:String>
     <system:String x:Key="SaveAs">Save as</system:String>
     <system:String x:Key="Save">Save</system:String>
-    <system:String x:Key="TextFiles">Text files</system:String>
-    <system:String x:Key="AllFiles">All files</system:String>
+    <system:String x:Key="TextFiles">Text Files</system:String>
+    <system:String x:Key="AllFiles">All Files</system:String>
     <system:String x:Key="Composers">Composers</system:String>
     <system:String x:Key="Artists">Artists</system:String>
     <system:String x:Key="AlbumArtists">Album artists</system:String>
@@ -285,7 +285,7 @@
 
     <!-- 0.3.2 -->
     <system:String x:Key="Background">Background</system:String>
-    <system:String x:Key="AllPictureFiles">All picture files</system:String>
+    <system:String x:Key="PictureFiles">Picture Files</system:String>
     <system:String x:Key="MinimizeToTray">Minimize to tray</system:String>
     <system:String x:Key="NotifyIfMinimizeToTray">Show notification if minimized to tray</system:String>
     <system:String x:Key="MinimizeToTrayNotification">Hurricane was minimized to the tray and can be restored with a double click on this icon</system:String>
@@ -307,8 +307,8 @@
     <system:String x:Key="Skin">Skin</system:String>
     <system:String x:Key="Default">Default</system:String>
     <system:String x:Key="Custom">Custom</system:String>
-    <system:String x:Key="AllValidFiles">All valid files</system:String>
-    <system:String x:Key="AllVideoFiles">All video files</system:String>
+    <system:String x:Key="SupportedFiles">Supported Files</system:String>
+    <system:String x:Key="VideoFiles">Video Files</system:String>
     <system:String x:Key="TabControlTransition">Tab control transition</system:String>
     <system:String x:Key="Left">Left</system:String>
     <system:String x:Key="Right">Right</system:String>

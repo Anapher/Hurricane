@@ -31,9 +31,6 @@ namespace Hurricane.Music.MusicDatabase
         public lfmTrackStreamable streamable { get; set; }
 
         /// <remarks/>
-        public long playcount { get; set; }
-
-        /// <remarks/>
         public lfmTrackArtist artist { get; set; }
 
         /// <remarks/>

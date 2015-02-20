@@ -488,6 +488,20 @@ namespace Hurricane
             }
         }
 
+        public void ShowUpdateDialog(UpdateService updateService)
+        {
+            var dialog = new UpdateWindow(updateService)
+            {
+                Owner = this,
+                WindowStartupLocation =
+                    HostedWindow.Configuration.ShowFullscreenDialogs
+                        ? WindowStartupLocation.CenterScreen
+                        : WindowStartupLocation.CenterOwner
+            };
+
+            dialog.ShowDialog();
+        }
+
         EqualizerWindow _equalizerWindow;
         private bool _equalizerIsOpen;
 

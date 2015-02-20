@@ -6,7 +6,7 @@ using System.Runtime.CompilerServices;
 
 namespace Hurricane.ViewModelBase
 {
-    [Serializable()]
+    [Serializable]
     public class PropertyChangedBase : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
@@ -16,7 +16,7 @@ namespace Hurricane.ViewModelBase
             return SetProperty(value, ref field, GetPropertyName(property));
         }
 
-        protected virtual bool SetProperty<T>(T value, ref T field, [CallerMemberName()]string propertyName = null)
+        protected virtual bool SetProperty<T>(T value, ref T field, [CallerMemberName]string propertyName = null)
         {
             if (field == null || !field.Equals(value))
             {
@@ -27,7 +27,7 @@ namespace Hurricane.ViewModelBase
             return false;
         }
 
-        public void OnPropertyChanged([CallerMemberName()] string propertyName = null)
+        public void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             if (PropertyChanged != null)
             {
@@ -42,11 +42,11 @@ namespace Hurricane.ViewModelBase
 
         protected string GetPropertyName(Expression<Func<object>> property)
         {
-            dynamic lambda = property as LambdaExpression;
-            MemberExpression memberExpression = default(MemberExpression);
+            var lambda = property as LambdaExpression;
+            MemberExpression memberExpression;
             if (lambda.Body is UnaryExpression)
             {
-                dynamic unaryExpression = lambda.Body as UnaryExpression;
+                var unaryExpression = (UnaryExpression)lambda.Body;
                 memberExpression = unaryExpression.Operand as MemberExpression;
             }
             else
@@ -55,8 +55,7 @@ namespace Hurricane.ViewModelBase
             }
             if (memberExpression != null)
             {
-                dynamic constantExpression = memberExpression.Expression as ConstantExpression;
-                dynamic propertyInfo = memberExpression.Member as PropertyInfo;
+                var propertyInfo = memberExpression.Member as PropertyInfo;
 
                 if (propertyInfo != null)
                 {

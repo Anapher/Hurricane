@@ -330,11 +330,12 @@ namespace Hurricane.ViewModels
                 return _addfilestoplaylist ?? (_addfilestoplaylist = new RelayCommand(async parameter =>
                 {
                     if (!MusicManager.SelectedPlaylist.CanEdit) return;
+
                     var ofd = new OpenFileDialog
                     {
                         CheckFileExists = true,
                         Title = Application.Current.Resources["SelectedFiles"].ToString(),
-                        Filter = CodecFactory.SupportedFilesFilterEn,
+                        Filter = string.Format("{0}|{1};{2}|{3}|*.*", Application.Current.Resources["SupportedFiles"], GeneralHelper.GetFileDialogFilterFromArray(CodecFactory.Instance.GetSupportedFileExtensions()), GeneralHelper.GetFileDialogFilterFromArray(Playlists.GetSupportedFileExtensions()), Application.Current.Resources["AllFiles"]),
                         Multiselect = true
                     };
                     if (ofd.ShowDialog(_baseWindow) == true)
@@ -478,8 +479,7 @@ namespace Hurricane.ViewModels
             {
                 return _openupdater ?? (_openupdater = new RelayCommand(parameter =>
                 {
-                    UpdateWindow window = new UpdateWindow(Updater) { Owner = _baseWindow };
-                    window.ShowDialog();
+                    _baseWindow.ShowUpdateDialog(Updater);
                 }));
             }
         }

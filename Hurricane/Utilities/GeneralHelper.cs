@@ -1,12 +1,14 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Security.Principal;
+using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Media.Imaging;
 
 namespace Hurricane.Utilities
 {
@@ -33,7 +35,7 @@ namespace Hurricane.Utilities
             try
             {
                 using (var client = new WebClient { Proxy = null })
-                using (var stream = await client.OpenReadTaskAsync("http://www.google.com"))
+                using (var foo = await client.OpenReadTaskAsync("http://www.google.com"))
                 {
                     return true;
                 }
@@ -119,6 +121,14 @@ namespace Hurricane.Utilities
         public static bool IsVideo(string fileName)
         {
             return fileName.EndsWith(".mp4") || fileName.EndsWith(".wmv");
+        }
+
+        public static string GetFileDialogFilterFromArray(IEnumerable<string> extensions)
+        {
+            var stringBuilder = new StringBuilder();
+            stringBuilder.Append(String.Concat(extensions.Select(x => (x.StartsWith("*.") ? null : (x.StartsWith(".") ? "*" : "*.")) + x + ";").ToArray()));
+            stringBuilder.Remove(stringBuilder.Length - 1, 1);
+            return stringBuilder.ToString();
         }
     }
 }
