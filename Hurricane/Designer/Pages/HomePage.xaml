@@ -31,12 +31,10 @@
     </UserControl.Resources>
     <StackPanel Orientation="Vertical">
         <TextBlock Text="{StaticResource Create}" FontSize="20"/>
-        <Button Style="{StaticResource LinkButton}" Content="{StaticResource ThemePack}" Command="{Binding CreateNewThemePack}" FontSize="14" Margin="0,15,0,0"/>
         <Button Style="{StaticResource LinkButton}" Content="{StaticResource ColorTheme}" Command="{Binding CreateNewColorTheme}" FontSize="14" Margin="0,5,0,0"/>
-        <Button Style="{StaticResource LinkButton}" Content="{StaticResource BaseTheme}" Command="{Binding CreateNewBaseColor}" FontSize="14" Margin="0,5,0,0"/>
+        <Button Style="{StaticResource LinkButton}" Content="{StaticResource BaseTheme}" Command="{Binding CreateNewBaseColorTheme}" FontSize="14" Margin="0,5,0,0"/>
         <TextBlock Text="{StaticResource Open}" FontSize="20" Margin="0,40,0,0"/>
-        <Button Style="{StaticResource LinkButton}" Content="{StaticResource ThemePack}" FontSize="14" Margin="0,15,0,0"/>
-        <Button Style="{StaticResource LinkButton}" Content="{StaticResource ColorTheme}" FontSize="14" Margin="0,5,0,0"/>
-        <Button Style="{StaticResource LinkButton}" Content="{StaticResource BaseTheme}" FontSize="14" Margin="0,5,0,0"/>
+        <Button Style="{StaticResource LinkButton}" Content="{StaticResource ColorTheme}" FontSize="14" Margin="0,5,0,0" Command="{Binding OpenColorTheme}"/>
+        <Button Style="{StaticResource LinkButton}" Content="{StaticResource BaseTheme}" FontSize="14" Margin="0,5,0,0" Command="{Binding OpenBaseColorTheme}"/>
     </StackPanel>
 </UserControl>

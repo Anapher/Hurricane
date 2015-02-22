@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -29,9 +30,7 @@ namespace Hurricane.ViewModels
 
         private SettingsViewModel()
         {
-            RegistryManager = new RegistryManager(); //import for shortcut
-            _appliedBaseTheme = Config.ApplicationDesign.BaseTheme;
-            _appliedColorTheme = Config.ApplicationDesign.ColorTheme;
+            RegistryManager = new RegistryManager(); //important for shortcut
         }
 
         public void Load()
@@ -139,6 +138,18 @@ namespace Hurricane.ViewModels
 
         #region Apperance
 
+        private RelayCommand _openDesigner;
+        public RelayCommand OpenDesigner
+        {
+            get
+            {
+                return _openDesigner ?? (_openDesigner = new RelayCommand(parameter =>
+                {
+                    Process.Start(System.Reflection.Assembly.GetExecutingAssembly().Location, "/designer");
+                }));
+            }
+        }
+
         public bool ShowArtistAndTitle
         {
             get { return Config.ShowArtistAndTitle; }
@@ -149,20 +160,13 @@ namespace Hurricane.ViewModels
             }
         }
 
-        private IBaseTheme _appliedBaseTheme;
-        private IColorTheme _appliedColorTheme;
-        public bool CanApplyNewTheme
-        {
-            get { return !_appliedColorTheme.Equals(Config.ApplicationDesign.ColorTheme) || !_appliedBaseTheme.Equals(Config.ApplicationDesign.BaseTheme); }
-        }
-
         public IBaseTheme SelectedBaseTheme
         {
             get { return Config.ApplicationDesign.BaseTheme; }
             set
             {
                 Config.ApplicationDesign.BaseTheme = value;
-                OnPropertyChanged("CanApplyNewTheme");
+                ApplyTheme();
             }
         }
 
@@ -172,8 +176,15 @@ namespace Hurricane.ViewModels
             set
             {
                 Config.ApplicationDesign.ColorTheme = value;
-                OnPropertyChanged("CanApplyNewTheme");
+                ApplyTheme();
             }
+        }
+
+        private async void ApplyTheme()
+        {
+            await BaseWindow.MoveOut();
+            ApplicationThemeManager.Instance.Apply(Config.ApplicationDesign);
+            await BaseWindow.ResetAndMoveIn();
         }
 
         private RelayCommand _selectBackground;
@@ -212,22 +223,6 @@ namespace Hurricane.ViewModels
                 {
                     Config.ApplicationDesign.ApplicationBackground = null;
                     await BaseWindow.BackgroundChanged();
-                }));
-            }
-        }
-
-        private RelayCommand _applyTheme;
-        public RelayCommand ApplyTheme
-        {
-            get
-            {
-                return _applyTheme ?? (_applyTheme = new RelayCommand(async parameter =>
-                {
-                    await BaseWindow.MoveOut();
-                    ApplicationThemeManager.Instance.Apply(Config.ApplicationDesign);
-                    _appliedBaseTheme = Config.ApplicationDesign.BaseTheme;
-                    _appliedColorTheme = Config.ApplicationDesign.ColorTheme;
-                    await BaseWindow.ResetAndMoveIn();
                 }));
             }
         }

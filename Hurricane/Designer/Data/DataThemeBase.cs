@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
-using System.Text.RegularExpressions;
+using System.Linq;
 using System.Windows;
 using System.Windows.Markup;
 
@@ -12,23 +12,40 @@ namespace Hurricane.Designer.Data
         public List<IThemeSetting> ThemeSettings { get; set; }
         public string Name { get; set; }
         public abstract string Source { get; }
+        public abstract string Filter { get; }
+        public abstract string BaseDirectory { get; }
 
         public void LoadFromFile(string filePath)
         {
-            LoadFromString(File.ReadAllText(filePath));
+            LoadFromResourceDictionary(new ResourceDictionary {Source = new Uri(filePath)});
         }
 
-        public void LoadFromString(string content)
+        public void LoadFromResourceDictionary(ResourceDictionary dictionary)
         {
             foreach (var setting in ThemeSettings)
             {
-                setting.SetValue(Regex.Match(content, setting.RegexPattern).Groups["content"].Value);
+                setting.SetValue(GetValueFromDictionary(setting.ID, dictionary).ToString());
             }
+        }
+
+        private object GetValueFromDictionary(string key, ResourceDictionary dictionary)
+        {
+            if (dictionary.Contains(key))
+            {
+                return dictionary[key];
+            }
+            foreach (var resourceDictionary in dictionary.MergedDictionaries)
+            {
+                var result = GetValueFromDictionary(key, resourceDictionary);
+                if (result != null) return result;
+            }
+            return null;
         }
 
         public ResourceDictionary GetResourceDictionary()
         {
-            return (ResourceDictionary)XamlReader.Parse(ToString());
+            var toString = ToString();
+            return (ResourceDictionary)XamlReader.Parse(toString);
         }
 
         public override string ToString()

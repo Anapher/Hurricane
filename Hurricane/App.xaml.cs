@@ -62,7 +62,7 @@ namespace Hurricane
                         {
                             MessageBox.Show("Something went extremly wrong. This application didn't got administrator rights so it can't register anything.");
                         }
-                        
+
                         Current.Shutdown();
                         return;
                     case "/screeninfo":
@@ -117,9 +117,15 @@ namespace Hurricane
                 return;
             }
 #if !DEBUG
-                        EnableExteptionless();
+            EnableExteptionless();
 #endif
+
+            //We remove the two last resource dictionarys so we can skip the annyoing ThemeManagers/current theme detections, ...
+            //HurricaneSettings will load the needed resources
+            Resources.MergedDictionaries.Remove(Resources.MergedDictionaries.Last());
+            Resources.MergedDictionaries.Remove(Resources.MergedDictionaries.Last());
             HurricaneSettings.Instance.Load();
+
             MainWindow window = new MainWindow();
 
             WindowMessanger messanger = new WindowMessanger(window);

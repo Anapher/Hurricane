@@ -46,7 +46,7 @@
     <system:String x:Key="Tracks">Tracks</system:String>
     <system:String x:Key="Error">Error</system:String>
     <system:String x:Key="ReallyDeletePlaylist">Are you sure that you want to remove the playlist '{0}'?</system:String>
-    <system:String x:Key="CantDeletePlaylist">The playlist can't be removed because it is the only one</system:String>
+    <system:String x:Key="CantDeletePlaylist">The playlist can't be removed because it is the only one.</system:String>
     <system:String x:Key="RenamePlaylist">Rename playlist</system:String>
     <system:String x:Key="Rename">Rename</system:String>
     <system:String x:Key="RemoveDuplicateTracks">Are you sure that you want to remove all duplicate tracks?</system:String>
@@ -317,4 +317,6 @@
     <system:String x:Key="Fade">Fade</system:String>
     <system:String x:Key="None">None</system:String>
     <system:String x:Key="Path">Path</system:String>
+    <system:String x:Key="ShowProgressInTaskbar">Show progress in taskbar</system:String>
+    <system:String x:Key="NothingToSeeHere">Nothing to see here</system:String>
 </ResourceDictionary>

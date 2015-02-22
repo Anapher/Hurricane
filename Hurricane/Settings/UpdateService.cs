@@ -21,9 +21,9 @@ namespace Hurricane.Settings
             _language = currentlanguage;
             _updController = new updateController
             {
-                updateUrl = "http://hurrican.16mb.com/update",
-                projectId = "fe287b37-6dfb-4e1b-bec9-fd1ce797f148",
-                publicKey = "<RSAKeyValue><Modulus>6tY5/Ym5hZGCN4VEu1mno8C9pPWJc7PTpxEPFyAiq532oNwo1npgUiC83IzQcbj5PYkCmqDXBiD1g4SmgfAg/kQ1VXIfPYge++SCzxI85GwNFn+TRRHloo8Bvnwn9ZJJuECAzb6AcLTRfCsP0cEi0ynNyyS/whs5gmYHSE/lyrCphEOWCZgWPRCaK6vIBP2BjknGwZlg6PchT+JdAvKvxnDhQOIF7x0JWOioBVJQQ7+vHHOzcoaaPzmfQtrJ2myVBi4LIpjtSwHGlq2WXHbIsZW3LGZGD28cyiYm+aWwVuO9x/QhXn3prnH7sZqgHxWQvmIDd1/0cbpM1jitUvad35wqSCbGh4/XxZJiK8l3FumP0YF6DRXkjWoLWUARtEOh+A4O153UhFcYV5cwH4R2WAXjEWpFLwA/vukOnYttylFpzoIFldKGXNbUYND4vteGQHqP6U7Hih20cg5OR8fSvKNfIv5znADEqviHVATtAaxVD4rKZLehTLN1UvzZClGV+Q7OAOZmY4qCXeeIZN28nn7iMZHrkpLwDrjrsMIRbAunx5zMfpib07peN5fuK9PoRDmDArkfV/JZ1/eid+MMQm63zKMxjvQCY/pb7O+F7ylRDJiytDi8AKW4HUxrtOAOrsXfSAHPi95CYR3nUXKcYEEoQ+4nY4js2MKTY+e7h/8=</Modulus><Exponent>AQAB</Exponent></RSAKeyValue>",
+                updateUrl = "http://hurricaneproject.bplaced.net/updater/updates/",
+                projectId = "337f8837-7d1c-4659-8cc4-5e22f6eaf4e3",
+                publicKey = "<RSAKeyValue><Modulus>0WxHvbAz4V0URRjsNxCRjYA3HMx3L40Woa+mriLOTDF5YkjKUPoKlZxWIrBFSbBTAogkcNAryphaGzI8sAAsxeWE+SlVjKI2vGPFZA1EedXSbmPXQdWY1jD15F6Ks6/TmL0Aacvk6OHc3d6RzGyGQ52GSInGEmeQq1iIgvhT/HXZzftpRthTEx9YtfKRMtyd/Vsq99B25gTQ+kl1OzlzmogN9apwQLavKxYFSCkZZRDlzND6hxMKLBpeWiZOqlw0lYyDAcE72EkxjQqPMmPD06t+UDBQE+0++uXmLWMfgMxKDi1G8U1An7OfsNC1iZVcR2dytNMW+5FE84bN8ZJTSDXHGuUwn+z6Se+kglaQEmpHLSt6SunH33BxouQa5bliB3LHa6+84p4VjJR2EoYRPRjjN46cTZbq8w8AHLBqLJ+2nirXBbDI50pGs+ek0YKMj5qb4x0pDl4P0MhHvdvHQL4Sia6ZzssI5bOwTSI/hl1HezNznVKlGzx5i0H5fRaVXLoHBNWXMKvdgqhRTJJr6zcPc+iKUBNTLoqbInRy8oX7dmJIZQbq3PvV5CJygIkbiFvLPw+DKSn9ffE2SRF1ZWnzQ33lCQc3c0BLU585BjAkAzX4TQLgU+PbZGX/V3JNqQBcvmdDurRwmU1td1Fx7gGlBtvcWS8BdP6oUWa6+8M=</Modulus><Exponent>AQAB</Exponent></RSAKeyValue>",
                 releaseFilter = {checkForFinal = true, checkForBeta = true, checkForAlpha = false},
                 restartApplication = true,
                 retrieveHostVersion = true,
@@ -103,10 +103,13 @@ namespace Hurricane.Settings
         {
             var version = e.Result.newUpdatePackages.Last().releaseInfo.Version;
             NewVersion = version.Substring(0, version.Length - 2); //remove two to get 0.0.0 instead of 0.0.0.0
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
             foreach (var package in e.Result.newUpdatePackages)
             {
-                sb.AppendLine("[i]" + string.Format(Application.Current.Resources["UpdateChangelogText"].ToString(), package.releaseInfo.Version, DateTime.Parse(package.ReleaseDate).ToString(Application.Current.Resources["DateFormat"].ToString())));
+                DateTime releaseDateTime;
+                var releaseDateTimeString = DateTime.TryParse(package.ReleaseDate, out releaseDateTime) ? releaseDateTime.ToString(Application.Current.Resources["DateFormat"].ToString()) : package.ReleaseDate;
+
+                sb.AppendLine("[i]" + string.Format(Application.Current.Resources["UpdateChangelogText"].ToString(), package.releaseInfo.Version, releaseDateTimeString));
                 sb.AppendLine();
                 sb.AppendLine(_language == Language.English ? _updController.currentUpdateResult.Changelogs[package].englishChanges : _updController.currentUpdateResult.Changelogs[package].germanChanges);
                 sb.AppendLine();

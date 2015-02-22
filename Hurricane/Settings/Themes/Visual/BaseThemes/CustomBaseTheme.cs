@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Windows;
 using System.Windows.Markup;
+using System.Xml.Serialization;
 
 namespace Hurricane.Settings.Themes.Visual.BaseThemes
 {
@@ -14,7 +17,11 @@ namespace Hurricane.Settings.Themes.Visual.BaseThemes
 
             try
             {
-                baseTheme.GetResource();
+                if (!IsBaseThemeDictionary(baseTheme.ResourceDictionary))
+                {
+                    result = null;
+                    return false;
+                }
             }
             catch (XamlParseException)
             {
@@ -26,14 +33,10 @@ namespace Hurricane.Settings.Themes.Visual.BaseThemes
             return true;
         }
 
-        private ResourceDictionary GetResource()
+        [XmlIgnore]
+        public override ResourceDictionary ResourceDictionary
         {
-            return new ResourceDictionary { Source = new Uri(Path.Combine(HurricaneSettings.Instance.BaseThemesDirectory, Name + ".xaml"), UriKind.RelativeOrAbsolute) };
-        }
-
-        public override void ApplyTheme()
-        {
-            ApplicationThemeManager.Instance.LoadResource("basetheme", GetResource());
+            get { return new ResourceDictionary { Source = new Uri(Path.Combine(HurricaneSettings.Instance.BaseThemesDirectory, Name + ".xaml"), UriKind.RelativeOrAbsolute) }; }
         }
 
         public override string TranslatedName
@@ -41,14 +44,42 @@ namespace Hurricane.Settings.Themes.Visual.BaseThemes
             get { return Name; }
         }
 
-        public override bool UseLightDialogs
-        {
-            get { return (bool)GetResource()["UseDialogsForWhiteTheme"]; }
-        }
-
         public override string Group
         {
             get { return Application.Current.Resources["Custom"].ToString(); }
+        }
+
+        public static bool IsBaseThemeDictionary(ResourceDictionary resources)
+        {
+            if (resources == null) throw new ArgumentNullException("resources");
+
+            // Note: add more checks if these keys aren't sufficient
+            var styleKeys = new List<string>(new[]
+            {
+                "BlackColor",
+                "WhiteColor",
+                "Gray1",
+                "Gray2",
+                "Gray7",
+                "Gray8",
+                "Gray10",
+                "GrayNormal",
+                "GrayHover",
+                "FlyoutColor",
+            });
+
+            foreach (var styleKey in styleKeys)
+            {
+                // Note: do not use contains, because that will look in all merged dictionaries as well. We need to check
+                // out the actual keys of the current resource dictionary
+                if (!(from object resourceKey in resources.Keys
+                      select resourceKey as string).Any(keyAsString => string.Equals(keyAsString, styleKey)))
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
     }
 }

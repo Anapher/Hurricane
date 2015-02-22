@@ -13,7 +13,28 @@
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="2*"/>
         </Grid.ColumnDefinitions>
-        <ListBox ItemsSource="{Binding ElementName=MainControl,Path=ThemeData.ThemeSettings}" DisplayMemberPath="DisplayName" x:Name="ThemeSettingsListBox"/>
+        <ListBox ItemsSource="{Binding ElementName=MainControl,Path=ThemeData.ThemeSettings}" x:Name="ThemeSettingsListBox">
+            <ListBox.ItemTemplate>
+                <DataTemplate DataType="{x:Type themes:ThemeColor}">
+                    <StackPanel Orientation="Horizontal" Margin="2">
+                        <Border Width="25" Height="15">
+                            <Border.Style>
+                                <Style TargetType="Border">
+                                    <Setter Property="Background">
+                                        <Setter.Value>
+                                            <SolidColorBrush Color="{Binding Color}"/>
+                                        </Setter.Value>
+                                    </Setter>
+                                    <Setter Property="BorderThickness" Value="1"/>
+                                    <Setter Property="BorderBrush" Value="LightGray"></Setter>
+                                </Style>
+                            </Border.Style>
+                        </Border>
+                        <TextBlock Text="{Binding DisplayName}" VerticalAlignment="Center" Margin="5,0,0,0"/>
+                    </StackPanel>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
         <Grid Grid.Column="1">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>

@@ -155,24 +155,22 @@
             <TabItem Header="Appearance">
                 <ScrollViewer>
                     <StackPanel Orientation="Vertical" Margin="10">
+                        <Button Content="Theme Designer öffnen" Margin="0,10,0,10" HorizontalAlignment="Right" Command="{Binding OpenDesigner}"/>
                         <TextBlock Style="{StaticResource TextBlockHeader}" extensions:TextBlockHelper.UpperText="{DynamicResource Theme}"/>
-                        <Grid Margin="0,10,0,0">
-                            <StackPanel Orientation="Vertical">
-                                <TextBlock Text="{DynamicResource BaseTheme}" VerticalAlignment="Center"/>
-                                <ComboBox Margin="0,5,0,0" Width="100" HorizontalAlignment="Left" SelectedItem="{Binding SelectedBaseTheme}" ItemsSource="{Binding ApplicationThemeManager.BaseThemes,Converter={StaticResource GroupConverter}}" DisplayMemberPath="TranslatedName">
-                                    <ComboBox.GroupStyle>
-                                        <GroupStyle>
-                                            <GroupStyle.HeaderTemplate>
-                                                <DataTemplate>
-                                                    <TextBlock Text="{Binding Name}" FontWeight="Bold" Margin="2,5,0,2" FontSize="14"/>
-                                                </DataTemplate>
-                                            </GroupStyle.HeaderTemplate>
-                                        </GroupStyle>
-                                    </ComboBox.GroupStyle>
-                                </ComboBox>
-                            </StackPanel>
-                            <Button Content="{DynamicResource Apply}" Command="{Binding ApplyTheme}" IsEnabled="{Binding CanApplyNewTheme}" HorizontalAlignment="Right" VerticalAlignment="Top"/>
-                        </Grid>
+                        <StackPanel Orientation="Vertical" Margin="0,10,0,0">
+                            <TextBlock Text="{DynamicResource BaseTheme}" VerticalAlignment="Center"/>
+                            <ComboBox Margin="0,5,0,0" Width="100" HorizontalAlignment="Left" SelectedItem="{Binding SelectedBaseTheme}" ItemsSource="{Binding ApplicationThemeManager.BaseThemes,Converter={StaticResource GroupConverter}}" DisplayMemberPath="TranslatedName">
+                                <ComboBox.GroupStyle>
+                                    <GroupStyle>
+                                        <GroupStyle.HeaderTemplate>
+                                            <DataTemplate>
+                                                <TextBlock Text="{Binding Name}" FontWeight="Bold" Margin="2,5,0,2" FontSize="14"/>
+                                            </DataTemplate>
+                                        </GroupStyle.HeaderTemplate>
+                                    </GroupStyle>
+                                </ComboBox.GroupStyle>
+                            </ComboBox>
+                        </StackPanel>
                         <TextBlock Text="{DynamicResource ColorTheme}" Margin="0,15,0,0"/>
                         <ComboBox Margin="0,5,10,0" ItemsSource="{Binding ApplicationThemeManager.ColorThemes,Converter={StaticResource GroupConverter}}" SelectedItem="{Binding SelectedColorTheme}" Width="300" HorizontalAlignment="Left">
                             <ComboBox.ItemTemplate>

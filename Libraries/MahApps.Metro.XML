@@ -51,11 +51,6 @@
             With this class we can make custom window styles.
             </summary>
         </member>
-        <member name="M:MahApps.Metro.Behaviours.BorderlessWindowBehavior.AdjustWorkingAreaForAutoHide(System.IntPtr,MahApps.Metro.Native.MINMAXINFO)">
-            <summary>
-            This method handles the window size if the taskbar is set to auto-hide.
-            </summary>
-        </member>
         <member name="M:MahApps.Metro.Behaviours.GlowWindowBehavior.Update">
             <summary>
             Updates all glow windows (visible, hidden, collapsed)
@@ -241,6 +236,11 @@
             Gets/sets the default text( just the inputdialog needed)
             </summary>
         </member>
+        <member name="P:MahApps.Metro.Controls.Dialogs.MetroDialogSettings.MaximumBodyHeight">
+            <summary>
+            Gets/sets the maximum height. (Default is unlimited height, <a href="http://msdn.microsoft.com/de-de/library/system.double.nan">Double.NaN</a>)
+            </summary>
+        </member>
         <member name="T:MahApps.Metro.Controls.Dialogs.MetroDialogColorScheme">
             <summary>
             An enum representing the different choices for a color scheme in a Metro Dialog.
@@ -301,6 +301,7 @@
             </summary>
             <param name="window">The owning window of the dialog.</param>
             <param name="dialog">The dialog instance itself.</param>
+            <param name="settings">An optional pre-defined settings instance.</param>
             <returns>A task representing the operation.</returns>
             <exception cref="T:System.InvalidOperationException">The <paramref name="dialog"/> is already visible in the window.</exception>
         </member>
@@ -310,11 +311,18 @@
             </summary>
             <param name="window">The window with the dialog that is visible.</param>
             <param name="dialog">The dialog instance to hide.</param>
+            <param name="settings">An optional pre-defined settings instance.</param>
             <returns>A task representing the operation.</returns>
             <exception cref="T:System.InvalidOperationException">
             The <paramref name="dialog"/> is not visible in the window.
             This happens if <see cref="M:MahApps.Metro.Controls.Dialogs.DialogManager.ShowMetroDialogAsync(MahApps.Metro.Controls.MetroWindow,MahApps.Metro.Controls.Dialogs.BaseMetroDialog,MahApps.Metro.Controls.Dialogs.MetroDialogSettings)"/> hasn't been called before.
             </exception>
+        </member>
+        <member name="M:MahApps.Metro.Controls.Dialogs.DialogManager.GetCurrentDialogAsync``1(MahApps.Metro.Controls.MetroWindow)">
+            <summary>
+            Gets the current shown dialog.
+            </summary>
+            <param name="window">The dialog owner.</param>
         </member>
         <member name="T:MahApps.Metro.Controls.Dialogs.InputDialog">
             <summary>
@@ -555,6 +563,16 @@
             Gets or sets the theme of this flyout.
             </summary>
         </member>
+        <member name="P:MahApps.Metro.Controls.Flyout.FocusedElement">
+            <summary>
+            Gets or sets the focused element.
+            </summary>
+        </member>
+        <member name="P:MahApps.Metro.Controls.Flyout.AllowFocusElement">
+            <summary>
+            Gets or sets a value indicating whether the flyout should try focus an element.
+            </summary>
+        </member>
         <member name="T:MahApps.Metro.Controls.FlyoutsControl">
             <summary>
             A FlyoutsControl is for displaying flyouts in a MetroWindow.
@@ -670,6 +688,11 @@
         <member name="T:MahApps.Metro.Controls.MetroWindow">
             <summary>
             An extended, metrofied Window class.
+            </summary>
+        </member>
+        <member name="M:MahApps.Metro.Controls.MetroWindow.GetWindowPlacementSettings">
+            <summary>
+            Gets the window placement settings (can be overwritten).
             </summary>
         </member>
         <member name="M:MahApps.Metro.Controls.MetroWindow.ShowOverlayAsync">
@@ -792,6 +815,21 @@
         <member name="P:MahApps.Metro.Controls.MetroWindow.ShowCloseButton">
             <summary>
             Gets/sets if the close button is visible.
+            </summary>
+        </member>
+        <member name="P:MahApps.Metro.Controls.MetroWindow.IsMinButtonEnabled">
+            <summary>
+            Gets/sets if the min button is enabled.
+            </summary>
+        </member>
+        <member name="P:MahApps.Metro.Controls.MetroWindow.IsMaxRestoreButtonEnabled">
+            <summary>
+            Gets/sets if the max/restore button is enabled.
+            </summary>
+        </member>
+        <member name="P:MahApps.Metro.Controls.MetroWindow.IsCloseButtonEnabled">
+            <summary>
+            Gets/sets if the close button is enabled.
             </summary>
         </member>
         <member name="P:MahApps.Metro.Controls.MetroWindow.ShowSystemMenuOnRightClick">
@@ -1167,6 +1205,32 @@
             An Enum representing different positions, such as Left or Right.
             </summary>
         </member>
+        <member name="T:MahApps.Metro.Controls.PropertyChangeNotifier">
+            <summary>
+            AddValueChanged of dependency property descriptor results in memory leak as you already know.
+            So, as described here, you can create custom class PropertyChangeNotifier to listen
+            to any dependency property changes.
+            
+            This class takes advantage of the fact that bindings use weak references to manage associations
+            so the class will not root the object who property changes it is watching. It also uses a WeakReference
+            to maintain a reference to the object whose property it is watching without rooting that object.
+            In this way, you can maintain a collection of these objects so that you can unhook the property
+            change later without worrying about that collection rooting the object whose values you are watching.
+            
+            Complete implementation can be found here: http://agsmith.wordpress.com/2008/04/07/propertydescriptor-addvaluechanged-alternative/
+            </summary>
+        </member>
+        <member name="F:MahApps.Metro.Controls.PropertyChangeNotifier.ValueProperty">
+            <summary>
+            Identifies the <see cref="P:MahApps.Metro.Controls.PropertyChangeNotifier.Value"/> dependency property
+            </summary>
+        </member>
+        <member name="P:MahApps.Metro.Controls.PropertyChangeNotifier.Value">
+            <summary>
+            Returns/sets the value of the property
+            </summary>
+            <seealso cref="F:MahApps.Metro.Controls.PropertyChangeNotifier.ValueProperty"/>
+        </member>
         <member name="F:MahApps.Metro.Controls.ScrollBarHelper.VerticalScrollBarOnLeftSideProperty">
             <summary>
             This property can be used to set vertical scrollbar left side from the tabpanel (look at MetroAnimatedSingleRowTabControl)
@@ -1344,6 +1408,11 @@
             Password watermarking code from: http://prabu-guru.blogspot.com/2010/06/how-to-add-watermark-text-to-textbox.html
             </remarks>
         </member>
+        <member name="F:MahApps.Metro.Controls.TextBoxHelper.IsClearTextButtonBehaviorEnabledProperty">
+            <summary>
+            The clear text button behavior property. It sets a click event to the button if the value is true.
+            </summary>
+        </member>
         <member name="M:MahApps.Metro.Controls.TextBoxHelper.GetIsSpellCheckContextMenuEnabled(System.Windows.UIElement)">
             <summary>
             Indicates if a TextBox or RichTextBox should use SpellCheck context menu
@@ -1352,6 +1421,16 @@
         <member name="M:MahApps.Metro.Controls.TextBoxHelper.GetHasText(System.Windows.DependencyObject)">
             <summary>
             Gets if the attached TextBox has text.
+            </summary>
+        </member>
+        <member name="M:MahApps.Metro.Controls.TextBoxHelper.GetIsClearTextButtonBehaviorEnabled(System.Windows.Controls.Button)">
+            <summary>
+            Gets the clear text button behavior.
+            </summary>
+        </member>
+        <member name="M:MahApps.Metro.Controls.TextBoxHelper.SetIsClearTextButtonBehaviorEnabled(System.Windows.Controls.Button,System.Boolean)">
+            <summary>
+            Sets the clear text button behavior.
             </summary>
         </member>
         <member name="T:MahApps.Metro.Controls.ToggleSwitchButton">
@@ -1506,6 +1585,11 @@
             <param name="reference">The main element which is used to perform
             hit testing.</param>
             <param name="point">The position to be evaluated on the origin.</param>
+        </member>
+        <member name="P:MahApps.Metro.Controls.WindowCommands.ShowSeparators">
+            <summary>
+            Gets or sets the value indicating whether to show the separators.
+            </summary>
         </member>
         <member name="F:Standard.IID.ApplicationAssociationRegistration">
             <summary>IID_IApplicationAssociationRegistration</summary>
@@ -2530,6 +2614,11 @@
         <member name="F:Standard.MARGINS.cyBottomHeight">
             <summary>Height of bottom border that retains its size.</summary>
         </member>
+        <member name="F:Standard.APPBARDATA.cbSize">
+            <summary>
+            initialize this field using: Marshal.SizeOf(typeof(APPBARDATA));
+            </summary>
+        </member>
         <member name="T:Standard.WndProc">
             <summary>Delegate declaration that matches native WndProc signatures.</summary>
         </member>
@@ -3277,6 +3366,11 @@
         <member name="F:Microsoft.Windows.Shell.WindowChromeWorker._chromeInfo">
             <summary>Object that describes the current modifications being made to the chrome.</summary>
         </member>
+        <member name="M:Microsoft.Windows.Shell.WindowChromeWorker.AdjustWorkingAreaForAutoHide(System.IntPtr,Standard.RECT)">
+            <summary>
+            This method handles the window size if the taskbar is set to auto-hide.
+            </summary>
+        </member>
         <member name="M:Microsoft.Windows.Shell.WindowChromeWorker._ModifyStyle(Standard.WS,Standard.WS)">
             <summary>Add and remove a native WindowStyle from the HWND.</summary>
             <param name="removeStyle">The styles to be removed.  These can be bitwise combined.</param>
@@ -3318,6 +3412,9 @@
             There are a few specific bugs in Window in 3.5SP1 and below that require workarounds
             when handling WM_NCCALCSIZE on the HWND.
             </remarks>
+        </member>
+        <member name="P:Microsoft.Windows.Shell.WindowChromeWorker._MinimizeAnimation">
+            A borderless window lost his animation, with this we bring it back.
         </member>
         <member name="T:MahApps.Metro.Models.Win32.WM">
             <summary>
@@ -4659,9 +4756,34 @@
             Specifies that a window has a border with a raised edge.
             </summary>
         </member>
+        <member name="M:MahApps.Metro.Controls.IWindowPlacementSettings.Reload">
+            <summary>
+            Refreshes the application settings property values from persistent storage.
+            </summary>
+        </member>
+        <member name="M:MahApps.Metro.Controls.IWindowPlacementSettings.Upgrade">
+            <summary>
+            Updates application settings to reflect a more recent installation of the application.
+            </summary>
+        </member>
+        <member name="M:MahApps.Metro.Controls.IWindowPlacementSettings.Save">
+            <summary>
+            Stores the current values of the settings properties.
+            </summary>
+        </member>
+        <member name="P:MahApps.Metro.Controls.IWindowPlacementSettings.UpgradeSettings">
+            <summary>
+            Upgrades the application settings on loading.
+            </summary>
+        </member>
         <member name="T:MahApps.Metro.Controls.WindowApplicationSettings">
             <summary>
             this settings class is the default way to save the placement of the window
+            </summary>
+        </member>
+        <member name="P:MahApps.Metro.Controls.WindowApplicationSettings.UpgradeSettings">
+            <summary>
+            Upgrades the application settings on loading.
             </summary>
         </member>
         <member name="F:MahApps.Metro.Native.Constants.ShowWindowCommands.SW_HIDE">
@@ -4722,6 +4844,46 @@
         <member name="F:MahApps.Metro.Native.Constants.ShowWindowCommands.SW_RESTORE">
             <summary>
                    Activates and displays the window. If the window is minimized or maximized, the system restores it to its original size and position. An application should specify this flag when restoring a minimized window.
+            </summary>
+        </member>
+        <member name="F:MahApps.Metro.Native.Constants.RedrawWindowFlags.Invalidate">
+            <summary>
+            Invalidates the rectangle or region that you specify in lprcUpdate or hrgnUpdate.
+            You can set only one of these parameters to a non-NULL value. If both are NULL, RDW_INVALIDATE invalidates the entire window.
+            </summary>
+        </member>
+        <member name="F:MahApps.Metro.Native.Constants.RedrawWindowFlags.InternalPaint">
+            <summary>Causes the OS to post a WM_PAINT message to the window regardless of whether a portion of the window is invalid.</summary>
+        </member>
+        <member name="F:MahApps.Metro.Native.Constants.RedrawWindowFlags.Erase">
+            <summary>
+            Causes the window to receive a WM_ERASEBKGND message when the window is repainted.
+            Specify this value in combination with the RDW_INVALIDATE value; otherwise, RDW_ERASE has no effect.
+            </summary>
+        </member>
+        <member name="F:MahApps.Metro.Native.Constants.RedrawWindowFlags.Validate">
+            <summary>
+            Validates the rectangle or region that you specify in lprcUpdate or hrgnUpdate.
+            You can set only one of these parameters to a non-NULL value. If both are NULL, RDW_VALIDATE validates the entire window.
+            This value does not affect internal WM_PAINT messages.
+            </summary>
+        </member>
+        <member name="F:MahApps.Metro.Native.Constants.RedrawWindowFlags.NoErase">
+            <summary>Suppresses any pending WM_ERASEBKGND messages.</summary>
+        </member>
+        <member name="F:MahApps.Metro.Native.Constants.RedrawWindowFlags.NoChildren">
+            <summary>Excludes child windows, if any, from the repainting operation.</summary>
+        </member>
+        <member name="F:MahApps.Metro.Native.Constants.RedrawWindowFlags.AllChildren">
+            <summary>Includes child windows, if any, in the repainting operation.</summary>
+        </member>
+        <member name="F:MahApps.Metro.Native.Constants.RedrawWindowFlags.UpdateNow">
+            <summary>Causes the affected windows, which you specify by setting the RDW_ALLCHILDREN and RDW_NOCHILDREN values, to receive WM_ERASEBKGND and WM_PAINT messages before the RedrawWindow returns, if necessary.</summary>
+        </member>
+        <member name="F:MahApps.Metro.Native.Constants.RedrawWindowFlags.EraseNow">
+            <summary>
+            Causes the affected windows, which you specify by setting the RDW_ALLCHILDREN and RDW_NOCHILDREN values, to receive WM_ERASEBKGND messages before RedrawWindow returns, if necessary.
+            The affected windows receive WM_PAINT messages at the ordinary time.
             </summary>
         </member>
         <member name="M:MahApps.Metro.Native.RECT.Equals(System.Object)">

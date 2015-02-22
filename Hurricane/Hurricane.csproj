@@ -132,9 +132,8 @@
     <Compile Include="AppMainWindow\MahAppsExtensions\Dialogs\EqualizerDialog.xaml.cs">
       <DependentUpon>EqualizerDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="AppMainWindow\Messages\MessageDialog.cs" />
-    <Compile Include="AppMainWindow\Messages\MessageManager.cs" />
     <Compile Include="AppMainWindow\Messages\ProgressDialog.cs" />
+    <Compile Include="AppMainWindow\Messages\WindowDialogService.cs" />
     <Compile Include="Designer\Converter\BrushFromThemeDataConverter.cs" />
     <Compile Include="Designer\Converter\ColorFromThemeDataConverter.cs" />
     <Compile Include="Designer\Data\BaseThemeData.cs" />
@@ -142,6 +141,7 @@
     <Compile Include="Designer\Data\EditableThemePack.cs" />
     <Compile Include="Designer\Data\IPreviewable.cs" />
     <Compile Include="Designer\Data\ISaveable.cs" />
+    <Compile Include="Designer\Data\PreviewData.cs" />
     <Compile Include="Designer\Data\ThemeBoolean.cs" />
     <Compile Include="Designer\Data\DataThemeBase.cs" />
     <Compile Include="Designer\Data\ThemeColor.cs" />

@@ -146,7 +146,7 @@ namespace Hurricane.Music.Track.WebApi
                     IsLoading = true;
                     if (!(await SelectedTrack.CheckIfAvailable()))
                     {
-                        await _baseWindow.ShowMessage(Application.Current.Resources["ExceptionOpenOnlineTrack"].ToString(), Application.Current.Resources["Exception"].ToString(), false, DialogMode.Single);
+                        await _baseWindow.WindowDialogService.ShowMessage(Application.Current.Resources["ExceptionOpenOnlineTrack"].ToString(), Application.Current.Resources["Exception"].ToString(), false, DialogMode.Single);
                         IsLoading = false;
                         return;
                     }
@@ -169,7 +169,7 @@ namespace Hurricane.Music.Track.WebApi
                     IsLoading = true;
                     if (!(await SelectedTrack.CheckIfAvailable()))
                     {
-                        await _baseWindow.ShowMessage(Application.Current.Resources["ExceptionAddOnlineTrack"].ToString(), Application.Current.Resources["Exception"].ToString(), false, DialogMode.Single);
+                        await _baseWindow.WindowDialogService.ShowMessage(Application.Current.Resources["ExceptionAddOnlineTrack"].ToString(), Application.Current.Resources["Exception"].ToString(), false, DialogMode.Single);
                         IsLoading = false;
                         return;
                     }
@@ -207,7 +207,7 @@ namespace Hurricane.Music.Track.WebApi
                 return _addPlaylistToNewPlaylist ?? (_addPlaylistToNewPlaylist = new RelayCommand(async parameter =>
                 {
                     if (PlaylistResult == null) return;
-                    string result = await _baseWindow.ShowInputDialog(Application.Current.Resources["NewPlaylist"].ToString(), Application.Current.Resources["NameOfPlaylist"].ToString(), Application.Current.Resources["Create"].ToString(), PlaylistResult.Title, DialogMode.Single);
+                    string result = await _baseWindow.WindowDialogService.ShowInputDialog(Application.Current.Resources["NewPlaylist"].ToString(), Application.Current.Resources["NameOfPlaylist"].ToString(), Application.Current.Resources["Create"].ToString(), PlaylistResult.Title, DialogMode.Single);
                     if (string.IsNullOrEmpty(result)) return;
                     var playlist = new NormalPlaylist() { Name = result };
                     _manager.Playlists.Add(playlist);

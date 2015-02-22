@@ -61,16 +61,17 @@ namespace Hurricane.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die ﻿&lt;ResourceDictionary xmlns=&quot;http://schemas.microsoft.com/winfx/2006/xaml/presentation&quot;
+        ///   Sucht eine lokalisierte Zeichenfolge, die &lt;ResourceDictionary xmlns=&quot;http://schemas.microsoft.com/winfx/2006/xaml/presentation&quot;
         ///                    xmlns:x=&quot;http://schemas.microsoft.com/winfx/2006/xaml&quot;
-        ///                    xmlns:options=&quot;http://schemas.microsoft.com/winfx/2006/xaml/presentation/options&quot;
-        ///                    xmlns:mc=&quot;http://schemas.openxmlformats.org/markup-compatibility/2006&quot;
-        ///                    mc:Ignorable=&quot;options&quot;&gt;
+        ///                    xmlns:options=&quot;http://schemas.microsoft.com/winfx/2006/xaml/presentation/options&quot;&gt;
         ///
         ///    &lt;Color x:Key=&quot;BlackColor&quot;&gt;{BlackColor}&lt;/Color&gt;
         ///    &lt;Color x:Key=&quot;WhiteColor&quot;&gt;{WhiteColor}&lt;/Color&gt;
         ///
-        /// [Rest der Zeichenfolge wurde abgeschnitten]&quot;; ähnelt.
+        ///    &lt;Color x:Key=&quot;Gray1&quot;&gt;{Gray1}&lt;/Color&gt;
+        ///    &lt;Color x:Key=&quot;Gray2&quot;&gt;{Gray2}&lt;/Color&gt;
+        ///    &lt;Color x:Key=&quot;Gray7&quot;&gt;{Gray7}&lt;/Color&gt;
+        ///    &lt;Color  [Rest der Zeichenfolge wurde abgeschnitten]&quot;; ähnelt.
         /// </summary>
         internal static string BaseTheme {
             get {

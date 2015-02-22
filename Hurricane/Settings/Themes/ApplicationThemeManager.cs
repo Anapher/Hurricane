@@ -174,6 +174,7 @@ namespace Hurricane.Settings.Themes
                 Application.Current.Resources.MergedDictionaries.Remove(_loadedResources[key]);
                 _loadedResources.Remove(key);
             }
+
             _loadedResources.Add(key, resource);
         }
     }

@@ -42,7 +42,7 @@ namespace Hurricane.Music.Track
 
         public bool LoadInformation(ApiResult result, SoundSourceInfo soundSourceInfo)
         {
-            if (!result.streamable) return false;
+            if (!result.IsStreamable) return false;
             Year = result.release_year != null
                 ? uint.Parse(result.release_year.ToString())
                 : (uint)DateTime.Parse(result.created_at).Year;

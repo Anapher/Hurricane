@@ -18,6 +18,7 @@ using Hurricane.Music.MusicDatabase.EventArgs;
 using Hurricane.Music.Track;
 using Hurricane.Settings;
 using Hurricane.Utilities;
+using Hurricane.Utilities.Native;
 using Hurricane.ViewModels;
 using Hurricane.Views;
 using MahApps.Metro.Controls;
@@ -95,7 +96,7 @@ namespace Hurricane
             }
 
             MagicArrow.DockManager.CurrentSide = appsettings.ApplicationState.CurrentSide;
-            InitializeMessages();
+            WindowDialogService = new WindowDialogService(this);
         }
 
         public void CenterWindowOnScreen()
@@ -325,8 +326,8 @@ namespace Hurricane
 
                 WindowState = WindowState.Normal;
 
-                Utilities.Native.POINT lMousePosition;
-                Utilities.Native.UnsafeNativeMethods.GetCursorPos(out lMousePosition);
+                POINT lMousePosition;
+                UnsafeNativeMethods.GetCursorPos(out lMousePosition);
 
                 Left = lMousePosition.X - targetHorizontal;
                 Top = lMousePosition.Y - targetVertical;
@@ -378,129 +379,7 @@ namespace Hurricane
 
         #region Messages
 
-        public MessageManager Messages { get; set; }
-
-        protected void InitializeMessages()
-        {
-            Messages = new MessageManager { ProgressDialogStart = Messages_ProgressDialogStart };
-        }
-
-        public async Task<bool> ShowMessage(string message, string title, bool cancancel, DialogMode mode)
-        {
-            if (HostedWindow.Configuration.ShowFullscreenDialogs)
-            {
-                MessageDialogResult result = await this.ShowMessageAsync(title, message, cancancel ? MessageDialogStyle.AffirmativeAndNegative : MessageDialogStyle.Affirmative, new MetroDialogSettings() { AffirmativeButtonText = "OK", NegativeButtonText = Application.Current.Resources["Cancel"].ToString(), AnimateHide = ShowHideAnimation(mode), AnimateShow = ShowShowAnimation(mode), ColorScheme = GetTheme() });
-                return result == MessageDialogResult.Affirmative;
-            }
-            else
-            {
-                MessageWindow messageWindow = new MessageWindow(message, title, cancancel) { Owner = this };
-                bool result = false;
-                await Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => result = messageWindow.ShowDialog() == true));
-                return result;
-            }
-        }
-
-        private MetroDialogColorScheme GetTheme()
-        {
-            return HurricaneSettings.Instance.Config.ApplicationDesign.BaseTheme.UseLightDialogs
-                ? MetroDialogColorScheme.Theme
-                : MetroDialogColorScheme.Accented;
-        }
-
-        private bool ShowHideAnimation(DialogMode mode)
-        {
-            switch (mode)
-            {
-                case DialogMode.Single:
-                    return true;
-                case DialogMode.First:
-                    return false;
-                case DialogMode.Last:
-                    return true;
-                case DialogMode.Following:
-                    return false;
-                default:
-                    throw new ArgumentOutOfRangeException("mode");
-            }
-        }
-
-        private bool ShowShowAnimation(DialogMode mode)
-        {
-            switch (mode)
-            {
-                case DialogMode.Single:
-                    return true;
-                case DialogMode.First:
-                    return true;
-                case DialogMode.Last:
-                    return false;
-                case DialogMode.Following:
-                    return false;
-                default:
-                    throw new ArgumentOutOfRangeException("mode");
-            }
-        }
-
-        public async Task<string> ShowInputDialog(string title, string message, string buttonok, string defaulttext, DialogMode mode)
-        {
-            if (HostedWindow.Configuration.ShowFullscreenDialogs)
-            {
-                var dialog = new AdvancedInputDialog(this, new MetroDialogSettings() { AffirmativeButtonText = buttonok, DefaultText = defaulttext, NegativeButtonText = Application.Current.Resources["Cancel"].ToString(), ColorScheme = GetTheme(), AnimateHide = ShowHideAnimation(mode), AnimateShow = ShowShowAnimation(mode) }) { Title = title, Message = message };
-                await this.ShowMetroDialogAsync(dialog);
-                var result = await dialog.WaitForButtonPressAsync();
-                await dialog._WaitForCloseAsync();
-                var foo = this.HideMetroDialogAsync(dialog);
-                return result;
-            }
-            else
-            {
-                InputDialog inputdialog = new InputDialog(title, message, buttonok, defaulttext) { Owner = this };
-                await Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => inputdialog.ShowDialog()));
-                return inputdialog.ResultText;
-            }
-        }
-
-        async void Messages_ProgressDialogStart(ProgressDialogStartEventArgs e)
-        {
-            if (HostedWindow.Configuration.ShowFullscreenDialogs)
-            {
-                var progresscontroller = await this.ShowProgressAsync(e.Title, string.Empty);
-                progresscontroller.SetIndeterminate();
-                e.Instance.MessageChanged = ev =>
-                    progresscontroller.SetMessage(ev);
-                e.Instance.TitleChanged = ev =>
-                    progresscontroller.SetTitle(ev);
-                e.Instance.ProgressChanged = ev =>
-                    progresscontroller.SetProgress(ev);
-                e.Instance.CloseRequest = () =>
-                 progresscontroller.CloseAsync();
-                if (e.Instance.IsClosed) await progresscontroller.CloseAsync();
-            }
-            else
-            {
-                var progressWindow = new ProgressWindow(e.Title, e.IsIndeterminate) { Owner = this };
-                e.Instance.MessageChanged = ev => progressWindow.SetText(ev);
-                e.Instance.TitleChanged = ev => progressWindow.SetTitle(ev);
-                e.Instance.ProgressChanged = ev => progressWindow.SetProgress(ev);
-                e.Instance.CloseRequest = () => { progressWindow.Close(); return null; };
-                await Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => progressWindow.ShowDialog()));
-            }
-        }
-
-        public void ShowUpdateDialog(UpdateService updateService)
-        {
-            var dialog = new UpdateWindow(updateService)
-            {
-                Owner = this,
-                WindowStartupLocation =
-                    HostedWindow.Configuration.ShowFullscreenDialogs
-                        ? WindowStartupLocation.CenterScreen
-                        : WindowStartupLocation.CenterOwner
-            };
-
-            dialog.ShowDialog();
-        }
+        public WindowDialogService WindowDialogService { get; set; }
 
         EqualizerWindow _equalizerWindow;
         private bool _equalizerIsOpen;
@@ -516,9 +395,9 @@ namespace Hurricane
                 if (!_equalizerIsOpen)
                 {
                     var rect = WindowHelper.GetWindowRectangle(this);
-                    _equalizerWindow = new EqualizerWindow(rect, ActualWidth);
+                    _equalizerWindow = new EqualizerWindow(rect, this.ActualWidth);
                     _equalizerWindow.Closed += (s, e) => _equalizerIsOpen = false;
-                    _equalizerWindow.BeginCloseAnimation += (s, e) => Activate();
+                    _equalizerWindow.BeginCloseAnimation += (s, e) => this.Activate();
                     _equalizerWindow.Show();
                     _equalizerIsOpen = true;
                 }
@@ -534,25 +413,13 @@ namespace Hurricane
             if (_equalizerIsOpen) { _equalizerWindow.Close(); _equalizerIsOpen = false; }
         }
 
-        public void OpenTrackInformations(PlayableBase track)
-        {
-            var trackInformationWindow = new TrackInformationWindow(track) { Owner = this, WindowStartupLocation = HostedWindow.Configuration.ShowFullscreenDialogs ? WindowStartupLocation.CenterOwner : WindowStartupLocation.CenterScreen };
-            trackInformationWindow.ShowDialog();
-        }
-
-        public void OpenTagEditor(LocalTrack track)
-        {
-            var tagEditorWindow = new TagEditorWindow(track) { Owner = this, WindowStartupLocation = HostedWindow.Configuration.ShowFullscreenDialogs ? WindowStartupLocation.CenterOwner : WindowStartupLocation.CenterScreen };
-            tagEditorWindow.ShowDialog();
-        }
-
         #endregion
 
         #region Themes
 
         public async Task MoveOut()
         {
-            var fadeanimation = new DoubleAnimation(1, 0, TimeSpan.FromMilliseconds(500));
+            var fadeanimation = new DoubleAnimation(1, 0, TimeSpan.FromMilliseconds(200));
             var control = (DependencyObject)HostedWindow;
 
             Storyboard.SetTarget(fadeanimation, control);
@@ -577,8 +444,8 @@ namespace Hurricane
             _advancedWindowSkin = new WindowAdvancedView();
             ApplyHostWindow(isadvancedwindow ? _advancedWindowSkin : _smartWindowSkin, false);
 
-            var outanimation = new ThicknessAnimation(new Thickness(-100, 0, 100, 0), new Thickness(0), TimeSpan.FromMilliseconds(500));
-            var fadeanimation = new DoubleAnimation(0, 1, TimeSpan.FromMilliseconds(500));
+            var outanimation = new ThicknessAnimation(new Thickness(-100, 0, 100, 0), new Thickness(0), TimeSpan.FromMilliseconds(350));
+            var fadeanimation = new DoubleAnimation(0, 1, TimeSpan.FromMilliseconds(400));
             var control = (DependencyObject)HostedWindow;
 
             Storyboard.SetTarget(outanimation, control);

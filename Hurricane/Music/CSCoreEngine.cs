@@ -278,7 +278,17 @@ namespace Hurricane.Music
 
             _analyser = new SampleAnalyser(FFTSize);
             _analyser.Initialize(SoundSource.WaveFormat);
-            _soundOut.Initialize(SoundSource);
+
+            try
+            {
+                _soundOut.Initialize(SoundSource);
+            }
+            catch (Exception)
+            {
+                RefreshSoundOut();
+                _soundOut.Initialize(SoundSource);
+            }
+
             
             OnPropertyChanged("TrackLength");
             OnPropertyChanged("CurrentTrackLength");
@@ -414,9 +424,9 @@ namespace Hurricane.Music
         #region Constructor
         public CSCoreEngine()
         {
-            //_client = new MMNotificationClient();
+            _client = new MMNotificationClient();
             RefreshSoundOut();
-            //_client.DefaultDeviceChanged += client_DefaultDeviceChanged;
+            _client.DefaultDeviceChanged += client_DefaultDeviceChanged;
             _fader = new VolumeFading();
             _crossfade = new Crossfade();
         }

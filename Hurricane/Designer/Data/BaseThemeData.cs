@@ -1,4 +1,8 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+using System.Windows;
+using Hurricane.Settings;
+using Hurricane.Settings.Themes;
 
 namespace Hurricane.Designer.Data
 {
@@ -170,24 +174,35 @@ namespace Hurricane.Designer.Data
                     ID = "SliderBackground",
                     DisplayName ="Slider background"
                 },
-                new ThemeBoolean
+                new ThemeColor
                 {
-                    RegexPattern ="x:Key=\"LightVolumeIcon\">(?<content>(.*?))<",
-                    ID ="LightVolumeIcon",
-                    DisplayName ="Use light volume icon"
-                },
-                new ThemeBoolean
-                {
-                    RegexPattern ="x:Key=\"LightVolumeIcon\">(?<content>(.*?))<",
-                    ID ="UseDialogsForWhiteTheme",
-                    DisplayName ="Use dialogs for white themes"
+                    RegexPattern ="x:Key=\"DisabledMenuItemGlyphPanel\" Color=\"(?<content>(.*?))\"",
+                    ID ="DisabledMenuItemGlyphPanel",
+                    DisplayName ="Disabled menu item glyph panel"
                 }
             };
+        }
+        
+        public static BaseThemeData LoadDefault()
+        {
+            var baseTheme = new BaseThemeData();
+            baseTheme.LoadFromResourceDictionary(ApplicationThemeManager.Instance.BaseThemes.First(x => x.Name == "BaseLight").ResourceDictionary);
+            return baseTheme;
         }
 
         public override string Source
         {
             get { return Properties.Resources.BaseTheme; }
+        }
+
+        public override string Filter
+        {
+            get { return string.Format("{0}|*.xaml", Application.Current.Resources["BaseTheme"]); }
+        }
+
+        public override string BaseDirectory
+        {
+            get { return HurricaneSettings.Instance.BaseThemesDirectory; }
         }
     }
 }

@@ -13,6 +13,7 @@
                 <ResourceDictionary Source="/Resources/VectorGraphics.xaml"/>
 
                 <ResourceDictionary Source="/Resources/Themes/BaseLight.xaml"/>
+                <ResourceDictionary Source="/Resources/Themes/Cyan.xaml"/>
             </ResourceDictionary.MergedDictionaries>
 
             <Style TargetType="{x:Type ListView}" x:Key="VisualizingListView">

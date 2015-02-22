@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Windows;
 using System.Windows.Media;
 using System.Xml.Serialization;
 using Hurricane.Settings.Converter;
@@ -10,8 +11,9 @@ namespace Hurricane.Settings.Themes.Visual.ColorThemes
     {
         public abstract Brush ColorBrush { get; }
         public abstract string TranslatedName { get; }
-        public abstract void ApplyTheme();
         public abstract string Group { get; }
+        [XmlIgnore]
+        public abstract ResourceDictionary ResourceDictionary { get; }
 
         public string Name { get; set; }
 
@@ -23,9 +25,15 @@ namespace Hurricane.Settings.Themes.Visual.ColorThemes
                 return other.Name == Name;
             return false;
         }
+
         public override int GetHashCode()
         {
             return base.GetHashCode();
+        }
+
+        public void ApplyTheme()
+        {
+            ApplicationThemeManager.Instance.LoadResource("colortheme", ResourceDictionary);
         }
     }
 }

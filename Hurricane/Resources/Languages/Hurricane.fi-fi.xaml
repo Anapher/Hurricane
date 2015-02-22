@@ -297,4 +297,6 @@
     <system:String x:Key="Fade">Fade</system:String>
     <system:String x:Key="None">None</system:String>
     <system:String x:Key="Path">Path</system:String>
+    <system:String x:Key="ShowProgressInTaskbar">Show progress in taskbar</system:String>
+    <system:String x:Key="NothingToSeeHere">Nothing to see here</system:String>
 </ResourceDictionary>

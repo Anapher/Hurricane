@@ -17,7 +17,7 @@ namespace Hurricane.Settings.Themes.Visual.ColorThemes
 
             try
             {
-                if (!ThemeManager.IsAccentDictionary(colorTheme.GetResource()))
+                if (!ThemeManager.IsAccentDictionary(colorTheme.ResourceDictionary))
                 {
                     result = null;
                     return false;
@@ -43,23 +43,26 @@ namespace Hurricane.Settings.Themes.Visual.ColorThemes
         [XmlIgnore]
         public override Brush ColorBrush
         {
-            get { return _colorBrush ?? (_colorBrush = GetResource()["AccentColorBrush"] as Brush); }
-        }
-
-        private ResourceDictionary GetResource()
-        {
-            var foo = new Uri(Path.Combine(HurricaneSettings.Instance.ColorThemesDirectory, Name), UriKind.RelativeOrAbsolute);
-            return new ResourceDictionary { Source = foo };
-        }
-
-        public override void ApplyTheme()
-        {
-            ApplicationThemeManager.Instance.LoadResource("colortheme", GetResource());
+            get { return _colorBrush ?? (_colorBrush = ResourceDictionary["AccentColorBrush"] as Brush); }
         }
 
         public override string Group
         {
             get { return Application.Current.Resources["Custom"].ToString(); }
+        }
+
+        [XmlIgnore]
+        public override ResourceDictionary ResourceDictionary
+        {
+            get
+            {
+                return new ResourceDictionary
+                {
+                    Source =
+                        new Uri(Path.Combine(HurricaneSettings.Instance.ColorThemesDirectory, Name),
+                            UriKind.RelativeOrAbsolute)
+                };
+            }
         }
     }
 }

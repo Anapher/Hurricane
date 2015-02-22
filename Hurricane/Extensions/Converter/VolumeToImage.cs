@@ -2,6 +2,7 @@
 using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
 namespace Hurricane.Extensions.Converter
@@ -19,7 +20,7 @@ namespace Hurricane.Extensions.Converter
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            bool light = (bool)Application.Current.Resources["LightVolumeIcon"];
+            bool light = ((Color)Application.Current.Resources["BlackColor"]) != Colors.Black;
             double volume = (double)value;
             if (volume == 0)
             {

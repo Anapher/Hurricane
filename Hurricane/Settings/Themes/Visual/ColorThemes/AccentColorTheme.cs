@@ -28,15 +28,15 @@ namespace Hurricane.Settings.Themes.Visual.ColorThemes
             get { return Application.Current.Resources[Name].ToString(); }
         }
 
-        public override void ApplyTheme()
-        {
-            var resource = new ResourceDictionary { Source = new Uri(string.Format("/Resources/Themes/{0}.xaml", Name), UriKind.Relative) };
-            ApplicationThemeManager.Instance.LoadResource("colortheme", resource);
-        }
-
         public override string Group
         {
             get { return Application.Current.Resources["Default"].ToString(); }
+        }
+
+        [XmlIgnore]
+        public override ResourceDictionary ResourceDictionary
+        {
+            get { return new ResourceDictionary { Source = new Uri(string.Format("/Resources/Themes/{0}.xaml", Name), UriKind.Relative) }; }
         }
     }
 }

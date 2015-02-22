@@ -1,8 +1,12 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Controls;
 using Hurricane.Designer.Data;
 using Hurricane.Designer.Pages;
+using Hurricane.Settings;
+using Hurricane.Settings.Themes;
 using Hurricane.ViewModelBase;
+using Microsoft.Win32;
 
 namespace Hurricane.Designer
 {
@@ -20,12 +24,13 @@ namespace Hurricane.Designer
         private DesignerViewModel()
         {
             CurrentTitle = "Hurricane Designer";
+            ApplicationThemeManager.Instance.Refresh();
         }
 
         #endregion
 
-        private object _currentElement;
-        public object CurrentElement
+        private ISaveable _currentElement;
+        public ISaveable CurrentElement
         {
             get { return _currentElement; }
             set
@@ -37,14 +42,23 @@ namespace Hurricane.Designer
         private UserControl _currentView;
         public UserControl CurrentView
         {
-            get { return _currentView ?? (_currentView = new HomePage()); }
+            get { return _currentView; }
             set
             {
                 SetProperty(value, ref _currentView);   
             }
         }
 
-        
+        private UserControl _previewControl;
+        public UserControl PreviewControl
+        {
+            get { return _previewControl ?? (_previewControl = new HomePage()); }
+            set
+            {
+                SetProperty(value, ref _previewControl);
+            }
+        }
+
         private IPreviewable _previewData;
         public IPreviewable PreviewData
         {
@@ -78,16 +92,14 @@ namespace Hurricane.Designer
             }
         }
 
-        private RelayCommand _createNewBaseColor;
-        public RelayCommand CreateNewBaseColor
+        private RelayCommand _createNewBaseColorTheme;
+        public RelayCommand CreateNewBaseColorTheme
         {
             get
             {
-                return _createNewBaseColor ?? (_createNewBaseColor = new RelayCommand(parameter =>
+                return _createNewBaseColorTheme ?? (_createNewBaseColorTheme = new RelayCommand(parameter =>
                 {
-                    CurrentTitle = Application.Current.Resources["BaseTheme"].ToString();
-                    CurrentElement = new BaseThemeData();
-                    CurrentView = new ThemePage();
+                    LoadTheme(ColorThemeData.LoadDefault(), new BaseThemeData(), false);
                 }));
             }
         }
@@ -99,10 +111,126 @@ namespace Hurricane.Designer
             {
                 return _createNewColorTheme ?? (_createNewColorTheme = new RelayCommand(parameter =>
                 {
-                    CurrentTitle = Application.Current.Resources["ColorTheme"].ToString();
-                    CurrentElement = new ColorThemeData();
-                    CurrentView = new ThemePage();
+                    LoadTheme(new ColorThemeData(), BaseThemeData.LoadDefault(), true);
                 }));
+            }
+        }
+
+        private RelayCommand _openBaseColorTheme;
+        public RelayCommand OpenBaseColorTheme
+        {
+            get
+            {
+                return _openBaseColorTheme ?? (_openBaseColorTheme = new RelayCommand(parameter =>
+                {
+                    var theme = new BaseThemeData();
+
+                    var ofd = new OpenFileDialog {Filter = theme.Filter, InitialDirectory = theme.BaseDirectory};
+                    if (ofd.ShowDialog() == true)
+                    {
+                        try
+                        {
+                            theme.LoadFromFile(ofd.FileName);
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show(ex.Message);
+                            return;
+                        }
+                        LoadTheme(ColorThemeData.LoadDefault(), theme, false);
+                        CurrentElementPath = ofd.FileName;
+                    }
+                }));
+            }
+        }
+
+        private RelayCommand _openColorTheme;
+        public RelayCommand OpenColorTheme
+        {
+            get
+            {
+                return _openColorTheme ?? (_openColorTheme = new RelayCommand(parameter =>
+                {
+                    var theme = new ColorThemeData();
+
+                    var ofd = new OpenFileDialog { Filter = theme.Filter, InitialDirectory = theme.BaseDirectory };
+                    if (ofd.ShowDialog() == true)
+                    {
+                        try
+                        {
+                            theme.LoadFromFile(ofd.FileName);
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show(ex.Message);
+                            return;
+                        }
+                        LoadTheme(theme, BaseThemeData.LoadDefault(), true);
+                        CurrentElementPath = ofd.FileName;
+                    }
+                }));
+            }
+        }
+
+        private void LoadTheme(ColorThemeData colorTheme, BaseThemeData baseTheme, bool editColorTheme)
+        {
+            CurrentTitle = editColorTheme
+                ? Application.Current.Resources["ColorTheme"].ToString()
+                : Application.Current.Resources["BaseTheme"].ToString();
+
+            var themeToEdit = editColorTheme ? (DataThemeBase) colorTheme : baseTheme;
+            CurrentElement = themeToEdit;
+            CurrentView = new ThemePage();
+            var previewData = new PreviewData(colorTheme, baseTheme) { FrameworkElement = PreviewControl };
+            PreviewData = previewData;
+            PreviewControl = new LivePreview();
+            previewData.FrameworkElement = PreviewControl;
+            previewData.Refresh();
+        }
+
+        private RelayCommand _saveCurrentElement;
+        public RelayCommand SaveCurrentElement
+        {
+            get
+            {
+                return _saveCurrentElement ?? (_saveCurrentElement = new RelayCommand(parameter =>
+                {
+                    CurrentElement.Save(CurrentElementPath);
+                }));
+            }
+        }
+
+        private RelayCommand _selectSavePath;
+        public RelayCommand SelectSavePath
+        {
+            get
+            {
+                return _selectSavePath ?? (_selectSavePath = new RelayCommand(parameter =>
+                {
+                    var sfd = new SaveFileDialog
+                    {
+                        Filter = CurrentElement.Filter,
+                        InitialDirectory = 
+                            string.IsNullOrEmpty(CurrentElementPath)
+                                ? CurrentElement.BaseDirectory
+                                : CurrentElementPath
+                    };
+
+                    if (sfd.ShowDialog() == true)
+                    {
+                        CurrentElementPath = sfd.FileName;
+                    }
+                }));
+            }
+        }
+
+        private string _currentElementPath;
+        public string CurrentElementPath
+        {
+            get { return _currentElementPath; }
+            set
+            {
+                SetProperty(value, ref _currentElementPath);
             }
         }
     }

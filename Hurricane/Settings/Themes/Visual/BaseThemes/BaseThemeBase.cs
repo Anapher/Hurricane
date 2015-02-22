@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Windows;
 using System.Xml.Serialization;
 using Hurricane.Settings.Converter;
 
@@ -8,11 +9,10 @@ namespace Hurricane.Settings.Themes.Visual.BaseThemes
     public abstract class BaseThemeBase : IBaseTheme, IGroupable
     {
         public string Name { set; get; }
-
-        public abstract void ApplyTheme();
         public abstract string TranslatedName { get; }
-        public abstract bool UseLightDialogs { get; }
         public abstract string Group { get; }
+        [XmlIgnore]
+        public abstract ResourceDictionary ResourceDictionary { get; }
 
         public override bool Equals(object obj)
         {
@@ -26,6 +26,11 @@ namespace Hurricane.Settings.Themes.Visual.BaseThemes
         public override int GetHashCode()
         {
             return base.GetHashCode();
+        }
+
+        public void ApplyTheme()
+        {
+            ApplicationThemeManager.Instance.LoadResource("basetheme", ResourceDictionary);
         }
     }
 }

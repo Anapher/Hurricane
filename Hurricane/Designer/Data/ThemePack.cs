@@ -165,6 +165,11 @@ namespace Hurricane.Designer.Data
             ApplicationThemeManager.Instance.LoadResource("colortheme", _colorThemeResourceDictionary);
         }
 
+        ResourceDictionary IColorTheme.ResourceDictionary
+        {
+            get { return _colorThemeResourceDictionary; }
+        }
+
         #endregion
 
         #region IBaseTheme
@@ -186,9 +191,9 @@ namespace Hurricane.Designer.Data
             ApplicationThemeManager.Instance.LoadResource("basetheme", _baseThemeResourceDictionary);
         }
 
-        bool IBaseTheme.UseLightDialogs
+        ResourceDictionary IBaseTheme.ResourceDictionary
         {
-            get { return (bool) _baseThemeResourceDictionary["UseDialogsForWhiteTheme"]; }
+            get { return _baseThemeResourceDictionary; }
         }
 
         #endregion
@@ -225,6 +230,5 @@ namespace Hurricane.Designer.Data
                 return Application.Current.Resources["FromThemePack"].ToString();
             }
         }
-
     }
 }

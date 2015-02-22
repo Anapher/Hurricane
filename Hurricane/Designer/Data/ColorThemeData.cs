@@ -1,4 +1,8 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+using Hurricane.Settings.Themes;
+using System.Windows;
+using Hurricane.Settings;
 
 namespace Hurricane.Designer.Data
 {
@@ -48,7 +52,7 @@ namespace Hurricane.Designer.Data
                 new ThemeColor
                 {
                     RegexPattern = "x:Key=\"AccentSelectedColorBrush\" Color=\"(?<content>(.*?))\"",
-                    ID = "AccentSelectedColor",
+                    ID = "AccentSelectedColorBrush",
                     DisplayName ="Selected color"
                 },
                 new ThemeColor
@@ -60,9 +64,26 @@ namespace Hurricane.Designer.Data
             };
         }
 
+        public static ColorThemeData LoadDefault()
+        {
+            var colorTheme = new ColorThemeData();
+            colorTheme.LoadFromResourceDictionary(ApplicationThemeManager.Instance.ColorThemes.First(x => x.Name == "Cyan").ResourceDictionary);
+            return colorTheme;
+        }
+
         public override string Source
         {
             get { return Properties.Resources.ColorTheme; }
+        }
+
+        public override string Filter
+        {
+            get { return string.Format("{0}|*.xaml", Application.Current.Resources["ColorTheme"]); }
+        }
+
+        public override string BaseDirectory
+        {
+            get { return HurricaneSettings.Instance.ColorThemesDirectory; }
         }
     }
 }

@@ -1,10 +1,21 @@
-﻿using System.Windows.Media;
+﻿using System;
+using System.Windows.Media;
 
 namespace Hurricane.Designer.Data
 {
     public class ThemeColor : IThemeSetting
     {
-        public Color Color { get; set; }
+        private Color _color;
+        public Color Color
+        {
+            get { return _color; }
+            set
+            {
+                _color = value;
+                if (ValueChanged != null) ValueChanged(this, EventArgs.Empty);
+            }
+        }
+
         public string RegexPattern { get; set; }
         public bool IsTransparencyEnabled { get; set; }
 
@@ -34,5 +45,7 @@ namespace Hurricane.Designer.Data
             if (newColor == null) return;
             Color = (Color)newColor;
         }
+
+        public event EventHandler ValueChanged;
     }
 }

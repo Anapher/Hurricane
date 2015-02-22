@@ -14,7 +14,7 @@
         public string sharing { get; set; }
         public string tag_list { get; set; }
         public string permalink { get; set; }
-        public bool streamable { get; set; }
+        public string streamable { get; set; }
         public string embeddable_by { get; set; }
         public bool downloadable { get; set; }
         public string purchase_url { get; set; }
@@ -48,6 +48,15 @@
         public string attachments_uri { get; set; }
         public string policy { get; set; }
         public string download_url { get; set; }
+
+        public bool IsStreamable
+        {
+            get
+            {
+                bool result;
+                return bool.TryParse(streamable, out result) && result;
+            }
+        }
     }
 
     public class User

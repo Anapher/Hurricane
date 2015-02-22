@@ -95,31 +95,26 @@ namespace Hurricane.Music.Playlist
             tmr.Start();
         }
 
-        public override void RemoveTrack(PlayableBase track)
+        public async override void RemoveTrack(PlayableBase track)
         {
             base.RemoveTrack(track);
             ShuffleList.Remove(track);
             track.IsRemoving = true;
-            var tmr = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(500) };
-            tmr.Tick += (s, e) =>
+
+            await Task.Delay(500);
+            if (!track.TrackExists)
             {
-                if (!track.TrackExists)
+                for (int i = 0; i < Tracks.Count; i++)
                 {
-                    for (int i = 0; i < Tracks.Count; i++)
+                    if (Tracks[i].AuthenticationCode == track.AuthenticationCode)
                     {
-                        if (Tracks[i].AuthenticationCode == track.AuthenticationCode)
-                        {
-                            Tracks.RemoveAt(i);
-                            break;
-                        }
+                        Tracks.RemoveAt(i);
+                        break;
                     }
                 }
-                else { Tracks.Remove(track); }
-                
-                tmr.Stop();
-                track.IsRemoving = false; //The track could be also in another playlist
-            };
-            tmr.Start();
+            }
+            else { Tracks.Remove(track); }
+            track.IsRemoving = false; //The track could be also in another playlist
         }
 
         public override void Clear()

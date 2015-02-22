@@ -3,14 +3,15 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
         xmlns:viewModels="clr-namespace:Hurricane.Designer"
-        Title="{StaticResource Designer}" MinHeight="600" MinWidth="1000" Height="640" Width="1000" GlowBrush="{StaticResource AccentColorBrush}" DataContext="{x:Static viewModels:DesignerViewModel.Instance}">
+        Title="{StaticResource Designer}" MinHeight="700" MinWidth="1200" Height="640" Width="1000" GlowBrush="{StaticResource AccentColorBrush}" DataContext="{x:Static viewModels:DesignerViewModel.Instance}" WindowStartupLocation="CenterScreen">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="8*"/>
+            <RowDefinition Height="5*"/>
         </Grid.RowDefinitions>
         <TextBlock Text="{Binding CurrentTitle}" FontSize="26" Margin="15" FontFamily="Segoe UI Light"/>
-        <controls:TransitioningContentControl Grid.Row="1" Content="{Binding CurrentView}" Margin="15" RestartTransitionOnContentChange="True" Transition="Left"/>
+        <controls:TransitioningContentControl Grid.Row="1" Content="{Binding PreviewControl}" Margin="10" RestartTransitionOnContentChange="True" Transition="Left"/>
+        <controls:TransitioningContentControl Grid.Row="2" Content="{Binding CurrentView}" Margin="15" RestartTransitionOnContentChange="True" Transition="Left"/>
     </Grid>
 </controls:MetroWindow>

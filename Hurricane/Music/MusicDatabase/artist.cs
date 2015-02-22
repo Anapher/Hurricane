@@ -20,9 +20,6 @@ namespace Hurricane.Music.MusicDatabase
         public string name { get; set; }
 
         /// <remarks/>
-        public string mbid { get; set; }
-
-        /// <remarks/>
         public string url { get; set; }
 
         /// <remarks/>
@@ -34,9 +31,6 @@ namespace Hurricane.Music.MusicDatabase
 
         /// <remarks/>
         public byte ontour { get; set; }
-
-        /// <remarks/>
-        public lfmArtistStats stats { get; set; }
 
         /// <remarks/>
         public object similar { get; set; }

@@ -1,4 +1,6 @@
-﻿namespace Hurricane.Designer.Data
+﻿using System;
+
+namespace Hurricane.Designer.Data
 {
     public interface IThemeSetting
     {
@@ -7,5 +9,6 @@
         string Value { get; }
         string RegexPattern { get; }
         void SetValue(string content);
+        event EventHandler ValueChanged;
     }
 }

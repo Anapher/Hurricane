@@ -71,7 +71,7 @@
                         <ColumnDefinition Width="200"/>
                         <ColumnDefinition Width="1"/>
                         <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="230"/>
+                        <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="30"/>
@@ -113,7 +113,7 @@
                             </MenuItem.Style>
                         </MenuItem>
                     </Menu>
-                    <TextBox Grid.Column="3" Margin="0,0,10,0" x:Name="txtSearch" VerticalAlignment="Center" controls:TextBoxHelper.ClearTextButton="True" HorizontalAlignment="Right" Width="200" controls:TextBoxHelper.Watermark="{StaticResource Search}" Text="{Binding MusicManager.SelectedPlaylist.SearchText,UpdateSourceTrigger=PropertyChanged}"/>
+                    <TextBox Grid.ColumnSpan="4" Margin="0,0,10,0" x:Name="txtSearch" VerticalAlignment="Center" controls:TextBoxHelper.ClearTextButton="True" HorizontalAlignment="Right" Width="200" controls:TextBoxHelper.Watermark="{StaticResource Search}" Text="{Binding MusicManager.SelectedPlaylist.SearchText,UpdateSourceTrigger=PropertyChanged}"/>
                     <ListBox Grid.Row="1" DisplayMemberPath="Name" SelectedItem="{Binding MusicManager.SelectedPlaylist}" Margin="5" ItemsSource="{Binding MusicManager.Playlists}" Background="Transparent"
                              dd:DragDrop.IsDragSource="True" dd:DragDrop.IsDropTarget="True" dd:DragDrop.DropHandler="{Binding PlaylistListDropHandler}" dd:DragDrop.DragAdornerTemplate="{StaticResource DragAdornerPlaylist}" dd:DragDrop.DefaultDragAdornerOpacity=".8">
                         <ListBox.InputBindings>
@@ -360,7 +360,7 @@
                                         <GridViewColumn ctrl:ProportionalColumn.Width="1" Header="hallo">
                                             <GridViewColumn.CellTemplate>
                                                 <DataTemplate>
-                                                    <Grid x:Name="Grid" Margin="10,0,0,0">
+                                                    <Grid Margin="10,0,0,0">
                                                         <TextBlock Text="{Binding DisplayText}" Style="{StaticResource ListTextBlockStyle}" VerticalAlignment="Center" TextTrimming="CharacterEllipsis"/>
                                                     </Grid>
                                                 </DataTemplate>
@@ -425,8 +425,7 @@
                             </userControls:EqualizerView.Style>
                         </userControls:EqualizerView>
                     </Grid>
-                    
-                    <Grid Grid.Column="3" Grid.Row="1" x:Name="girdcover" Visibility="{Binding MusicManager.CSCoreEngine.CurrentTrack,Converter={StaticResource CollapsedOnNullValue}}">
+                    <Grid Grid.Column="3" Grid.Row="1" Width="230" Visibility="{Binding MusicManager.CSCoreEngine.CurrentTrack,Converter={StaticResource CollapsedOnNullValue}}">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="1"/>
                             <ColumnDefinition Width="*"/>
@@ -498,60 +497,74 @@
                 </Grid>
             </TabItem>
             <TabItem Header="{DynamicResource NowPlaying}">
-                <Grid VerticalAlignment="Center" HorizontalAlignment="Center">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="auto"/>
-                        <ColumnDefinition Width="50"/>
-                        <ColumnDefinition Width="500"/>
-                    </Grid.ColumnDefinitions>
-                    <extensions:TrackImagePreseter Track="{Binding MusicManager.CSCoreEngine.CurrentTrack}" Width="280" Height="280" />
-                    <Grid Grid.Column="2"  Margin="0,25,0,0">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="auto"/>
-                            <RowDefinition Height="*"/>
-                        </Grid.RowDefinitions>
-                        <extensions:AnimatedStackPanel AnimationInterval="300" UpdateObject="{Binding MusicManager.CSCoreEngine.CurrentTrack}" Orientation="Vertical">
-                            <TextBlock Text="{Binding MusicManager.CSCoreEngine.CurrentTrack.Artist}" Foreground="{StaticResource NormalColorBrush}" FontSize="14"/>
-                            <TextBlock FontSize="32" Margin="0,5,0,0" FontFamily="Segoe UI Light" Text="{Binding MusicManager.CSCoreEngine.CurrentTrack.Title}" extensions:TextBlockHelper.PlaceHolderText="{DynamicResource NoArtist}" TextWrapping="Wrap"/>
-                            <TextBlock Text="{Binding MusicManager.CSCoreEngine.CurrentTrack.Album}" Margin="0,5,0,0" FontSize="18" FontFamily="Segoe UI Light" Foreground="DarkGray">
-                                <TextBlock.Style>
-                                    <Style TargetType="TextBlock">
+                <Grid>
+                    <Grid VerticalAlignment="Center" HorizontalAlignment="Center" Visibility="{Binding MusicManager.CSCoreEngine.CurrentTrack,Converter={StaticResource CollapsedOnNullValue}}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto"/>
+                            <ColumnDefinition Width="50"/>
+                            <ColumnDefinition Width="500"/>
+                        </Grid.ColumnDefinitions>
+                        <extensions:TrackImagePreseter Track="{Binding MusicManager.CSCoreEngine.CurrentTrack}" Width="280" Height="280" />
+                        <Grid Grid.Column="2"  Margin="0,25,0,0">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <extensions:AnimatedStackPanel AnimationInterval="300" UpdateObject="{Binding MusicManager.CSCoreEngine.CurrentTrack}" Orientation="Vertical">
+                                <TextBlock Text="{Binding MusicManager.CSCoreEngine.CurrentTrack.Artist}" Foreground="{StaticResource NormalColorBrush}" FontSize="14"/>
+                                <TextBlock FontSize="32" Margin="0,5,0,0" FontFamily="Segoe UI Light" Text="{Binding MusicManager.CSCoreEngine.CurrentTrack.Title}" extensions:TextBlockHelper.PlaceHolderText="{DynamicResource NoArtist}" TextWrapping="Wrap"/>
+                                <TextBlock Text="{Binding MusicManager.CSCoreEngine.CurrentTrack.Album}" Margin="0,5,0,0" FontSize="18" FontFamily="Segoe UI Light" Foreground="DarkGray">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Style.Triggers>
+                                                <Trigger Property="Text" Value="">
+                                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                                </Trigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+                                <ToggleButton Foreground="#FFB4B4B4" Background="{StaticResource NormalColorBrush}" Style="{StaticResource FavoriteToggleButton}" Height="18" Width="18" HorizontalAlignment="Left" Margin="0,10,0,10" IsChecked="{Binding MusicManager.CSCoreEngine.CurrentTrack.IsFavorite}"/>
+                            </extensions:AnimatedStackPanel>
+                            <ContentControl Grid.Row="1" Height="100" VerticalAlignment="Bottom" Focusable="False" Margin="0,0,0,10" x:Name="AudioVisualisationContentControl" extensions:AudioVisualisationExtensions.AudioVisualisationForAdvancedWindow="{Binding MySettings.Config.ApplicationDesign.AudioVisualisation.AudioVisualisationPlugin}">
+                                <ContentControl.Style>
+                                    <Style TargetType="ContentControl">
+                                        <Setter Property="Opacity" Value="0"/>
                                         <Style.Triggers>
-                                            <Trigger Property="Text" Value="">
-                                                <Setter Property="Visibility" Value="Collapsed"/>
-                                            </Trigger>
+                                            <DataTrigger Binding="{Binding MusicManager.CSCoreEngine.IsPlaying}" Value="True">
+                                                <DataTrigger.EnterActions>
+                                                    <BeginStoryboard>
+                                                        <Storyboard>
+                                                            <DoubleAnimation To="1" Storyboard.TargetProperty="Opacity"/>
+                                                        </Storyboard>
+                                                    </BeginStoryboard>
+                                                </DataTrigger.EnterActions>
+                                                <DataTrigger.ExitActions>
+                                                    <BeginStoryboard>
+                                                        <Storyboard>
+                                                            <DoubleAnimation To="0" BeginTime="0:0:1" Storyboard.TargetProperty="Opacity"/>
+                                                        </Storyboard>
+                                                    </BeginStoryboard>
+                                                </DataTrigger.ExitActions>
+                                            </DataTrigger>
                                         </Style.Triggers>
                                     </Style>
-                                </TextBlock.Style>
-                            </TextBlock>
-                            <ToggleButton Foreground="#FFB4B4B4" Background="{StaticResource NormalColorBrush}" Style="{StaticResource FavoriteToggleButton}" Height="18" Width="18" HorizontalAlignment="Left" Margin="0,10,0,10" IsChecked="{Binding MusicManager.CSCoreEngine.CurrentTrack.IsFavorite}"/>
-                        </extensions:AnimatedStackPanel>
-                        <ContentControl Grid.Row="1" Height="100" VerticalAlignment="Bottom" Focusable="False" Margin="0,0,0,10" x:Name="AudioVisualisationContentControl" extensions:AudioVisualisationExtensions.AudioVisualisationForAdvancedWindow="{Binding MySettings.Config.ApplicationDesign.AudioVisualisation.AudioVisualisationPlugin}">
-                            <ContentControl.Style>
-                                <Style TargetType="ContentControl">
-                                    <Setter Property="Opacity" Value="0"/>
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding MusicManager.CSCoreEngine.IsPlaying}" Value="True">
-                                            <DataTrigger.EnterActions>
-                                                <BeginStoryboard>
-                                                    <Storyboard>
-                                                        <DoubleAnimation To="1" Storyboard.TargetProperty="Opacity"/>
-                                                    </Storyboard>
-                                                </BeginStoryboard>
-                                            </DataTrigger.EnterActions>
-                                            <DataTrigger.ExitActions>
-                                                <BeginStoryboard>
-                                                    <Storyboard>
-                                                        <DoubleAnimation To="0" BeginTime="0:0:1" Storyboard.TargetProperty="Opacity"/>
-                                                    </Storyboard>
-                                                </BeginStoryboard>
-                                            </DataTrigger.ExitActions>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </ContentControl.Style>
-                        </ContentControl>
+                                </ContentControl.Style>
+                            </ContentControl>
+                        </Grid>
                     </Grid>
+                    <TextBlock Text="{DynamicResource NothingToSeeHere}" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="26" FontWeight="Light">
+                        <TextBlock.Style>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding MusicManager.CSCoreEngine.CurrentTrack}" Value="{x:Null}">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
                 </Grid>
             </TabItem>
             <TabItem Header="{DynamicResource Settings}">
@@ -905,12 +918,12 @@
                     <DockPanel.Resources>
                         <converter:VolumeToImage x:Key="VolumeToImage"/>
                     </DockPanel.Resources>
-                    <Image Source="{Binding ElementName=volumeslider,Path=Value,Converter={StaticResource VolumeToImage}}" Width="24" Height="24">
+                    <Image Source="{Binding ElementName=VolumeSlider,Path=Value,Converter={StaticResource VolumeToImage}}" Width="24" Height="24">
                         <Image.InputBindings>
                             <MouseBinding MouseAction="LeftClick" Command="{Binding ToggleVolume}"/>
                         </Image.InputBindings>
                     </Image>
-                    <Slider x:Name="volumeslider" Maximum="1" Minimum="0" IsMoveToPointEnabled="True" Style="{StaticResource AdvancedTimelineSlider}" VerticalAlignment="Center" LargeChange="0.1" Value="{Binding MusicManager.CSCoreEngine.Volume}" extensions:SliderExtensions.MoveToPointOnDrag="True"/>
+                    <Slider x:Name="VolumeSlider" Maximum="1" Minimum="0" IsMoveToPointEnabled="True" Style="{StaticResource AdvancedTimelineSlider}" VerticalAlignment="Center" LargeChange="0.1" Value="{Binding MusicManager.CSCoreEngine.Volume}" extensions:SliderExtensions.MoveToPointOnDrag="True"/>
                 </DockPanel>
             </Grid>
         </Grid>

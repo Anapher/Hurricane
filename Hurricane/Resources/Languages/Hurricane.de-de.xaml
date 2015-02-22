@@ -46,7 +46,7 @@
     <system:String x:Key="Tracks">Tracks</system:String>
     <system:String x:Key="Error">Fehler</system:String>
     <system:String x:Key="ReallyDeletePlaylist">Sind Sie sicher, dass Sie die Wiedergabeliste '{0}' entfernen wollen?</system:String>
-    <system:String x:Key="CantDeletePlaylist">Die Wiedergabeliste kann nicht entfernt werde, weil sie die einzige ist</system:String>
+    <system:String x:Key="CantDeletePlaylist">Die Wiedergabeliste kann nicht entfernt werde, weil sie die einzige ist.</system:String>
     <system:String x:Key="RenamePlaylist">Wiedergabeliste umbenennen</system:String>
     <system:String x:Key="Rename">Umbenennen</system:String>
     <system:String x:Key="RemoveDuplicateTracks">Sind Sie sicher, dass sie alle doppelten Tracks entfernen möchten?</system:String>
@@ -318,4 +318,5 @@
     <system:String x:Key="None">Keine</system:String>
     <system:String x:Key="Path">Pfad</system:String>
     <system:String x:Key="ShowProgressInTaskbar">Fortschritt in Taskbar anzeigen</system:String>
+    <system:String x:Key="NothingToSeeHere">Hier gibts nix zu sehen</system:String>
 </ResourceDictionary>
