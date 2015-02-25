@@ -24,7 +24,6 @@
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
             <converter:FormatTimespan x:Key="FormatTimespan"/>
             <converter:CollapsedOnNullValue x:Key="CollapsedOnNullValue"/>
-            <converter:FalseOnEmptyString x:Key="FalseOnEmptyString"/>
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
@@ -699,12 +698,28 @@
                                 <ContextMenu x:Key="ContextMenu">
                                     <MenuItem Header="{DynamicResource Play}" Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}, Path=DataContext.TrackSearcher.PlaySelectedTrack}"/>
                                     <Separator />
-                                    <MenuItem Header="{DynamicResource AddToPlaylist}" ItemsSource="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}, Path=DataContext.MusicManager.Playlists}">
+                                    <MenuItem Header="{DynamicResource AddToPlaylist}">
+                                        <MenuItem.Resources>
+                                            <CollectionViewSource Source="{Binding RelativeSource={RelativeSource AncestorType=ListView},Path=DataContext.MusicManager.Playlists}" x:Key="MyMenuItems"/>
+                                            <Style TargetType="MenuItem" BasedOn="{StaticResource MetroMenuItem}" x:Key="MenuItemStyle">
+
+                                                <Setter Property="Command" Value="{Binding RelativeSource={RelativeSource AncestorType=ListView},Path=DataContext.TrackSearcher.AddToPlaylist}"/>
+                                                <Setter Property="CommandParameter" Value="addToNewPlaylist"/>
+                                            </Style>
+                                        </MenuItem.Resources>
+                                        <MenuItem.ItemsSource>
+                                            <CompositeCollection>
+                                                <MenuItem Header="{DynamicResource NewPlaylist}"/>
+                                                <Separator />
+                                                <CollectionContainer Collection="{Binding Source={StaticResource MyMenuItems}}"/>
+                                            </CompositeCollection>
+                                        </MenuItem.ItemsSource>
                                         <MenuItem.ItemContainerStyle>
                                             <Style TargetType="MenuItem" BasedOn="{StaticResource MetroMenuItem}">
-                                                <Setter Property="Header" Value="{Binding Name}"/>
                                                 <Setter Property="Command" Value="{Binding RelativeSource={RelativeSource AncestorType=ListView},Path=DataContext.TrackSearcher.AddToPlaylist}"/>
                                                 <Setter Property="CommandParameter" Value="{Binding}"/>
+                                                <Setter Property="HorizontalContentAlignment" Value="Left"/>
+                                                <Setter Property="VerticalContentAlignment" Value="Center"/>
                                             </Style>
                                         </MenuItem.ItemContainerStyle>
                                     </MenuItem>
@@ -732,11 +747,6 @@
                                 <Style TargetType="ListViewItem" BasedOn="{StaticResource MetroListViewItem}">
                                     <Setter Property="extensions:ControlDoubleClick.Command" Value="{Binding RelativeSource={RelativeSource AncestorType=ListView},Path=DataContext.TrackSearcher.PlaySelectedTrack}"/>
                                     <Setter Property="ContextMenu" Value="{StaticResource ContextMenu}"/>
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding Description,Converter={StaticResource FalseOnEmptyString}}" Value="true">
-                                            <Setter Property="ToolTip" Value="{Binding Description}"/>
-                                        </DataTrigger>
-                                    </Style.Triggers>
                                 </Style>
                             </ListView.ItemContainerStyle>
                             <ListView.View>

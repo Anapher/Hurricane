@@ -19,8 +19,8 @@ namespace Hurricane.Music.Track.WebApi
         public string SearchText { get; set; }
         public ObservableCollection<WebTrackResultBase> Results { get; set; }
 
-        private readonly AutoResetEvent cancelWaiter;
-        private bool _IsSearching; //Difference between _IsRunning and IsSearching: _IsRunning is also true if pictures are downloading
+        private readonly AutoResetEvent _cancelWaiter;
+        private bool _isSearching; //Difference between _IsRunning and IsSearching: _IsRunning is also true if pictures are downloading
         private bool _canceled;
 
         private bool _isLoading;
@@ -74,13 +74,13 @@ namespace Hurricane.Music.Track.WebApi
                 {
                     if (string.IsNullOrWhiteSpace(SearchText)) return;
                     IsLoading = true;
-                    if (_IsSearching)
+                    if (_isSearching)
                     {
                         _canceled = true;
-                        await Task.Run(() => cancelWaiter.WaitOne());
+                        await Task.Run(() => _cancelWaiter.WaitOne());
                     }
 
-                    _IsSearching = true;
+                    _isSearching = true;
                     PlaylistResult = null;
                     try
                     {
@@ -97,7 +97,7 @@ namespace Hurricane.Music.Track.WebApi
                         await track.DownloadImage();
                         if (CheckForCanceled()) return;
                     }
-                    _IsSearching = false;
+                    _isSearching = false;
                 }));
             }
         }
@@ -165,7 +165,11 @@ namespace Hurricane.Music.Track.WebApi
                 return _addToPlaylist ?? (_addToPlaylist = new RelayCommand(async parameter =>
                 {
                     var playlist = parameter as IPlaylist;
-                    if (playlist == null) return;
+                    if (playlist == null && !(parameter is WebTrackResultBase))
+                    {
+                        return;
+                    }
+                    
                     IsLoading = true;
                     if (!(await SelectedTrack.CheckIfAvailable()))
                     {
@@ -173,6 +177,20 @@ namespace Hurricane.Music.Track.WebApi
                         IsLoading = false;
                         return;
                     }
+                    if (playlist == null)
+                    {
+                        string result = await _baseWindow.WindowDialogService.ShowInputDialog(Application.Current.Resources["NewPlaylist"].ToString(), Application.Current.Resources["NameOfPlaylist"].ToString(), Application.Current.Resources["Create"].ToString(), "", DialogMode.Single);
+                        if (string.IsNullOrEmpty(result))
+                        {
+                            IsLoading = false;
+                            return;
+                        }
+                        var newPlaylist = new NormalPlaylist() { Name = result };
+                        _manager.Playlists.Add(newPlaylist);
+                        _manager.RegisterPlaylist(newPlaylist);
+                        playlist = newPlaylist;
+                    }
+
                     var track = await SelectedTrack.ToPlayable();
                     track.TimeAdded = DateTime.Now;
                     playlist.AddTrack(track);
@@ -272,9 +290,9 @@ namespace Hurricane.Music.Track.WebApi
         {
             if (_canceled)
             {
-                cancelWaiter.Set();
+                _cancelWaiter.Set();
                 _canceled = false;
-                _IsSearching = false;
+                _isSearching = false;
                 return true;
             }
             return false;
@@ -294,10 +312,10 @@ namespace Hurricane.Music.Track.WebApi
         public TrackSearcher(MusicManager manager, MainWindow baseWindow)
         {
             Results = new ObservableCollection<WebTrackResultBase>();
-            cancelWaiter = new AutoResetEvent(false);
+            _cancelWaiter = new AutoResetEvent(false);
             _manager = manager;
-            this._baseWindow = baseWindow;
-            this.MusicApis = new List<IMusicApi> { new YouTubeApi.YouTubeApi(), new SoundCloudApi.SoundCloudApi() };
+            _baseWindow = baseWindow;
+            MusicApis = new List<IMusicApi> { new YouTubeApi.YouTubeApi(), new SoundCloudApi.SoundCloudApi() };
         }
     }
 }

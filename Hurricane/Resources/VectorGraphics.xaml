@@ -211,4 +211,9 @@
         <Geometry>F1 M 16.286,21.630 L 6.271,21.630 L 6.271,19.274 L 16.286,19.274 L 16.286,21.630 Z</Geometry>
         <Geometry>F1 M 10.910,25.682 L 5.178,25.682 L 5.178,23.325 L 10.910,23.325 L 10.910,25.682 Z</Geometry>
     </GeometryGroup>
+
+    <Geometry x:Key="VectorBackArrow" x:Shared="False" options:Freeze="True">
+        <!--https://www.iconfinder.com/icons/211686/arrow_back_icon-->
+        F1 M 192.000,32.400 L 159.700,0.000 L 0.000,160.000 L 0.000,160.000 L 0.000,160.000 L 159.700,320.000 L 192.000,287.600 L 64.700,160.000 L 192.000,32.400 Z
+    </Geometry>
 </ResourceDictionary>

@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using CSCore.Codecs;
-using Hurricane.AppMainWindow.Messages;
 using Hurricane.DragDrop;
 using Hurricane.MagicArrow.DockManager;
 using Hurricane.Music;
@@ -63,6 +62,7 @@ namespace Hurricane.ViewModels
             MusicManager.CSCoreEngine.TrackChanged += CSCoreEngine_TrackChanged;
             MusicManager.CSCoreEngine.ExceptionOccurred += CSCoreEngine_ExceptionOccurred;
             MusicManager.LoadFromSettings();
+            MainTabControlIndex = MySettings.CurrentState.MainTabControlIndex;
             TrackSearcher = new TrackSearcher(MusicManager, window);
 
             _keyboardListener = new KeyboardListener();
@@ -161,6 +161,7 @@ namespace Hurricane.ViewModels
             {
                 MusicManager.CSCoreEngine.StopPlayback();
                 MusicManager.SaveToSettings();
+                MySettings.CurrentState.MainTabControlIndex = MainTabControlIndex;
                 MySettings.Save();
                 MusicManager.Dispose();
             }
@@ -319,8 +320,7 @@ namespace Hurricane.ViewModels
             {
                 return _openqueuemanager ?? (_openqueuemanager = new RelayCommand(parameter =>
                 {
-                    QueueManager window = new QueueManager() { Owner = _baseWindow };
-                    window.ShowDialog();
+                    _baseWindow.WindowDialogService.ShowDialog(new QueueManager());
                 }));
             }
         }
@@ -710,6 +710,18 @@ namespace Hurricane.ViewModels
                 dockmanager.ApplyCurrentSide();
                 _baseWindow.RefreshHostWindow(true);
                 _baseWindow.CenterWindowOnScreen();
+            }
+        }
+
+        private RelayCommand _changeMainTabControlIndex;
+        public RelayCommand ChangeMainTabControlIndex
+        {
+            get
+            {
+                return _changeMainTabControlIndex ?? (_changeMainTabControlIndex = new RelayCommand(parameter =>
+                {
+                    MainTabControlIndex = int.Parse(parameter.ToString());
+                }));
             }
         }
         #endregion

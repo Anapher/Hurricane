@@ -30,6 +30,7 @@ namespace Hurricane.Settings
         public bool IsShuffleEnabled { get; set; }
         public EqualizerSettings EqualizerSettings { get; set; }
         public DockingApplicationState ApplicationState { get; set; }
+        public int MainTabControlIndex { get; set; }
 
         private bool _equalizerIsOpen;
         public bool EqualizerIsOpen
@@ -59,6 +60,7 @@ namespace Hurricane.Settings
             ApplicationState = null;
             EqualizerSettings = new EqualizerSettings();
             EqualizerSettings.CreateNew();
+            MainTabControlIndex = 0;
         }
 
         public static CurrentState Load(string programpath)

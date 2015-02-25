@@ -3,10 +3,9 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows;
-using Hurricane.Music;
 using Hurricane.Music.Track;
-using Hurricane.Views.UserControls;
 using MahApps.Metro.Controls;
+using Microsoft.Win32;
 using TagLib;
 
 namespace Hurricane.Views
@@ -32,7 +31,7 @@ namespace Hurricane.Views
         #region Lyrics
         private void MenuItemOpenLyrics_Click(object sender, RoutedEventArgs e)
         {
-            var ofd = new Microsoft.Win32.OpenFileDialog()
+            var ofd = new OpenFileDialog()
             {
                 Filter = string.Format("{0} (*.txt)|*.txt|{1} (*.*)|*.*", Application.Current.FindResource("TextFiles"), Application.Current.FindResource("AllFiles"))
             };
@@ -45,7 +44,7 @@ namespace Hurricane.Views
 
         private void MenuItemSaveAs_Click(object sender, RoutedEventArgs e)
         {
-            var sfd = new Microsoft.Win32.SaveFileDialog()
+            var sfd = new SaveFileDialog()
             {
                 Filter = string.Format("{0} (*.txt)|*.txt|{1} (*.*)|*.*", Application.Current.FindResource("TextFiles"), Application.Current.FindResource("AllFiles"))
             };
@@ -70,7 +69,7 @@ namespace Hurricane.Views
             }
             catch (Exception ex)
             {
-                Views.MessageWindow message = new Views.MessageWindow(string.Format(Application.Current.Resources["SaveTagsError"].ToString(), ex.Message), Application.Current.Resources["Error"].ToString(), false);
+                MessageWindow message = new MessageWindow(string.Format(Application.Current.Resources["SaveTagsError"].ToString(), ex.Message), Application.Current.Resources["Error"].ToString(), false);
                 message.ShowDialog();
                 return;
             }

@@ -424,9 +424,9 @@ namespace Hurricane.Music
         #region Constructor
         public CSCoreEngine()
         {
-            _client = new MMNotificationClient();
+            //_client = new MMNotificationClient();
             RefreshSoundOut();
-            _client.DefaultDeviceChanged += client_DefaultDeviceChanged;
+            //_client.DefaultDeviceChanged += client_DefaultDeviceChanged;
             _fader = new VolumeFading();
             _crossfade = new Crossfade();
         }

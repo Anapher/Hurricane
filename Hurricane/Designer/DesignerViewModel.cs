@@ -3,7 +3,6 @@ using System.Windows;
 using System.Windows.Controls;
 using Hurricane.Designer.Data;
 using Hurricane.Designer.Pages;
-using Hurricane.Settings;
 using Hurricane.Settings.Themes;
 using Hurricane.ViewModelBase;
 using Microsoft.Win32;
@@ -186,6 +185,7 @@ namespace Hurricane.Designer
             PreviewControl = new LivePreview();
             previewData.FrameworkElement = PreviewControl;
             previewData.Refresh();
+            CanGoBack = true;
         }
 
         private RelayCommand _saveCurrentElement;
@@ -231,6 +231,35 @@ namespace Hurricane.Designer
             set
             {
                 SetProperty(value, ref _currentElementPath);
+            }
+        }
+
+        
+        private bool _canGoBack;
+        public bool CanGoBack
+        {
+            get { return _canGoBack; }
+            set
+            {
+                SetProperty(value, ref _canGoBack);
+            }
+        }
+
+        private RelayCommand _goBack;
+        public RelayCommand GoBack
+        {
+            get
+            {
+                return _goBack ?? (_goBack = new RelayCommand(parameter =>
+                {
+                    PreviewControl = null;
+                    CurrentElement = null;
+                    CurrentView = null;
+                    CanGoBack = false;
+                    CurrentTitle = "Hurricane Designer";
+                    CurrentElementPath = string.Empty;
+                    PreviewData = null;
+                }));
             }
         }
     }

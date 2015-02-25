@@ -1,11 +1,10 @@
-﻿using System.ComponentModel;
-using System.Windows;
+﻿using System.Windows;
 using Hurricane.Designer.Data;
 
 namespace Hurricane.Designer.Pages
 {
     /// <summary>
-    /// Interaktionslogik für ThemeEditControl.xaml
+    /// Interaction logic for ThemeEditControl.xaml
     /// </summary>
     public partial class ThemeEditControl
     {

@@ -3,7 +3,7 @@
 namespace Hurricane.Designer.Pages
 {
     /// <summary>
-    /// Interaktionslogik für Home.xaml
+    /// Interaction logic for Home.xaml
     /// </summary>
     public partial class HomePage : UserControl
     {
