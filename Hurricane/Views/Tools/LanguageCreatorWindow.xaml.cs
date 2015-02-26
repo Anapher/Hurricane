@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
 using System.Windows;
 using Hurricane.ViewModelBase;
 using Microsoft.Win32;
@@ -19,16 +17,15 @@ namespace Hurricane.Views.Tools
         public LanguageCreatorWindow()
         {
             InitializeComponent();
-
         }
 
         #region Properties
 
-        private LanguageDocument currentLanguageDocument;
+        private LanguageDocument _currentLanguageDocument;
         public LanguageDocument CurrentLanguageDocument
         {
-            get { return currentLanguageDocument; }
-            set { currentLanguageDocument = value; OnPropertyChanged("CurrentLanguageDocument"); }
+            get { return _currentLanguageDocument; }
+            set { _currentLanguageDocument = value; OnPropertyChanged("CurrentLanguageDocument"); }
         }
 
         private string _filePath;
@@ -37,7 +34,7 @@ namespace Hurricane.Views.Tools
             get { return _filePath; }
             set { _filePath = value; OnPropertyChanged("FilePath"); }
         }
-        
+
         #endregion
 
         #region Commands
@@ -52,7 +49,16 @@ namespace Hurricane.Views.Tools
                     if (ofd.ShowDialog() != true) return;
                     ofd.Multiselect = false;
                     ofd.CheckFileExists = true;
-                    CurrentLanguageDocument = LanguageDocument.FromFile(ofd.FileName);
+                    try
+                    {
+                        CurrentLanguageDocument = LanguageDocument.FromFile(ofd.FileName);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message, Application.Current.Resources["Error"].ToString(), MessageBoxButton.OK, MessageBoxImage.Error);
+                        return;
+                    }
+
                     FilePath = ofd.FileName;
                 }));
             }
@@ -65,25 +71,36 @@ namespace Hurricane.Views.Tools
             {
                 return _newDocument ?? (_newDocument = new RelayCommand(parameter =>
                 {
-                    CurrentLanguageDocument = LanguageDocument.CreateNew();
+                    CurrentLanguageDocument = new LanguageDocument();
                     FilePath = null;
                 }));
             }
-        }   
+        }
 
         private RelayCommand _saveDocument;
         public RelayCommand SaveDocument
         {
-            get { return _saveDocument ?? (_saveDocument = new RelayCommand(parameter =>
+            get
             {
-                if (string.IsNullOrEmpty(FilePath)) { SaveAs(); } else { CurrentLanguageDocument.SaveDocument(FilePath);}
-            })); }
+                return _saveDocument ?? (_saveDocument = new RelayCommand(parameter =>
+                {
+                    if (CurrentLanguageDocument == null) return;
+                    if (string.IsNullOrEmpty(FilePath)) { SaveAs(); } else { CurrentLanguageDocument.SaveDocument(FilePath); }
+                }));
+            }
         }
 
         private RelayCommand _saveDocumentAs;
         public RelayCommand SaveDocumentAs
         {
-            get { return _saveDocumentAs ?? (_saveDocumentAs = new RelayCommand(parameter => { SaveAs(); })); }
+            get
+            {
+                return _saveDocumentAs ?? (_saveDocumentAs = new RelayCommand(parameter =>
+                {
+                    if (CurrentLanguageDocument == null) return;
+                    SaveAs();
+                }));
+            }
         }
 
         private void SaveAs()
@@ -93,13 +110,13 @@ namespace Hurricane.Views.Tools
             {
                 CurrentLanguageDocument.SaveDocument(sfd.FileName);
                 FilePath = sfd.FileName;
-            }   
+            }
         }
 
         private RelayCommand _closeCommand;
         public RelayCommand CloseCommand
         {
-            get { return _closeCommand ?? (_closeCommand = new RelayCommand(parameter => { this.Close(); })); }
+            get { return _closeCommand ?? (_closeCommand = new RelayCommand(parameter => { Close(); })); }
         }
 
         private RelayCommand _resetValues;
@@ -110,7 +127,7 @@ namespace Hurricane.Views.Tools
                 return _resetValues ?? (_resetValues = new RelayCommand(parameter =>
                 {
                     if (CurrentLanguageDocument != null)
-                        this.CurrentLanguageDocument.LanguageEntries.ForEach(x => x.Value = string.Empty);
+                        CurrentLanguageDocument.LanguageEntries.ForEach(x => x.Value = string.Empty);
                 }));
             }
         }
@@ -119,7 +136,7 @@ namespace Hurricane.Views.Tools
         #region INotifyPropertyChanged
         protected void OnPropertyChanged(string propertyName)
         {
-            if(PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -129,11 +146,29 @@ namespace Hurricane.Views.Tools
 
     public class LanguageDocument
     {
-        public List<LanguageEntry> LanguageEntries { get; set; }
+        public List<LanguageEntry> LanguageEntries { get; private set; }
 
-        private LanguageDocument()
+        public LanguageDocument()
         {
-            
+            LanguageEntries = GetEmptyList();
+            var germanDictionary = new ResourceDictionary
+            {
+                Source = new Uri("/Resources/Languages/Hurricane.de-de.xaml", UriKind.Relative)
+            };
+            var englishDictionary = new ResourceDictionary
+            {
+                Source = new Uri("/Resources/Languages/Hurricane.en-us.xaml", UriKind.Relative)
+            };
+
+            foreach (var key in germanDictionary.Keys)
+            {
+                LanguageEntries.First(x => x.Key == key.ToString()).GermanWord = germanDictionary[key].ToString();
+            }
+
+            foreach (var key in englishDictionary.Keys)
+            {
+                LanguageEntries.First(x => x.Key == key.ToString()).EnglishWord = englishDictionary[key].ToString();
+            }
         }
 
         public void SaveDocument(string path)
@@ -149,62 +184,66 @@ namespace Hurricane.Views.Tools
                 }
                 sw.WriteLine("</ResourceDictionary>");
             }
-            MessageBox.Show("Document saved");
+            MessageBox.Show(Application.Current.Resources["DocumentSaved"].ToString());
         }
 
         public static LanguageDocument FromFile(string path)
         {
-            return FromString(File.ReadAllText(path));
+            return FromDictionary(new ResourceDictionary { Source = new Uri(path) });
         }
 
-        public static LanguageDocument FromString(string text)
+        public static LanguageDocument FromDictionary(ResourceDictionary dictionary)
         {
-            var document = new LanguageDocument() { LanguageEntries = new List<LanguageEntry>() };
-            foreach (Match match in Regex.Matches(text, "<system:String x:Key=\"(?<key>(.*?))\">(?<value>(.*?))</system:String>"))
-                document.LanguageEntries.Add(new LanguageEntry() { Key = match.Groups["key"].Value, Value = match.Groups["value"].Value });
-            SetEnglishWords(document);
-            SetGermanWords(document);
+            var document = new LanguageDocument();
+
+            foreach (var key in dictionary.Keys)
+            {
+                document.LanguageEntries.First(x => x.Key == key.ToString()).Value = dictionary[key].ToString();
+            }
+
             return document;
         }
 
-        public static LanguageDocument CreateNew()
+        private static List<string> _allKeys;
+        public static List<string> AllKeys
         {
-            var document = FromString(Properties.Resources.Hurricane_en_us);
-            document.LanguageEntries.ForEach(x => x.Value = string.Empty);
-            return document;
-        }
-
-        private static void SetEnglishWords(LanguageDocument document)
-        {
-            foreach (Match match in Regex.Matches(Properties.Resources.Hurricane_en_us, "<system:String x:Key=\"(?<key>(.*?))\">(?<value>(.*?))</system:String>"))
+            get
             {
-                var value = document.LanguageEntries.FirstOrDefault(x => x.Key == match.Groups["key"].Value);
-                if (value != null)
+                if (_allKeys == null)
                 {
-                    value.EnglishWord = match.Groups["value"].Value;
+                    var dictionary = new ResourceDictionary { Source = new Uri("/Resources/Languages/Hurricane.de-de.xaml", UriKind.Relative) };
+                    _allKeys = dictionary.Keys.Cast<string>().ToList();
                 }
-                else
-                {
-                    document.LanguageEntries.Add(new LanguageEntry() { Key = match.Groups["key"].Value, EnglishWord = match.Groups["value"].Value });
-                }
+                return _allKeys;
             }
         }
 
-        private static void SetGermanWords(LanguageDocument document)
+        private static List<LanguageEntry> GetEmptyList()
         {
-            foreach (Match match in Regex.Matches(Properties.Resources.Hurricane_de_de, "<system:String x:Key=\"(?<key>(.*?))\">(?<value>(.*?))</system:String>"))
-            {
-                document.LanguageEntries.First(x => x.Key == match.Groups["key"].Value).GermanWord =
-                    match.Groups["value"].Value;
-            }
+            return AllKeys.Select(x => new LanguageEntry { Key = x }).ToList();
         }
     }
 
-    public class LanguageEntry
+    public class LanguageEntry : INotifyPropertyChanged
     {
         public string Key { get; set; }
-        public string Value { get; set; }
         public string EnglishWord { get; set; }
         public string GermanWord { get; set; }
+
+        private string _value;
+
+        public string Value
+        {
+            get { return _value; }
+            set
+            {
+                if (value == _value) return;
+                _value = value;
+                if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs("Value"));
+            }
+        }
+        
+
+        public event PropertyChangedEventHandler PropertyChanged;
     }
 }

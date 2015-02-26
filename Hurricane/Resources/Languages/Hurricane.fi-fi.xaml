@@ -200,14 +200,6 @@
     <system:String x:Key="Deactivated">vammaiset</system:String>
     <system:String x:Key="ThemeEditor">teema luoja</system:String>
     <system:String x:Key="Name">nimi</system:String>
-    <system:String x:Key="LightColorDescription">Erittäin kirkas (lähes valkoinen) sävy</system:String>
-    <system:String x:Key="BrightColorDescription">vaaleampi sävy</system:String>
-    <system:String x:Key="NormalColorDescription">vakioväri</system:String>
-    <system:String x:Key="DarkColorDescription">hyvin tumma väri</system:String>
-    <system:String x:Key="HighlightColorDescription">väri, kun hiiri painetaan</system:String>
-    <system:String x:Key="AccentColorDescription">taustaväri</system:String>
-    <system:String x:Key="AccentSelectedColorDescription">etualan väri tiettyjä esineitä</system:String>
-    <system:String x:Key="IdealForegroundColorDescription">yleiset etualan väri</system:String>
     <system:String x:Key="Edit">muokata</system:String>
     <system:String x:Key="SaveError">Valitettavasti virhe. Tarkista kirjoitetut.</system:String>
     <system:String x:Key="SaveTagsError">Valitettavasti tapahtui virhe säästää päivä: "{0}"</system:String>

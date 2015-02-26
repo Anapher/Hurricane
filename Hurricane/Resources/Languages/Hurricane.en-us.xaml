@@ -218,14 +218,6 @@
 
     <system:String x:Key="ThemeEditor">Theme editor</system:String>
     <system:String x:Key="Name">Name</system:String>
-    <system:String x:Key="LightColorDescription">A very bright (almost white) color</system:String>
-    <system:String x:Key="BrightColorDescription">A bright color</system:String>
-    <system:String x:Key="NormalColorDescription">The standard color.</system:String>
-    <system:String x:Key="DarkColorDescription">A really dark color.</system:String>
-    <system:String x:Key="HighlightColorDescription">The color when the mouse is pressed.</system:String>
-    <system:String x:Key="AccentColorDescription">The background color for nearly everything.</system:String>
-    <system:String x:Key="AccentSelectedColorDescription">The foreground color at selected items</system:String>
-    <system:String x:Key="IdealForegroundColorDescription">The general foreground color.</system:String>
 
     <system:String x:Key="Edit">Edit</system:String>
     <system:String x:Key="SaveError">An error occurred. Please check your inputs.</system:String>
@@ -319,4 +311,9 @@
     <system:String x:Key="Path">Path</system:String>
     <system:String x:Key="ShowProgressInTaskbar">Show progress in taskbar</system:String>
     <system:String x:Key="NothingToSeeHere">Nothing to see here</system:String>
+    <system:String x:Key="Key">Key</system:String>
+    <system:String x:Key="EnglishTranslation">English translation</system:String>
+    <system:String x:Key="GermanTranslation">German translation</system:String>
+    <system:String x:Key="Translation">Translation</system:String>
+    <system:String x:Key="DocumentSaved">Document saved</system:String>
 </ResourceDictionary>

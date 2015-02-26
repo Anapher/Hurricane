@@ -1,8 +1,7 @@
 ﻿<Window x:Class="Hurricane.Views.Tools.LanguageCreatorWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:ctrl="clr-namespace:Hurricane.Extensions.ListViewLayoutManager"
-        Title="Language Creator" Height="503.3" Width="800" MinWidth="800" x:Name="Window" DataContext="{Binding ElementName=Window}">
+        Title="Language Creator" Height="500" MinHeight="500" Width="900" MinWidth="900" x:Name="Window" DataContext="{Binding ElementName=Window}" WindowStartupLocation="CenterScreen" Icon="/Hurricane;component/Resources/App/LanguageCreator.png">
     <Window.InputBindings>
         <KeyBinding Key="S" Modifiers="Control" Command="{Binding SaveDocument}"/>
         <KeyBinding Key="S" Modifiers="Control+Shift" Command="{Binding SaveDocumentAs}"/>
@@ -16,10 +15,10 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Menu>
-            <MenuItem Header="File">
-                <MenuItem Header="New" Command="{Binding NewDocument}" InputGestureText="Ctrl+N" Width="200"/>
-                <MenuItem Header="Open..." Command="{Binding OpenDocument}" InputGestureText="Ctrl+O"/>
-                <MenuItem Header="Save" Command="{Binding SaveDocument}" InputGestureText="Ctrl+S">
+            <MenuItem Header="{StaticResource File}">
+                <MenuItem Header="{StaticResource New}" Command="{Binding NewDocument}" InputGestureText="Ctrl+N"/>
+                <MenuItem Header="{StaticResource Open}" Command="{Binding OpenDocument}" InputGestureText="Ctrl+O"/>
+                <MenuItem Header="{StaticResource Save}" Command="{Binding SaveDocument}" InputGestureText="Ctrl+S">
                     <MenuItem.Style>
                         <Style TargetType="MenuItem" BasedOn="{StaticResource MetroMenuItem}">
                             <Style.Triggers>
@@ -30,7 +29,7 @@
                         </Style>
                     </MenuItem.Style>
                 </MenuItem>
-                <MenuItem Header="Save as" Command="{Binding SaveDocumentAs}" InputGestureText="Ctrl+Shift+S">
+                <MenuItem Header="{StaticResource SaveAs}" Command="{Binding SaveDocumentAs}" InputGestureText="Ctrl+Shift+S">
                     <MenuItem.Style>
                         <Style TargetType="MenuItem" BasedOn="{StaticResource MetroMenuItem}">
                             <Style.Triggers>
@@ -42,43 +41,30 @@
                     </MenuItem.Style>
                 </MenuItem>
                 <Separator />
-                <MenuItem Header="Close" Command="{Binding CloseCommand}"/>
+                <MenuItem Header="{StaticResource Close}" Command="{Binding CloseCommand}"/>
             </MenuItem>
-            <MenuItem Header="Edit">
-                <MenuItem Header="Reset" Command="{Binding ResetValues}"/>
+            <MenuItem Header="{StaticResource Edit}">
+                <MenuItem Header="{StaticResource Reset}" Command="{Binding ResetValues}"/>
             </MenuItem>
         </Menu>
         <DockPanel Margin="5" Grid.Row="1">
-            <TextBlock Text="Filename: " VerticalAlignment="Center"/>
+            <TextBlock Text="{StaticResource Filename}" VerticalAlignment="Center"/>
+            <TextBlock Text=": " VerticalAlignment="Center"/>
             <TextBox IsReadOnly="True" Text="{Binding FilePath}"/>
         </DockPanel>
-        <ListView Grid.Row="2" ItemsSource="{Binding CurrentLanguageDocument.LanguageEntries}" ctrl:ListViewLayoutManager.Enabled="True">
-            <ListView.View>
-                <GridView>
-                    <GridViewColumn Header="Key" DisplayMemberBinding="{Binding Key}"/>
-                    <GridViewColumn Header="English translation" Width="300">
-                        <GridViewColumn.CellTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding EnglishWord}" TextWrapping="Wrap" Margin="0,2,0,2"/>
-                            </DataTemplate>
-                        </GridViewColumn.CellTemplate>
-                    </GridViewColumn>
-                    <GridViewColumn Header="German translation" Width="300">
-                        <GridViewColumn.CellTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding GermanWord}" TextWrapping="Wrap" Margin="0,2,0,2"/>
-                            </DataTemplate>
-                        </GridViewColumn.CellTemplate>
-                    </GridViewColumn>
-                    <GridViewColumn Header="Value" ctrl:ProportionalColumn.Width="1">
-                        <GridViewColumn.CellTemplate>
-                            <DataTemplate>
-                                <TextBox Text="{Binding Value,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Margin="0,2,0,2"/>
-                            </DataTemplate>
-                        </GridViewColumn.CellTemplate>
-                    </GridViewColumn>
-                </GridView>
-            </ListView.View>
-        </ListView>
+        <DataGrid Grid.Row="2" ItemsSource="{Binding CurrentLanguageDocument.LanguageEntries}" RenderOptions.ClearTypeHint="Enabled" TextOptions.TextFormattingMode="Display" Style="{DynamicResource AzureDataGrid}" AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False">
+            <DataGrid.Resources>
+                <Style x:Key="TextColumnStyle">
+                    <Setter Property="TextBlock.TextWrapping" Value="Wrap" />
+                    <Setter Property="TextBlock.TextAlignment" Value="Center"/>
+                </Style>
+            </DataGrid.Resources>
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="{StaticResource Key}" Binding="{Binding Key}" IsReadOnly="True" Width="180" x:Name="DataGridTextColumn"/>
+                <DataGridTextColumn Header="{StaticResource EnglishTranslation}" Binding="{Binding EnglishWord}" IsReadOnly="True" Width="250" ElementStyle="{StaticResource TextColumnStyle}"/>
+                <DataGridTextColumn Header="{StaticResource GermanTranslation}" Binding="{Binding GermanWord}" IsReadOnly="True" Width="250" ElementStyle="{StaticResource TextColumnStyle}"/>
+                <DataGridTextColumn Header="{StaticResource Translation}" Binding="{Binding Value,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Width="*"/>
+            </DataGrid.Columns>
+        </DataGrid>
     </Grid>
 </Window>

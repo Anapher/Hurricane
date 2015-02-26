@@ -218,15 +218,7 @@
     
     <system:String x:Key="ThemeEditor">Theme Editor</system:String>
     <system:String x:Key="Name">Name</system:String>
-    <system:String x:Key="LightColorDescription">Ein sehr heller (fast weißer) Farbton</system:String>
-    <system:String x:Key="BrightColorDescription">Ein heller Farbton</system:String>
-    <system:String x:Key="NormalColorDescription">Die Farbe, auf die abgezielt wird</system:String>
-    <system:String x:Key="DarkColorDescription">Eine sehr dunkle Farbe</system:String>
-    <system:String x:Key="HighlightColorDescription">Die Farbe, wenn die Maus gedrückt ist.</system:String>
-    <system:String x:Key="AccentColorDescription">Die Hintergrundfarbe (Hintergrund der Titelleiste)</system:String>
-    <system:String x:Key="AccentSelectedColorDescription">Die Vordergrundfarbe bei Steuerelementen (Bei Einträgen von Listen).</system:String>
-    <system:String x:Key="IdealForegroundColorDescription">Die generelle Vordergrundfarbe (Schriftzug bei Titelleisten).</system:String>
-
+    
     <system:String x:Key="Edit">Bearbeiten</system:String>
     <system:String x:Key="SaveError">Es ist ein Fehler aufgetreten. Bitte überprüfen Sie ihre Eingaben.</system:String>
     <system:String x:Key="SaveTagsError">Es ist ein Fehler beim Speichern der Tags aufgetreten: "{0}"</system:String>
@@ -319,4 +311,9 @@
     <system:String x:Key="Path">Pfad</system:String>
     <system:String x:Key="ShowProgressInTaskbar">Fortschritt in Taskbar anzeigen</system:String>
     <system:String x:Key="NothingToSeeHere">Hier gibts nix zu sehen</system:String>
+    <system:String x:Key="Key">Schlüssel</system:String>
+    <system:String x:Key="EnglishTranslation">Englische Übersetzung</system:String>
+    <system:String x:Key="GermanTranslation">Deutsche Übersetzung</system:String>
+    <system:String x:Key="Translation">Übersetzung</system:String>
+    <system:String x:Key="DocumentSaved">Dokument gespeichert</system:String>
 </ResourceDictionary>

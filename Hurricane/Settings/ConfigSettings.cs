@@ -165,7 +165,6 @@ namespace Hurricane.Settings
                 }
             }
 
-            ApplicationThemeManager.Instance.Apply(result.ApplicationDesign);
             return result;
         }
 
