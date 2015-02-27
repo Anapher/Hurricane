@@ -1,14 +1,14 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using Hurricane.Settings;
 using Hurricane.Settings.Themes;
 
-namespace Hurricane.Designer.Data
+namespace Hurricane.Designer.Data.ThemeData
 {
-    public class BaseThemeData : DataThemeBase
+    public class AppThemeData : DataThemeBase
     {
-        public BaseThemeData()
+        public AppThemeData()
         {
             ThemeSettings = new List<IThemeSetting>
             {
@@ -183,26 +183,26 @@ namespace Hurricane.Designer.Data
             };
         }
         
-        public static BaseThemeData LoadDefault()
+        public static AppThemeData LoadDefault()
         {
-            var baseTheme = new BaseThemeData();
-            baseTheme.LoadFromResourceDictionary(ApplicationThemeManager.Instance.BaseThemes.First(x => x.Name == "BaseLight").ResourceDictionary);
-            return baseTheme;
+            var appTheme = new AppThemeData();
+            appTheme.LoadFromResourceDictionary(ApplicationThemeManager.Instance.AppThemes.First(x => x.Name == "BaseLight").ResourceDictionary);
+            return appTheme;
         }
 
         public override string Source
         {
-            get { return Properties.Resources.BaseTheme; }
+            get { return Properties.Resources.AppTheme; }
         }
 
         public override string Filter
         {
-            get { return string.Format("{0}|*.xaml", Application.Current.Resources["BaseTheme"]); }
+            get { return string.Format("{0}|*.xaml", Application.Current.Resources["AppTheme"]); }
         }
 
         public override string BaseDirectory
         {
-            get { return HurricaneSettings.Instance.BaseThemesDirectory; }
+            get { return HurricaneSettings.Instance.AppThemesDirectory; }
         }
     }
 }

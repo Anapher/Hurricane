@@ -157,8 +157,8 @@
                     <StackPanel Orientation="Vertical" Margin="10">
                         <TextBlock Style="{StaticResource TextBlockHeader}" extensions:TextBlockHelper.UpperText="{DynamicResource Theme}"/>
                         <StackPanel Orientation="Vertical" Margin="0,10,0,0">
-                            <TextBlock Text="{DynamicResource BaseTheme}" VerticalAlignment="Center"/>
-                            <ComboBox Margin="0,5,0,0" Width="100" HorizontalAlignment="Left" SelectedItem="{Binding SelectedBaseTheme}" ItemsSource="{Binding ApplicationThemeManager.BaseThemes,Converter={StaticResource GroupConverter}}" DisplayMemberPath="TranslatedName">
+                            <TextBlock Text="{DynamicResource AppTheme}" VerticalAlignment="Center"/>
+                            <ComboBox Margin="0,5,0,0" Width="100" HorizontalAlignment="Left" SelectedItem="{Binding SelectedAppTheme}" ItemsSource="{Binding ApplicationThemeManager.AppThemes,Converter={StaticResource GroupConverter}}" DisplayMemberPath="TranslatedName">
                                 <ComboBox.GroupStyle>
                                     <GroupStyle>
                                         <GroupStyle.HeaderTemplate>
@@ -170,8 +170,8 @@
                                 </ComboBox.GroupStyle>
                             </ComboBox>
                         </StackPanel>
-                        <TextBlock Text="{DynamicResource ColorTheme}" Margin="0,15,0,0"/>
-                        <ComboBox Margin="0,5,10,0" ItemsSource="{Binding ApplicationThemeManager.ColorThemes,Converter={StaticResource GroupConverter}}" SelectedItem="{Binding SelectedColorTheme}" Width="300" HorizontalAlignment="Left">
+                        <TextBlock Text="{DynamicResource AccentColorString}" Margin="0,15,0,0"/>
+                        <ComboBox Margin="0,5,10,0" ItemsSource="{Binding ApplicationThemeManager.AccentColors,Converter={StaticResource GroupConverter}}" SelectedItem="{Binding SelectedAccentColor}" Width="300" HorizontalAlignment="Left">
                             <ComboBox.ItemTemplate>
                                 <DataTemplate>
                                     <DockPanel>

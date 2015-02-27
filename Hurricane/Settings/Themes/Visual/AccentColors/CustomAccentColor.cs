@@ -6,18 +6,18 @@ using System.Windows.Media;
 using System.Xml.Serialization;
 using MahApps.Metro;
 
-namespace Hurricane.Settings.Themes.Visual.ColorThemes
+namespace Hurricane.Settings.Themes.Visual.AccentColors
 {
     [Serializable]
-    public class CustomColorTheme : ColorThemeBase
+    public class CustomAccentColor : AccentColorBase
     {
-        public static bool FromFile(string filename, out CustomColorTheme result)
+        public static bool FromFile(string filename, out CustomAccentColor result)
         {
-            var colorTheme = new CustomColorTheme { Name = new FileInfo(filename).Name };
+            var accentColor = new CustomAccentColor { Name = new FileInfo(filename).Name };
 
             try
             {
-                if (!ThemeManager.IsAccentDictionary(colorTheme.ResourceDictionary))
+                if (!ThemeManager.IsAccentDictionary(accentColor.ResourceDictionary))
                 {
                     result = null;
                     return false;
@@ -29,7 +29,7 @@ namespace Hurricane.Settings.Themes.Visual.ColorThemes
                 return false;
             }
 
-            result = colorTheme;
+            result = accentColor;
             return true;
         }
 
@@ -59,7 +59,7 @@ namespace Hurricane.Settings.Themes.Visual.ColorThemes
                 return new ResourceDictionary
                 {
                     Source =
-                        new Uri(Path.Combine(HurricaneSettings.Instance.ColorThemesDirectory, Name),
+                        new Uri(Path.Combine(HurricaneSettings.Instance.AccentColorsDirectory, Name),
                             UriKind.RelativeOrAbsolute)
                 };
             }

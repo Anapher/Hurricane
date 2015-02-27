@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using Hurricane.Designer.Data;
+using Hurricane.Designer.Data.ThemeData;
 using Hurricane.Designer.Pages;
 using Hurricane.Settings.Themes;
 using Hurricane.ViewModelBase;
@@ -91,38 +92,38 @@ namespace Hurricane.Designer
             }
         }
 
-        private RelayCommand _createNewBaseColorTheme;
-        public RelayCommand CreateNewBaseColorTheme
+        private RelayCommand _createNewAppTheme;
+        public RelayCommand CreateNewAppTheme
         {
             get
             {
-                return _createNewBaseColorTheme ?? (_createNewBaseColorTheme = new RelayCommand(parameter =>
+                return _createNewAppTheme ?? (_createNewAppTheme = new RelayCommand(parameter =>
                 {
-                    LoadTheme(ColorThemeData.LoadDefault(), new BaseThemeData(), false);
+                    LoadTheme(AccentColorData.LoadDefault(), new AppThemeData(), false);
                 }));
             }
         }
 
-        private RelayCommand _createNewColorTheme;
-        public RelayCommand CreateNewColorTheme
+        private RelayCommand _createNewAccentColor;
+        public RelayCommand CreateNewAccentColor
         {
             get
             {
-                return _createNewColorTheme ?? (_createNewColorTheme = new RelayCommand(parameter =>
+                return _createNewAccentColor ?? (_createNewAccentColor = new RelayCommand(parameter =>
                 {
-                    LoadTheme(new ColorThemeData(), BaseThemeData.LoadDefault(), true);
+                    LoadTheme(new AccentColorData(), AppThemeData.LoadDefault(), true);
                 }));
             }
         }
 
-        private RelayCommand _openBaseColorTheme;
-        public RelayCommand OpenBaseColorTheme
+        private RelayCommand _openAppTheme;
+        public RelayCommand OpenAppTheme
         {
             get
             {
-                return _openBaseColorTheme ?? (_openBaseColorTheme = new RelayCommand(parameter =>
+                return _openAppTheme ?? (_openAppTheme = new RelayCommand(parameter =>
                 {
-                    var theme = new BaseThemeData();
+                    var theme = new AppThemeData();
 
                     var ofd = new OpenFileDialog {Filter = theme.Filter, InitialDirectory = theme.BaseDirectory};
                     if (ofd.ShowDialog() == true)
@@ -136,21 +137,21 @@ namespace Hurricane.Designer
                             MessageBox.Show(ex.Message);
                             return;
                         }
-                        LoadTheme(ColorThemeData.LoadDefault(), theme, false);
+                        LoadTheme(AccentColorData.LoadDefault(), theme, false);
                         CurrentElementPath = ofd.FileName;
                     }
                 }));
             }
         }
 
-        private RelayCommand _openColorTheme;
-        public RelayCommand OpenColorTheme
+        private RelayCommand _openAccentColor;
+        public RelayCommand OpenAccentColor
         {
             get
             {
-                return _openColorTheme ?? (_openColorTheme = new RelayCommand(parameter =>
+                return _openAccentColor ?? (_openAccentColor = new RelayCommand(parameter =>
                 {
-                    var theme = new ColorThemeData();
+                    var theme = new AccentColorData();
 
                     var ofd = new OpenFileDialog { Filter = theme.Filter, InitialDirectory = theme.BaseDirectory };
                     if (ofd.ShowDialog() == true)
@@ -164,23 +165,23 @@ namespace Hurricane.Designer
                             MessageBox.Show(ex.Message);
                             return;
                         }
-                        LoadTheme(theme, BaseThemeData.LoadDefault(), true);
+                        LoadTheme(theme, AppThemeData.LoadDefault(), true);
                         CurrentElementPath = ofd.FileName;
                     }
                 }));
             }
         }
 
-        private void LoadTheme(ColorThemeData colorTheme, BaseThemeData baseTheme, bool editColorTheme)
+        private void LoadTheme(AccentColorData accentColor, AppThemeData appTheme, bool editAccentColor)
         {
-            CurrentTitle = editColorTheme
-                ? Application.Current.Resources["ColorTheme"].ToString()
-                : Application.Current.Resources["BaseTheme"].ToString();
+            CurrentTitle = editAccentColor
+                ? Application.Current.Resources["AccentColorString"].ToString()
+                : Application.Current.Resources["AppTheme"].ToString();
 
-            var themeToEdit = editColorTheme ? (DataThemeBase) colorTheme : baseTheme;
+            var themeToEdit = editAccentColor ? (DataThemeBase) accentColor : appTheme;
             CurrentElement = themeToEdit;
             CurrentView = new ThemePage();
-            var previewData = new PreviewData(colorTheme, baseTheme) { FrameworkElement = PreviewControl };
+            var previewData = new PreviewData(accentColor, appTheme) { FrameworkElement = PreviewControl };
             PreviewData = previewData;
             PreviewControl = new LivePreview();
             previewData.FrameworkElement = PreviewControl;

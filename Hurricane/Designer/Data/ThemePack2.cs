@@ -16,7 +16,7 @@ using Newtonsoft.Json;
 /*
 namespace Hurricane.Designer.Data
 {
-    public class ThemePack2 : PropertyChangedBase, ISaveable, IDisposable, IApplicationBackground, IBaseTheme, IColorTheme, IAudioVisualisationContainer
+    public class ThemePack2 : PropertyChangedBase, ISaveable, IDisposable, IApplicationBackground, IAppTheme, IAccentColor, IAudioVisualisationContainer
     {
         [XmlIgnore]
         public string Creator { get; set; }
@@ -37,17 +37,17 @@ namespace Hurricane.Designer.Data
         }
 
         [JsonIgnore, XmlIgnore]
-        public BaseThemeData BaseTheme { get; set; }
+        public AppThemeData BaseTheme { get; set; }
 
         [JsonIgnore, XmlIgnore]
-        public ColorThemeData ColorTheme { get; set; }
+        public AccentColorData ColorTheme { get; set; }
 
         #endregion
 
         #region ContainInfo
         private bool _containsBaseTheme;
         [XmlIgnore]
-        public bool ContainsBaseTheme
+        public bool ContainsAppTheme
         {
             get { return _containsBaseTheme; }
             set
@@ -58,7 +58,7 @@ namespace Hurricane.Designer.Data
 
         private bool _containsColorTheme;
         [XmlIgnore]
-        public bool ContainsColorTheme
+        public bool ContainsAccentColor
         {
             get { return _containsColorTheme; }
             set
@@ -121,11 +121,11 @@ namespace Hurricane.Designer.Data
                 {
                     var themePack = JsonConvert.DeserializeObject<ThemePack>(reader.ReadToEnd());
                     themePack.AbsolutePath = path;
-                    if (themePack.ContainsColorTheme)
+                    if (themePack.ContainsAccentColor)
                     {
-                        using (var colorThemeReader = new StreamReader(zf.GetInputStream(zf.GetEntry(ColorThemeName))))
+                        using (var colorThemeReader = new StreamReader(zf.GetInputStream(zf.GetEntry(AccentColorName))))
                         {
-                            var data = new ColorThemeData();
+                            var data = new AccentColorData();
                             data.LoadFromString(colorThemeReader.ReadToEnd());
                         }
                     }
@@ -136,11 +136,11 @@ namespace Hurricane.Designer.Data
                             "HurricaneBackground" + new FileInfo(themePack.AbsolutePath).Extension);
                     }
 
-                    if (themePack.ContainsBaseTheme)
+                    if (themePack.ContainsAppTheme)
                     {
-                        using (var baseThemeReader = new StreamReader(zf.GetInputStream(zf.GetEntry(BaseThemeName))))
+                        using (var baseThemeReader = new StreamReader(zf.GetInputStream(zf.GetEntry(AppThemeName))))
                         {
-                            var data = new BaseThemeData();
+                            var data = new AppThemeData();
                             data.LoadFromString(baseThemeReader.ReadToEnd());
                         }
                     }
@@ -210,22 +210,22 @@ namespace Hurricane.Designer.Data
 
         #region BaseTheme
 
-        string IBaseTheme.Name
+        string IAppTheme.Name
         {
             get { return GetDefaultText(); }
         }
 
-        string IBaseTheme.TranslatedName
+        string IAppTheme.TranslatedName
         {
             get { return GetDefaultText(); }
         }
 
-        void IBaseTheme.ApplyTheme()
+        void IAppTheme.ApplyTheme()
         {
             ApplicationThemeManager.Instance.LoadResource("basetheme", ColorTheme.GetResourceDictionary());
         }
 
-        bool IBaseTheme.UseLightDialogs
+        bool IAppTheme.UseLightDialogs
         {
             get
             {
@@ -240,17 +240,17 @@ namespace Hurricane.Designer.Data
 
         #region ColorTheme
 
-        string IColorTheme.Name
+        string IAccentColor.Name
         {
             get { return GetDefaultText(); }
         }
 
-        string IColorTheme.TranslatedName
+        string IAccentColor.TranslatedName
         {
             get { return GetDefaultText(); }
         }
 
-        void IColorTheme.ApplyTheme()
+        void IAccentColor.ApplyTheme()
         {
             ApplicationThemeManager.Instance.LoadResource("colortheme", ColorTheme.GetResourceDictionary());
         }

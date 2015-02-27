@@ -161,6 +161,7 @@ namespace Hurricane.MagicArrow
 
         void strokewindow_MouseMove(object sender, MouseEventArgs e)
         {
+            Hurricane.Views.Test.TestWindow.AddMessage("Stroke: Mouse Move");
             if (!MagicArrowIsShown && !IsInZone && StrokeWindow.PositionIsOk(_movedoutside, Cursor.Position.X, WpfScreen.MostLeftX - 2, WpfScreen.MostRightX))
             {
                 IsInZone = true;
@@ -173,6 +174,7 @@ namespace Hurricane.MagicArrow
 
         void strokewindow_MouseLeave(object sender, MouseEventArgs e)
         {
+            Hurricane.Views.Test.TestWindow.AddMessage("Stroke: Mouse Leave");
             if (!MagicArrowIsShown)
             {
                 HideMagicArrow();
@@ -188,7 +190,7 @@ namespace Hurricane.MagicArrow
 
         protected void ShowMagicArrow(double top, Side side)
         {
-
+            Hurricane.Views.Test.TestWindow.AddMessage("Show Magic Arrow");
             MagicArrowIsShown = true;
             if (!HurricaneSettings.Instance.Config.ShowMagicArrowBelowCursor)
             {
@@ -213,14 +215,24 @@ namespace Hurricane.MagicArrow
                 while (MagicArrowIsShown)
                 {
                     await Task.Delay(1000);
+                    Hurricane.Views.Test.TestWindow.AddMessage("Check Magic Arrow");
                     int cursorX = Cursor.Position.X;
-                    if ((_movedoutside == Side.Left && cursorX > 4 - WpfScreen.MostLeftX) || (_movedoutside == Side.Right && cursorX < WpfScreen.MostRightX - 4)) Application.Current.Dispatcher.Invoke(HideMagicArrow);
+                    if ((_movedoutside == Side.Left && cursorX > 4 - WpfScreen.MostLeftX) ||
+                        (_movedoutside == Side.Right && cursorX < WpfScreen.MostRightX - 4))
+                    {
+                        Application.Current.Dispatcher.Invoke(HideMagicArrow);
+                    }
+                    else
+                    {
+                        Hurricane.Views.Test.TestWindow.AddMessage(string.Format("-> Everything okay: _movedoutside: {0}, cursorX: {1}", _movedoutside, cursorX));
+                    }
                 }
             });
         }
 
         void MagicWindow_MouseLeave(object sender, MouseEventArgs e)
         {
+            Hurricane.Views.Test.TestWindow.AddMessage("Magic Arrow: Mouse Leave");
             if (StrokeWindow.PositionIsOk(_movedoutside, Cursor.Position.X, 2 - WpfScreen.MostLeftX, WpfScreen.MostRightX))
             {
                 if (Strokewindow != null)
@@ -232,6 +244,7 @@ namespace Hurricane.MagicArrow
 
         protected void HideMagicArrow()
         {
+            Hurricane.Views.Test.TestWindow.AddMessage("Hide Magic Arrow");
             MagicArrowIsShown = false;
             IsInZone = false;
             if (MagicWindow != null && MagicWindow.Visibility == Visibility.Visible)

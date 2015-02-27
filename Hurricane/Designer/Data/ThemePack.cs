@@ -16,7 +16,7 @@ using Newtonsoft.Json;
 
 namespace Hurricane.Designer.Data
 {
-    public class ThemePack : IApplicationBackground, IBaseTheme, IColorTheme, IAudioVisualisationContainer
+    public class ThemePack : IApplicationBackground, IAppTheme, IAccentColor, IAudioVisualisationContainer
     {
         [XmlIgnore]
         public string Creator { get; set; }
@@ -29,10 +29,10 @@ namespace Hurricane.Designer.Data
         #region ContainInfo
 
         [XmlIgnore]
-        public bool ContainsBaseTheme { get; set; }
+        public bool ContainsAppTheme { get; set; }
 
         [XmlIgnore]
-        public bool ContainsColorTheme { get; set; }
+        public bool ContainsAccentColor { get; set; }
 
         [XmlIgnore]
         public bool ContainsAudioVisualisation { get; set; }
@@ -104,19 +104,19 @@ namespace Hurricane.Designer.Data
                     }
                 }
 
-                if (ContainsBaseTheme)
+                if (ContainsAppTheme)
                 {
-                    using (var stream = zf.GetInputStream(zf.GetEntry(ThemePackConsts.BaseThemeName)))
+                    using (var stream = zf.GetInputStream(zf.GetEntry(ThemePackConsts.AppThemeName)))
                     {
-                        _baseThemeResourceDictionary = (ResourceDictionary)XamlReader.Load(stream);
+                        _appThemeResourceDictionary = (ResourceDictionary)XamlReader.Load(stream);
                     }
                 } 
                 
-                if (ContainsColorTheme)
+                if (ContainsAccentColor)
                 {
-                    using (var stream = zf.GetInputStream(zf.GetEntry(ThemePackConsts.ColorThemeName)))
+                    using (var stream = zf.GetInputStream(zf.GetEntry(ThemePackConsts.AccentColorName)))
                     {
-                        _colorThemeResourceDictionary = (ResourceDictionary)XamlReader.Load(stream);
+                        _accentColorResourceDictionary = (ResourceDictionary)XamlReader.Load(stream);
                     }
                 }
             }
@@ -146,54 +146,54 @@ namespace Hurricane.Designer.Data
 
         #endregion
 
-        #region IColorTheme
+        #region IAccentColor
 
-        private ResourceDictionary _colorThemeResourceDictionary;
+        private ResourceDictionary _accentColorResourceDictionary;
 
-        string IColorTheme.Name
+        string IAccentColor.Name
         {
             get { return DefaultText; }
         }
 
-        string IColorTheme.TranslatedName
+        string IAccentColor.TranslatedName
         {
             get { return DefaultText; }
         }
 
-        void IColorTheme.ApplyTheme()
+        void IAccentColor.ApplyTheme()
         {
-            ApplicationThemeManager.Instance.LoadResource("colortheme", _colorThemeResourceDictionary);
+            ApplicationThemeManager.Instance.LoadResource("accentcolor", _accentColorResourceDictionary);
         }
 
-        ResourceDictionary IColorTheme.ResourceDictionary
+        ResourceDictionary IAccentColor.ResourceDictionary
         {
-            get { return _colorThemeResourceDictionary; }
+            get { return _accentColorResourceDictionary; }
         }
 
         #endregion
 
-        #region IBaseTheme
+        #region IAppTheme
 
-        private ResourceDictionary _baseThemeResourceDictionary;
+        private ResourceDictionary _appThemeResourceDictionary;
 
-        string IBaseTheme.Name
+        string IAppTheme.Name
         {
             get { return DefaultText; }
         }
 
-        string IBaseTheme.TranslatedName
+        string IAppTheme.TranslatedName
         {
             get { return DefaultText; }
         }
 
-        void IBaseTheme.ApplyTheme()
+        void IAppTheme.ApplyTheme()
         {
-            ApplicationThemeManager.Instance.LoadResource("basetheme", _baseThemeResourceDictionary);
+            ApplicationThemeManager.Instance.LoadResource("apptheme", _appThemeResourceDictionary);
         }
 
-        ResourceDictionary IBaseTheme.ResourceDictionary
+        ResourceDictionary IAppTheme.ResourceDictionary
         {
-            get { return _baseThemeResourceDictionary; }
+            get { return _appThemeResourceDictionary; }
         }
 
         #endregion

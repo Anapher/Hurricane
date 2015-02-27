@@ -230,12 +230,12 @@
     <system:String x:Key="Crossfade">Crossfade</system:String>
     <system:String x:Key="Secounds">Secounds</system:String>
     <system:String x:Key="View">View</system:String>
-    <system:String x:Key="BaseTheme">Base theme</system:String>
+    <system:String x:Key="AppTheme">App theme</system:String>
     <system:String x:Key="Latency">Latency</system:String>
 
     <system:String x:Key="DefaultLatency">100 ms (Default)</system:String>
     <system:String x:Key="PreferFavoriteDescription">In contrast to normal tracks, the chance that favorite tracks get chosen by shuffle is doubled.</system:String>
-    <system:String x:Key="ColorTheme">Color theme</system:String>
+    <system:String x:Key="AccentColorString">Accent color</system:String>
     <system:String x:Key="TrimTracknameDescription">Unnecessary parts of the title like the year or quality will be removed which could improve the hit rate.</system:String>
 
     <!-- 0.3.0 -->
@@ -316,4 +316,5 @@
     <system:String x:Key="GermanTranslation">German translation</system:String>
     <system:String x:Key="Translation">Translation</system:String>
     <system:String x:Key="DocumentSaved">Document saved</system:String>
+    <system:String x:Key="SelectTemplate">Select template</system:String>
 </ResourceDictionary>

@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using System.Xml.Serialization;
+using Hurricane.Designer.Data.ThemeData;
 using Hurricane.ViewModelBase;
 using ICSharpCode.SharpZipLib.Zip;
 using Newtonsoft.Json;
@@ -14,46 +15,46 @@ namespace Hurricane.Designer.Data
         public string BackgroundPath { get; set; }
         public string AudioVisualisationPath { get; set; }
 
-        private BaseThemeData _baseTheme;
-        public BaseThemeData BaseTheme
+        private AppThemeData _appTheme;
+        public AppThemeData AppTheme
         {
-            get { return _baseTheme; }
+            get { return _appTheme; }
             set
             {
-                SetProperty(value, ref _baseTheme);
+                SetProperty(value, ref _appTheme);
             }
         }
 
-        private ColorThemeData _colorTheme;
-        public ColorThemeData ColorTheme
+        private AccentColorData _accentColor;
+        public AccentColorData AccentColor
         {
-            get { return _colorTheme; }
+            get { return _accentColor; }
             set
             {
-                SetProperty(value, ref _colorTheme);
+                SetProperty(value, ref _accentColor);
             }
         }
 
         #region ContainInfo
-        private bool _containsBaseTheme;
+        private bool _containsAppTheme;
         [XmlIgnore]
-        public bool ContainsBaseTheme
+        public bool ContainsAppTheme
         {
-            get { return _containsBaseTheme; }
+            get { return _containsAppTheme; }
             set
             {
-                SetProperty(value, ref _containsBaseTheme);
+                SetProperty(value, ref _containsAppTheme);
             }
         }
 
-        private bool _containsColorTheme;
+        private bool _containsAccentColor;
         [XmlIgnore]
-        public bool ContainsColorTheme
+        public bool ContainsAccentColor
         {
-            get { return _containsColorTheme; }
+            get { return _containsAccentColor; }
             set
             {
-                SetProperty(value, ref _containsColorTheme);
+                SetProperty(value, ref _containsAccentColor);
             }
         }
 
@@ -87,8 +88,8 @@ namespace Hurricane.Designer.Data
             {
                 ContainsAudioVisualisation = ContainsAudioVisualisation,
                 ContainsBackground = ContainsBackground,
-                ContainsBaseTheme = ContainsBaseTheme,
-                ContainsColorTheme = ContainsColorTheme
+                ContainsAppTheme = ContainsAppTheme,
+                ContainsAccentColor = ContainsAccentColor
             };
 
             var folderToCompress = new DirectoryInfo(Path.Combine(Path.GetTempPath(), "HurricaneThemePack"));

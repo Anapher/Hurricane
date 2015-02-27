@@ -7,10 +7,11 @@ using System.Windows;
 using Hurricane.Designer.Data;
 using Hurricane.Settings.Themes.AudioVisualisation;
 using Hurricane.Settings.Themes.AudioVisualisation.DefaultAudioVisualisation;
-using Hurricane.Settings.Themes.Visual.BaseThemes;
-using Hurricane.Settings.Themes.Visual.ColorThemes;
+using Hurricane.Settings.Themes.Visual.AccentColors;
+using Hurricane.Settings.Themes.Visual.AppThemes;
 using MahApps.Metro;
 using Application = System.Windows.Application;
+using AppTheme = Hurricane.Settings.Themes.Visual.AppThemes.AppTheme;
 
 namespace Hurricane.Settings.Themes
 {
@@ -32,21 +33,21 @@ namespace Hurricane.Settings.Themes
 
         #endregion
 
-        private ObservableCollection<ColorThemeBase> _colorThemes;
-        public ObservableCollection<ColorThemeBase> ColorThemes
+        private ObservableCollection<AccentColorBase> _accentColors;
+        public ObservableCollection<AccentColorBase> AccentColors
         {
             get
             {
-                return _colorThemes;
+                return _accentColors;
             }
         }
 
-        private ObservableCollection<BaseThemeBase> _baseThemes;
-        public ObservableCollection<BaseThemeBase> BaseThemes
+        private ObservableCollection<AppThemeBase> _appThemes;
+        public ObservableCollection<AppThemeBase> AppThemes
         {
             get
             {
-                return _baseThemes;
+                return _appThemes;
             }
         }
 
@@ -70,43 +71,43 @@ namespace Hurricane.Settings.Themes
 
         public void Refresh()
         {
-            _colorThemes = new ObservableCollection<ColorThemeBase>();
-            _baseThemes = new ObservableCollection<BaseThemeBase>();
+            _accentColors = new ObservableCollection<AccentColorBase>();
+            _appThemes = new ObservableCollection<AppThemeBase>();
             _themePacks = new ObservableCollection<ThemePack>();
             _audioVisualisations = new ObservableCollection<IAudioVisualisationContainer>();
 
-            foreach (var t in ThemeManager.Accents.Select(a => new AccentColorTheme { Name = a.Name }).OrderBy(x => x.TranslatedName))
+            foreach (var t in ThemeManager.Accents.Select(a => new AccentColor { Name = a.Name }).OrderBy(x => x.TranslatedName))
             {
-                _colorThemes.Add(t);
+                _accentColors.Add(t);
             }
 
-            foreach (var t in ThemeManager.AppThemes.Select(a => new BaseTheme { Name = a.Name }).OrderBy(x => x.TranslatedName))
+            foreach (var t in ThemeManager.AppThemes.Select(a => new AppTheme { Name = a.Name }).OrderBy(x => x.TranslatedName))
             {
-                _baseThemes.Add(t);
+                _appThemes.Add(t);
             }
 
             _audioVisualisations.Add(DefaultAudioVisualisation.GetDefault());
 
-            var colorThemesFolder = new DirectoryInfo(HurricaneSettings.Instance.ColorThemesDirectory);
-            if (colorThemesFolder.Exists)
+            var accentColorsFolder = new DirectoryInfo(HurricaneSettings.Instance.AccentColorsDirectory);
+            if (accentColorsFolder.Exists)
             {
-                foreach (var file in colorThemesFolder.GetFiles("*.xaml"))
+                foreach (var file in accentColorsFolder.GetFiles("*.xaml"))
                 {
-                    CustomColorTheme theme;
+                    CustomAccentColor theme;
 
-                    if (CustomColorTheme.FromFile(file.FullName, out theme))
-                        _colorThemes.Add(theme);
+                    if (CustomAccentColor.FromFile(file.FullName, out theme))
+                        _accentColors.Add(theme);
                 }
             }
 
-            var baseThemesFolder = new DirectoryInfo(HurricaneSettings.Instance.BaseThemesDirectory);
-            if (baseThemesFolder.Exists)
+            var appThemesFolder = new DirectoryInfo(HurricaneSettings.Instance.AppThemesDirectory);
+            if (appThemesFolder.Exists)
             {
-                foreach (var file in baseThemesFolder.GetFiles("*.xaml"))
+                foreach (var file in appThemesFolder.GetFiles("*.xaml"))
                 {
-                    CustomBaseTheme theme;
-                    if (CustomBaseTheme.FromFile(file.FullName, out theme))
-                        _baseThemes.Add(theme);
+                    CustomAppTheme theme;
+                    if (CustomAppTheme.FromFile(file.FullName, out theme))
+                        _appThemes.Add(theme);
                 }
             }
 
@@ -142,22 +143,22 @@ namespace Hurricane.Settings.Themes
         {
             try
             {
-                design.ColorTheme.ApplyTheme();
+                design.AccentColor.ApplyTheme();
             }
             catch (Exception)
             {
-                design.ColorTheme = ColorThemes.First(x => x.Name == "Blue");
-                design.ColorTheme.ApplyTheme();
+                design.AccentColor = AccentColors.First(x => x.Name == "Blue");
+                design.AccentColor.ApplyTheme();
             }
 
             try
             {
-                design.BaseTheme.ApplyTheme();
+                design.AppTheme.ApplyTheme();
             }
             catch (Exception)
             {
-                design.BaseTheme = BaseThemes.First();
-                design.BaseTheme.ApplyTheme();
+                design.AppTheme = AppThemes.First();
+                design.AppTheme.ApplyTheme();
             }
 
             if (design.AudioVisualisation != null)

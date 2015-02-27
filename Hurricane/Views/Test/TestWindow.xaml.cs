@@ -1,113 +1,43 @@
 ﻿using System;
-using System.ComponentModel;
-using System.IO;
-using System.Runtime.InteropServices;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text;
-using System.Windows;
-using System.Windows.Forms;
-using System.Windows.Media;
-using Hurricane.Utilities;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Shapes;
 
 namespace Hurricane.Views.Test
 {
     /// <summary>
-    /// Interaction logic for TestWindow.xaml
+    /// Interaktionslogik für TestWindow.xaml
     /// </summary>
     public partial class TestWindow : Window
     {
-        protected FileInfo logfile;
         public TestWindow()
         {
-            //logfile = new FileInfo("log.txt");
-            //LogPath = "Logfile location: " + logfile.FullName;
             InitializeComponent();
-            this.Loaded += TestWindow_Loaded;
+            AddMessageEvent += TestWindow_AddMessageEvent;
         }
 
-        public Steps CurrentStep { get; set; }
-        public string LogPath { get; set; }
-
-        protected override void OnClosing(CancelEventArgs e)
+        void TestWindow_AddMessageEvent(object sender, string e)
         {
-            base.OnClosing(e);
-            Utilities.HookManager.MouseHook.HookManager.MouseMove -= HookManager_MouseMove;
-            hook.Unhook();
-        }
-
-        ActiveWindowHook hook = new ActiveWindowHook();
-        async void TestWindow_Loaded(object sender, RoutedEventArgs e)
-        {
-            try
+            Dispatcher.Invoke(() =>
             {
-                txtStatus.Text = "We'll start easy. Please move your mouse";
-                await Task.Delay(3000);
-                Utilities.HookManager.MouseHook.HookManager.MouseMove += HookManager_MouseMove;
-                CurrentStep = Steps.StepOne;
-            }
-            catch
-            {
-                txtStatus.Text = "Oh, looks like we found the exception. Please submit the log to the programmer";
-            }
-
+                InfoListBox.Items.Add(e);
+                InfoListBox.ScrollIntoView(e);
+            });
         }
 
-        void HookManager_MouseMove(object sender, MouseEventArgs e)
+        private static event EventHandler<string> AddMessageEvent;
+        public static void AddMessage(string message)
         {
-            switch (CurrentStep)
-            {
-                case Steps.StepOne:
-                    txtStatus.Text = "Now, please move your mouse to the left side of your screen";
-                    CurrentStep = Steps.StepTwo;
-                    break;
-                case Steps.StepTwo:
-                    txtStatus.Text = string.Format("Now, please move your mouse to the left side of your screen (Current X: {0})", e.X);
-                    if (e.X == 0)
-                    {
-                        CurrentStep = Steps.StepThree;
-                    }
-                    break;
-                case Steps.StepThree:
-                    txtStatus.Text = "Nice one. Next, please move your mouse to the right side of your screen";
-                    if (e.X < WpfScreen.MostRightX - 5)
-                    {
-                        CurrentStep = Steps.StepFour;
-                    }
-                    break;
-                case Steps.StepFour:
-                    
-                    break;
-            }
-        }
-
-        public enum Steps
-        {
-            StepOne, //Move mouse
-            StepTwo, //Move mouse to left side
-            StepThree,
-            StepFour //Check if the user could the the magic arrow
-        }
-
-        private void btnDoesntWork_Click(object sender, RoutedEventArgs e)
-        {
-            switch (CurrentStep)
-            {
-                case Steps.StepOne:
-                    break;
-                case Steps.StepTwo:
-                    break;
-                case Steps.StepThree:
-                    btnDoesntWork.IsEnabled = false;
-                    btnOk.IsEnabled = false;
-                    break;
-            }
-        }
-
-        private void btnOk_Click(object sender, RoutedEventArgs e)
-        {
-            txtStatus.Text = "Ok, the magic arrow should work. If it's not working, please contact the programmer.";
-            btnDoesntWork.IsEnabled = false;
-            btnOk.IsEnabled = false;
+            if (AddMessageEvent != null) AddMessageEvent(null, DateTime.Now.Ticks +": \t" + message);
         }
     }
 }

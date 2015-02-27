@@ -230,12 +230,12 @@
     <system:String x:Key="Crossfade">Crossfade</system:String>
     <system:String x:Key="Secounds">Sekunden</system:String>
     <system:String x:Key="View">Anzeige</system:String>
-    <system:String x:Key="BaseTheme">Basistheme</system:String>
+    <system:String x:Key="AppTheme">Theme</system:String>
     <system:String x:Key="Latency">Latenz</system:String>
     
     <system:String x:Key="DefaultLatency">100 ms (Standard)</system:String>
     <system:String x:Key="PreferFavoriteDescription">Favorisierte Tracks werden im Gegensatz zu normalen Tracks doppelt so wahrscheinlich bei zufälliger Wiedergabe ausgewählt.</system:String>
-    <system:String x:Key="ColorTheme">Farbtheme</system:String>
+    <system:String x:Key="AccentColorString">Akzentfarbe</system:String>
     <system:String x:Key="TrimTracknameDescription">Aus dem Titel werden überflüssige Sachen wie das Datum oder die Qualität entfernt, was die Trefferquote erhöhen kann.</system:String>
 
     <!-- 0.3.0 -->
@@ -316,4 +316,7 @@
     <system:String x:Key="GermanTranslation">Deutsche Übersetzung</system:String>
     <system:String x:Key="Translation">Übersetzung</system:String>
     <system:String x:Key="DocumentSaved">Dokument gespeichert</system:String>
+    <system:String x:Key="SelectTemplate">Vorlage auswählen</system:String>
+    <system:String x:Key="NoTemplate">Keine Vorlage</system:String>
+    <system:String x:Key="OK">OK</system:String>
 </ResourceDictionary>

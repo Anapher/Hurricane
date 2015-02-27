@@ -1,22 +1,25 @@
 ﻿using System;
 using System.Windows;
+using System.Windows.Media;
 using System.Xml.Serialization;
 using Hurricane.Settings.Converter;
 
-namespace Hurricane.Settings.Themes.Visual.BaseThemes
+namespace Hurricane.Settings.Themes.Visual.AccentColors
 {
-    [Serializable, XmlInclude(typeof(BaseTheme)), XmlInclude(typeof(CustomBaseTheme))]
-    public abstract class BaseThemeBase : IBaseTheme, IGroupable
+    [Serializable, XmlInclude(typeof(AccentColor)), XmlInclude(typeof(CustomAccentColor))]
+    public abstract class AccentColorBase : IAccentColor, IGroupable
     {
-        public string Name { set; get; }
+        public abstract Brush ColorBrush { get; }
         public abstract string TranslatedName { get; }
         public abstract string Group { get; }
         [XmlIgnore]
         public abstract ResourceDictionary ResourceDictionary { get; }
 
+        public string Name { get; set; }
+
         public override bool Equals(object obj)
         {
-            var other = obj as BaseThemeBase;
+            var other = obj as AccentColorBase;
             if (other == null) return false;
             if (obj.GetType() == GetType())
                 return other.Name == Name;
@@ -30,7 +33,7 @@ namespace Hurricane.Settings.Themes.Visual.BaseThemes
 
         public void ApplyTheme()
         {
-            ApplicationThemeManager.Instance.LoadResource("basetheme", ResourceDictionary);
+            ApplicationThemeManager.Instance.LoadResource("accentcolor", ResourceDictionary);
         }
     }
 }

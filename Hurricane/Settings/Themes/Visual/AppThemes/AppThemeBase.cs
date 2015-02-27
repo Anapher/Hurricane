@@ -1,25 +1,22 @@
-﻿using System;
+using System;
 using System.Windows;
-using System.Windows.Media;
 using System.Xml.Serialization;
 using Hurricane.Settings.Converter;
 
-namespace Hurricane.Settings.Themes.Visual.ColorThemes
+namespace Hurricane.Settings.Themes.Visual.AppThemes
 {
-    [Serializable, XmlInclude(typeof(AccentColorTheme)), XmlInclude(typeof(CustomColorTheme))]
-    public abstract class ColorThemeBase : IColorTheme, IGroupable
+    [Serializable, XmlInclude(typeof(AppTheme)), XmlInclude(typeof(CustomAppTheme))]
+    public abstract class AppThemeBase : IAppTheme, IGroupable
     {
-        public abstract Brush ColorBrush { get; }
+        public string Name { set; get; }
         public abstract string TranslatedName { get; }
         public abstract string Group { get; }
         [XmlIgnore]
         public abstract ResourceDictionary ResourceDictionary { get; }
 
-        public string Name { get; set; }
-
         public override bool Equals(object obj)
         {
-            var other = obj as ColorThemeBase;
+            var other = obj as AppThemeBase;
             if (other == null) return false;
             if (obj.GetType() == GetType())
                 return other.Name == Name;
@@ -33,7 +30,7 @@ namespace Hurricane.Settings.Themes.Visual.ColorThemes
 
         public void ApplyTheme()
         {
-            ApplicationThemeManager.Instance.LoadResource("colortheme", ResourceDictionary);
+            ApplicationThemeManager.Instance.LoadResource("apptheme", ResourceDictionary);
         }
     }
 }

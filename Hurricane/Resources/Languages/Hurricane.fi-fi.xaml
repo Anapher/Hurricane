@@ -211,11 +211,11 @@
     <system:String x:Key="Crossfade">Crossfade</system:String>
     <system:String x:Key="Secounds">sekuntia</system:String>
     <system:String x:Key="View">näyttö</system:String>
-    <system:String x:Key="BaseTheme">base teema</system:String>
+    <system:String x:Key="AppTheme">base teema</system:String>
     <system:String x:Key="Latency">latenssi</system:String>
     <system:String x:Key="DefaultLatency">100 ms (standardi)</system:String>
     <system:String x:Key="PreferFavoriteDescription">Suosikkeja sekoitetaan kaksinkertainen todennäköisyys.</system:String>
-    <system:String x:Key="ColorTheme">väriteema</system:String>
+    <system:String x:Key="AccentColorString">väriteema</system:String>
     <system:String x:Key="TrimTracknameDescription">Otsikon tasalla ja laatua pois. Tämä voi lisätä osumatarkkuus.</system:String>
 
     <!-- 0.3.0 -->

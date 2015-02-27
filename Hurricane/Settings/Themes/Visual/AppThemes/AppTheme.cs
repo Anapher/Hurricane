@@ -1,28 +1,12 @@
 ﻿using System;
-using System.Linq;
 using System.Windows;
-using System.Windows.Media;
 using System.Xml.Serialization;
-using MahApps.Metro;
 
-namespace Hurricane.Settings.Themes.Visual.ColorThemes
+namespace Hurricane.Settings.Themes.Visual.AppThemes
 {
     [Serializable]
-    public class AccentColorTheme : ColorThemeBase
+    public class AppTheme : AppThemeBase
     {
-        [XmlIgnore]
-        public Brush BorderColorBrush { get; set; }
-
-        [XmlIgnore]
-        public override Brush ColorBrush
-        {
-            get
-            {
-                return ThemeManager.Accents.First(x => x.Name == Name).Resources["AccentColorBrush"] as Brush;
-            }
-        }
-
-        [XmlIgnore]
         public override string TranslatedName
         {
             get { return Application.Current.Resources[Name].ToString(); }

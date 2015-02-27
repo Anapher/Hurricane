@@ -1,23 +1,24 @@
 ﻿using System.Windows;
+using Hurricane.Designer.Data.ThemeData;
 using Hurricane.ViewModelBase;
 
 namespace Hurricane.Designer.Data
 {
     public class PreviewData : PropertyChangedBase, IPreviewable
     {
-        public BaseThemeData BaseThemeData { get; private set; }
-        public ColorThemeData ColorThemeData { get; private set; }
+        public AppThemeData AppThemeData { get; private set; }
+        public AccentColorData AccentColorData { get; private set; }
 
-        public PreviewData(ColorThemeData colorTheme, BaseThemeData baseTheme)
+        public PreviewData(AccentColorData accentColor, AppThemeData appTheme)
         {
-            ColorThemeData = colorTheme;
-            BaseThemeData = baseTheme;
-            foreach (var themeSetting in ColorThemeData.ThemeSettings)
+            AccentColorData = accentColor;
+            AppThemeData = appTheme;
+            foreach (var themeSetting in AccentColorData.ThemeSettings)
             {
                 themeSetting.ValueChanged += themeSetting_ValueChanged;
             }
 
-            foreach (var themeSetting in BaseThemeData.ThemeSettings)
+            foreach (var themeSetting in AppThemeData.ThemeSettings)
             {
                 themeSetting.ValueChanged += themeSetting_ValueChanged;
             }
@@ -35,10 +36,10 @@ namespace Hurricane.Designer.Data
 
         public void Refresh()
         {
-            var colorThemeResources = ColorThemeData.GetResourceDictionary();
-            var baseThemeResources = BaseThemeData.GetResourceDictionary();
-            FrameworkElement.Resources.MergedDictionaries.Add(colorThemeResources);
-            FrameworkElement.Resources.MergedDictionaries.Add(baseThemeResources);
+            var accentColorResources = AccentColorData.GetResourceDictionary();
+            var appThemeResources = AppThemeData.GetResourceDictionary();
+            FrameworkElement.Resources.MergedDictionaries.Add(accentColorResources);
+            FrameworkElement.Resources.MergedDictionaries.Add(appThemeResources);
 
             if (_lastColorResourceDictionary != null)
                 FrameworkElement.Resources.MergedDictionaries.Remove(_lastColorResourceDictionary);
@@ -46,8 +47,8 @@ namespace Hurricane.Designer.Data
             if (_lastBaseResourceDictionary != null)
                 FrameworkElement.Resources.MergedDictionaries.Remove(_lastBaseResourceDictionary);
 
-            _lastBaseResourceDictionary = baseThemeResources;
-            _lastColorResourceDictionary = colorThemeResources;
+            _lastBaseResourceDictionary = appThemeResources;
+            _lastColorResourceDictionary = accentColorResources;
         }
     }
 }

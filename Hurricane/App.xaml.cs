@@ -40,14 +40,14 @@ namespace Hurricane
                     case "/test":
                         var view = new TestWindow();
                         view.Show();
-                        return;
+                        break;
                     case "/language_creator":
                         var languageCreator = new LanguageCreatorWindow();
                         languageCreator.ShowDialog();
                         return;
                     case "/designer":
                         var resource = new ResourceDictionary { Source = new Uri("/Resources/Themes/Cyan.xaml", UriKind.Relative) };
-                        ApplicationThemeManager.Instance.LoadResource("colortheme", resource);
+                        ApplicationThemeManager.Instance.LoadResource("accentcolor", resource);
                         var designer = new Designer.DesignerWindow();
                         designer.ShowDialog();
                         return;

@@ -48,18 +48,18 @@
         <Grid Grid.Row="3" Margin="20,10,20,20">
             <StackPanel Orientation="Vertical">
                 <StackPanel Orientation="Vertical">
-                    <TextBlock Text="{StaticResource ColorTheme}" FontSize="16"/>
+                    <TextBlock Text="{StaticResource AccentColorString}" FontSize="16"/>
                     <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
-                        <RadioButton Content="{StaticResource No2}" IsChecked="{Binding ThemePack.ContainsColorTheme,Converter={StaticResource InvertBooleanConverter}}"/>
-                        <RadioButton Content="{StaticResource Include}" IsChecked="{Binding ThemePack.ContainsColorTheme}" Margin="10,0,0,0"/>
+                        <RadioButton Content="{StaticResource No2}" IsChecked="{Binding ThemePack.ContainsAccentColor,Converter={StaticResource InvertBooleanConverter}}"/>
+                        <RadioButton Content="{StaticResource Include}" IsChecked="{Binding ThemePack.ContainsAccentColor}" Margin="10,0,0,0"/>
                         <Button Content="..." Margin="10,0,0,0" Width="30"/>
                     </StackPanel>
                 </StackPanel>
                 <StackPanel Orientation="Vertical" Margin="0,15,0,0">
-                    <TextBlock Text="{StaticResource BaseTheme}" FontSize="16"/>
+                    <TextBlock Text="{StaticResource AppTheme}" FontSize="16"/>
                     <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
-                        <RadioButton Content="{StaticResource No2}" IsChecked="{Binding ThemePack.ContainsBaseTheme,Converter={StaticResource InvertBooleanConverter}}"/>
-                        <RadioButton Content="{StaticResource Include}" IsChecked="{Binding ThemePack.ContainsBaseTheme}" Margin="10,0,0,0"/>
+                        <RadioButton Content="{StaticResource No2}" IsChecked="{Binding ThemePack.ContainsAppTheme,Converter={StaticResource InvertBooleanConverter}}"/>
+                        <RadioButton Content="{StaticResource Include}" IsChecked="{Binding ThemePack.ContainsAppTheme}" Margin="10,0,0,0"/>
                         <Button Content="..." Margin="10,0,0,0" Width="30"/>
                     </StackPanel>
                 </StackPanel>

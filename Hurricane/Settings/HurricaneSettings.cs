@@ -9,8 +9,8 @@ namespace Hurricane.Settings
         public readonly string BaseDirectory;
         public readonly string CoverDirectory;
 
-        public readonly string ColorThemesDirectory;
-        public readonly string BaseThemesDirectory;
+        public readonly string AccentColorsDirectory;
+        public readonly string AppThemesDirectory;
         public readonly string ThemePacksDirectory;
         public readonly string AudioVisualisationsDirectory;
 
@@ -41,8 +41,8 @@ namespace Hurricane.Settings
             CoverDirectory = Path.Combine(BaseDirectory, "AlbumCover");
 
             var themeDirectory = CheckDirectory(Path.Combine(BaseDirectory, "Themes"));
-            ColorThemesDirectory = CheckDirectory(Path.Combine(themeDirectory, "ColorThemes"));
-            BaseThemesDirectory = CheckDirectory(Path.Combine(themeDirectory, "BaseThemes"));
+            AccentColorsDirectory = CheckDirectory(Path.Combine(themeDirectory, "AccentColors"));
+            AppThemesDirectory = CheckDirectory(Path.Combine(themeDirectory, "AppThemes"));
             ThemePacksDirectory = CheckDirectory(Path.Combine(themeDirectory, "ThemePacks"));
             AudioVisualisationsDirectory = CheckDirectory(Path.Combine(themeDirectory, "AudioVisualisations"));
         }

@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using Hurricane.Designer.Data;
+using Hurricane.Designer.Data.ThemeData;
 
 namespace Hurricane.Designer.Pages
 {

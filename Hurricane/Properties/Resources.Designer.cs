@@ -62,6 +62,23 @@ namespace Hurricane.Properties {
         
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die &lt;ResourceDictionary xmlns=&quot;http://schemas.microsoft.com/winfx/2006/xaml/presentation&quot;
+        ///                    xmlns:x=&quot;http://schemas.microsoft.com/winfx/2006/xaml&quot; xmlns:system=&quot;clr-namespace:System;assembly=mscorlib&quot; xmlns:options=&quot;http://schemas.microsoft.com/winfx/2006/xaml/presentation/options&quot;&gt;
+        ///
+        ///	&lt;Color x:Key=&quot;LightColor&quot;&gt;{LightColor}&lt;/Color&gt;
+        ///    &lt;Color x:Key=&quot;BrightColor&quot;&gt;{BrightColor}&lt;/Color&gt;
+        ///    &lt;Color x:Key=&quot;NormalColor&quot;&gt;{NormalColor}&lt;/Color&gt;
+        ///    &lt;Color x:Key=&quot;DarkColor&quot;&gt;{DarkColor}&lt;/Color&gt;
+        ///
+        ///  [Rest der Zeichenfolge wurde abgeschnitten]&quot;; ähnelt.
+        /// </summary>
+        internal static string AccentColor {
+            get {
+                return ResourceManager.GetString("AccentColor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die &lt;ResourceDictionary xmlns=&quot;http://schemas.microsoft.com/winfx/2006/xaml/presentation&quot;
         ///                    xmlns:x=&quot;http://schemas.microsoft.com/winfx/2006/xaml&quot;
         ///                    xmlns:options=&quot;http://schemas.microsoft.com/winfx/2006/xaml/presentation/options&quot;&gt;
         ///
@@ -73,26 +90,9 @@ namespace Hurricane.Properties {
         ///    &lt;Color x:Key=&quot;Gray7&quot;&gt;{Gray7}&lt;/Color&gt;
         ///    &lt;Color  [Rest der Zeichenfolge wurde abgeschnitten]&quot;; ähnelt.
         /// </summary>
-        internal static string BaseTheme {
+        internal static string AppTheme {
             get {
-                return ResourceManager.GetString("BaseTheme", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die &lt;ResourceDictionary xmlns=&quot;http://schemas.microsoft.com/winfx/2006/xaml/presentation&quot;
-        ///                    xmlns:x=&quot;http://schemas.microsoft.com/winfx/2006/xaml&quot; xmlns:system=&quot;clr-namespace:System;assembly=mscorlib&quot; xmlns:options=&quot;http://schemas.microsoft.com/winfx/2006/xaml/presentation/options&quot;&gt;
-        ///
-        ///	&lt;Color x:Key=&quot;LightColor&quot;&gt;{LightColor}&lt;/Color&gt;
-        ///    &lt;Color x:Key=&quot;BrightColor&quot;&gt;{BrightColor}&lt;/Color&gt;
-        ///    &lt;Color x:Key=&quot;NormalColor&quot;&gt;{NormalColor}&lt;/Color&gt;
-        ///    &lt;Color x:Key=&quot;DarkColor&quot;&gt;{DarkColor}&lt;/Color&gt;
-        ///
-        ///  [Rest der Zeichenfolge wurde abgeschnitten]&quot;; ähnelt.
-        /// </summary>
-        internal static string ColorTheme {
-            get {
-                return ResourceManager.GetString("ColorTheme", resourceCulture);
+                return ResourceManager.GetString("AppTheme", resourceCulture);
             }
         }
     }

@@ -60,7 +60,7 @@ namespace Hurricane.AppMainWindow.Messages
                             cancancel ? MessageDialogStyle.AffirmativeAndNegative : MessageDialogStyle.Affirmative,
                             new MetroDialogSettings()
                             {
-                                AffirmativeButtonText = "OK",
+                                AffirmativeButtonText = Application.Current.Resources["OK"].ToString(),
                                 NegativeButtonText = Application.Current.Resources["Cancel"].ToString(),
                                 AnimateHide = ShowHideAnimation(mode),
                                 AnimateShow = ShowShowAnimation(mode),

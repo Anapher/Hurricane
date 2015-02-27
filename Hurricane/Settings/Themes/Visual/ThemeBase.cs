@@ -2,7 +2,7 @@
 
 namespace Hurricane.Settings.Themes.Visual
 {
-    public interface IBaseTheme
+    public interface IAppTheme
     {
         string Name { get; }
         string TranslatedName { get; }
@@ -10,7 +10,7 @@ namespace Hurricane.Settings.Themes.Visual
         ResourceDictionary ResourceDictionary { get; }
     }
 
-    public interface IColorTheme
+    public interface IAccentColor
     {
         string Name { get; }
         string TranslatedName { get; }

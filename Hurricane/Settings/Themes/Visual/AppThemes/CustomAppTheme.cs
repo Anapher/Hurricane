@@ -6,18 +6,18 @@ using System.Windows;
 using System.Windows.Markup;
 using System.Xml.Serialization;
 
-namespace Hurricane.Settings.Themes.Visual.BaseThemes
+namespace Hurricane.Settings.Themes.Visual.AppThemes
 {
     [Serializable]
-    public class CustomBaseTheme : BaseThemeBase
+    public class CustomAppTheme : AppThemeBase
     {
-        public static bool FromFile(string filename, out CustomBaseTheme result)
+        public static bool FromFile(string filename, out CustomAppTheme result)
         {
-            var baseTheme = new CustomBaseTheme { Name = Path.GetFileNameWithoutExtension(filename) };
+            var appTheme = new CustomAppTheme { Name = Path.GetFileNameWithoutExtension(filename) };
 
             try
             {
-                if (!IsBaseThemeDictionary(baseTheme.ResourceDictionary))
+                if (!IsAppThemeDictionary(appTheme.ResourceDictionary))
                 {
                     result = null;
                     return false;
@@ -29,14 +29,14 @@ namespace Hurricane.Settings.Themes.Visual.BaseThemes
                 return false;
             }
 
-            result = baseTheme;
+            result = appTheme;
             return true;
         }
 
         [XmlIgnore]
         public override ResourceDictionary ResourceDictionary
         {
-            get { return new ResourceDictionary { Source = new Uri(Path.Combine(HurricaneSettings.Instance.BaseThemesDirectory, Name + ".xaml"), UriKind.RelativeOrAbsolute) }; }
+            get { return new ResourceDictionary { Source = new Uri(Path.Combine(HurricaneSettings.Instance.AppThemesDirectory, Name + ".xaml"), UriKind.RelativeOrAbsolute) }; }
         }
 
         public override string TranslatedName
@@ -49,7 +49,7 @@ namespace Hurricane.Settings.Themes.Visual.BaseThemes
             get { return Application.Current.Resources["Custom"].ToString(); }
         }
 
-        public static bool IsBaseThemeDictionary(ResourceDictionary resources)
+        public static bool IsAppThemeDictionary(ResourceDictionary resources)
         {
             if (resources == null) throw new ArgumentNullException("resources");
 

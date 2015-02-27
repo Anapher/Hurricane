@@ -31,10 +31,10 @@
     </UserControl.Resources>
     <StackPanel Orientation="Vertical">
         <TextBlock Text="{StaticResource Create}" FontSize="20"/>
-        <Button Style="{StaticResource LinkButton}" Content="{StaticResource ColorTheme}" Command="{Binding CreateNewColorTheme}" FontSize="14" Margin="0,5,0,0"/>
-        <Button Style="{StaticResource LinkButton}" Content="{StaticResource BaseTheme}" Command="{Binding CreateNewBaseColorTheme}" FontSize="14" Margin="0,5,0,0"/>
+        <Button Style="{StaticResource LinkButton}" Content="{StaticResource AccentColorString}" Command="{Binding CreateNewAccentColor}" FontSize="14" Margin="0,5,0,0"/>
+        <Button Style="{StaticResource LinkButton}" Content="{StaticResource AppTheme}" Command="{Binding CreateNewAppTheme}" FontSize="14" Margin="0,5,0,0"/>
         <TextBlock Text="{StaticResource Open}" FontSize="20" Margin="0,40,0,0"/>
-        <Button Style="{StaticResource LinkButton}" Content="{StaticResource ColorTheme}" FontSize="14" Margin="0,5,0,0" Command="{Binding OpenColorTheme}"/>
-        <Button Style="{StaticResource LinkButton}" Content="{StaticResource BaseTheme}" FontSize="14" Margin="0,5,0,0" Command="{Binding OpenBaseColorTheme}"/>
+        <Button Style="{StaticResource LinkButton}" Content="{StaticResource AccentColorString}" FontSize="14" Margin="0,5,0,0" Command="{Binding OpenAccentColor}"/>
+        <Button Style="{StaticResource LinkButton}" Content="{StaticResource AppTheme}" FontSize="14" Margin="0,5,0,0" Command="{Binding OpenAppTheme}"/>
     </StackPanel>
 </UserControl>

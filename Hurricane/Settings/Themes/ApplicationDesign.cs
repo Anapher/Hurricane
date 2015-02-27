@@ -6,8 +6,8 @@ using Hurricane.Settings.Themes.AudioVisualisation;
 using Hurricane.Settings.Themes.AudioVisualisation.DefaultAudioVisualisation;
 using Hurricane.Settings.Themes.Background;
 using Hurricane.Settings.Themes.Visual;
-using Hurricane.Settings.Themes.Visual.BaseThemes;
-using Hurricane.Settings.Themes.Visual.ColorThemes;
+using Hurricane.Settings.Themes.Visual.AccentColors;
+using Hurricane.Settings.Themes.Visual.AppThemes;
 using Hurricane.ViewModelBase;
 
 namespace Hurricane.Settings.Themes
@@ -16,10 +16,10 @@ namespace Hurricane.Settings.Themes
     public class ApplicationDesign : PropertyChangedBase
     {
         [XmlIgnore]
-        public IColorTheme ColorTheme { get; set; }
+        public IAccentColor AccentColor { get; set; }
 
         [XmlIgnore]
-        public IBaseTheme BaseTheme { get; set; }
+        public IAppTheme AppTheme { get; set; }
 
         private IApplicationBackground _applicationBackground;
         [XmlIgnore]
@@ -51,51 +51,51 @@ namespace Hurricane.Settings.Themes
         public void SetStandard()
         {
             var themeManager = ApplicationThemeManager.Instance;
-            ColorTheme = themeManager.ColorThemes.First(x => x.Name == "Blue");
-            BaseTheme = themeManager.BaseThemes.First(x => x.Name == "BaseLight");
+            AccentColor = themeManager.AccentColors.First(x => x.Name == "Blue");
+            AppTheme = themeManager.AppThemes.First(x => x.Name == "BaseLight");
             ApplicationBackground = null;
             AudioVisualisation = DefaultAudioVisualisation.GetDefault();
         }
 
         #region Workaround for serializing interfaces
 
-        [XmlElement("ColorTheme", Type = typeof(ColorThemeBase))]
-        [XmlElement("ColorThemePack", Type = typeof(ThemePack))]
-        public object SerializableColorTheme
+        [XmlElement("AccentColor", Type = typeof(AccentColorBase))]
+        [XmlElement("AccentColorThemePack", Type = typeof(ThemePack))]
+        public object SerializableAccentColor
         {
             get
             {
-                return ColorTheme; 
+                return AccentColor; 
             }
             set
             {
-                var colorTheme = (IColorTheme) value;
-                if (colorTheme is ColorThemeBase)
+                var accentColor = (IAccentColor) value;
+                if (accentColor is AccentColorBase)
                 {
-                    ColorTheme = ApplicationThemeManager.Instance.ColorThemes.FirstOrDefault(x => x.Equals(colorTheme));
+                    AccentColor = ApplicationThemeManager.Instance.AccentColors.FirstOrDefault(x => x.Equals(accentColor));
                 }
-                else if(colorTheme is ThemePack)
+                else if(accentColor is ThemePack)
                 {
-                    ColorTheme = ApplicationThemeManager.Instance.GetThemePack(((ThemePack)value).FileName);
+                    AccentColor = ApplicationThemeManager.Instance.GetThemePack(((ThemePack)value).FileName);
                 }
             }
         }
 
-        [XmlElement("BaseTheme", Type = typeof(BaseThemeBase))]
-        [XmlElement("BaseThemePack", Type = typeof(ThemePack))]
-        public object SerializableBaseTheme
+        [XmlElement("AppTheme", Type = typeof(AppThemeBase))]
+        [XmlElement("AppThemePack", Type = typeof(ThemePack))]
+        public object SerializableAppTheme
         {
-            get { return BaseTheme; }
+            get { return AppTheme; }
             set
             {
-                var baseTheme = (IBaseTheme)value;
-                if (baseTheme is BaseThemeBase)
+                var appTheme = (IAppTheme)value;
+                if (appTheme is AppThemeBase)
                 {
-                    BaseTheme = ApplicationThemeManager.Instance.BaseThemes.FirstOrDefault(x => x.Equals(baseTheme));
+                    AppTheme = ApplicationThemeManager.Instance.AppThemes.FirstOrDefault(x => x.Equals(appTheme));
                 }
-                else if (baseTheme is ThemePack)
+                else if (appTheme is ThemePack)
                 {
-                    ColorTheme = ApplicationThemeManager.Instance.GetThemePack(((ThemePack)value).FileName);
+                    AccentColor = ApplicationThemeManager.Instance.GetThemePack(((ThemePack)value).FileName);
                 }
             }
         }
@@ -150,7 +150,7 @@ namespace Hurricane.Settings.Themes
 
         public bool Equals(ApplicationDesign obj)
         {
-            return ColorTheme.Equals(obj.ColorTheme) && BaseTheme.Equals(obj.BaseTheme) &&
+            return AccentColor.Equals(obj.AccentColor) && AppTheme.Equals(obj.AppTheme) &&
                 ApplicationBackground != null && ApplicationBackground.Equals(obj.ApplicationBackground);
         }
     }

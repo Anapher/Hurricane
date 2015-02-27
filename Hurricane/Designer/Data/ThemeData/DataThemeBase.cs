@@ -5,7 +5,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Markup;
 
-namespace Hurricane.Designer.Data
+namespace Hurricane.Designer.Data.ThemeData
 {
     public abstract class DataThemeBase : ISaveable
     {

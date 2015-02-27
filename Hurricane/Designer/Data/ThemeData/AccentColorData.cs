@@ -1,14 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Hurricane.Settings.Themes;
 using System.Windows;
 using Hurricane.Settings;
+using Hurricane.Settings.Themes;
 
-namespace Hurricane.Designer.Data
+namespace Hurricane.Designer.Data.ThemeData
 {
-    public class ColorThemeData : DataThemeBase
+    public class AccentColorData : DataThemeBase
     {
-        public ColorThemeData()
+        public AccentColorData()
         {
             ThemeSettings = new List<IThemeSetting>
             {
@@ -64,26 +64,26 @@ namespace Hurricane.Designer.Data
             };
         }
 
-        public static ColorThemeData LoadDefault()
+        public static AccentColorData LoadDefault()
         {
-            var colorTheme = new ColorThemeData();
-            colorTheme.LoadFromResourceDictionary(ApplicationThemeManager.Instance.ColorThemes.First(x => x.Name == "Cyan").ResourceDictionary);
-            return colorTheme;
+            var accentColor = new AccentColorData();
+            accentColor.LoadFromResourceDictionary(ApplicationThemeManager.Instance.AccentColors.First(x => x.Name == "Cyan").ResourceDictionary);
+            return accentColor;
         }
 
         public override string Source
         {
-            get { return Properties.Resources.ColorTheme; }
+            get { return Properties.Resources.AccentColor; }
         }
 
         public override string Filter
         {
-            get { return string.Format("{0}|*.xaml", Application.Current.Resources["ColorTheme"]); }
+            get { return string.Format("{0}|*.xaml", Application.Current.Resources["AccentColorString"]); }
         }
 
         public override string BaseDirectory
         {
-            get { return HurricaneSettings.Instance.ColorThemesDirectory; }
+            get { return HurricaneSettings.Instance.AccentColorsDirectory; }
         }
     }
 }

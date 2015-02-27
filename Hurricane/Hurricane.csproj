@@ -134,16 +134,14 @@
     </Compile>
     <Compile Include="AppMainWindow\Messages\ProgressDialog.cs" />
     <Compile Include="AppMainWindow\Messages\WindowDialogService.cs" />
-    <Compile Include="Designer\Converter\BrushFromThemeDataConverter.cs" />
-    <Compile Include="Designer\Converter\ColorFromThemeDataConverter.cs" />
-    <Compile Include="Designer\Data\BaseThemeData.cs" />
-    <Compile Include="Designer\Data\ColorThemeData.cs" />
+    <Compile Include="Designer\Data\ThemeData\AppThemeData.cs" />
+    <Compile Include="Designer\Data\ThemeData\AccentColorData.cs" />
     <Compile Include="Designer\Data\EditableThemePack.cs" />
     <Compile Include="Designer\Data\IPreviewable.cs" />
     <Compile Include="Designer\Data\ISaveable.cs" />
     <Compile Include="Designer\Data\PreviewData.cs" />
     <Compile Include="Designer\Data\ThemeBoolean.cs" />
-    <Compile Include="Designer\Data\DataThemeBase.cs" />
+    <Compile Include="Designer\Data\ThemeData\DataThemeBase.cs" />
     <Compile Include="Designer\Data\ThemeColor.cs" />
     <Compile Include="Designer\Data\ThemePack.cs" />
     <Compile Include="Designer\Data\ThemePack2.cs" />
@@ -336,13 +334,13 @@
     <Compile Include="Settings\SensitiveInformation.cs" />
     <Compile Include="Settings\SettingsBase.cs" />
     <Compile Include="Settings\Themes\Background\IApplicationBackground.cs" />
-    <Compile Include="Settings\Themes\Visual\BaseThemes\BaseTheme.cs" />
-    <Compile Include="Settings\Themes\Visual\BaseThemes\BaseThemeBase.cs" />
-    <Compile Include="Settings\Themes\Visual\BaseThemes\CustomBaseTheme.cs" />
-    <Compile Include="Settings\Themes\Visual\ColorThemes\AccentColorTheme.cs" />
+    <Compile Include="Settings\Themes\Visual\AppThemes\AppTheme.cs" />
+    <Compile Include="Settings\Themes\Visual\AppThemes\CustomAppTheme.cs" />
     <Compile Include="Settings\Themes\ApplicationThemeManager.cs" />
-    <Compile Include="Settings\Themes\Visual\ColorThemes\ColorThemeBase.cs" />
-    <Compile Include="Settings\Themes\Visual\ColorThemes\CustomColorTheme.cs" />
+    <Compile Include="Settings\Themes\Visual\AccentColors\AccentColorBase.cs" />
+    <Compile Include="Settings\Themes\Visual\AccentColors\CustomAccentColor.cs" />
+    <Compile Include="Settings\Themes\Visual\AppThemes\AppThemeBase.cs" />
+    <Compile Include="Settings\Themes\Visual\AccentColors\AccentColor.cs" />
     <Compile Include="Settings\Themes\Visual\ThemeBase.cs" />
     <Compile Include="Settings\Themes\ApplicationDesign.cs" />
     <Compile Include="Settings\UpdateService.cs" />
@@ -367,6 +365,9 @@
     </Compile>
     <Compile Include="Views\Test\PositionTestWindow.xaml.cs">
       <DependentUpon>PositionTestWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Test\TestWindow.xaml.cs">
+      <DependentUpon>TestWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Tools\LanguageCreatorWindow.xaml.cs">
       <DependentUpon>LanguageCreatorWindow.xaml</DependentUpon>
@@ -409,9 +410,6 @@
     </Compile>
     <Compile Include="Views\UserControls\SettingsView.xaml.cs">
       <DependentUpon>SettingsView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Test\TestWindow.xaml.cs">
-      <DependentUpon>TestWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\TrackImportWindow.xaml.cs">
       <DependentUpon>TrackImportWindow.xaml</DependentUpon>
@@ -626,6 +624,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\Test\TestWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\Tools\LanguageCreatorWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -711,10 +713,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\UserControls\SettingsView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\Test\TestWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
