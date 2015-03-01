@@ -11,9 +11,9 @@ namespace Hurricane.ViewModelBase
     {
         #region "Declarations"
         public delegate void ExecuteDelegate(object parameter);
-        private readonly Func<bool> _CanExecute;
+        private readonly Func<bool> _canExecute;
         #endregion
-        private readonly ExecuteDelegate _Execute;
+        private readonly ExecuteDelegate _execute;
 
         #region "Constructors"
         public RelayCommand(ExecuteDelegate execute)
@@ -27,8 +27,8 @@ namespace Hurricane.ViewModelBase
             {
                 throw new ArgumentNullException("execute");
             }
-            _Execute = execute;
-            _CanExecute = canExecute;
+            _execute = execute;
+            _canExecute = canExecute;
         }
         #endregion
 
@@ -38,7 +38,7 @@ namespace Hurricane.ViewModelBase
 
             add
             {
-                if (_CanExecute != null)
+                if (_canExecute != null)
                 {
                     CommandManager.RequerySuggested += value;
                 }
@@ -46,7 +46,7 @@ namespace Hurricane.ViewModelBase
 
             remove
             {
-                if (_CanExecute != null)
+                if (_canExecute != null)
                 {
                     CommandManager.RequerySuggested -= value;
                 }
@@ -57,19 +57,19 @@ namespace Hurricane.ViewModelBase
         }
         public bool CanExecute(object parameter)
         {
-            if (_CanExecute == null)
+            if (_canExecute == null)
             {
                 return true;
             }
             else
             {
-                return _CanExecute.Invoke();
+                return _canExecute.Invoke();
             }
         }
 
         public void Execute(object parameter)
         {
-            _Execute.Invoke(parameter);
+            _execute.Invoke(parameter);
         }
         #endregion
     }

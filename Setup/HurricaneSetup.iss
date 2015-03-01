@@ -4,7 +4,7 @@
 #define MyAppName "Hurricane"
 #define MyAppVersion "0.3.4"
 #define MyAppPublisher "Alkaline"
-#define MyAppURL "http://www.hurricane.vincentgri.de"
+#define MyAppURL "hurricaneproject.org"
 #define MyAppExeName "Hurricane.exe"
 
 [Setup]

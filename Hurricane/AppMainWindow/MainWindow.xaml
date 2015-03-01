@@ -7,7 +7,7 @@
         xmlns:viewmodels="clr-namespace:Hurricane.ViewModels"
         DataContext="{x:Static viewmodels:MainViewModel.Instance}"
         xmlns:tb="http://www.hardcodet.net/taskbar"
-        Title="Hurricane" SizeToContent="Manual" x:Name="window" Icon="/Resources/App/icon.ico" 
+        Title="Hurricane" SizeToContent="Manual" x:Name="WindowInstance" Icon="/Resources/App/icon.ico" 
         IsWindowDraggable="False" GlowBrush="{DynamicResource AccentColorBrush}" ShowIconOnTitleBar="False" Height="400" Width="500">
     <controls:MetroWindow.Flyouts>
         <controls:FlyoutsControl x:Name="FlyoutControl"/>
@@ -122,6 +122,20 @@
             <Image x:Name="BackgroundImage" Stretch="UniformToFill"/>
             <MediaElement x:Name="BackgroundMediaElement" Volume="0" MediaEnded="BackgroundMediaElement_OnMediaEnded" LoadedBehavior="Manual" Stretch="UniformToFill" Visibility="Collapsed"/>
         </Grid>
-        <tb:TaskbarIcon x:Name="NotifyIcon" IconSource="/Resources/App/icon.ico" ToolTipText="Hurricane" Visibility="Hidden" TrayMouseDoubleClick="NotifyIcon_OnTrayMouseDoubleClick"/>
+        <tb:TaskbarIcon x:Name="NotifyIcon" IconSource="/Resources/App/icon.ico" ToolTipText="Hurricane" Visibility="Hidden" TrayMouseDoubleClick="NotifyIcon_OnTrayMouseDoubleClick">
+            <tb:TaskbarIcon.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="{DynamicResource Open}" Command="{Binding ShowWindowCommand}"/>
+                    <Separator />
+                    <MenuItem Header="Play / Pause" Command="{Binding MusicManager.Commands.TogglePlayPause}"/>
+                    <DockPanel>
+                        <TextBlock Text="Volume:" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                        <Slider Value="{Binding MusicManager.CSCoreEngine.Volume}" Minimum="0" Maximum="1" Width="100" LargeChange="0.1" IsEnabled="True"/>
+                    </DockPanel>
+                    <Separator />
+                    <MenuItem Header="{DynamicResource Close}" Command="Close"/>
+                </ContextMenu>
+            </tb:TaskbarIcon.ContextMenu>
+        </tb:TaskbarIcon>
     </Grid>
 </controls:MetroWindow>

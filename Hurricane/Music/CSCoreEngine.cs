@@ -264,7 +264,7 @@ namespace Hurricane.Music
             {
                 SoundSource = SoundSource.ChangeSampleRate(44100);
             }
-            else if (Settings.SampleRate > -1) { SoundSource.ChangeSampleRate(Settings.SampleRate); }
+            else if (Settings.SampleRate > -1) { SoundSource = SoundSource.ChangeSampleRate(Settings.SampleRate); }
             SoundSource = SoundSource
                 .AppendSource(Equalizer.Create10BandEqualizer, out equalizer)
                 .AppendSource(x => new SingleBlockNotificationStream(x), out _singleBlockNotificationStream)

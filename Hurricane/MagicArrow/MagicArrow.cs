@@ -182,9 +182,12 @@ namespace Hurricane.MagicArrow
             }
             else
             {
-                int cursorX = Cursor.Position.X;
-                if (_movedoutside == Side.Left ? cursorX > 2 - WpfScreen.MostLeftX : cursorX < WpfScreen.MostRightX - 3 || WpfScreen.GetScreenFrom(new Point(cursorX, 0)).WorkingArea.Height > cursorX)
+                if (!MagicWindow.IsMouseOver)
+                {
                     HideMagicArrow();
+                }
+                int cursorX = Cursor.Position.X;
+                //if (_movedoutside == Side.Left ? cursorX > 2 - WpfScreen.MostLeftX : cursorX < WpfScreen.MostRightX - 3 || WpfScreen.GetScreenFrom(new Point(cursorX, 0)).WorkingArea.Height > cursorX)
             }
         }
 
@@ -209,6 +212,7 @@ namespace Hurricane.MagicArrow
             };
             MagicWindow.MouseLeave += MagicWindow_MouseLeave;
             MagicWindow.Show();
+            MagicWindow.Topmost = true;
             MagicWindow.FilesDropped += (s, e) => { if (this.FilesDropped != null) this.FilesDropped(this, e); };
             Task.Run(async () =>
             {
@@ -217,14 +221,15 @@ namespace Hurricane.MagicArrow
                     await Task.Delay(1000);
                     Hurricane.Views.Test.TestWindow.AddMessage("Check Magic Arrow");
                     int cursorX = Cursor.Position.X;
-                    if ((_movedoutside == Side.Left && cursorX > 4 - WpfScreen.MostLeftX) ||
-                        (_movedoutside == Side.Right && cursorX < WpfScreen.MostRightX - 4))
+                    if (((_movedoutside == Side.Left && cursorX > 4 - WpfScreen.MostLeftX) ||
+                        (_movedoutside == Side.Right && cursorX < WpfScreen.MostRightX - 4)) && !MagicWindow.IsMouseOver)
                     {
                         Application.Current.Dispatcher.Invoke(HideMagicArrow);
                     }
                     else
                     {
-                        Hurricane.Views.Test.TestWindow.AddMessage(string.Format("-> Everything okay: _movedoutside: {0}, cursorX: {1}", _movedoutside, cursorX));
+
+                        Hurricane.Views.Test.TestWindow.AddMessage(string.Format("-> MAP: {0}; _movedoutside: {1}; cursorX: {2}; MLX: {3}", "", _movedoutside, cursorX, WpfScreen.MostLeftX));
                     }
                 }
             });

@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 using System.Windows;
 using Hurricane.Music.Playlist;
 using Hurricane.Settings;
-using Hurricane.Utilities;
 using Hurricane.ViewModelBase;
 using MahApps.Metro.Controls.Dialogs;
 
@@ -301,7 +300,7 @@ namespace Hurricane.Music.Track.WebApi
         private void SortResults(IEnumerable<WebTrackResultBase> list)
         {
             Results.Clear();
-            foreach (var track in list.OrderBy(x => LevenshteinDistance.Compute(SearchText, x.Title)).ToList())
+            foreach (var track in list.OrderByDescending(x => x.Views).ToList())
             {
                 Results.Add(track);
             }

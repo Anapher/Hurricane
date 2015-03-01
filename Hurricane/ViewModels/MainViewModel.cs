@@ -724,6 +724,12 @@ namespace Hurricane.ViewModels
                 }));
             }
         }
+
+        private RelayCommand _showWindoCommand;
+        public RelayCommand ShowWindowCommand
+        {
+            get { return _showWindoCommand ?? (_showWindoCommand = new RelayCommand(parameter => { _baseWindow.ShowWindow(); })); }
+        }
         #endregion
 
         #region Properties

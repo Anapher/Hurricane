@@ -7,23 +7,19 @@ using System.Windows.Input;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Shell;
-using System.Windows.Threading;
 using CSCore.SoundOut;
 using Hardcodet.Wpf.TaskbarNotification;
-using Hurricane.AppMainWindow.MahAppsExtensions.Dialogs;
 using Hurricane.AppMainWindow.Messages;
 using Hurricane.AppMainWindow.WindowSkins;
 using Hurricane.MagicArrow.DockManager;
 using Hurricane.Music.MusicDatabase.EventArgs;
-using Hurricane.Music.Track;
 using Hurricane.Settings;
 using Hurricane.Utilities;
 using Hurricane.Utilities.Native;
+using Hurricane.ViewModelBase;
 using Hurricane.ViewModels;
 using Hurricane.Views;
 using MahApps.Metro.Controls;
-using MahApps.Metro.Controls.Dialogs;
-using InputDialog = Hurricane.Views.InputDialog;
 
 // ReSharper disable once CheckNamespace
 namespace Hurricane
@@ -50,10 +46,10 @@ namespace Hurricane
             InitializeComponent();
             HostedWindow = null;
             MagicArrow = new MagicArrow.MagicArrow();
-            MagicArrow.Register(this);
             MagicArrow.MoveOut += (s, e) => { HideEqualizer(); HostedWindow.DisableWindow(); };
             MagicArrow.MoveIn += (s, e) => { HostedWindow.EnableWindow(); };
             MagicArrow.FilesDropped += (s, e) => { MainViewModel.Instance.DragDropFiles((string[])e.Data.GetData(DataFormats.FileDrop)); };
+            MagicArrow.Register(this);
 
             Closing += MainWindow_Closing;
             Loaded += MainWindow_Loaded;
@@ -258,7 +254,7 @@ namespace Hurricane
             ShowWindow();
         }
 
-        void ShowWindow()
+        public void ShowWindow()
         {
             NotifyIcon.Visibility = Visibility.Hidden;
             Show();
