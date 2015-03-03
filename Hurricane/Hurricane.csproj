@@ -476,6 +476,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Resources\Languages\Hurricane.nl-nl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Resources\Languages\Hurricane.fi-fi.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -814,6 +818,7 @@
     <Resource Include="Resources\App\Icon.ico" />
     <Resource Include="Resources\App\AudioVisualisation.png" />
     <Resource Include="Resources\App\LanguageCreator.png" />
+    <Resource Include="Resources\Languages\Icons\nl.png" />
     <Content Include="youtube-dl.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

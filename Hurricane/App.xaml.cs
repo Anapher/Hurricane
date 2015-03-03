@@ -121,8 +121,8 @@ namespace Hurricane
 #endif
             //We remove the two last resource dictionarys so we can skip the annyoing ThemeManagers/current theme detections, ...
             //HurricaneSettings will load the needed resources
-            Resources.MergedDictionaries.Remove(Resources.MergedDictionaries.Last());
-            Resources.MergedDictionaries.Remove(Resources.MergedDictionaries.Last());
+            Resources.MergedDictionaries.RemoveAt(Resources.MergedDictionaries.Count -2);
+            Resources.MergedDictionaries.RemoveAt(Resources.MergedDictionaries.Count - 2);
             ApplicationThemeManager.Instance.Apply(HurricaneSettings.Instance.Config.ApplicationDesign);
 
             MainWindow window = new MainWindow();
