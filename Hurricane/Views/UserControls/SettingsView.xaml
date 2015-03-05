@@ -8,6 +8,7 @@
              xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
              xmlns:converter="clr-namespace:Hurricane.Settings.Converter"
              xmlns:userControls="clr-namespace:Hurricane.Views.UserControls"
+             xmlns:appCommunication="clr-namespace:Hurricane.AppCommunication"
              xmlns:lvm="clr-namespace:Hurricane.Extensions.ListViewLayoutManager"
              xmlns:qrCodeNet="clr-namespace:Gma.QrCodeNet.Encoding.Windows.WPF;assembly=Gma.QrCodeNet.Encoding"
              DataContext="{x:Static vm:SettingsViewModel.Instance}"
@@ -356,7 +357,12 @@
                                 <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
-                            <qrCodeNet:QrCodeImgControl Height="{Binding ElementName=AppConnectionInformationStackPanel,Path=ActualHeight}" Text="{Binding AppConnectionString}" DarkColor="{StaticResource AccentColor}" LightColor="{StaticResource WhiteColor}" QuietZoneModule="Zero" Margin="0,0,10,0"/>
+                            <Grid Margin="0,0,10,0" Background="White">
+                                <Grid.Effect>
+                                    <DropShadowEffect Color="White" BlurRadius="10" ShadowDepth="0" />
+                                </Grid.Effect>
+                                <qrCodeNet:QrCodeImgControl Height="60" Text="{Binding AppConnectionString}" QuietZoneModule="Zero" DarkColor="{StaticResource AccentColor}" LightColor="White" IsGrayImage="False" Margin="5"/>
+                            </Grid>
                             <StackPanel Orientation="Vertical" Grid.Column="1" x:Name="AppConnectionInformationStackPanel">
                                 <Grid Margin="0,10,0,0">
                                     <Grid.ColumnDefinitions>
@@ -391,6 +397,31 @@
                         <ListView ItemsSource="{Binding Config.AppCommunicationManager.ConnectedClients}" lvm:ListViewLayoutManager.Enabled="True" Margin="0,10,0,0">
                             <ListView.View>
                                 <GridView>
+                                    <GridViewColumn Header="{DynamicResource Device}" lvm:ProportionalColumn.Width="2">
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate DataType="{x:Type appCommunication:TCPConnection}">
+                                                <StackPanel Orientation="Horizontal">
+                                                    <Viewbox Width="32" Height="32" Margin="5">
+                                                        <Path Fill="{Binding ElementName=NameTextBlock,Path=Foreground}">
+                                                            <Path.Style>
+                                                                <Style TargetType="Path">
+                                                                    <Style.Triggers>
+                                                                        <DataTrigger Binding="{Binding DeviceInfo.DeviceType}" Value="Tablet">
+                                                                            <Setter Property="Data" Value="{StaticResource VectorTablet}"/>
+                                                                        </DataTrigger>
+                                                                        <DataTrigger Binding="{Binding DeviceInfo.DeviceType}" Value="Smartphone">
+                                                                            <Setter Property="Data" Value="{StaticResource VectorSmartphone}"/>
+                                                                        </DataTrigger>
+                                                                    </Style.Triggers>
+                                                                </Style>
+                                                            </Path.Style>
+                                                        </Path>
+                                                    </Viewbox>
+                                                    <TextBlock Text="{Binding DeviceInfo.Name}" VerticalAlignment="Center" Margin="10,0,0,0" x:Name="NameTextBlock"/>
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                    </GridViewColumn>
                                     <GridViewColumn Header="{DynamicResource System}" DisplayMemberBinding="{Binding DeviceInfo.System}" lvm:ProportionalColumn.Width="1"/>
                                     <GridViewColumn Header="{DynamicResource Version}" DisplayMemberBinding="{Binding DeviceInfo.Version}" lvm:ProportionalColumn.Width="1"/>
                                     <GridViewColumn Header="{DynamicResource Model}" DisplayMemberBinding="{Binding DeviceInfo.DeviceModel}" lvm:ProportionalColumn.Width="1"/>

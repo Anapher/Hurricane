@@ -245,7 +245,7 @@ namespace Hurricane.ViewModels
         {
             get
             {
-                return string.Format("{0}|{1}|{2}", LocalIPAddress, Config.AppCommunicationSettings.Port,
+                return string.Format("{0};{1};{2}", LocalIPAddress, Config.AppCommunicationSettings.Port,
                     Config.AppCommunicationSettings.Password);
             }
         }

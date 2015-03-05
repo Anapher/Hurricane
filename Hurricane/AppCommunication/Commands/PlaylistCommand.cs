@@ -20,7 +20,15 @@ namespace Hurricane.AppCommunication.Commands
             var xmls = new XmlSerializer(typeof (List<NormalPlaylist>));
             using (var stringWriter = new StringWriter())
             {
-                xmls.Serialize(stringWriter, MainViewModel.Instance.MusicManager.Playlists.ToList());
+                var playlists = MainViewModel.Instance.MusicManager.Playlists.ToList();
+                foreach (var playlist in playlists)
+                {
+                    foreach (var track in playlist.Tracks.Where(track => !track.TrackExists))
+                    {
+                        playlist.Tracks.Remove(track);
+                    }
+                }
+                xmls.Serialize(stringWriter, playlists);
                 var binaryWriter = streams.BinaryWriter;
 
                 var bytesToSend = Encoding.Unicode.GetBytes(stringWriter.ToString());
