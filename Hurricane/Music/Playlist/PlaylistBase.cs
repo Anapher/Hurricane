@@ -9,6 +9,7 @@ using System.Windows.Data;
 using System.Xml.Serialization;
 using Hurricane.Music.Data;
 using Hurricane.Music.Track;
+using Hurricane.Settings;
 using Hurricane.ViewModelBase;
 
 namespace Hurricane.Music.Playlist
@@ -86,7 +87,7 @@ namespace Hurricane.Music.Playlist
         protected void CreateShuffleList()
         {
             ShuffleList = new List<PlayableBase>(Tracks);
-            if (Settings.HurricaneSettings.Instance.Config.ShufflePreferFavoriteTracks)
+            if (HurricaneSettings.Instance.Config.ShufflePreferFavoriteTracks)
             {
                 ShuffleList.AddRange(Tracks.Where(x => x.IsFavorite));
                 _addedFavoriteTracksTwoTimes = true;

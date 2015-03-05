@@ -125,15 +125,99 @@
         <tb:TaskbarIcon x:Name="NotifyIcon" IconSource="/Resources/App/icon.ico" ToolTipText="Hurricane" Visibility="Hidden" TrayMouseDoubleClick="NotifyIcon_OnTrayMouseDoubleClick">
             <tb:TaskbarIcon.ContextMenu>
                 <ContextMenu>
+                    <ContextMenu.CommandBindings>
+                        <CommandBinding Command="ApplicationCommands.Close" Executed="CloseCommandHandler"/>
+                    </ContextMenu.CommandBindings>
                     <MenuItem Header="{DynamicResource Open}" Command="{Binding ShowWindowCommand}"/>
                     <Separator />
-                    <MenuItem Header="Play / Pause" Command="{Binding MusicManager.Commands.TogglePlayPause}"/>
+                    <MenuItem StaysOpenOnClick="True">
+                        <MenuItem.Style>
+                            <Style TargetType="MenuItem">
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="MenuItem">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="2*"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                </Grid.ColumnDefinitions>
+                                                <Grid.Resources>
+                                                    <Style TargetType="Button">
+                                                        <Setter Property="Height" Value="30"/>
+                                                        <Setter Property="Template">
+                                                            <Setter.Value>
+                                                                <ControlTemplate TargetType="Button">
+                                                                    <Grid x:Name="Grid" Background="Transparent">
+                                                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                                    </Grid>
+                                                                    <ControlTemplate.Triggers>
+                                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                                            <Setter TargetName="Grid" Property="Background" Value="{StaticResource MenuItemSelectionFill}"/>
+                                                                        </Trigger>
+                                                                    </ControlTemplate.Triggers>
+                                                                </ControlTemplate>
+                                                            </Setter.Value>
+                                                        </Setter>
+                                                    </Style>
+                                                </Grid.Resources>
+                                                <Button Command="{Binding MusicManager.Commands.GoBackward}">
+                                                    <Viewbox Width="12" Height="12" RenderOptions.BitmapScalingMode="HighQuality" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,1,0">
+                                                        <Path Data="{StaticResource VectorFastBackward}" Fill="{Binding RelativeSource={RelativeSource AncestorType=Button},Path=Foreground}"/>
+                                                    </Viewbox>
+                                                </Button>
+                                                <Button Grid.Column="1" Command="{Binding MusicManager.Commands.TogglePlayPause}">
+                                                    <Grid>
+                                                        <Viewbox Width="16" Height="16" Stretch="Uniform" Margin="3,0,0,0">
+                                                            <Path Data="{StaticResource VectorPlay}" Fill="{Binding RelativeSource={RelativeSource AncestorType=Button},Path=Foreground}"/>
+                                                            <Viewbox.Resources>
+                                                                <Style TargetType="{x:Type Viewbox}">
+                                                                    <Style.Triggers>
+                                                                        <DataTrigger Binding="{Binding MusicManager.CSCoreEngine.IsPlaying}" Value="True">
+                                                                            <Setter Property="Visibility" Value="Hidden"/>
+                                                                        </DataTrigger>
+                                                                    </Style.Triggers>
+                                                                </Style>
+                                                                <Style TargetType="Path">
+                                                                    <Setter Property="Fill" Value="Black"/>
+                                                                </Style>
+                                                            </Viewbox.Resources>
+                                                        </Viewbox>
+                                                        <Viewbox Width="13" Height="15" Stretch="Fill">
+                                                            <Path Data="{StaticResource VectorPause}" Fill="{Binding RelativeSource={RelativeSource AncestorType=Button},Path=Foreground}"/>
+                                                            <Viewbox.Resources>
+                                                                <Style TargetType="{x:Type Viewbox}">
+                                                                    <Style.Triggers>
+                                                                        <DataTrigger Binding="{Binding MusicManager.CSCoreEngine.IsPlaying}" Value="False">
+                                                                            <Setter Property="Visibility" Value="Hidden"/>
+                                                                        </DataTrigger>
+                                                                    </Style.Triggers>
+                                                                </Style>
+                                                                <Style TargetType="Path">
+                                                                    <Setter Property="Fill" Value="Black"/>
+                                                                </Style>
+                                                            </Viewbox.Resources>
+                                                        </Viewbox>
+                                                    </Grid>
+                                                </Button>
+                                                <Button Grid.Column="2" Command="{Binding MusicManager.Commands.GoForward}">
+                                                    <Viewbox Width="12" Height="12" RenderOptions.BitmapScalingMode="HighQuality" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="1,0,0,0">
+                                                        <Path Data="{StaticResource VectorFastForward}" Fill="{Binding RelativeSource={RelativeSource AncestorType=Button},Path=Foreground}"/>
+                                                    </Viewbox>
+                                                </Button>
+                                            </Grid>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </MenuItem.Style>
+                    </MenuItem>
                     <DockPanel>
                         <TextBlock Text="Volume:" VerticalAlignment="Center" Margin="0,0,10,0"/>
-                        <Slider Value="{Binding MusicManager.CSCoreEngine.Volume}" Minimum="0" Maximum="1" Width="100" LargeChange="0.1" IsEnabled="True"/>
+                        <Slider Value="{Binding MusicManager.CSCoreEngine.Volume}" Minimum="0" Maximum="1" LargeChange="0.1" IsEnabled="True" Width="100" VerticalAlignment="Center"/>
                     </DockPanel>
                     <Separator />
-                    <MenuItem Header="{DynamicResource Close}" Command="Close"/>
+                    <MenuItem Header="{DynamicResource Close}" Command="ApplicationCommands.Close"/>
                 </ContextMenu>
             </tb:TaskbarIcon.ContextMenu>
         </tb:TaskbarIcon>

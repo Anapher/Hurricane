@@ -518,6 +518,11 @@ namespace Hurricane
             BackgroundMediaElement.Position = TimeSpan.Zero;
             BackgroundMediaElement.Play();
         }
+
+        private void CloseCommandHandler(object sender, ExecutedRoutedEventArgs e)
+        {
+            Close();
+        }
     }
 
     public enum DialogMode { Single, First, Last, Following }

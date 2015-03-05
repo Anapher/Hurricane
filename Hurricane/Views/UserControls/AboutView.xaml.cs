@@ -79,10 +79,17 @@ namespace Hurricane.Views.UserControls
                 },
                 new Component
                 {
-                    Name = "SharpZipLib",
-                    Url = "https://icsharpcode.github.io/SharpZipLib/",
-                    LicenceUrl = "https://icsharpcode.github.io/SharpZipLib/",
-                    Description = "#ziplib is a Zip, GZip, Tar and BZip2 library written entirely in C# for the .NET platform."
+                    Name = "MahApps.Metro",
+                    Url = "http://mahapps.com/",
+                    LicenceUrl = "https://github.com/MahApps/MahApps.Metro/blob/master/LICENSE",
+                    Description = "A toolkit for creating metro-style WPF applications."
+                },
+                new Component
+                {
+                    Name = "QrCode.Net",
+                    Url = "https://qrcodenet.codeplex.com/",
+                    LicenceUrl = "https://qrcodenet.codeplex.com/license",
+                    Description = "The goal of the project is provding an easy to use, fully managed .Net library for handling QR code according to ISO/IEC 18004."
                 },
                 new Component
                 {

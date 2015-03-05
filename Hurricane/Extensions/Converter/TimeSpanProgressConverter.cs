@@ -7,7 +7,6 @@ namespace Hurricane.Extensions.Converter
 {
     class TimeSpanProgressConverter : IMultiValueConverter
     {
-
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
             if (values[0] == DependencyProperty.UnsetValue || values[1] == DependencyProperty.UnsetValue) return 0;

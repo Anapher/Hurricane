@@ -228,7 +228,7 @@
     <system:String x:Key="TrimTrackname">Suchtext verbessern</system:String>
     <system:String x:Key="ShowArtistAndTitle">Künstlernamen und Titel in Liste anzeigen</system:String>
     <system:String x:Key="Crossfade">Crossfade</system:String>
-    <system:String x:Key="Secounds">Sekunden</system:String>
+    <system:String x:Key="Seconds">Sekunden</system:String>
     <system:String x:Key="View">Anzeige</system:String>
     <system:String x:Key="AppTheme">Theme</system:String>
     <system:String x:Key="Latency">Latenz</system:String>
@@ -316,7 +316,14 @@
     <system:String x:Key="GermanTranslation">Deutsche Übersetzung</system:String>
     <system:String x:Key="Translation">Übersetzung</system:String>
     <system:String x:Key="DocumentSaved">Dokument gespeichert</system:String>
-    <system:String x:Key="SelectTemplate">Vorlage auswählen</system:String>
-    <system:String x:Key="NoTemplate">Keine Vorlage</system:String>
     <system:String x:Key="OK">OK</system:String>
+
+    <!-- 0.3.3 -->
+    <system:String x:Key="App">App</system:String>
+    <system:String x:Key="ConnectToApp">Mit App verbinden</system:String>
+    <system:String x:Key="IpAddress">IP-Adresse</system:String>
+    <system:String x:Key="Password">Passwort</system:String>
+    <system:String x:Key="ConnectedDevices">Verbundene Geräte</system:String>
+    <system:String x:Key="Version">Version</system:String>
+    <system:String x:Key="Model">Modell</system:String>
 </ResourceDictionary>

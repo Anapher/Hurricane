@@ -7,7 +7,7 @@
         Title="{StaticResource QueueManager}" SizeToContent="Height" Width="520" GlowBrush="{StaticResource AccentColorBrush}" ResizeMode="NoResize" DataContext="{x:Static viewmodels:MainViewModel.Instance}" x:Name="window" ShowInTaskbar="False">
     <Window.Resources>
         <converter:FalseOnNullValue x:Key="FalseOnNullValue"/>
-        <converter:TimespanToMinutesSecounds x:Key="TimespanToMinutesSecounds"/>
+        <converter:TimespanToMinutesSeconds x:Key="TimespanToMinutesSeconds"/>
     </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -34,7 +34,7 @@
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Text="{StaticResource TotalTime}"/>
                     <TextBlock Text=": "/>
-                    <TextBlock Text="{Binding MusicManager.Queue.Duration,Converter={StaticResource TimespanToMinutesSecounds}}"/>
+                    <TextBlock Text="{Binding MusicManager.Queue.Duration,Converter={StaticResource TimespanToMinutesSeconds}}"/>
                 </StackPanel>
                 
                 <DockPanel LastChildFill="False" Margin="0,10,0,0">

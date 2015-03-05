@@ -209,7 +209,7 @@
     <system:String x:Key="TrimTrackname">haku-teksti parantaa</system:String>
     <system:String x:Key="ShowArtistAndTitle">Näytä artist nimen ja tittelin lista</system:String>
     <system:String x:Key="Crossfade">Crossfade</system:String>
-    <system:String x:Key="Secounds">sekuntia</system:String>
+    <system:String x:Key="Seconds">sekuntia</system:String>
     <system:String x:Key="View">näyttö</system:String>
     <system:String x:Key="AppTheme">base teema</system:String>
     <system:String x:Key="Latency">latenssi</system:String>

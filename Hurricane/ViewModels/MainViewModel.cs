@@ -168,6 +168,7 @@ namespace Hurricane.ViewModels
             if (_keyboardListener != null)
                 _keyboardListener.Dispose();
             if (Updater != null) Updater.Dispose();
+            HurricaneSettings.Instance.Config.AppCommunicationManager.Stop();
         }
 
         private bool _remember;
@@ -589,7 +590,24 @@ namespace Hurricane.ViewModels
                                 newTrack.Title = track.Title;
                                 newTrack.Album = track.Album;
                                 newTrack.Genres = track.Genres;
-                                MusicManager.SelectedPlaylist.Tracks[MusicManager.SelectedPlaylist.Tracks.IndexOf(track)] = newTrack;
+                                
+                                if (MusicManager.FavoriteListIsSelected)
+                                {
+                                    foreach (var normalPlaylist in MusicManager.Playlists)
+                                    {
+                                        if (normalPlaylist.Tracks.Contains(track))
+                                        {
+                                            normalPlaylist.Tracks[normalPlaylist.Tracks.IndexOf(track)] = newTrack;
+                                        }
+                                    }
+                                    track.IsFavorite = false; //To remove from the favorite list
+                                }
+                                else
+                                {
+                                    MusicManager.SelectedPlaylist.Tracks[MusicManager.SelectedPlaylist.Tracks.IndexOf(track)] = newTrack;
+                                }
+
+                                newTrack.IsFavorite = track.IsFavorite;
                                 if (track.IsOpened)
                                     MusicManager.PlayTrack(newTrack, MusicManager.SelectedPlaylist);
 

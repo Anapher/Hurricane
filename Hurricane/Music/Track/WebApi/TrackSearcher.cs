@@ -163,11 +163,8 @@ namespace Hurricane.Music.Track.WebApi
             {
                 return _addToPlaylist ?? (_addToPlaylist = new RelayCommand(async parameter =>
                 {
+                    if (parameter == null) return;
                     var playlist = parameter as IPlaylist;
-                    if (playlist == null && !(parameter is WebTrackResultBase))
-                    {
-                        return;
-                    }
                     
                     IsLoading = true;
                     if (!(await SelectedTrack.CheckIfAvailable()))

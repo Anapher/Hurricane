@@ -97,10 +97,10 @@ namespace Hurricane.Music
     {
         public bool IsCrossfading { get; set; }
         private bool _cancel;
-        public async void FadeOut(double Secounds, ISoundOut soundOut)
+        public async void FadeOut(double seconds, ISoundOut soundOut)
         {
             IsCrossfading = true;
-            var steps = Secounds / 0.2;
+            var steps = seconds / 0.2;
             var soundstep = soundOut.Volume / (float)steps;
 
             for (int i = 0; i < steps; i++)

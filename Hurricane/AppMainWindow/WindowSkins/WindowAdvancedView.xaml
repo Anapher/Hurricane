@@ -114,12 +114,40 @@
                     </Menu>
                     <TextBox Grid.ColumnSpan="4" Margin="0,0,10,0" x:Name="txtSearch" VerticalAlignment="Center" controls:TextBoxHelper.ClearTextButton="True" HorizontalAlignment="Right" Width="200" controls:TextBoxHelper.Watermark="{StaticResource Search}" Text="{Binding MusicManager.SelectedPlaylist.SearchText,UpdateSourceTrigger=PropertyChanged}"/>
                     <ListBox Grid.Row="1" DisplayMemberPath="Name" SelectedItem="{Binding MusicManager.SelectedPlaylist}" Margin="5" ItemsSource="{Binding MusicManager.Playlists}" Background="Transparent"
-                             dd:DragDrop.IsDragSource="True" dd:DragDrop.IsDropTarget="True" dd:DragDrop.DropHandler="{Binding PlaylistListDropHandler}" dd:DragDrop.DragAdornerTemplate="{StaticResource DragAdornerPlaylist}" dd:DragDrop.DefaultDragAdornerOpacity=".8">
+                             dd:DragDrop.IsDragSource="True" dd:DragDrop.IsDropTarget="True" dd:DragDrop.DropHandler="{Binding PlaylistListDropHandler}" dd:DragDrop.DragAdornerTemplate="{StaticResource DragAdornerPlaylist}" dd:DragDrop.DefaultDragAdornerOpacity=".8" ScrollViewer.HorizontalScrollBarVisibility="Hidden">
                         <ListBox.InputBindings>
                             <KeyBinding Key="Delete" Command="{Binding RemovePlaylist}"/>
                         </ListBox.InputBindings>
                         <ListBox.Resources>
                             <ContextMenu x:Key="contexmenu">
+                                <MenuItem IsEnabled="False" Foreground="{StaticResource BlackBrush}">
+                                    <MenuItem.Resources>
+                                        <converter:PlaylistInfoConverter x:Key="PlaylistInfoConverter"/>
+                                    </MenuItem.Resources>
+                                    <MenuItem.Header>
+                                        <Grid>
+                                            <StackPanel Orientation="Vertical">
+                                                <StackPanel.Resources>
+                                                    <Style TargetType="TextBlock">
+                                                        <Setter Property="FontSize" Value="12"/>
+                                                    </Style>
+                                                </StackPanel.Resources>
+                                                <TextBlock Text="{Binding RelativeSource={RelativeSource AncestorType=ListBox},Path=SelectedItem.Name}" FontWeight="Light" FontSize="24"/>
+                                                <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
+                                                    <TextBlock Text="{DynamicResource Tracks}"/>
+                                                    <TextBlock Text=": "/>
+                                                    <TextBlock Text="{Binding RelativeSource={RelativeSource AncestorType=ListBox},Path=SelectedItem,Converter={StaticResource PlaylistInfoConverter},ConverterParameter=alltrackscount}"/>
+                                                </StackPanel>
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock Text="{DynamicResource Duration}"/>
+                                                    <TextBlock Text=": "/>
+                                                    <TextBlock Text="{Binding RelativeSource={RelativeSource AncestorType=ListBox},Path=SelectedItem,Converter={StaticResource PlaylistInfoConverter},ConverterParameter=alltracksduration}"/>
+                                                </StackPanel>
+                                            </StackPanel>
+                                        </Grid>
+                                    </MenuItem.Header>
+                                </MenuItem>
+                                <Separator />
                                 <MenuItem Header="{DynamicResource RemovePlaylist}" Command="{Binding RelativeSource={RelativeSource AncestorType=ListBox},Path=DataContext.RemovePlaylist}"/>
                                 <MenuItem Header="{DynamicResource RenamePlaylist}" Command="{Binding RelativeSource={RelativeSource AncestorType=ListBox},Path=DataContext.RenamePlaylist}"/>
                             </ContextMenu>
@@ -695,17 +723,12 @@
                                   extensions:GridViewSort.AutoSort="True" Grid.Row="1">
                             <ListView.Resources>
                                 <converter:FormatLargeNumber x:Key="FormatLargeNumber"/>
-                                <ContextMenu x:Key="ContextMenu">
-                                    <MenuItem Header="{DynamicResource Play}" Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}, Path=DataContext.TrackSearcher.PlaySelectedTrack}"/>
+                                <ContextMenu x:Key="ContextMenu" DataContext="{Binding RelativeSource={RelativeSource AncestorType=ListView},Path=DataContext}">
+                                    <MenuItem Header="{DynamicResource Play}" Command="{Binding TrackSearcher.PlaySelectedTrack}"/>
                                     <Separator />
                                     <MenuItem Header="{DynamicResource AddToPlaylist}">
                                         <MenuItem.Resources>
-                                            <CollectionViewSource Source="{Binding RelativeSource={RelativeSource AncestorType=ListView},Path=DataContext.MusicManager.Playlists}" x:Key="MyMenuItems"/>
-                                            <Style TargetType="MenuItem" BasedOn="{StaticResource MetroMenuItem}" x:Key="MenuItemStyle">
-
-                                                <Setter Property="Command" Value="{Binding RelativeSource={RelativeSource AncestorType=ListView},Path=DataContext.TrackSearcher.AddToPlaylist}"/>
-                                                <Setter Property="CommandParameter" Value="addToNewPlaylist"/>
-                                            </Style>
+                                            <CollectionViewSource Source="{Binding MusicManager.Playlists}" x:Key="MyMenuItems"/>
                                         </MenuItem.Resources>
                                         <MenuItem.ItemsSource>
                                             <CompositeCollection>
@@ -716,15 +739,15 @@
                                         </MenuItem.ItemsSource>
                                         <MenuItem.ItemContainerStyle>
                                             <Style TargetType="MenuItem" BasedOn="{StaticResource MetroMenuItem}">
-                                                <Setter Property="Command" Value="{Binding RelativeSource={RelativeSource AncestorType=ListView},Path=DataContext.TrackSearcher.AddToPlaylist}"/>
+                                                <Setter Property="Command" Value="{Binding RelativeSource={RelativeSource AncestorType=ContextMenu},Path=DataContext.TrackSearcher.AddToPlaylist}"/>
                                                 <Setter Property="CommandParameter" Value="{Binding}"/>
                                                 <Setter Property="HorizontalContentAlignment" Value="Left"/>
                                                 <Setter Property="VerticalContentAlignment" Value="Center"/>
                                             </Style>
                                         </MenuItem.ItemContainerStyle>
                                     </MenuItem>
-                                    <MenuItem Header="{DynamicResource OpenUrl}" Command="{Binding OpenUrl}"/>
-                                    <MenuItem Header="{DynamicResource Download}" IsEnabled="{Binding CanDownload}" Command="{Binding RelativeSource={RelativeSource AncestorType=ListView},Path=DataContext.TrackSearcher.DownloadTrack}"/>
+                                    <MenuItem Header="{DynamicResource OpenUrl}" Command="{Binding RelativeSource={RelativeSource AncestorType=ListView},Path=SelectedItem.OpenUrl}"/>
+                                    <MenuItem Header="{DynamicResource Download}" IsEnabled="{Binding RelativeSource={RelativeSource AncestorType=ListView},Path=SelectedItem.CanDownload}" Command="{Binding RelativeSource={RelativeSource AncestorType=ListView},Path=DataContext.TrackSearcher.DownloadTrack}"/>
                                 </ContextMenu>
                                 <Style TargetType="ToolTip" BasedOn="{StaticResource MetroToolTip}">
                                     <Setter Property="MaxWidth" Value="600" />

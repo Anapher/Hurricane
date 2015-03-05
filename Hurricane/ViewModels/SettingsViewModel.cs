@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Net;
+using System.Net.Sockets;
 using System.Windows;
 using CSCore.SoundOut;
 using Hurricane.Music;
@@ -225,6 +227,56 @@ namespace Hurricane.ViewModels
                 }));
             }
         }
+
+        #endregion
+
+        #region App
+
+        public string LocalIPAddress
+        {
+            get
+            {
+                return Dns.GetHostAddresses(Dns.GetHostName())
+                    .First(a => a.AddressFamily == AddressFamily.InterNetwork).ToString();
+            }
+        }
+
+        public string AppConnectionString
+        {
+            get
+            {
+                return string.Format("{0}|{1}|{2}", LocalIPAddress, Config.AppCommunicationSettings.Port,
+                    Config.AppCommunicationSettings.Password);
+            }
+        }
+
+        public bool AppIsEnabled
+        {
+            get { return Config.AppCommunicationSettings.IsEnabled; }
+            set
+            {
+                if (value == Config.AppCommunicationSettings.IsEnabled) return;
+                Config.AppCommunicationSettings.IsEnabled = value;
+                if (value)
+                {
+                    try
+                    {
+                        Config.AppCommunicationManager.Start();
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message);
+                        Config.AppCommunicationSettings.IsEnabled = false;
+                    }
+                }
+                else
+                {
+                    Config.AppCommunicationManager.Stop();
+                }
+                OnPropertyChanged();
+            }
+        }
+        
 
         #endregion
 

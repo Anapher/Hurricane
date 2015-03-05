@@ -228,7 +228,7 @@
     <system:String x:Key="TrimTrackname">Trim search text</system:String>
     <system:String x:Key="ShowArtistAndTitle">Show artist and title in list</system:String>
     <system:String x:Key="Crossfade">Crossfade</system:String>
-    <system:String x:Key="Secounds">Secounds</system:String>
+    <system:String x:Key="Seconds">Seconds</system:String>
     <system:String x:Key="View">View</system:String>
     <system:String x:Key="AppTheme">App theme</system:String>
     <system:String x:Key="Latency">Latency</system:String>
@@ -316,5 +316,5 @@
     <system:String x:Key="GermanTranslation">German translation</system:String>
     <system:String x:Key="Translation">Translation</system:String>
     <system:String x:Key="DocumentSaved">Document saved</system:String>
-    <system:String x:Key="SelectTemplate">Select template</system:String>
+    <system:String x:Key="OK">OK</system:String>
 </ResourceDictionary>

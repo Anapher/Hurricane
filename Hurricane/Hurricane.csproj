@@ -72,6 +72,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Exceptionless.Wpf.1.5.2121\lib\net45\Exceptionless.Wpf.dll</HintPath>
     </Reference>
+    <Reference Include="Gma.QrCodeNet.Encoding, Version=0.4.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Libraries\Gma.QrCodeNet.Encoding.dll</HintPath>
+    </Reference>
     <Reference Include="GongSolutions.Wpf.DragDrop">
       <HintPath>..\packages\gong-wpf-dragdrop.0.1.4.3\lib\net40\GongSolutions.Wpf.DragDrop.dll</HintPath>
     </Reference>
@@ -126,6 +130,17 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="AppCommunication\AppCommunicationManager.cs" />
+    <Compile Include="AppCommunication\AppCommunicationSettings.cs" />
+    <Compile Include="AppCommunication\Commander.cs" />
+    <Compile Include="AppCommunication\Commands\CommandBase.cs" />
+    <Compile Include="AppCommunication\Commands\FileTransferCommand.cs" />
+    <Compile Include="AppCommunication\Commands\PlaylistCommand.cs" />
+    <Compile Include="AppCommunication\CommunicationEventArgs\TCPConnectionChangedEventArgs.cs" />
+    <Compile Include="AppCommunication\ConnectionDeviceInfo.cs" />
+    <Compile Include="AppCommunication\StreamProvider.cs" />
+    <Compile Include="AppCommunication\TCPConnection.cs" />
+    <Compile Include="AppCommunication\TCPServer.cs" />
     <Compile Include="AppMainWindow\MahAppsExtensions\Dialogs\AdvancedInputDialog.xaml.cs">
       <DependentUpon>AdvancedInputDialog.xaml</DependentUpon>
     </Compile>
@@ -178,6 +193,7 @@
     <Compile Include="Extensions\ControlDoubleClick.cs" />
     <Compile Include="Extensions\Converter\CollapsedOnNullValue.cs" />
     <Compile Include="Extensions\Converter\InvertBooleanConverter.cs" />
+    <Compile Include="Extensions\Converter\PlaylistInfoConverter.cs" />
     <Compile Include="Extensions\MahApps\TransitioningExtensions.cs" />
     <Compile Include="Extensions\TextBlockTextFormat.cs" />
     <Compile Include="Music\Playlist\CueSharp.cs" />
@@ -206,7 +222,7 @@
     <Compile Include="Extensions\Converter\TextWithHyperlinkParametersConverter.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Extensions\Converter\TimespanToMinutesSecounds.cs" />
+    <Compile Include="Extensions\Converter\TimespanToMinutesSeconds.cs" />
     <Compile Include="Extensions\GridViewSort.cs" />
     <Compile Include="Extensions\ImageFromFont.cs" />
     <Compile Include="Extensions\SliderExtensions.cs" />
@@ -355,6 +371,7 @@
     <Compile Include="Utilities\Native\RECT.cs" />
     <Compile Include="Utilities\Native\WINDOWPLACEMENT.cs" />
     <Compile Include="Utilities\Native\UnsafeNativeMethods.cs" />
+    <Compile Include="Utilities\PasswordGenerator.cs" />
     <Compile Include="Utilities\RegistryExtensions.cs" />
     <Compile Include="Utilities\UIHelper.cs" />
     <Compile Include="Utilities\WindowHelper.cs" />

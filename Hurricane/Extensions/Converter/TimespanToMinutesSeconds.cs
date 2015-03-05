@@ -4,7 +4,7 @@ using System.Windows.Data;
 
 namespace Hurricane.Extensions.Converter
 {
-    class TimespanToMinutesSecounds : IValueConverter
+    class TimespanToMinutesSeconds : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
