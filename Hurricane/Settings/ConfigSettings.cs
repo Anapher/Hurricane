@@ -177,9 +177,9 @@ namespace Hurricane.Settings
                 {
                     var deserializer = new XmlSerializer(typeof(ConfigSettings));
                     result = (ConfigSettings)deserializer.Deserialize(reader);
-                    result.LoadLanguage();
                 }
             }
+            result.LoadLanguage();
             result.LoadAppCommunication();
             return result;
         }
