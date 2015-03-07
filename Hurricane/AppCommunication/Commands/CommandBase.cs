@@ -1,8 +1,10 @@
-﻿namespace Hurricane.AppCommunication.Commands
+﻿using Hurricane.Music;
+
+namespace Hurricane.AppCommunication.Commands
 {
-    public abstract class CommandBase
+    abstract class CommandBase
     {
         public abstract string RegexPattern { get; }
-        public abstract void Execute(string command, StreamProvider streams);
+        public abstract void Execute(string line, StreamProvider streams, MusicManager musicManager);
     }
 }

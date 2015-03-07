@@ -81,7 +81,7 @@ namespace Hurricane.Music.Download
                     RedirectStandardOutput = true,
                     UseShellExecute = false,
                     FileName = ExecutablePath,
-                    Arguments = string.Format("-g {0}", youTubeLink)
+                    Arguments = string.Format("-g {0} -f bestaudio", youTubeLink)
                 }
             })
             {

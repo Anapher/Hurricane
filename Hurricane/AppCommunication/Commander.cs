@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Hurricane.AppCommunication.Commands;
+using Hurricane.ViewModels;
 
 namespace Hurricane.AppCommunication
 {
@@ -19,7 +19,7 @@ namespace Hurricane.AppCommunication
             }
 
             var command = _commands.First(x => Regex.IsMatch(line, x.RegexPattern));
-            if (command != null) command.Execute(line, streams);
+            if (command != null) command.Execute(line, streams, MainViewModel.Instance.MusicManager);
         }
     }
 }

@@ -2,12 +2,12 @@
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Hurricane.Music;
 using Hurricane.Music.Track;
-using Hurricane.ViewModels;
 
 namespace Hurricane.AppCommunication.Commands
 {
-    public class FileTransferCommand : CommandBase
+    class FileTransferCommand : CommandBase
     {
         private const int BufferSize = 4096;
 
@@ -16,25 +16,16 @@ namespace Hurricane.AppCommunication.Commands
             get { return "^getFile:(?<trackId>(.*?))$"; }
         }
 
-        public override void Execute(string command, StreamProvider streams)
+        public override void Execute(string line, StreamProvider streams, MusicManager musicManager)
         {
             long id;
-            if (!long.TryParse(Regex.Match(command, RegexPattern).Groups["trackId"].Value, out id))
+            if (!long.TryParse(Regex.Match(line, RegexPattern).Groups["trackId"].Value, out id))
             {
                 streams.SendLine("getFile:invalidparameter");
                 return;
             }
 
-            var musicManager = MainViewModel.Instance.MusicManager;
-
-
-            PlayableBase track = null;
-
-            foreach (var playlist in musicManager.Playlists)
-            {
-                track = playlist.Tracks.FirstOrDefault(x => x.AuthenticationCode == id);
-                if (track != null) break;
-            }
+            var track = Utilities.GetTrackByAuthenticationCode(id, musicManager.Playlists);
 
             if (track == null)
             {

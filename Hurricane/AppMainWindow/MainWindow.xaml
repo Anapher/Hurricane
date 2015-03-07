@@ -212,10 +212,22 @@
                             </Style>
                         </MenuItem.Style>
                     </MenuItem>
-                    <DockPanel>
-                        <TextBlock Text="Volume:" VerticalAlignment="Center" Margin="0,0,10,0"/>
-                        <Slider Value="{Binding MusicManager.CSCoreEngine.Volume}" Minimum="0" Maximum="1" LargeChange="0.1" IsEnabled="True" Width="100" VerticalAlignment="Center"/>
-                    </DockPanel>
+                    <MenuItem StaysOpenOnClick="True">
+                        <MenuItem.Style>
+                            <Style TargetType="MenuItem">
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="MenuItem">
+                                            <DockPanel Margin="20,5,20,5">
+                                                <TextBlock Text="Volume:" VerticalAlignment="Center" Margin="0,0,10,2"/>
+                                                <Slider Value="{Binding MusicManager.CSCoreEngine.Volume}" Minimum="0" Maximum="1" LargeChange="0.1" IsEnabled="True" Width="100" VerticalAlignment="Center"/>
+                                            </DockPanel>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </MenuItem.Style>
+                    </MenuItem>
                     <Separator />
                     <MenuItem Header="{DynamicResource Close}" Command="ApplicationCommands.Close"/>
                 </ContextMenu>
