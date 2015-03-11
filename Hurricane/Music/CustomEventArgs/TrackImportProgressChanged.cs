@@ -1,6 +1,8 @@
-﻿namespace Hurricane.Music.MusicDatabase.EventArgs
+﻿using System;
+
+namespace Hurricane.Music.CustomEventArgs
 {
-   public class TrackImportProgressChangedEventArgs : System.EventArgs
+   public class TrackImportProgressChangedEventArgs : EventArgs
     {
         public double Percentage { get;protected set; }
         public int TotalFiles { get; protected set; }

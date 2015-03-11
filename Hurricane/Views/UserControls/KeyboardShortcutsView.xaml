@@ -1,0 +1,185 @@
+﻿<UserControl x:Class="Hurricane.Views.UserControls.KeyboardShortcutsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="600" d:DesignWidth="1000">
+    <UserControl.Resources>
+        <Style TargetType="Label" x:Key="KeyLabel">
+            <Setter Property="Foreground" Value="{StaticResource BlackBrush}"/>
+            <Setter Property="Height" Value="26"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Label">
+                        <Grid Background="{DynamicResource GrayBrush10}">
+                            <ContentPresenter Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+    <ScrollViewer>
+        <StackPanel Orientation="Vertical" Margin="10">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="250"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Label Style="{StaticResource KeyLabel}" Content="{DynamicResource SpaceKey}" HorizontalAlignment="Left" Width="120"/>
+                <TextBlock Grid.Column="1" Text="{DynamicResource PlayPauseShortcutDescription}" VerticalAlignment="Center"/>
+            </Grid>
+            <Grid Margin="0,10,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="250"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Orientation="Horizontal">
+                    <Label Style="{StaticResource KeyLabel}" Content="Enter" HorizontalAlignment="Left" Width="50"/>
+                </StackPanel>
+                <TextBlock Grid.Column="1" Text="{DynamicResource PlaySelectedTrackDescription}" VerticalAlignment="Center"/>
+            </Grid>
+            <Grid Margin="0,10,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="250"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Orientation="Horizontal">
+                    <Label Style="{StaticResource KeyLabel}" Content="{DynamicResource Ctrl}" HorizontalAlignment="Left" Width="50"/>
+                    <TextBlock Text="+" VerticalAlignment="Center" Margin="10,0"/>
+                    <Label Style="{StaticResource KeyLabel}" Content="E" HorizontalAlignment="Left" Width="50"/>
+                </StackPanel>
+                <TextBlock Grid.Column="1" Text="{DynamicResource EqualizerShortcutDescription}" VerticalAlignment="Center"/>
+            </Grid>
+            <Grid Margin="0,10,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="250"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Orientation="Horizontal">
+                    <Label Style="{StaticResource KeyLabel}" Content="{DynamicResource Ctrl}" HorizontalAlignment="Left" Width="50"/>
+                    <TextBlock Text="+" VerticalAlignment="Center" Margin="10,0"/>
+                    <Label Style="{StaticResource KeyLabel}" Content="{DynamicResource Left}" HorizontalAlignment="Left" Width="50"/>
+                    <TextBlock Text="/" VerticalAlignment="Center" Margin="10,0"/>
+                    <Label Style="{StaticResource KeyLabel}" Content="{DynamicResource Right}" HorizontalAlignment="Left" Width="50"/>
+                </StackPanel>
+                <TextBlock Grid.Column="1" Text="{DynamicResource DockUndockHurricaneDescription}" VerticalAlignment="Center"/>
+            </Grid>
+            <Grid Margin="0,10,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="250"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Orientation="Horizontal">
+                    <Label Style="{StaticResource KeyLabel}" Content="{DynamicResource Ctrl}" HorizontalAlignment="Left" Width="50"/>
+                    <TextBlock Text="+" VerticalAlignment="Center" Margin="10,0"/>
+                    <Label Style="{StaticResource KeyLabel}" Content="1" HorizontalAlignment="Left" Width="35"/>
+                    <TextBlock Text="/" VerticalAlignment="Center" Margin="10,0"/>
+                    <Label Style="{StaticResource KeyLabel}" Content="2" HorizontalAlignment="Left" Width="35"/>
+                    <TextBlock Text="/" VerticalAlignment="Center" Margin="10,0"/>
+                    <Label Style="{StaticResource KeyLabel}" Content="3" HorizontalAlignment="Left" Width="35"/>
+                </StackPanel>
+                <TextBlock Grid.Column="1" Text="{DynamicResource JumpToDescription}" VerticalAlignment="Center"/>
+            </Grid>
+            <Grid Margin="0,10,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="250"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Orientation="Horizontal">
+                    <Label Style="{StaticResource KeyLabel}" Content="{DynamicResource Del}" HorizontalAlignment="Left" Width="50"/>
+                </StackPanel>
+                <TextBlock Grid.Column="1" Text="{DynamicResource RemoveTrackPlaylistDescription}" VerticalAlignment="Center"/>
+            </Grid>
+            <Grid Margin="0,10,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="250"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Orientation="Horizontal">
+                    <Label Style="{StaticResource KeyLabel}" Content="{DynamicResource Ins}" HorizontalAlignment="Left" Width="50"/>
+                </StackPanel>
+                <TextBlock Grid.Column="1" Text="{DynamicResource AddTracksDescription}" VerticalAlignment="Center"/>
+            </Grid>
+            <Grid Margin="0,10,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="250"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Orientation="Horizontal">
+                    <Label Style="{StaticResource KeyLabel}" Content="{DynamicResource Ctrl}" HorizontalAlignment="Left" Width="50"/>
+                    <TextBlock Text="+" VerticalAlignment="Center" Margin="10,0"/>
+                    <Label Style="{StaticResource KeyLabel}" Content="{DynamicResource Ins}" HorizontalAlignment="Left" Width="50"/>
+                </StackPanel>
+                <TextBlock Grid.Column="1" Text="{DynamicResource AddFolderDescription}" VerticalAlignment="Center"/>
+            </Grid>
+            <Grid Margin="0,10,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="250"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Orientation="Horizontal">
+                    <Label Style="{StaticResource KeyLabel}" Content="Q" HorizontalAlignment="Left" Width="50"/>
+                </StackPanel>
+                <TextBlock Grid.Column="1" Text="{DynamicResource AddTrackToQueueDescription}" VerticalAlignment="Center"/>
+            </Grid>
+            <Grid Margin="0,10,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="250"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Orientation="Horizontal">
+                    <Label Style="{StaticResource KeyLabel}" Content="Alt" HorizontalAlignment="Left" Width="50"/>
+                    <TextBlock Text="+" VerticalAlignment="Center" Margin="10,0"/>
+                    <Label Style="{StaticResource KeyLabel}" Content="Q" HorizontalAlignment="Left" Width="50"/>
+                </StackPanel>
+                <TextBlock Grid.Column="1" Text="{DynamicResource RemoveTrackFromQueueDescription}" VerticalAlignment="Center"/>
+            </Grid>
+            <Grid Margin="0,10,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="250"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Orientation="Horizontal">
+                    <Label Style="{StaticResource KeyLabel}" Content="{DynamicResource Ctrl}" HorizontalAlignment="Left" Width="50"/>
+                    <TextBlock Text="+" VerticalAlignment="Center" Margin="10,0"/>
+                    <Label Style="{StaticResource KeyLabel}" Content="Q" HorizontalAlignment="Left" Width="50"/>
+                </StackPanel>
+                <TextBlock Grid.Column="1" Text="{DynamicResource OpenQueueManagerDescription}" VerticalAlignment="Center"/>
+            </Grid>
+            <Grid Margin="0,10,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="250"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Orientation="Horizontal">
+                    <Label Style="{StaticResource KeyLabel}" Content="F3" HorizontalAlignment="Left" Width="50"/>
+                </StackPanel>
+                <TextBlock Grid.Column="1" Text="{DynamicResource OpenTagEditorDescription}" VerticalAlignment="Center"/>
+            </Grid>
+            <Grid Margin="0,10,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="250"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Orientation="Horizontal">
+                    <Label Style="{StaticResource KeyLabel}" Content="F4" HorizontalAlignment="Left" Width="50"/>
+                </StackPanel>
+                <TextBlock Grid.Column="1" Text="{DynamicResource OpenTrackInformationDescription}" VerticalAlignment="Center"/>
+            </Grid>
+            <Grid Margin="0,10,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="250"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Orientation="Horizontal">
+                    <Label Style="{StaticResource KeyLabel}" Content="Alt" HorizontalAlignment="Left" Width="50"/>
+                    <TextBlock Text="+" VerticalAlignment="Center" Margin="10,0"/>
+                    <Label Style="{StaticResource KeyLabel}" Content="O" HorizontalAlignment="Left" Width="50"/>
+                </StackPanel>
+                <TextBlock Grid.Column="1" Text="{DynamicResource OpenTrackSourceDescription}" VerticalAlignment="Center"/>
+            </Grid>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

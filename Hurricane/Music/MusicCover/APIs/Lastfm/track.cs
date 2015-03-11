@@ -1,7 +1,8 @@
 ﻿using System.Xml.Serialization;
 
-namespace Hurricane.Music.MusicDatabase
+namespace Hurricane.Music.MusicCover.APIs.Lastfm
 {
+    // ReSharper disable InconsistentNaming
     public partial class lfm
     {
         /// <remarks/>
@@ -10,7 +11,7 @@ namespace Hurricane.Music.MusicDatabase
 
     /// <remarks/>
     [XmlType(AnonymousType = true)]
-    public partial class lfmTrack
+    public class lfmTrack
     {
         /// <remarks/>
         public long id { get; set; }
@@ -46,7 +47,7 @@ namespace Hurricane.Music.MusicDatabase
 
     /// <remarks/>
     [XmlType(AnonymousType = true)]
-    public partial class lfmTrackStreamable
+    public class lfmTrackStreamable
     {
         /// <remarks/>
         [XmlAttribute()]
@@ -59,7 +60,7 @@ namespace Hurricane.Music.MusicDatabase
 
     /// <remarks/>
     [XmlType(AnonymousType = true)]
-    public partial class lfmTrackArtist
+    public class lfmTrackArtist
     {
         /// <remarks/>
         public string name { get; set; }
@@ -73,7 +74,7 @@ namespace Hurricane.Music.MusicDatabase
 
     /// <remarks/>
     [XmlType(AnonymousType = true)]
-    public partial class lfmTrackAlbum
+    public class lfmTrackAlbum
     {
         /// <remarks/>
         public string artist { get; set; }
@@ -98,7 +99,7 @@ namespace Hurricane.Music.MusicDatabase
 
     /// <remarks/>
     [XmlType(AnonymousType = true)]
-    public partial class lfmTrackAlbumImage
+    public class lfmTrackAlbumImage
     {
         /// <remarks/>
         [XmlAttribute()]
@@ -111,7 +112,7 @@ namespace Hurricane.Music.MusicDatabase
 
     /// <remarks/>
     [XmlType(AnonymousType = true)]
-    public partial class lfmTrackTag
+    public class lfmTrackTag
     {
         /// <remarks/>
         public string name { get; set; }
@@ -122,7 +123,7 @@ namespace Hurricane.Music.MusicDatabase
 
     /// <remarks/>
     [XmlType(AnonymousType = true)]
-    public partial class lfmTrackWiki
+    public class lfmTrackWiki
     {
         /// <remarks/>
         public string published { get; set; }

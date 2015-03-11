@@ -10,8 +10,9 @@ using CSCore;
 using CSCore.Codecs;
 using Hurricane.Settings;
 using System.Windows;
+using System.Windows.Media.Imaging;
 using Hurricane.Music.Download;
-using Hurricane.Music.MusicDatabase;
+using Hurricane.Music.MusicCover;
 using Hurricane.Music.Track.WebApi.YouTubeApi;
 using Hurricane.Music.Track.WebApi.YouTubeApi.DataClasses;
 using Newtonsoft.Json;
@@ -36,7 +37,7 @@ namespace Hurricane.Music.Track
 
         public async override Task<bool> LoadInformation()
         {
-            using (var client = new WebClient {Proxy = null})
+            using (var client = new WebClient { Proxy = null })
             {
                 return await LoadInformation(JsonConvert.DeserializeObject<SingleVideoSearchResult>(await client.DownloadStringTaskAsync(string.Format("http://gdata.youtube.com/feeds/api/videos/{0}?v=2&alt=jsonc", YouTubeId))));
             }
@@ -44,7 +45,7 @@ namespace Hurricane.Music.Track
 
         public async Task<bool> LoadInformation(SingleVideoSearchResult result)
         {
-            Year = (uint) DateTime.Parse(result.data.uploaded).Year;
+            Year = (uint)DateTime.Parse(result.data.uploaded).Year;
             Title = result.data.title;
             Artist = result.data.uploader;
             Uploader = result.data.uploader; //Because the user can change the artist
@@ -72,7 +73,7 @@ namespace Hurricane.Music.Track
         {
             using (var soundSource = await GetSoundSource())
             {
-              return LoadInformation(ytResult, SoundSourceInfo.FromSoundSource(soundSource));
+                return LoadInformation(ytResult, SoundSourceInfo.FromSoundSource(soundSource));
             }
         }
 
@@ -84,7 +85,7 @@ namespace Hurricane.Music.Track
         public async override Task<IWaveSource> GetSoundSource()
         {
             var streamUri = await youtube_dl.Instance.GetStreamUri(Link);
-            return await Task.Run(() => CodecFactory.Instance.GetCodec(streamUri));
+            return await Task.Run(() => CutWaveSource(CodecFactory.Instance.GetCodec(streamUri)));
         }
 
         public override bool Equals(PlayableBase other)
@@ -140,27 +141,37 @@ namespace Hurricane.Music.Track
             get { return "https://www.youtube.com/"; }
         }
 
-        protected async override Task LoadImage()
+        protected async override Task LoadImage(DirectoryInfo albumCoverDirectory)
         {
-            var diAlbumCover = new DirectoryInfo(HurricaneSettings.Instance.CoverDirectory);
-            Image = MusicCoverManager.GetYouTubeImage(this, diAlbumCover);
+            if (albumCoverDirectory.Exists)
+            {
+                var imageFile =
+                    albumCoverDirectory.GetFiles("*.jpg")
+                        .FirstOrDefault(item => item.Name.ToLower() == YouTubeId.ToLower());
 
-            if (Image == null)
-                Image = MusicCoverManager.GetImage(this, diAlbumCover);
+                if (imageFile != null)
+                {
+                    Image = new BitmapImage(new Uri(imageFile.FullName));
+                    return;
+                }
 
-            if (Image == null && HurricaneSettings.Instance.Config.LoadAlbumCoverFromInternet)
+
+                Image = MusicCoverManager.GetAlbumImage(this, albumCoverDirectory);
+                if (Image != null) return;
+            }
+
+
+            if (HurricaneSettings.Instance.Config.LoadAlbumCoverFromInternet)
             {
                 try
                 {
                     if (!string.IsNullOrEmpty(ThumbnailUrl))
                     {
-                        Image = await YouTubeApi.LoadBitmapImage(this, diAlbumCover);
+                        Image = await YouTubeApi.LoadBitmapImage(this, albumCoverDirectory);
+                        if (Image != null) return;
                     }
 
-                    if (Image == null)
-                    {
-                        Image = await MusicCoverManager.LoadCoverFromWeb(this, diAlbumCover, Uploader != Artist).ConfigureAwait(false);
-                    }
+                    Image = await MusicCoverManager.LoadCoverFromWeb(this, albumCoverDirectory, Uploader != Artist);
                 }
                 catch (WebException)
                 {

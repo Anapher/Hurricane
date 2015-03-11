@@ -1,8 +1,8 @@
 ﻿using System.Xml.Serialization;
+// ReSharper disable InconsistentNaming
 
-namespace Hurricane.Music.MusicDatabase
+namespace Hurricane.Music.MusicCover.APIs.Lastfm
 {
-
     /// <remarks/>
     [XmlType(AnonymousType = true)]
     [XmlRoot(Namespace = "", IsNullable = false)]
@@ -14,7 +14,7 @@ namespace Hurricane.Music.MusicDatabase
 
     /// <remarks/>
     [XmlType(AnonymousType = true)]
-    public partial class lfmArtist
+    public class lfmArtist
     {
         /// <remarks/>
         public string name { get; set; }
@@ -45,7 +45,7 @@ namespace Hurricane.Music.MusicDatabase
 
     /// <remarks/>
     [XmlType(AnonymousType = true)]
-    public partial class lfmArtistImage
+    public class lfmArtistImage
     {
         /// <remarks/>
         [XmlAttribute()]
@@ -58,7 +58,7 @@ namespace Hurricane.Music.MusicDatabase
 
     /// <remarks/>
     [XmlType(AnonymousType = true)]
-    public partial class lfmArtistStats
+    public class lfmArtistStats
     {
         /// <remarks/>
         public long listeners { get; set; }
@@ -66,7 +66,7 @@ namespace Hurricane.Music.MusicDatabase
 
     /// <remarks/>
     [XmlType(AnonymousType = true)]
-    public partial class lfmArtistTag
+    public class lfmArtistTag
     {
         /// <remarks/>
         public string name { get; set; }
@@ -77,7 +77,7 @@ namespace Hurricane.Music.MusicDatabase
 
     /// <remarks/>
     [XmlType(AnonymousType = true)]
-    public partial class lfmArtistBio
+    public class lfmArtistBio
     {
         /// <remarks/>
         public lfmArtistBioLinks links { get; set; }
@@ -94,7 +94,7 @@ namespace Hurricane.Music.MusicDatabase
 
     /// <remarks/>
     [XmlType(AnonymousType = true)]
-    public partial class lfmArtistBioLinks
+    public class lfmArtistBioLinks
     {
         /// <remarks/>
         public lfmArtistBioLinksLink link { get; set; }
@@ -102,7 +102,7 @@ namespace Hurricane.Music.MusicDatabase
 
     /// <remarks/>
     [XmlType(AnonymousType = true)]
-    public partial class lfmArtistBioLinksLink
+    public class lfmArtistBioLinksLink
     {
         /// <remarks/>
         [XmlAttribute()]

@@ -13,7 +13,7 @@ namespace Hurricane.Music.Track.WebApi.SoundCloudApi
 {
     class SoundCloudApi : IMusicApi
     {
-                public static async Task<BitmapImage> LoadBitmapImage(SoundCloudTrack track, ImageQuality quality, DirectoryInfo albumDirectory)
+        public static async Task<BitmapImage> LoadBitmapImage(SoundCloudTrack track, ImageQuality quality, DirectoryInfo albumDirectory)
         {
             var config = HurricaneSettings.Instance.Config;
 
@@ -23,7 +23,7 @@ namespace Hurricane.Music.Track.WebApi.SoundCloudApi
                 if (config.SaveCoverLocal)
                 {
                     if (!albumDirectory.Exists) albumDirectory.Create();
-                    await Utilities.ImageHelper.SaveImage(image, string.Format("{0}_{1}.jpg", track.SoundCloudID, GetQualityModifier(quality)), albumDirectory.FullName);
+                    await Utilities.ImageHelper.SaveImage(image, string.Format("{0}_{1}", track.SoundCloudID, GetQualityModifier(quality)), albumDirectory.FullName);
                 }
                 return image;
             }

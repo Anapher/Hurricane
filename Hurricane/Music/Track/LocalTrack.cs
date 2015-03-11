@@ -9,7 +9,7 @@ using System.Xml.Serialization;
 using CSCore;
 using CSCore.Codecs;
 using CSCore.Codecs.MP3;
-using Hurricane.Music.MusicDatabase;
+using Hurricane.Music.MusicCover;
 using Hurricane.Settings;
 using Hurricane.Utilities;
 using File = TagLib.File;
@@ -44,7 +44,7 @@ namespace Hurricane.Music.Track
             {
                 await Task.Run(() =>
                 {
-                    using (IWaveSource soundSource = CodecFactory.Instance.GetCodec(Path))
+                    using (var soundSource = CodecFactory.Instance.GetCodec(Path))
                     {
                         duration = soundSource.GetLength();
                     }
@@ -121,7 +121,7 @@ namespace Hurricane.Music.Track
                     using (FileStream sr = new FileStream(filename.FullName, FileMode.Open, FileAccess.Read))
                         frame = Mp3Frame.FromStream(sr);
                 });
-                
+
                 if (frame != null) { kbps = frame.BitRate / 1000; }
                 TimeSpan duration = TimeSpan.Zero;
                 int samplerate = 0;
@@ -172,35 +172,36 @@ namespace Hurricane.Music.Track
 
         #region Image
 
-        protected async override Task LoadImage()
+        protected async override Task LoadImage(DirectoryInfo albumCoverDirectory)
         {
             try
             {
                 using (var file = File.Create(Path))
                 {
                     if (file.Tag.Pictures != null && file.Tag.Pictures.Any())
-                    { Image = ImageHelper.ByteArrayToBitmapImage(file.Tag.Pictures.First().Data.ToArray()); }
+                    {
+                        Image = ImageHelper.ByteArrayToBitmapImage(file.Tag.Pictures.First().Data.ToArray());
+                        return;
+                    }
                 }
             }
-            catch (Exception)
+            catch
             {
-                Image = null;
+                // ignored
             }
 
-            if (Image == null)
+            Image = MusicCoverManager.GetAlbumImage(this, albumCoverDirectory);
+            if (Image != null) return;
+
+            if (HurricaneSettings.Instance.Config.LoadAlbumCoverFromInternet)
             {
-                DirectoryInfo diAlbumCover = new DirectoryInfo(HurricaneSettings.Instance.CoverDirectory);
-                Image = MusicCoverManager.GetImage(this, diAlbumCover);
-                if (Image == null && HurricaneSettings.Instance.Config.LoadAlbumCoverFromInternet)
+                try
                 {
-                    try
-                    {
-                        Image = await MusicCoverManager.LoadCoverFromWeb(this, diAlbumCover).ConfigureAwait(false);
-                    }
-                    catch (WebException)
-                    {
-                        //Happens, doesn't matter
-                    }
+                    Image = await MusicCoverManager.LoadCoverFromWeb(this, albumCoverDirectory);
+                }
+                catch (WebException)
+                {
+                    //Happens, doesn't matter
                 }
             }
         }
@@ -224,7 +225,7 @@ namespace Hurricane.Music.Track
 
         public override Task<IWaveSource> GetSoundSource()
         {
-            return Task.Run(() => CodecFactory.Instance.GetCodec(Path));
+            return Task.Run(() => CutWaveSource(CodecFactory.Instance.GetCodec(Path)));
         }
 
         public virtual string UniqueId
@@ -232,15 +233,13 @@ namespace Hurricane.Music.Track
             get { return TrackInformation.FullName; }
         }
 
-        private string _fileHash;
-
         public override bool Equals(PlayableBase other)
         {
             if (other == null) return false;
             if (!other.TrackExists || !TrackExists) return false;
             if (GetType() != other.GetType()) return false;
 
-            var otherAsLocalTrack = (LocalTrack) other;
+            var otherAsLocalTrack = (LocalTrack)other;
 
             if (UniqueId == otherAsLocalTrack.UniqueId) return true;
 

@@ -1,8 +1,9 @@
-﻿using Hurricane.Music.Track;
+﻿using System;
+using Hurricane.Music.Track;
 
-namespace Hurricane.Music.MusicDatabase.EventArgs
+namespace Hurricane.Music.CustomEventArgs
 {
-    public class TrackChangedEventArgs : System.EventArgs
+    public class TrackChangedEventArgs : EventArgs
     {
         public PlayableBase NewTrack { get; protected set; }
 

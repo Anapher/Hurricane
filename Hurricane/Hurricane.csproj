@@ -266,16 +266,16 @@
     <Compile Include="Music\Data\SoundOutRepresenter.cs" />
     <Compile Include="Music\MusicEqualizer\EqualizerBand.cs" />
     <Compile Include="Music\Playlist\IPlaylist.cs" />
-    <Compile Include="Music\MusicDatabase\EventArgs\EqualizerChangedEventArgs.cs" />
+    <Compile Include="Music\CustomEventArgs\EqualizerChangedEventArgs.cs" />
     <Compile Include="Music\MusicEqualizer\EqualizerSettings.cs" />
-    <Compile Include="Music\MusicDatabase\EventArgs\PlaybackStateChangedEventArgs.cs" />
-    <Compile Include="Music\MusicDatabase\EventArgs\PositionChangedEventArgs.cs" />
-    <Compile Include="Music\MusicDatabase\EventArgs\TrackImportProgressChanged.cs" />
-    <Compile Include="Music\MusicDatabase\artist.cs" />
-    <Compile Include="Music\MusicDatabase\LastfmAPI.cs" />
-    <Compile Include="Music\MusicDatabase\lfm.cs" />
-    <Compile Include="Music\MusicDatabase\MusicCoverManager.cs" />
-    <Compile Include="Music\MusicDatabase\track.cs" />
+    <Compile Include="Music\CustomEventArgs\PlaybackStateChangedEventArgs.cs" />
+    <Compile Include="Music\CustomEventArgs\PositionChangedEventArgs.cs" />
+    <Compile Include="Music\CustomEventArgs\TrackImportProgressChanged.cs" />
+    <Compile Include="Music\MusicCover\APIs\Lastfm\artist.cs" />
+    <Compile Include="Music\MusicCover\APIs\Lastfm\LastfmAPI.cs" />
+    <Compile Include="Music\MusicCover\APIs\Lastfm\lfm.cs" />
+    <Compile Include="Music\MusicCover\MusicCoverManager.cs" />
+    <Compile Include="Music\MusicCover\APIs\Lastfm\track.cs" />
     <Compile Include="Music\MusicManagerCommands.cs" />
     <Compile Include="Music\Playlist\PlaylistBase.cs" />
     <Compile Include="Music\QueueManager.cs" />
@@ -426,6 +426,9 @@
     </Compile>
     <Compile Include="Views\UserControls\EqualizerView.xaml.cs">
       <DependentUpon>EqualizerView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\UserControls\KeyboardShortcutsView.xaml.cs">
+      <DependentUpon>KeyboardShortcutsView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\UserControls\SettingsView.xaml.cs">
       <DependentUpon>SettingsView.xaml</DependentUpon>
@@ -692,7 +695,7 @@
     <Compile Include="Utilities\HookManager\HookManager.Windows.cs" />
     <Compile Include="Utilities\HookManager\MouseEventExtArgs.cs" />
     <Compile Include="Music\CSCoreEngine.cs" />
-    <Compile Include="Music\MusicDatabase\EventArgs\TrackChangedEventArgs.cs" />
+    <Compile Include="Music\CustomEventArgs\TrackChangedEventArgs.cs" />
     <Compile Include="Music\MusicManager.cs" />
     <Compile Include="Music\Playlist\NormalPlaylist.cs" />
     <Compile Include="Music\Visualization\SampleAnalyser.cs" />
@@ -732,6 +735,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\UserControls\EqualizerView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\UserControls\KeyboardShortcutsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -842,7 +849,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Music\MusicCover\APIs\Amazon\" />
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\AudioVisualisation\AudioVisualisation.csproj">
       <Project>{3374a3e8-73da-48e8-bf53-5574a714ed8b}</Project>

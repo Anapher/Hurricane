@@ -1,6 +1,8 @@
-﻿namespace Hurricane.Music.MusicDatabase.EventArgs
+﻿using System;
+
+namespace Hurricane.Music.CustomEventArgs
 {
-    public class PositionChangedEventArgs : System.EventArgs
+    public class PositionChangedEventArgs : EventArgs
     {
         public int NewPosition { get; protected set; }
         public int TrackLength { get; protected set; }

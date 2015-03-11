@@ -1,7 +1,8 @@
 ﻿using System.Xml.Serialization;
 
-namespace Hurricane.Music.MusicDatabase
+namespace Hurricane.Music.MusicCover.APIs.Lastfm
 {
+    // ReSharper disable InconsistentNaming
     public partial class lfm
     {
         /// <remarks/>
@@ -14,7 +15,7 @@ namespace Hurricane.Music.MusicDatabase
 
     /// <remarks/>
     [XmlType(AnonymousType = true)]
-    public partial class lfmResults
+    public class lfmResults
     {
         /// <remarks/>
         [XmlElement(Namespace = "http://a9.com/-/spec/opensearch/1.1/")]
@@ -44,7 +45,7 @@ namespace Hurricane.Music.MusicDatabase
     /// <remarks/>
     [XmlType(AnonymousType = true, Namespace = "http://a9.com/-/spec/opensearch/1.1/")]
     [XmlRoot(Namespace = "http://a9.com/-/spec/opensearch/1.1/", IsNullable = false)]
-    public partial class Query
+    public class Query
     {
         /// <remarks/>
         [XmlAttribute()]
@@ -61,7 +62,7 @@ namespace Hurricane.Music.MusicDatabase
 
     /// <remarks/>
     [XmlType(AnonymousType = true)]
-    public partial class lfmResultsTrack
+    public class lfmResultsTrack
     {
         /// <remarks/>
         public string name { get; set; }
@@ -85,7 +86,7 @@ namespace Hurricane.Music.MusicDatabase
 
     /// <remarks/>
     [XmlType(AnonymousType = true)]
-    public partial class lfmResultsTrackStreamable
+    public class lfmResultsTrackStreamable
     {
         /// <remarks/>
         [XmlAttribute()]
@@ -98,7 +99,7 @@ namespace Hurricane.Music.MusicDatabase
 
     /// <remarks/>
     [XmlType(AnonymousType = true)]
-    public partial class lfmResultsTrackImage
+    public class lfmResultsTrackImage
     {
         /// <remarks/>
         [XmlAttribute()]

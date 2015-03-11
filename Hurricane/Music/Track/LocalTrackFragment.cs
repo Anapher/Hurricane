@@ -61,10 +61,12 @@ namespace Hurricane.Music.Track
         // return fragment to play
         public override Task<IWaveSource> GetSoundSource()
         {
+            var startTime = TimeSpan.FromMilliseconds(StartTime);
+            var endTime = TimeSpan.FromMilliseconds(EndTime);
             return Task.Run(() => {
                 var source = CodecFactory.Instance.GetCodec(Path);
                 UpdateMetadata(source);
-                return new CutSource(source, Offset, _duration) as IWaveSource;
+                return new CutSource(source, Offset + startTime, endTime - startTime) as IWaveSource;
             });
         }
 

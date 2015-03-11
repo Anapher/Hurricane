@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using Hurricane.Music.MusicDatabase.EventArgs;
+using Hurricane.Music.CustomEventArgs;
 using Hurricane.ViewModelBase;
 
 namespace Hurricane.Music.MusicEqualizer

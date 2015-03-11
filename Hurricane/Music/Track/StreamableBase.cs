@@ -1,19 +1,11 @@
 ﻿using System.Diagnostics;
-using System.Threading.Tasks;
 using System.Windows.Media;
-using CSCore;
 using Hurricane.ViewModelBase;
 
 namespace Hurricane.Music.Track
 {
     public abstract class StreamableBase : PlayableBase, IDownloadable
     {
-        public override abstract Task<bool> LoadInformation();
-        protected abstract override Task LoadImage();
-        public override abstract void OpenTrackLocation();
-        public override abstract Task<IWaveSource> GetSoundSource();
-        public override abstract bool Equals(PlayableBase other);
-
         public override TrackType TrackType
         {
             get { return TrackType.Stream; }

@@ -5,7 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Hurricane.Music.MusicDatabase.EventArgs;
+using Hurricane.Music.CustomEventArgs;
 using Hurricane.Music.Track;
 
 namespace Hurricane.Music.Playlist

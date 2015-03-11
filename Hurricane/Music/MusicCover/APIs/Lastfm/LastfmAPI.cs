@@ -10,7 +10,7 @@ using Hurricane.Music.Track;
 using Hurricane.Settings;
 using Hurricane.Utilities;
 
-namespace Hurricane.Music.MusicDatabase
+namespace Hurricane.Music.MusicCover.APIs.Lastfm
 {
     class LastfmAPI
     {

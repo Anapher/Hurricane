@@ -12,7 +12,7 @@ using Hardcodet.Wpf.TaskbarNotification;
 using Hurricane.AppMainWindow.Messages;
 using Hurricane.AppMainWindow.WindowSkins;
 using Hurricane.MagicArrow.DockManager;
-using Hurricane.Music.MusicDatabase.EventArgs;
+using Hurricane.Music.CustomEventArgs;
 using Hurricane.Settings;
 using Hurricane.Utilities;
 using Hurricane.Utilities.Native;

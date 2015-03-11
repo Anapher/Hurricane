@@ -109,13 +109,12 @@
     <Window.InputBindings>
         <KeyBinding Key="Space" Command="{Binding MusicManager.Commands.TogglePlayPause}"/>
         <KeyBinding Key="E" Modifiers="Control" Command="{Binding ToggleEqualizer}"/>
-        <KeyBinding Key="Left" Modifiers="Windows" Command="{Binding MoveLeftCommand}"/>
-        <KeyBinding Key="Right" Modifiers="Windows" Command="{Binding MoveRightCommand}"/>
         <KeyBinding Key="Left" Modifiers="Control" Command="{Binding MoveLeftCommand}"/>
         <KeyBinding Key="Right" Modifiers="Control" Command="{Binding MoveRightCommand}"/>
         <KeyBinding Key="D1" Modifiers="Control" Command="{Binding ChangeMainTabControlIndex}" CommandParameter="0"/>
         <KeyBinding Key="D2" Modifiers="Control" Command="{Binding ChangeMainTabControlIndex}" CommandParameter="1"/>
         <KeyBinding Key="D3" Modifiers="Control" Command="{Binding ChangeMainTabControlIndex}" CommandParameter="2"/>
+        <KeyBinding Key="Q" Modifiers="Control" Command="{Binding OpenQueueManager}"/>
     </Window.InputBindings>
     <Grid x:Name="ContentGrid">
         <Grid x:Name="BackgroundContainer">

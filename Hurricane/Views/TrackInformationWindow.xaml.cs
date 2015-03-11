@@ -1,12 +1,12 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.IO;
-using System.Windows;
 using System.Windows.Media.Imaging;
-using Hurricane.Music;
 using Hurricane.Music.Track;
 using Hurricane.ViewModelBase;
-using Hurricane.Views.UserControls;
 using MahApps.Metro.Controls;
+using Microsoft.Win32;
+// ReSharper disable CompareOfFloatsByEqualityOperator
 
 namespace Hurricane.Views
 {
@@ -15,10 +15,23 @@ namespace Hurricane.Views
     /// </summary>
     public partial class TrackInformationWindow : MetroWindow
     {
-        private BitmapImage image;
+        private BitmapImage _image;
         public TrackInformationWindow(PlayableBase track)
         {
-            this.CurrentTrack = track;
+            CurrentTrack = track;
+            if (CurrentTrack.StartTime == 0 && CurrentTrack.EndTime == 0)
+            {
+                StartTime = 0;
+                EndTime = Math.Round(CurrentTrack.DurationTimespan.TotalMilliseconds, 0);
+            }
+            else
+            {
+                StartTime = CurrentTrack.StartTime;
+                EndTime = CurrentTrack.EndTime;
+            }
+
+            MaximumTime = Math.Round(CurrentTrack.DurationTimespan.TotalMilliseconds, 0);
+
             InitializeComponent();
 
             if (!CurrentTrack.IsOpened)
@@ -27,13 +40,32 @@ namespace Hurricane.Views
                 if (CurrentTrack.Image == null)
                 {
                     CurrentTrack.ImageLoadedComplete +=
-                        (s, e) => { if (CurrentTrack.Image != null) Dispatcher.Invoke(() => image = CurrentTrack.Image.Clone()); };
+                        (s, e) => { if (CurrentTrack.Image != null) Dispatcher.Invoke(() => _image = CurrentTrack.Image.Clone()); };
                     return;
                 }
             }
 
-            if (CurrentTrack.Image != null) image = CurrentTrack.Image.Clone();
+            if (CurrentTrack.Image != null) _image = CurrentTrack.Image.Clone();
         }
+
+        protected override void OnClosing(CancelEventArgs e)
+        {
+            base.OnClosing(e);
+            if (StartTime > 0 || EndTime < MaximumTime)
+            {
+                CurrentTrack.EndTime = EndTime;
+                CurrentTrack.StartTime = StartTime;
+            }
+            else
+            {
+                CurrentTrack.EndTime = 0;
+                CurrentTrack.StartTime = 0;
+            }
+        }
+
+        public double EndTime { get; set; }
+        public double StartTime { get; set; }
+        public double MaximumTime { get; set; }
 
         public PlayableBase CurrentTrack { get; set; }
 
@@ -44,9 +76,9 @@ namespace Hurricane.Views
             {
                 return _saveImage ?? (_saveImage = new RelayCommand(parameter =>
                 {
-                    if (image != null)
+                    if (_image != null)
                     {
-                        var sfd = new Microsoft.Win32.SaveFileDialog()
+                        var sfd = new SaveFileDialog()
                         {
                             Filter = "PNG|*.png|JPG|*.jpg|GIF|*.gif|BMP|*.bmp",
                             FileName = CurrentTrack.DisplayText
@@ -71,7 +103,7 @@ namespace Hurricane.Views
                                 break;
                         }
 
-                        encoder.Frames.Add(BitmapFrame.Create(image));
+                        encoder.Frames.Add(BitmapFrame.Create(_image));
 
                         using (var filestream = new FileStream(sfd.FileName, FileMode.Create))
                             encoder.Save(filestream);

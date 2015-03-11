@@ -309,7 +309,19 @@
                 </StackPanel>
                 <TextBox Text="{Binding ElementName=window,Path=CurrentTrack.Year,ValidatesOnDataErrors=True,UpdateSourceTrigger=PropertyChanged,NotifyOnValidationError=True}" Grid.Column="1"/>
             </Grid>
-            <Separator Margin="0,10,0,10"/>
+            <Separator Margin="0,10"/>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="200"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                    <TextBlock Text="{StaticResource Duration}"/>
+                    <TextBlock Text=":"/>
+                </StackPanel>
+                <controls:RangeSlider Grid.Column="1" AutoToolTipPlacement="TopLeft" LowerValue="{Binding StartTime}" UpperValue="{Binding EndTime}" MinRange="1000" Maximum="{Binding MaximumTime}" AutoToolTipPrecision="0" MinRangeWidth="10" IsMoveToPointEnabled="True" Interval="1000"/>
+            </Grid>
+            <Separator Margin="0,10"/>
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="200"/>

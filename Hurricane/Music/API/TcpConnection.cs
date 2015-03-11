@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Net.Sockets;
-using Hurricane.Music.MusicDatabase.EventArgs;
+using Hurricane.Music.CustomEventArgs;
 
 namespace Hurricane.Music.API
 {

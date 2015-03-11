@@ -1,8 +1,9 @@
-﻿using CSCore.SoundOut;
+﻿using System;
+using CSCore.SoundOut;
 
-namespace Hurricane.Music.MusicDatabase.EventArgs
+namespace Hurricane.Music.CustomEventArgs
 {
-    public class PlayStateChangedEventArgs : System.EventArgs
+    public class PlayStateChangedEventArgs : EventArgs
     {
         public PlaybackState NewPlaybackState { get; protected set; }
 

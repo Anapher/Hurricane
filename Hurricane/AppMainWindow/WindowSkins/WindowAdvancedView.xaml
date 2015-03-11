@@ -207,7 +207,7 @@
                                         </MenuItem>
                                         <Separator />
                                         <MenuItem Header="{DynamicResource TrackInformation}" Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}, Path=DataContext.OpenTrackInformation}" InputGestureText="F4"/>
-                                        <MenuItem Header="{DynamicResource Download}" Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}, Path=DataContext.MusicManager.Commands.DownloadTracks}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=ListView},Path=SelectedItems}" IsEnabled="{Binding CanDownload}" InputGestureText="F3"/>
+                                        <MenuItem Header="{DynamicResource Download}" Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}, Path=DataContext.MusicManager.Commands.DownloadTracks}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=ListView},Path=SelectedItems}" IsEnabled="{Binding CanDownload}"/>
                                         <MenuItem Header="{DynamicResource OpenUrl}" Command="{Binding OpenLinkCommand}" InputGestureText="Alt+O"/>
                                         <MenuItem Header="{DynamicResource ConvertToLocalTrack}" Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}, Path=DataContext.ConvertStreamToLocalTrack}">
                                             <MenuItem.Style>
@@ -250,7 +250,6 @@
                                     <KeyBinding Key="Space" Command="{Binding MusicManager.Commands.TogglePlayPause}"/>
                                     <KeyBinding Key="Q" Command="{Binding MusicManager.Commands.AddTracksToQueue}" CommandParameter="{Binding ElementName=TracksListView,Path=SelectedItems}"/>
                                     <KeyBinding Key="Q" Modifiers="Alt" Command="{Binding MusicManager.Commands.RemoveFromQueue}"/>
-                                    <KeyBinding Key="Q" Modifiers="Control" Command="{Binding OpenQueueManager}"/>
                                     <KeyBinding Key="Insert" Command="{Binding AddFilesToPlaylist}"/>
                                     <KeyBinding Key="Insert" Modifiers="Control" Command="{Binding AddFolderToPlaylist}"/>
                                     <KeyBinding Key="F4" Command="{Binding OpenTrackInformation}"/>
@@ -595,7 +594,7 @@
                 </Grid>
             </TabItem>
             <TabItem Header="{DynamicResource Settings}">
-                <userControls:SettingsView Margin="-5,0,0,0"/>
+                <userControls:SettingsView Padding="0" Margin="-5,-2,0,0"/>
             </TabItem>
             <TabItem Header="Online" Visibility="Collapsed">
                 <Grid>

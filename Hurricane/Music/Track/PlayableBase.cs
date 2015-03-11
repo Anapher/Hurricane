@@ -1,10 +1,13 @@
 ﻿using System;
+using System.ComponentModel;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 using System.Xml.Serialization;
 using CSCore;
 using Hurricane.Music.Data;
+using Hurricane.Music.MusicCover;
 using Hurricane.Settings;
 using Hurricane.ViewModelBase;
 
@@ -28,9 +31,18 @@ namespace Hurricane.Music.Track
         public string Album { get; set; }
         public uint Year { get; set; }
         public string Genres { get; set; }
+
+        [DefaultValue(0)]
         public int TrackNumber { get; set; }    // number of this track in album; useful for sorting
 
+        [DefaultValue(0.0)]
+        public double StartTime { get; set; }
+
+        [DefaultValue(0.0)]
+        public double EndTime { get; set; }
+
         private bool _isfavorite;
+        [DefaultValue(false)]
         public bool IsFavorite
         {
             get { return _isfavorite; }
@@ -143,14 +155,20 @@ namespace Hurricane.Music.Track
         public abstract Task<IWaveSource> GetSoundSource();
         public abstract bool Equals(PlayableBase other);
 
-        protected abstract Task LoadImage();
+        protected abstract Task LoadImage(DirectoryInfo albumCoverDirectory);
 
         public async void Load()
         {
             if(_disposeImageCancellationToken != null) _disposeImageCancellationToken.Cancel();
-            IsLoadingImage = true;
-            if (Image == null) await LoadImage();
-            IsLoadingImage = false;
+            if (Image == null)
+            {
+                IsLoadingImage = true;
+                var albumCoverDirectory = new DirectoryInfo(HurricaneSettings.Instance.CoverDirectory);
+                Image = MusicCoverManager.GetTrackImage(this, albumCoverDirectory);
+                if (Image == null) await LoadImage(albumCoverDirectory);
+                IsLoadingImage = false;
+            }
+
             OnImageLoadComplete();
         }
 
@@ -223,6 +241,16 @@ namespace Hurricane.Music.Track
         protected void SetDuration(TimeSpan timeSpan)
         {
             Duration = timeSpan.ToString(timeSpan.Hours == 0 ? @"mm\:ss" : @"hh\:mm\:ss");
+        }
+
+        protected IWaveSource CutWaveSource(IWaveSource source)
+        {
+            if (StartTime == 0 && EndTime == 0)
+                return source;
+
+            var startTime = TimeSpan.FromMilliseconds(StartTime);
+            var endTime = TimeSpan.FromMilliseconds(EndTime);
+            return source.AppendSource(x => new CutSource(x, startTime, endTime - startTime));
         }
 
         #endregion

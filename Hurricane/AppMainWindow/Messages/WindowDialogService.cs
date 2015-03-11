@@ -111,8 +111,8 @@ namespace Hurricane.AppMainWindow.Messages
             dialog.Owner = BaseWindow;
             dialog.WindowStartupLocation =
                 Configuration.ShowFullscreenDialogs
-                    ? WindowStartupLocation.CenterScreen
-                    : WindowStartupLocation.CenterOwner;
+                    ? WindowStartupLocation.CenterOwner
+                    : WindowStartupLocation.CenterScreen;
             dialog.ShowDialog();
         }
 

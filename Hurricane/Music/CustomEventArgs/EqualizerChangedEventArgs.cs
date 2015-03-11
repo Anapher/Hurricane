@@ -1,6 +1,8 @@
-﻿namespace Hurricane.Music.MusicDatabase.EventArgs
+﻿using System;
+
+namespace Hurricane.Music.CustomEventArgs
 {
-   public class EqualizerChangedEventArgs : System.EventArgs
+   public class EqualizerChangedEventArgs : EventArgs
     {
         public int EqualizerNumber { get; protected set; }
         public double EqualizerValue { get; set; }

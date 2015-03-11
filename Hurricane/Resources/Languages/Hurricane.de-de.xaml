@@ -318,7 +318,7 @@
     <system:String x:Key="DocumentSaved">Dokument gespeichert</system:String>
     <system:String x:Key="OK">OK</system:String>
 
-    <!-- 0.3.3 -->
+    <!-- 0.3.4 -->
     <system:String x:Key="App">App</system:String>
     <system:String x:Key="ConnectToApp">Mit App verbinden</system:String>
     <system:String x:Key="IpAddress">IP-Adresse</system:String>
@@ -326,4 +326,21 @@
     <system:String x:Key="ConnectedDevices">Verbundene Geräte</system:String>
     <system:String x:Key="Version">Version</system:String>
     <system:String x:Key="Model">Modell</system:String>
+    <system:String x:Key="KeyboardShortcuts">Tastenkombinationen</system:String>
+    <system:String x:Key="SpaceKey">Leerzeichen</system:String>
+    <system:String x:Key="PlayPauseShortcutDescription">Umschalten zwischen Play und Pause</system:String>
+    <system:String x:Key="Ctrl">Strg</system:String>
+    <system:String x:Key="EqualizerShortcutDescription">Öffnet oder schließt den Equalizer</system:String>
+    <system:String x:Key="DockUndockHurricaneDescription">Dockt Hurricane an der Seite an</system:String>
+    <system:String x:Key="JumpToDescription">Wechselt zu der Seite mit der angegebenen Positionsnummer</system:String>
+    <system:String x:Key="RemoveTrackPlaylistDescription">Entfernt den ausgewählten Track oder die ausgewählte Wiedergabeliste</system:String>
+    <system:String x:Key="AddTracksDescription">Track zu der aktuellen Wiedergabeliste hinzufügen</system:String>
+    <system:String x:Key="AddFolderDescription">Ordner zu der aktuellen Wiedergabeliste hinzufügen</system:String>
+    <system:String x:Key="AddTrackToQueueDescription">Ausgewählten Track zu der Warteschlange hinzufügen</system:String>
+    <system:String x:Key="RemoveTrackFromQueueDescription">Ausgewählten Track von der Warteschlange entfernen</system:String>
+    <system:String x:Key="OpenQueueManagerDescription">Warteschlangen Manager öffnen</system:String>
+    <system:String x:Key="OpenTrackInformationDescription">Trackinformationen anzeigen</system:String>
+    <system:String x:Key="OpenTagEditorDescription">Tag Editor öffnen</system:String>
+    <system:String x:Key="PlaySelectedTrackDescription">Ausgewählten Track abspielen</system:String>
+    <system:String x:Key="OpenTrackSourceDescription">Quelle des ausgewählten Tracks (Url oder Pfad) öffnen</system:String>
 </ResourceDictionary>

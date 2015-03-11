@@ -317,4 +317,30 @@
     <system:String x:Key="Translation">Translation</system:String>
     <system:String x:Key="DocumentSaved">Document saved</system:String>
     <system:String x:Key="OK">OK</system:String>
+
+    <!-- 0.3.4 -->
+    <system:String x:Key="App">App</system:String>
+    <system:String x:Key="ConnectToApp">Connect to app</system:String>
+    <system:String x:Key="IpAddress">IP-Address</system:String>
+    <system:String x:Key="Password">Password</system:String>
+    <system:String x:Key="ConnectedDevices">Connected devices</system:String>
+    <system:String x:Key="Version">Version</system:String>
+    <system:String x:Key="Model">Model</system:String>
+    <system:String x:Key="KeyboardShortcuts">Keyboard shortcuts</system:String>
+    <system:String x:Key="SpaceKey">Space</system:String>
+    <system:String x:Key="PlayPauseShortcutDescription">Toggle current playstate (play / pause)</system:String>
+    <system:String x:Key="Ctrl">Ctrl</system:String>
+    <system:String x:Key="EqualizerShortcutDescription">Open / close equalizer</system:String>
+    <system:String x:Key="DockUndockHurricaneDescription">Dock / undock Hurricane</system:String>
+    <system:String x:Key="JumpToDescription">Jump to the page</system:String>
+    <system:String x:Key="RemoveTrackPlaylistDescription">Remove the selected track or playlist</system:String>
+    <system:String x:Key="AddTracksDescription">Add tracks to the selected playlist</system:String>
+    <system:String x:Key="AddFolderDescription">Add folder to the selected playlist</system:String>
+    <system:String x:Key="AddTrackToQueueDescription">Add selected track to queue</system:String>
+    <system:String x:Key="RemoveTrackFromQueueDescription">Remove selected track from queue</system:String>
+    <system:String x:Key="OpenQueueManagerDescription">Open queue manager</system:String>
+    <system:String x:Key="OpenTrackInformationDescription">Open track information</system:String>
+    <system:String x:Key="OpenTagEditorDescription">Open tag editor</system:String>
+    <system:String x:Key="PlaySelectedTrackDescription">Play selected track</system:String>
+    <system:String x:Key="OpenTrackSourceDescription">Open the source (url or path) of the track</system:String>
 </ResourceDictionary>

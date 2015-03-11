@@ -1,15 +1,18 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Net;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using CSCore;
 using CSCore.Codecs;
 using Exceptionless.Json;
 using Hurricane.Music.Download;
-using Hurricane.Music.MusicDatabase;
+using Hurricane.Music.MusicCover;
 using Hurricane.Music.Track.WebApi.SoundCloudApi;
 using Hurricane.Settings;
 
@@ -61,26 +64,39 @@ namespace Hurricane.Music.Track
 
         #region Image
 
-        protected async override Task LoadImage()
+        protected async override Task LoadImage(DirectoryInfo albumCoverDirectory)
         {
-            var diAlbumCover = new DirectoryInfo(HurricaneSettings.Instance.CoverDirectory);
-            Image = MusicCoverManager.GetSoundCloudImage(this, diAlbumCover, HurricaneSettings.Instance.Config.DownloadAlbumCoverQuality, HurricaneSettings.Instance.Config.LoadAlbumCoverFromInternet);
+            if (albumCoverDirectory.Exists)
+            {
+                var regex =
+                    new Regex(HurricaneSettings.Instance.Config.LoadAlbumCoverFromInternet
+                        ? string.Format("^{0}_{1}.", SoundCloudID,
+                            SoundCloudApi.GetQualityModifier(HurricaneSettings.Instance.Config.DownloadAlbumCoverQuality))
+                        : string.Format("^{0}_", SoundCloudID));
 
-            if (Image == null)
-                Image = MusicCoverManager.GetImage(this, diAlbumCover);
+                var imageFile = albumCoverDirectory.GetFiles().FirstOrDefault(item => regex.IsMatch(item.Name.ToLower()));
+                if (imageFile != null)
+                {
+                    Image = new BitmapImage(new Uri(imageFile.FullName));
+                    return;
+                }
 
-            if (Image == null && HurricaneSettings.Instance.Config.LoadAlbumCoverFromInternet)
+                Image = MusicCoverManager.GetAlbumImage(this, albumCoverDirectory);
+                if (Image != null) return;
+            }
+
+
+            if (HurricaneSettings.Instance.Config.LoadAlbumCoverFromInternet)
             {
                 try
                 {
                     if (!string.IsNullOrEmpty(ArtworkUrl))
                     {
-                        Image = await SoundCloudApi.LoadBitmapImage(this, HurricaneSettings.Instance.Config.DownloadAlbumCoverQuality, diAlbumCover);
+                        Image = await SoundCloudApi.LoadBitmapImage(this, HurricaneSettings.Instance.Config.DownloadAlbumCoverQuality, albumCoverDirectory);
+                        if (Image != null) return;
                     }
-                    if (Image == null)
-                    {
-                        Image = await MusicCoverManager.LoadCoverFromWeb(this, diAlbumCover, Uploader != Artist).ConfigureAwait(false);
-                    }
+
+                    Image = await MusicCoverManager.LoadCoverFromWeb(this, albumCoverDirectory, Uploader != Artist);
                 }
                 catch (WebException)
                 {
@@ -94,17 +110,17 @@ namespace Hurricane.Music.Track
         public override Task<IWaveSource> GetSoundSource()
         {
             return
-                Task.Run(() => CodecFactory.Instance.GetCodec(
+                Task.Run(() => CutWaveSource(CodecFactory.Instance.GetCodec(
                     new Uri(
                         string.Format("https://api.soundcloud.com/tracks/{0}/stream?client_id={1}", SoundCloudID,
-                            SensitiveInformation.SoundCloudKey))));
+                            SensitiveInformation.SoundCloudKey)))));
         }
 
         public override bool Equals(PlayableBase other)
         {
             if (other == null) return false;
             if (GetType() != other.GetType()) return false;
-            return SoundCloudID == ((SoundCloudTrack) other).SoundCloudID;
+            return SoundCloudID == ((SoundCloudTrack)other).SoundCloudID;
         }
 
         public override void OpenTrackLocation()

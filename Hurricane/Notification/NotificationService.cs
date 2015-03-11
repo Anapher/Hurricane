@@ -2,7 +2,7 @@
 using System.Reflection;
 using System.Windows;
 using Hurricane.Music;
-using Hurricane.Music.MusicDatabase.EventArgs;
+using Hurricane.Music.CustomEventArgs;
 using Hurricane.Music.Track;
 using Hurricane.Notification.Views;
 using Hurricane.Settings;
