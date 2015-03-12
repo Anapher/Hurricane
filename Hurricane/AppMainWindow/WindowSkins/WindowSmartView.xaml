@@ -255,7 +255,7 @@
                             </EventTrigger>
                         </ComboBox.Triggers>
                     </ComboBox>
-                    <TextBlock Grid.Column="1" Text="{StaticResource Favorites}" VerticalAlignment="Center" Margin="8,0,0,0">
+                    <TextBlock Grid.Column="1" Text="{DynamicResource Favorites}" VerticalAlignment="Center" Margin="8,0,0,0">
                         <TextBlock.Style>
                             <Style TargetType="TextBlock">
                                 <Setter Property="Visibility" Value="Collapsed"/>

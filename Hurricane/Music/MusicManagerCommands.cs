@@ -1,10 +1,7 @@
-﻿using Hurricane.Music.Track;
-using Hurricane.ViewModelBase;
-using System.Collections;
+﻿using System.Collections;
 using System.Linq;
-using System.Net.Mime;
-using System.Windows;
-using Microsoft.Win32;
+using Hurricane.Music.Track;
+using Hurricane.ViewModelBase;
 
 namespace Hurricane.Music
 {
@@ -27,6 +24,8 @@ namespace Hurricane.Music
             {
                 return _jumptoplayingtrack ?? (_jumptoplayingtrack = new RelayCommand(parameter =>
                 {
+                    if (Musicmanager.FavoritePlaylist == Musicmanager.CurrentPlaylist)
+                        Musicmanager.SelectedPlaylist = null;
                     Musicmanager.SelectedPlaylist = Musicmanager.CurrentPlaylist;
                     Musicmanager.SelectedTrack = Musicmanager.CSCoreEngine.CurrentTrack;
                 }));

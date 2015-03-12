@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using Hurricane.Music.API;
 using Hurricane.Music.CustomEventArgs;
 using Hurricane.Music.Data;
 using Hurricane.Music.Download;
@@ -108,11 +107,7 @@ namespace Hurricane.Music
             }
         }
 
-        protected FavoriteList favoritePlaylist;
-        public FavoriteList FavoritePlaylist
-        {
-            get { return favoritePlaylist; }
-        }
+        public FavoriteList FavoritePlaylist { get; private set; }
 
         public bool FavoriteListIsSelected
         {
@@ -160,8 +155,8 @@ namespace Hurricane.Music
             CSCoreEngine.Volume = currentState.Volume;
             DownloadManager = settings.Config.Downloader;
 
-            favoritePlaylist = new FavoriteList();
-            favoritePlaylist.Initalize(this.Playlists);
+            FavoritePlaylist = new FavoriteList();
+            FavoritePlaylist.Initalize(this.Playlists);
 
             if (currentState.LastPlaylistIndex > -10)
             {
@@ -180,7 +175,7 @@ namespace Hurricane.Music
             {
                 lst.LoadList();
             }
-            favoritePlaylist.LoadList();
+            FavoritePlaylist.LoadList();
             if (currentState.Queue != null) { Queue = currentState.Queue; Queue.Initialize(Playlists); }
 
             if (currentState.LastTrackIndex > -1 && currentState.LastTrackIndex < SelectedPlaylist.Tracks.Count)
@@ -369,6 +364,7 @@ namespace Hurricane.Music
                 case -10:
                     return Playlists[0];
                 default:
+                    if (index < 0 || index > Playlists.Count - 1) return Playlists[0];
                     return Playlists[index];
             }
         }
