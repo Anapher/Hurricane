@@ -1,11 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Animation;
 
-namespace Hurricane.Extensions
+namespace Hurricane.Extensions.Controls
 {
     public class AnimatedListView : ListView
     {

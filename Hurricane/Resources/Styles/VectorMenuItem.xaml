@@ -1,10 +1,11 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:extensions="clr-namespace:Hurricane.Extensions">
-    <Style TargetType="extensions:VectorMenuItem" x:Key="VectorMenuItem">
+                    xmlns:extensions="clr-namespace:Hurricane.Extensions"
+                    xmlns:controls="clr-namespace:Hurricane.Extensions.Controls">
+    <Style TargetType="controls:VectorMenuItem" x:Key="VectorMenuItem">
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="extensions:VectorMenuItem">
+                <ControlTemplate TargetType="controls:VectorMenuItem">
                     <Grid Background="{TemplateBinding Background}">
                         <Viewbox Margin="2" x:Name="Image">
                             <Path Data="{TemplateBinding VectorGraphic}" Fill="{DynamicResource BlackBrush}" x:Name="plusPath"/>

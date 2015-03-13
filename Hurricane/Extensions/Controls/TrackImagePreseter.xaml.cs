@@ -1,11 +1,10 @@
-﻿using System;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using Hurricane.Music.Data;
 
-namespace Hurricane.Extensions
+namespace Hurricane.Extensions.Controls
 {
     /// <summary>
     /// Interaction logic for TrackImagePreseter.xaml

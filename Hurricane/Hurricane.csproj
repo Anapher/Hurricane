@@ -188,8 +188,8 @@
     <Compile Include="DragDrop\PlaylistListDropHandler.cs" />
     <Compile Include="DragDrop\TrackListDropHandler.cs" />
     <Compile Include="Extensions\AnimatedFrameworkElement.cs" />
-    <Compile Include="Extensions\AnimatedListView.cs" />
-    <Compile Include="Extensions\AnimatedStackPanel.cs" />
+    <Compile Include="Extensions\Controls\AnimatedListView.cs" />
+    <Compile Include="Extensions\Controls\AnimatedStackPanel.cs" />
     <Compile Include="Extensions\AudioVisualisationExtensions.cs" />
     <Compile Include="Extensions\ComboBoxItemTemplateChooser.cs" />
     <Compile Include="Extensions\ControlDoubleClick.cs" />
@@ -197,7 +197,11 @@
     <Compile Include="Extensions\Converter\InvertBooleanConverter.cs" />
     <Compile Include="Extensions\Converter\PlaylistInfoConverter.cs" />
     <Compile Include="Extensions\MahApps\TransitioningExtensions.cs" />
+    <Compile Include="Extensions\Controls\SliderWhichMakesMoves.cs" />
     <Compile Include="Extensions\TextBlockTextFormat.cs" />
+    <Compile Include="Extensions\Controls\VolumeIcon.xaml.cs">
+      <DependentUpon>VolumeIcon.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Music\Playlist\CueSharp.cs" />
     <Compile Include="Music\Playlist\ImportCueSheet.cs" />
     <Compile Include="Music\Playlist\ImportM3uPlaylist.cs" />
@@ -226,9 +230,7 @@
     </Compile>
     <Compile Include="Extensions\Converter\TimespanToMinutesSeconds.cs" />
     <Compile Include="Extensions\GridViewSort.cs" />
-    <Compile Include="Extensions\ImageFromFont.cs" />
-    <Compile Include="Extensions\SliderExtensions.cs" />
-    <Compile Include="Extensions\VectorMenuItem.cs" />
+    <Compile Include="Extensions\Controls\VectorMenuItem.cs" />
     <Compile Include="Extensions\ListViewLayoutManager\ConverterGridViewColumn.cs" />
     <Compile Include="Extensions\ListViewLayoutManager\FixedColumn.cs" />
     <Compile Include="Extensions\ListViewLayoutManager\ImageGridViewColumn.cs" />
@@ -237,7 +239,7 @@
     <Compile Include="Extensions\ListViewLayoutManager\ProportionalColumn.cs" />
     <Compile Include="Extensions\ListViewLayoutManager\RangeColumn.cs" />
     <Compile Include="Extensions\TaskbarItemInfoEx.cs" />
-    <Compile Include="Extensions\TrackImagePreseter.xaml.cs">
+    <Compile Include="Extensions\Controls\TrackImagePreseter.xaml.cs">
       <DependentUpon>TrackImagePreseter.xaml</DependentUpon>
     </Compile>
     <Compile Include="Extensions\ItemsControlExtensions.cs" />
@@ -474,7 +476,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Extensions\TrackImagePreseter.xaml">
+    <Page Include="Extensions\Controls\TrackImagePreseter.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Extensions\Controls\VolumeIcon.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -683,7 +689,6 @@
     <Compile Include="Extensions\Converter\FalseOnEmptyString.cs" />
     <Compile Include="Extensions\Converter\ToggleImageConverter.cs" />
     <Compile Include="Extensions\Converter\TrueFalseValueConverter.cs" />
-    <Compile Include="Extensions\Converter\VolumeToImage.cs" />
     <Compile Include="Utilities\ImageHelper.cs" />
     <Compile Include="MagicArrow\MagicArrow.cs" />
     <Compile Include="MagicArrow\MagicArrowWindow.xaml.cs">
@@ -810,11 +815,6 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\MediaIcons\Advanced\Volume\loud.png" />
-    <Resource Include="Resources\MediaIcons\Advanced\Volume\medium.png" />
-    <Resource Include="Resources\MediaIcons\Advanced\Volume\mute.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Resources\MediaIcons\ThumbButtons\backward.png" />
     <Resource Include="Resources\MediaIcons\ThumbButtons\forward.png" />
     <Resource Include="Resources\MediaIcons\ThumbButtons\pause.png" />
@@ -828,11 +828,6 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\GUI\updater.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\MediaIcons\Advanced\Volume\loud_light.png" />
-    <Resource Include="Resources\MediaIcons\Advanced\Volume\medium_light.png" />
-    <Resource Include="Resources\MediaIcons\Advanced\Volume\mute_light.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Languages\Icons\fi.png" />

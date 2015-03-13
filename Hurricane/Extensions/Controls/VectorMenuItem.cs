@@ -2,7 +2,7 @@
 using System.Windows.Controls;
 using System.Windows.Media;
 
-namespace Hurricane.Extensions
+namespace Hurricane.Extensions.Controls
 {
     public class VectorMenuItem : MenuItem
     {

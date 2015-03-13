@@ -96,25 +96,20 @@
         F1 M 3.000,0.000 L 7.000,0.000 L 8.000,1.000 L 2.000,1.000 L 3.000,0.000 Z M 7.000,4.000 L 7.000,6.000 L 5.000,6.000 L 5.000,8.000 L 7.000,8.000 L 7.000,10.000 L 9.000,10.000 L 9.000,8.000 L 11.000,8.000 L 11.000,6.000 L 9.000,6.000 L 9.000,4.000 L 7.000,4.000 Z M 0.000,3.000 C 0.000,2.500 0.500,2.000 1.000,2.000 L 15.000,2.000 C 15.500,2.000 16.000,2.500 16.000,3.000 L 16.000,11.000 C 16.000,11.500 15.500,12.000 15.000,12.000 L 1.000,12.000 C 0.500,12.000 0.000,11.500 0.000,11.000 L 0.000,3.000 Z
     </Geometry>
 
-    <GeometryGroup x:Key="VectorVolumeLoud" x:Shared="False" options:Freeze="True">
+    <Geometry x:Key="VectorVolumeLoud" x:Shared="False" options:Freeze="True">
         <!--https://www.iconfinder.com/icons/208032/loud_speaker_volume_icon-->
-        <Geometry>F1 M 0.000,3.659 L 0.000,12.496 L 4.789,12.496 L 11.979,15.860 L 11.979,12.496 L 11.979,3.659 L 11.979,0.295 L 4.789,3.659 L 0.000,3.659 Z</Geometry>
-        <Geometry>F1 M 14.710,3.659 C 15.169,6.892 15.169,10.175 14.710,13.408 C 15.331,13.497 15.952,13.585 16.573,13.674 C 17.057,10.264 17.057,6.803 16.573,3.394 C 15.952,3.482 15.331,3.570 14.710,3.659 Z</Geometry>
-        <Geometry>F1 M 20.932,0.000 C 20.313,0.099 19.692,0.196 19.073,0.295 C 19.889,5.451 19.889,10.704 19.073,15.860 C 19.692,15.958 20.313,16.056 20.932,16.154 C 21.780,10.804 21.780,5.351 20.932,0.000 Z</Geometry>
-    </GeometryGroup>
+        F1 M 1.859,0.000 C 1.240,0.099 0.619,0.196 0.000,0.295 C 0.816,5.451 0.816,10.704 0.000,15.860 C 0.619,15.958 1.240,16.056 1.859,16.154 C 2.707,10.804 2.707,5.351 1.859,0.000 Z
+    </Geometry>
 
-    <GeometryGroup x:Key="VectorVolumeMedium" x:Shared="False" options:Freeze="True">
+    <Geometry x:Key="VectorVolumeMedium" x:Shared="False" options:Freeze="True">
         <!--https://www.iconfinder.com/icons/208031/medium_speaker_volume_icon-->
-        <Geometry>F1 M 0.000,3.364 L 0.000,12.201 L 4.789,12.201 L 11.978,15.565 L 11.978,12.201 L 11.978,3.364 L 11.978,0.000 L 4.789,3.364 L 0.000,3.364 Z</Geometry>
-        <Geometry>F1 M 14.709,3.364 C 15.168,6.597 15.168,9.880 14.709,13.113 C 15.330,13.202 15.951,13.290 16.572,13.379 C 17.056,9.969 17.056,6.508 16.572,3.099 C 15.951,3.187 15.330,3.275 14.709,3.364 Z</Geometry>
-    </GeometryGroup>
+        F1 M 0.000,3.364 C 0.459,6.597 0.459,9.880 0.000,13.113 C 0.621,13.202 1.242,13.290 1.863,13.379 C 2.347,9.969 2.347,6.508 1.863,3.099 C 1.242,3.187 0.621,3.275 0.000,3.364 Z
+    </Geometry>
 
-    <GeometryGroup x:Key="VectorVolumeMute" x:Shared="False" options:Freeze="True">
-        <!--https://www.iconfinder.com/icons/208029/mute_off_speaker_volume_icon-->
-        <Geometry>F1 M 11.978,9.581 L 11.978,5.689 L 11.978,2.325 L 7.035,4.638 L 11.978,9.581 Z</Geometry>
-        <Geometry>F1 M 3.975,5.689 L 0.000,5.689 L 0.000,14.525 L 4.789,14.525 L 11.978,17.890 L 11.978,14.525 L 11.978,13.692 L 3.975,5.689 Z</Geometry>
-        <Geometry>F1 M 0.325,1.269 L 1.611,0.000 L 20.786,19.427 L 19.501,20.695 L 0.325,1.269 Z</Geometry>
-    </GeometryGroup>
+    <Geometry x:Key="VectorVolumeSpeaker" x:Shared="False" options:Freeze="True">
+        <!--https://www.iconfinder.com/icons/208031/medium_speaker_volume_icon-->
+        F1 M 0.000,3.364 L 0.000,12.201 L 4.789,12.201 L 11.978,15.565 L 11.978,12.201 L 11.978,3.364 L 11.978,0.000 L 4.789,3.364 L 0.000,3.364 Z
+    </Geometry>
 
     <Geometry x:Key="VectorX" x:Shared="False" options:Freeze="True">
         <!--https://www.iconfinder.com/icons/186389/remove%2Cdelete%2Cx_icon-->

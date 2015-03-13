@@ -7,6 +7,7 @@
              xmlns:ex="clr-namespace:Hurricane.Extensions"
              xmlns:mahAppsExtensions="clr-namespace:Hurricane.Extensions.MahApps"
              xmlns:track="clr-namespace:Hurricane.Music.Track"
+             xmlns:hurricaneControls="clr-namespace:Hurricane.Extensions.Controls"
              DataContext="{x:Static viewmodels:MainViewModel.Instance}" Width="300" MinWidth="300" MaxWidth="300" MinHeight="400">
     <UserControl.Resources>
         <ResourceDictionary>
@@ -161,15 +162,14 @@
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
                     <DockPanel Grid.Column="1" Margin="20,0,0,0">
-                        <DockPanel.Resources>
-                            <converter:VolumeToImage x:Key="VolumeToImage"/>
-                        </DockPanel.Resources>
-                        <Image Source="{Binding ElementName=VolumeSlider,Path=Value,Converter={StaticResource VolumeToImage}}" Width="24" Height="24">
-                            <Image.InputBindings>
-                                <MouseBinding MouseAction="LeftClick" Command="{Binding ToggleVolume}"/>
-                            </Image.InputBindings>
-                        </Image>
-                        <Slider x:Name="VolumeSlider" Maximum="1" Minimum="0" IsMoveToPointEnabled="True" Style="{StaticResource VolumeSliderStyle}" VerticalAlignment="Center" LargeChange="0.1" Value="{Binding MusicManager.CSCoreEngine.Volume}" ex:SliderExtensions.MoveToPointOnDrag="True"/>
+                        <Viewbox Margin="0,0,5,0" VerticalAlignment="Center" Width="15" Height="15">
+                            <hurricaneControls:VolumeIcon CurrentVolume="{Binding MusicManager.CSCoreEngine.Volume}">
+                                <hurricaneControls:VolumeIcon.InputBindings>
+                                    <MouseBinding MouseAction="LeftClick" Command="{Binding ToggleVolume}"/>
+                                </hurricaneControls:VolumeIcon.InputBindings>
+                            </hurricaneControls:VolumeIcon>
+                        </Viewbox>
+                        <hurricaneControls:SliderWhichMakesMoves x:Name="VolumeSlider" Maximum="1" Minimum="0" IsMoveToPointEnabled="True" Style="{StaticResource VolumeSliderStyle}" VerticalAlignment="Center" LargeChange="0.1" Value="{Binding MusicManager.CSCoreEngine.Volume}"/>
                     </DockPanel>
                     <StackPanel Orientation="Horizontal" Grid.Column="0">
                         <StackPanel.Resources>
@@ -200,7 +200,7 @@
                     </StackPanel>
                 </Grid>
                 <Grid Margin="0,8,0,5">
-                    <Slider Width="{Binding ElementName=BaseControlGrid,Path=ActualWidth}" VerticalAlignment="Bottom" HorizontalAlignment="Stretch" IsMoveToPointEnabled="True" Maximum="{Binding MusicManager.CSCoreEngine.TrackLength}" Value="{Binding MusicManager.CSCoreEngine.Position}" ex:SliderExtensions.MoveToPointOnDrag="True">
+                    <hurricaneControls:SliderWhichMakesMoves Width="{Binding ElementName=BaseControlGrid,Path=ActualWidth}" VerticalAlignment="Bottom" HorizontalAlignment="Stretch" IsMoveToPointEnabled="True" Maximum="{Binding MusicManager.CSCoreEngine.TrackLength}" Value="{Binding MusicManager.CSCoreEngine.Position}">
                         <Slider.Resources>
                             <ResourceDictionary>
                                 <ResourceDictionary.MergedDictionaries>
@@ -217,7 +217,7 @@
                                 </Style.Triggers>
                             </Style>
                         </Slider.Style>
-                    </Slider>
+                    </hurricaneControls:SliderWhichMakesMoves>
                     <controls:MetroProgressBar IsIndeterminate="{Binding MusicManager.CSCoreEngine.IsLoading}" Foreground="{StaticResource AccentColorBrush}">
                         <controls:MetroProgressBar.Style>
                             <Style TargetType="controls:MetroProgressBar">
@@ -269,7 +269,7 @@
                         </TextBlock.Style>
                     </TextBlock>
                     <Menu Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Center">
-                        <ex:VectorMenuItem Style="{StaticResource VectorMenuItem}" VectorGraphic="{StaticResource VectorPlus}" VerticalAlignment="Center" Height="25" Background="{StaticResource WhiteBrush}">
+                        <hurricaneControls:VectorMenuItem Style="{StaticResource VectorMenuItem}" VectorGraphic="{StaticResource VectorPlus}" VerticalAlignment="Center" Height="25" Background="{StaticResource WhiteBrush}">
                             <MenuItem Header="{DynamicResource NewPlaylist}" Command="{Binding AddNewPlaylist}">
                                 <MenuItem.Icon>
                                     <Viewbox Stretch="Uniform">
@@ -326,7 +326,7 @@
                                 <Separator />
                                 <MenuItem Header="{DynamicResource RemoveAllTracks}" Command="{Binding ClearSelectedPlaylist}"/>
                             </MenuItem>
-                        </ex:VectorMenuItem>
+                        </hurricaneControls:VectorMenuItem>
                     </Menu>
                 </Grid>
                 <ListView ItemsSource="{Binding MusicManager.SelectedPlaylist.ViewSource}" SelectionMode="Extended" Grid.Row="1" Drop="listview_Drop" DragEnter="listview_DragEnter" x:Name="TracksListView" SelectedItem="{Binding MusicManager.SelectedTrack}" ScrollViewer.VerticalScrollBarVisibility="Visible"

@@ -5,8 +5,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:designer="clr-namespace:Hurricane.Designer"
              xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
-             xmlns:converter1="clr-namespace:Hurricane.Extensions.Converter"
              xmlns:extensions="clr-namespace:Hurricane.Extensions"
+             xmlns:hurricaneControls="clr-namespace:Hurricane.Extensions.Controls"
              mc:Ignorable="d" 
              d:DesignHeight="434" d:DesignWidth="960" DataContext="{x:Static designer:DesignerViewModel.Instance}" SnapsToDevicePixels="True">
     <UserControl.Resources>
@@ -177,7 +177,7 @@
                             </ListView>
                             <Rectangle Width="1" Fill="Gray" Grid.Column="3" HorizontalAlignment="Left"/>
                             <StackPanel Orientation="Vertical" Margin="5" Grid.Column="3">
-                                <extensions:TrackImagePreseter Width="150" Height="150"/>
+                                <hurricaneControls:TrackImagePreseter Width="150" Height="150"/>
                                 <StackPanel Margin="10,10,0,0">
                                     <TextBlock Text="Eminem feat. Sia" Foreground="{DynamicResource NormalColorBrush}" TextWrapping="Wrap"/>
                                     <TextBlock FontSize="22" FontFamily="Segoe UI Light" Text="Beautiful Pain" TextWrapping="Wrap"/>
@@ -208,17 +208,17 @@
                             <ColumnDefinition Width="50"/>
                             <ColumnDefinition Width="500"/>
                         </Grid.ColumnDefinitions>
-                        <extensions:TrackImagePreseter Width="280" Height="280" />
+                        <hurricaneControls:TrackImagePreseter Width="280" Height="280" />
                         <Grid Grid.Column="2" Margin="0,25,0,0">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="auto"/>
                                 <RowDefinition Height="*"/>
                             </Grid.RowDefinitions>
-                            <extensions:AnimatedStackPanel AnimationInterval="300" Orientation="Vertical">
+                            <hurricaneControls:AnimatedStackPanel AnimationInterval="300" Orientation="Vertical">
                                 <TextBlock Text="Eminem feat. Sia" Foreground="{DynamicResource NormalColorBrush}" FontSize="14"/>
                                 <TextBlock FontSize="32" Margin="0,5,0,0" FontFamily="Segoe UI Light" Text="Beautiful Pain" TextWrapping="Wrap"/>
                                 <ToggleButton Foreground="#FFB4B4B4" Background="{DynamicResource NormalColorBrush}" Style="{StaticResource FavoriteToggleButton}" Height="18" Width="18" HorizontalAlignment="Left" Margin="0,10,0,10"/>
-                            </extensions:AnimatedStackPanel>
+                            </hurricaneControls:AnimatedStackPanel>
                         </Grid>
                     </Grid>
                 </TabItem>
@@ -242,7 +242,7 @@
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
                 <Grid>
-                    <Slider Maximum="180" Value="39" IsMoveToPointEnabled="True" extensions:SliderExtensions.MoveToPointOnDrag="True" Style="{StaticResource AdvancedTimelineSlider}"/>
+                    <Slider Maximum="180" Value="39" IsMoveToPointEnabled="True" Style="{StaticResource AdvancedTimelineSlider}"/>
                 </Grid>
                 <Grid Grid.Row="1">
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,5,0,10">
@@ -295,15 +295,10 @@
                         <TextBlock Text="03:40"/>
                     </StackPanel>
                     <DockPanel HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,20,0">
-                        <DockPanel.Resources>
-                            <converter1:VolumeToImage x:Key="VolumeToImage"/>
-                        </DockPanel.Resources>
-                        <Image Source="{Binding ElementName=VolumeSlider,Path=Value,Converter={StaticResource VolumeToImage}}" Width="24" Height="24">
-                            <Image.InputBindings>
-                                <MouseBinding MouseAction="LeftClick"/>
-                            </Image.InputBindings>
-                        </Image>
-                        <Slider x:Name="VolumeSlider" Value="0.5" Maximum="1" Minimum="0" IsMoveToPointEnabled="True" Style="{StaticResource AdvancedTimelineSlider}" VerticalAlignment="Center" LargeChange="0.1" extensions:SliderExtensions.MoveToPointOnDrag="True"/>
+                        <Viewbox Margin="0,0,5,0" VerticalAlignment="Center" Width="15" Height="15">
+                            <hurricaneControls:VolumeIcon CurrentVolume="0.5"/>
+                        </Viewbox>
+                        <Slider x:Name="VolumeSlider" Value="0.5" Maximum="1" Minimum="0" IsMoveToPointEnabled="True" Style="{StaticResource AdvancedTimelineSlider}" VerticalAlignment="Center" LargeChange="0.1"/>
                     </DockPanel>
                 </Grid>
             </Grid>

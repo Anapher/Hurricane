@@ -3,8 +3,8 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
         xmlns:converter="clr-namespace:Hurricane.Extensions.Converter"
-        xmlns:extensions="clr-namespace:Hurricane.Extensions"
         xmlns:track="clr-namespace:Hurricane.Music.Track"
+        xmlns:hurricaneControls="clr-namespace:Hurricane.Extensions.Controls"
         Title="{StaticResource TrackInformation}" SizeToContent="Height" GlowBrush="{StaticResource AccentColorBrush}" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" Width="800" x:Name="window" ShowInTaskbar="False" DataContext="{Binding ElementName=window}">
     <Window.Resources>
         <converter:RoundSizeConverter x:Key="RoundSizeConverter"/>
@@ -234,8 +234,8 @@
                     </ContentControl.Resources>
                 </ContentControl>
             </StackPanel>
-            <extensions:TrackImagePreseter Track="{Binding ElementName=window,Path=CurrentTrack}" Height="136" Width="136" HorizontalAlignment="Left" Grid.Column="1">
-                <extensions:TrackImagePreseter.ContextMenu>
+            <hurricaneControls:TrackImagePreseter Track="{Binding ElementName=window,Path=CurrentTrack}" Height="136" Width="136" HorizontalAlignment="Left" Grid.Column="1">
+                <hurricaneControls:TrackImagePreseter.ContextMenu>
                     <ContextMenu>
                         <MenuItem Header="{StaticResource Save}" Command="{Binding SaveImage}">
                             <MenuItem.Style>
@@ -249,8 +249,8 @@
                             </MenuItem.Style>
                         </MenuItem>
                     </ContextMenu>
-                </extensions:TrackImagePreseter.ContextMenu>
-            </extensions:TrackImagePreseter>
+                </hurricaneControls:TrackImagePreseter.ContextMenu>
+            </hurricaneControls:TrackImagePreseter>
         </Grid>
         <StackPanel Orientation="Vertical" Grid.Row="1" Margin="0,10,0,0">
             <Separator />
