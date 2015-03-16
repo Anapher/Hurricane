@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading.Tasks;
 using System.Windows.Media;
 using Hurricane.Music.Download;
 using Hurricane.Music.Track.WebApi.YouTubeApi.DataClasses;
@@ -13,21 +12,17 @@ namespace Hurricane.Music.Track.WebApi.YouTubeApi
             get { return ProviderName.YouTube; }
         }
 
-        public async override Task<PlayableBase> ToPlayable()
+        public override PlayableBase ToPlayable()
         {
             var ytresult = (Entry)Result;
             var result = new YouTubeTrack
             {
                 YouTubeId = YouTubeTrack.GetYouTubeIdFromLink(Url),
-                TimeAdded = DateTime.Now
+                TimeAdded = DateTime.Now,
+                IsChecked = false
             };
 
-            if (_soundSourceInfo == null && !(await CheckIfAvailable()))
-            {
-                throw new Exception();
-            }
-
-            result.LoadInformation(ytresult, _soundSourceInfo);
+            result.LoadInformation(ytresult);
             return result;
         }
 
@@ -54,24 +49,6 @@ namespace Hurricane.Music.Track.WebApi.YouTubeApi
         public override DownloadMethod DownloadMethod
         {
             get { return DownloadMethod.youtube_dl; }
-        }
-
-        private SoundSourceInfo _soundSourceInfo;
-        public override async Task<bool> CheckIfAvailable()
-        {
-            var result = new YouTubeTrack { YouTubeId = YouTubeTrack.GetYouTubeIdFromLink(Url) };
-            try
-            {
-                using (var x = await result.GetSoundSource())
-                {
-                    _soundSourceInfo = SoundSourceInfo.FromSoundSource(x);
-                    return true;
-                }
-            }
-            catch (Exception)
-            {
-                return false;
-            }
         }
     }
 }

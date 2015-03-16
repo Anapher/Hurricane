@@ -35,7 +35,7 @@
             <ListBoxItem Content="{DynamicResource Playback}"/>
             <ListBoxItem Content="{DynamicResource Appearance}"/>
             <ListBoxItem Content="{DynamicResource Behaviour}"/>
-            <ListBoxItem Content="{DynamicResource App}"/>
+            <ListBoxItem Content="API"/>
             <ListBoxItem Content="{DynamicResource Reset}"/>
             <ListBoxItem Content="{DynamicResource Language}"/>
         </ListBox>
@@ -339,7 +339,7 @@
                     </StackPanel>
                 </ScrollViewer>
             </TabItem>
-            <TabItem Header="App">
+            <TabItem Header="API">
                 <Grid Margin="10">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
@@ -360,7 +360,17 @@
                                 <Grid.Effect>
                                     <DropShadowEffect Color="White" BlurRadius="10" ShadowDepth="0" />
                                 </Grid.Effect>
-                                <qrCodeNet:QrCodeImgControl Height="60" Text="{Binding AppConnectionString}" QuietZoneModule="Zero" DarkColor="{StaticResource AccentColor}" LightColor="White" IsGrayImage="False" Margin="5"/>
+                                <qrCodeNet:QrCodeImgControl Height="60" Text="{Binding AppConnectionString}" QuietZoneModule="Zero" DarkColor="{StaticResource AccentColor}" LightColor="White" IsGrayImage="False" Margin="5">
+                                    <qrCodeNet:QrCodeImgControl.Style>
+                                        <Style TargetType="qrCodeNet:QrCodeImgControl">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding AppIsEnabled}" Value="false">
+                                                    <Setter Property="Opacity" Value=".4"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </qrCodeNet:QrCodeImgControl.Style>
+                                </qrCodeNet:QrCodeImgControl>
                             </Grid>
                             <StackPanel Orientation="Vertical" Grid.Column="1" x:Name="AppConnectionInformationStackPanel">
                                 <Grid Margin="0,10,0,0">

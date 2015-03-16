@@ -343,4 +343,5 @@
     <system:String x:Key="OpenTagEditorDescription">Tag Editor öffnen</system:String>
     <system:String x:Key="PlaySelectedTrackDescription">Ausgewählten Track abspielen</system:String>
     <system:String x:Key="OpenTrackSourceDescription">Quelle des ausgewählten Tracks (Url oder Pfad) öffnen</system:String>
+    <system:String x:Key="ImportTracks">Importiere Tracks</system:String>
 </ResourceDictionary>

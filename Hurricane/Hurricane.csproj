@@ -60,17 +60,16 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Libraries\CSCore.dll</HintPath>
     </Reference>
-    <Reference Include="Exceptionless, Version=1.5.2121.0, Culture=neutral, PublicKeyToken=fc181f0a46f65747, processorArchitecture=MSIL">
+    <Reference Include="Exceptionless, Version=2.0.1247.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Exceptionless.1.5.2121\lib\net45\Exceptionless.dll</HintPath>
+      <HintPath>..\packages\Exceptionless.2.0.1247\lib\portable-net40+sl50+win+wpa81+wp80\Exceptionless.dll</HintPath>
     </Reference>
-    <Reference Include="Exceptionless.Models, Version=1.5.2121.0, Culture=neutral, PublicKeyToken=fc181f0a46f65747, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Exceptionless.1.5.2121\lib\net45\Exceptionless.Models.dll</HintPath>
+    <Reference Include="Exceptionless.Extras">
+      <HintPath>..\packages\Exceptionless.Wpf.2.0.1247\lib\net45\Exceptionless.Extras.dll</HintPath>
     </Reference>
-    <Reference Include="Exceptionless.Wpf, Version=1.5.2121.0, Culture=neutral, PublicKeyToken=fc181f0a46f65747, processorArchitecture=MSIL">
+    <Reference Include="Exceptionless.Wpf, Version=2.0.1247.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Exceptionless.Wpf.1.5.2121\lib\net45\Exceptionless.Wpf.dll</HintPath>
+      <HintPath>..\packages\Exceptionless.Wpf.2.0.1247\lib\net45\Exceptionless.Wpf.dll</HintPath>
     </Reference>
     <Reference Include="Gma.QrCodeNet.Encoding, Version=0.4.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -121,8 +120,9 @@
     <Reference Include="WPFSoundVisualizationLib">
       <HintPath>..\Libraries\WPFSoundVisualizationLib.dll</HintPath>
     </Reference>
-    <Reference Include="Xceed.Wpf.Toolkit">
-      <HintPath>..\packages\Extended.Wpf.Toolkit.2.3\lib\net40\Xceed.Wpf.Toolkit.dll</HintPath>
+    <Reference Include="Xceed.Wpf.Toolkit, Version=2.4.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Extended.Wpf.Toolkit.2.4\lib\net40\Xceed.Wpf.Toolkit.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -195,6 +195,7 @@
     <Compile Include="Extensions\ControlDoubleClick.cs" />
     <Compile Include="Extensions\Converter\CollapsedOnNullValue.cs" />
     <Compile Include="Extensions\Converter\InvertBooleanConverter.cs" />
+    <Compile Include="Extensions\Converter\MillisecondsToStringConverter.cs" />
     <Compile Include="Extensions\Converter\PlaylistInfoConverter.cs" />
     <Compile Include="Extensions\MahApps\TransitioningExtensions.cs" />
     <Compile Include="Extensions\Controls\SliderWhichMakesMoves.cs" />
@@ -524,6 +525,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Resources\Styles\TrackListViewUtils.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Resources\Styles\VectorMenuItem.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -795,7 +800,9 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.5">

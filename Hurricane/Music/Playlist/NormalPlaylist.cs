@@ -33,7 +33,7 @@ namespace Hurricane.Music.Playlist
                 AddTrack(track);
             }
 
-            AsyncTrackLoader.Instance.RunAsync(new List<NormalPlaylist> { this });
+            AsyncTrackLoader.Instance.RunAsync(this);
         }
 
         public async Task AddFiles(EventHandler<TrackImportProgressChangedEventArgs> progresschanged, IEnumerable<string> paths)
@@ -53,7 +53,7 @@ namespace Hurricane.Music.Playlist
                 }
                 ++index;
             }
-            AsyncTrackLoader.Instance.RunAsync(new List<NormalPlaylist> {this});
+            AsyncTrackLoader.Instance.RunAsync(this);
         }
 
         public async Task AddFiles(params string[] paths)

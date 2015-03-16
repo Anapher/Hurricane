@@ -41,6 +41,17 @@ namespace Hurricane.Music.Track
         [DefaultValue(0.0)]
         public double EndTime { get; set; }
 
+        private bool _isChecked;
+        [DefaultValue(true)]
+        public bool IsChecked
+        {
+            get { return _isChecked; }
+            set
+            {
+                SetProperty(value, ref _isChecked);
+            }
+        }
+
         private bool _isfavorite;
         [DefaultValue(false)]
         public bool IsFavorite
@@ -146,7 +157,7 @@ namespace Hurricane.Music.Track
 
         #endregion
 
-        #region Abstract Properties
+        #region Abstract members
 
         public abstract bool TrackExists { get; }
         public abstract Task<bool> LoadInformation();
@@ -154,12 +165,15 @@ namespace Hurricane.Music.Track
         public abstract TrackType TrackType { get; }
         public abstract Task<IWaveSource> GetSoundSource();
         public abstract bool Equals(PlayableBase other);
-
         protected abstract Task LoadImage(DirectoryInfo albumCoverDirectory);
+
+        #endregion
+
+        #region Image
 
         public async void Load()
         {
-            if(_disposeImageCancellationToken != null) _disposeImageCancellationToken.Cancel();
+            if (_disposeImageCancellationToken != null) _disposeImageCancellationToken.Cancel();
             if (Image == null)
             {
                 IsLoadingImage = true;
@@ -255,9 +269,34 @@ namespace Hurricane.Music.Track
 
         #endregion
 
+        #region Public Methods
+
+        public async Task<bool> CheckTrack()
+        {
+            if (!TrackExists) return false;
+            try
+            {
+                using (var soundSource = await GetSoundSource())
+                {
+                    SetDuration(soundSource.GetLength());
+                    kHz = soundSource.WaveFormat.SampleRate/1000;
+                }
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+
+            IsChecked = true;
+            return true;
+        }
+
+        #endregion
+
         protected PlayableBase()
         {
             AuthenticationCode = DateTime.Now.Ticks;
+            IsChecked = true;
         }
 
         TimeSpan IMusicInformation.Duration

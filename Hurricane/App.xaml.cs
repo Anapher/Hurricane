@@ -6,8 +6,6 @@ using System.Text;
 using System.Threading;
 using System.Windows;
 using System.Windows.Threading;
-using Exceptionless;
-using Exceptionless.Extensions;
 using Hurricane.Notification.WindowMessages;
 using Hurricane.Settings;
 using Hurricane.Settings.RegistryManager;
@@ -70,20 +68,20 @@ namespace Hurricane
                         var screens = WpfScreen.AllScreens().ToList();
                         message.AppendLine("Hurricane - Detected Screens");
                         message.AppendLine("-----------------------------------------------------------------------------------");
-                        message.AppendFormatLine("Found screens: {0}", screens.Count.ToString());
+                        message.AppendFormat("Found screens: {0}", screens.Count);
                         message.AppendLine();
                         foreach (var wpfScreen in screens)
                         {
-                            message.AppendFormatLine("Screen #{0} ({1})", screens.IndexOf(wpfScreen).ToString(), wpfScreen.DeviceName);
-                            message.AppendFormatLine("Size: Width {0}, Height {1}", wpfScreen.WorkingArea.Width.ToString(), wpfScreen.WorkingArea.Height.ToString());
-                            message.AppendFormatLine("Position: X {0}, Y {1}", wpfScreen.WorkingArea.X.ToString(), wpfScreen.WorkingArea.Y.ToString());
-                            message.AppendFormatLine("IsPrimary: {0}", wpfScreen.IsPrimary.ToString());
+                            message.AppendFormat("Screen #{0} ({1})", screens.IndexOf(wpfScreen), wpfScreen.DeviceName);
+                            message.AppendFormat("Size: Width {0}, Height {1}", wpfScreen.WorkingArea.Width, wpfScreen.WorkingArea.Height);
+                            message.AppendFormat("Position: X {0}, Y {1}", wpfScreen.WorkingArea.X, wpfScreen.WorkingArea.Y);
+                            message.AppendFormat("IsPrimary: {0}", wpfScreen.IsPrimary);
                             message.AppendLine();
                         }
                         message.AppendLine("-----------------------------------------------------------------------------------");
                         message.AppendLine();
-                        message.AppendFormatLine("Most left x: {0}", WpfScreen.MostLeftX.ToString());
-                        message.AppendFormatLine("Most right x: {0}", WpfScreen.MostRightX.ToString());
+                        message.AppendFormat("Most left x: {0}", WpfScreen.MostLeftX);
+                        message.AppendFormat("Most right x: {0}", WpfScreen.MostRightX);
                         MessageBox.Show(message.ToString());
                         Current.Shutdown();
                         return;
@@ -194,7 +192,6 @@ namespace Hurricane
         {
             base.OnExit(e);
             if (_myMutex != null) _myMutex.Dispose();
-            ExceptionlessClient.Current.Dispose();
         }
     }
 }

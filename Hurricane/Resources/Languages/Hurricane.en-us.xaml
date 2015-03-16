@@ -343,4 +343,5 @@
     <system:String x:Key="OpenTagEditorDescription">Open tag editor</system:String>
     <system:String x:Key="PlaySelectedTrackDescription">Play selected track</system:String>
     <system:String x:Key="OpenTrackSourceDescription">Open the source (url or path) of the track</system:String>
+    <system:String x:Key="ImportTracks">Import Tracks</system:String>
 </ResourceDictionary>

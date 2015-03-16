@@ -42,9 +42,8 @@ namespace Hurricane.Music.Track.WebApi
         }
 
         public object Result { get; set; }
-        public abstract Task<PlayableBase> ToPlayable();
+        public abstract PlayableBase ToPlayable();
         public abstract GeometryGroup ProviderVector { get; }
-        public abstract Task<bool> CheckIfAvailable();
 
         public IRepresentable Representer { get { return this; } }
 

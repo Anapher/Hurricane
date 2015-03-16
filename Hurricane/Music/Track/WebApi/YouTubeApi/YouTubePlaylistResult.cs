@@ -60,8 +60,7 @@ namespace Hurricane.Music.Track.WebApi.YouTubeApi
                         var track = tracks[j];
                         if (LoadingTracksProcessChanged != null)
                             LoadingTracksProcessChanged(this, new LoadingTracksEventArgs(counter + j, alltracks, track.Title));
-                        if (await track.CheckIfAvailable())
-                            resultList.Add(await track.ToPlayable());
+                        resultList.Add(track.ToPlayable());
                         if (controller.IsCanceled) return null;
                     }
                     counter += 50;

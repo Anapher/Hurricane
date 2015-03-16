@@ -1,7 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Windows;
-using MahApps.Metro.Controls;
 using WPFFolderBrowser;
 
 namespace Hurricane.Views
@@ -9,10 +8,11 @@ namespace Hurricane.Views
     /// <summary>
     /// Interaction logic for FolderImportWindow.xaml
     /// </summary>
-    public partial class FolderImportWindow : MetroWindow, INotifyPropertyChanged
+    public partial class FolderImportWindow : INotifyPropertyChanged
     {
         public FolderImportWindow()
         {
+            IncludeSubfolder = true;
             InitializeComponent();
         }
 

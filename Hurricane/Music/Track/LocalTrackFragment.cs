@@ -70,14 +70,6 @@ namespace Hurricane.Music.Track
             });
         }
 
-        public override async Task<bool> CheckTrack()
-        {
-            if (!TrackExists)
-                return false;
-            IsChecked = true;
-            return true;
-        }
-
         public override string UniqueId
         {
             get { return string.Format("{0}-{1}", Path, TrackNumber); }

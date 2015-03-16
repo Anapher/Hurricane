@@ -31,11 +31,11 @@ namespace Hurricane.Views
         private async void ButtonSendErrorReport_Click(object sender, RoutedEventArgs e)
         {
             var ex = Error.ToExceptionless();
-            ex.SetUserDescription(txtNote.Text);
+            ex.SetUserDescription(null, txtNote.Text);
             ex.Submit();
             ((Button)sender).IsEnabled = false;
             prg.IsIndeterminate = true;
-            await Task.Run(() => ExceptionlessClient.Current.ProcessQueue());
+            await Task.Run(() => ExceptionlessClient.Default.ProcessQueue());
             prg.IsIndeterminate = false;
             Application.Current.Shutdown();
         }

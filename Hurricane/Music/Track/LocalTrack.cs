@@ -5,7 +5,6 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using System.Xml;
-using System.Xml.Serialization;
 using CSCore;
 using CSCore.Codecs;
 using CSCore.Codecs.MP3;
@@ -20,45 +19,6 @@ namespace Hurricane.Music.Track
     {
         public string Path { get; set; }
         public string Extension { get; set; }
-
-        [XmlElement("IsChecked")]
-        public string Checked { get; set; }
-
-        [XmlIgnore]
-        public bool IsChecked
-        {
-            get { return Checked == "1"; }
-            set { Checked = value ? "1" : "0"; }
-        }
-
-        public bool ShouldSerializeChecked()
-        {
-            return !IsChecked;
-        }
-
-        public virtual async Task<bool> CheckTrack()
-        {
-            TimeSpan duration = TimeSpan.Zero;
-            if (!TrackExists) return false;
-            try
-            {
-                await Task.Run(() =>
-                {
-                    using (var soundSource = CodecFactory.Instance.GetCodec(Path))
-                    {
-                        duration = soundSource.GetLength();
-                    }
-                });
-                SetDuration(duration);
-            }
-            catch (Exception)
-            {
-                return false;
-            }
-
-            IsChecked = true;
-            return true;
-        }
 
         private FileInfo _trackinformation;
         public FileInfo TrackInformation

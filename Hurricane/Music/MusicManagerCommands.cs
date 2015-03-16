@@ -74,6 +74,8 @@ namespace Hurricane.Music
                 {
                     var selectedtrack = Musicmanager.SelectedTrack;
                     if (selectedtrack == null) return;
+                    if (!selectedtrack.IsChecked) return;
+
                     if (selectedtrack == Musicmanager.CSCoreEngine.CurrentTrack)
                         Musicmanager.CSCoreEngine.Position = 0;
                     selectedtrack.RefreshTrackExists();

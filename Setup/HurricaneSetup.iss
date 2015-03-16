@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "Hurricane"
-#define MyAppVersion "0.3.4"
+#define MyAppVersion "0.3.5"
 #define MyAppPublisher "Alkaline"
 #define MyAppURL "hurricaneproject.org"
 #define MyAppExeName "Hurricane.exe"
@@ -43,7 +43,7 @@ Source: "dependencies\dotNetFx45_Full_setup.exe"; DestDir: {tmp}; Flags: deletea
 Source: "..\Hurricane\bin\Release\Hurricane.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\Hurricane\bin\Release\CSCore.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\Hurricane\bin\Release\Exceptionless.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\Hurricane\bin\Release\Exceptionless.Models.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\Hurricane\bin\Release\Exceptionless.Extras.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\Hurricane\bin\Release\Exceptionless.Wpf.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\Hurricane\bin\Release\MahApps.Metro.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\Hurricane\bin\Release\Newtonsoft.Json.dll"; DestDir: "{app}"; Flags: ignoreversion
@@ -59,6 +59,7 @@ Source: "..\Hurricane\bin\Release\GongSolutions.Wpf.DragDrop.dll"; DestDir: "{ap
 Source: "..\Hurricane\bin\Release\Hardcodet.Wpf.TaskbarNotification.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\Hurricane\bin\Release\AudioVisualisation.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\Hurricane\bin\Release\ICSharpCode.SharpZipLib.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\Hurricane\bin\Release\Gma.QrCodeNet.Encoding.dll"; DestDir: "{app}"; Flags: ignoreversion
 
 Source: "special_files\.IsInstalled"; DestDir: "{app}"; Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files

@@ -31,19 +31,11 @@ namespace Hurricane.Music.Track
             using (var web = new WebClient { Proxy = null })
             {
                 var result = JsonConvert.DeserializeObject<ApiResult>(await web.DownloadStringTaskAsync(string.Format("https://api.soundcloud.com/tracks/{0}.json?client_id={1}", SoundCloudID, SensitiveInformation.SoundCloudKey)));
-                return await LoadInformation(result);
+                return LoadInformation(result);
             }
         }
 
-        public async Task<bool> LoadInformation(ApiResult result)
-        {
-            using (var soundSource = await GetSoundSource())
-            {
-                return LoadInformation(result, SoundSourceInfo.FromSoundSource(soundSource));
-            }
-        }
-
-        public bool LoadInformation(ApiResult result, SoundSourceInfo soundSourceInfo)
+        public bool LoadInformation(ApiResult result)
         {
             if (!result.IsStreamable) return false;
             Year = result.release_year != null
@@ -56,9 +48,7 @@ namespace Hurricane.Music.Track
             SoundCloudID = result.id;
             Uploader = result.user.username;
             Downloadable = result.downloadable;
-
-            kHz = soundSourceInfo.kHz;
-            SetDuration(soundSourceInfo.Duration);
+            SetDuration(TimeSpan.FromSeconds(result.duration));
             return true;
         }
 

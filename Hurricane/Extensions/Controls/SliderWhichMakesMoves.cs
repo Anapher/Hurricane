@@ -24,7 +24,6 @@ namespace Hurricane.Extensions.Controls
             {
                 _thumb.MouseEnter += thumb_MouseEnter;
             }
-
         }
 
         private void thumb_MouseEnter(object sender, MouseEventArgs e)

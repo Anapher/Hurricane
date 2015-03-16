@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading.Tasks;
 using System.Windows.Media;
 using Hurricane.Music.Download;
 
@@ -12,21 +11,17 @@ namespace Hurricane.Music.Track.WebApi.SoundCloudApi
             get { return ProviderName.SoundCloud; }
         }
 
-        public async override Task<PlayableBase> ToPlayable()
+        public override PlayableBase ToPlayable()
         {
             var result = (ApiResult) Result;
             var newtrack = new SoundCloudTrack
             {
                 Url = Url,
-                TimeAdded = DateTime.Now
+                TimeAdded = DateTime.Now,
+                IsChecked = false
             };
 
-            if (_soundSourceInfo == null && !(await CheckIfAvailable()))
-            {
-                throw new Exception();
-            }
-
-            newtrack.LoadInformation(result, _soundSourceInfo);
+            newtrack.LoadInformation(result);
             return newtrack;
         }
 
@@ -53,25 +48,6 @@ namespace Hurricane.Music.Track.WebApi.SoundCloudApi
         public override DownloadMethod DownloadMethod
         {
             get { return DownloadMethod.SoundCloud; }
-        }
-
-        private SoundSourceInfo _soundSourceInfo;
-        public async override Task<bool> CheckIfAvailable()
-        {
-            var newtrack = new SoundCloudTrack { SoundCloudID = ((ApiResult)Result).id };
-            
-            try
-            {
-                using (var x = await newtrack.GetSoundSource())
-                {
-                    _soundSourceInfo = SoundSourceInfo.FromSoundSource(x);
-                    return true;
-                }
-            }
-            catch (Exception)
-            {
-                return false;
-            }
         }
     }
 }

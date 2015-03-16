@@ -58,23 +58,14 @@ namespace Hurricane.Music.Track
             return true;
         }
 
-        public bool LoadInformation(Entry ytResult, SoundSourceInfo soundSourceInfo)
+        public bool LoadInformation(Entry ytResult)
         {
             Year = (uint)DateTime.Parse(ytResult.published.Date).Year;
             Title = ytResult.title.Name;
             Artist = ytResult.author.First().name.Text;
             Uploader = ytResult.author.First().name.Text;
-            kHz = soundSourceInfo.kHz;
-            SetDuration(soundSourceInfo.Duration);
+            SetDuration(TimeSpan.FromSeconds(int.Parse(ytResult.MediaGroup.Duration.seconds)));
             return true;
-        }
-
-        public async Task<bool> LoadInformation(Entry ytResult)
-        {
-            using (var soundSource = await GetSoundSource())
-            {
-                return LoadInformation(ytResult, SoundSourceInfo.FromSoundSource(soundSource));
-            }
         }
 
         public override void OpenTrackLocation()

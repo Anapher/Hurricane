@@ -189,7 +189,7 @@ namespace Hurricane.Music
                 }
             }
 
-            AsyncTrackLoader.Instance.RunAsync(Playlists.ToList());
+            AsyncTrackLoader.Instance.RunAsync(Playlists.Cast<IPlaylist>().ToList());
         }
         #endregion
 

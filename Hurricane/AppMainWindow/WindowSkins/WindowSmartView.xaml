@@ -345,103 +345,76 @@
                         <KeyBinding Key="F3" Command="{Binding OpenTagEditor}"/>
                     </ListView.InputBindings>
                     <ListView.Resources>
-                        <converter:TrueFalseValueConverter x:Key="BoldIfPlayingConverter" FalseValue="Normal" TrueValue="Bold"/>
-                        <ContextMenu x:Key="FileContextMenu" DataContext="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}, Path=DataContext}">
-                            <MenuItem Header="{DynamicResource Play}" Command="{Binding MusicManager.Commands.PlaySelectedTrack}" IsEnabled="{Binding MusicManager.SelectedTrack.TrackExists}" InputGestureText="Enter"/>
-                            <Separator />
-                            <MenuItem Header="{DynamicResource AddTracks}" IsEnabled="{Binding MusicManager.SelectedPlaylist.CanEdit}">
-                                <MenuItem Header="{DynamicResource AddFiles}" Command="{Binding AddFilesToPlaylist}" InputGestureText="{DynamicResource Ins}">
-                                    <MenuItem.Icon>
-                                        <Viewbox Stretch="Uniform" Height="16" Width="16">
-                                            <Path Fill="{StaticResource BlackBrush}" Data="{StaticResource VectorAddFile}"/>
-                                        </Viewbox>
-                                    </MenuItem.Icon>
-                                </MenuItem>
-                                <MenuItem Header="{DynamicResource AddDirectories}" Command="{Binding AddFolderToPlaylist}" InputGestureText="{DynamicResource CtrlIns}">
-                                    <MenuItem.Icon>
-                                        <Viewbox Stretch="Uniform" Height="16" Width="16">
-                                            <Path Fill="{StaticResource BlackBrush}" Data="{StaticResource VectorAddFolder}"/>
-                                        </Viewbox>
-                                    </MenuItem.Icon>
-                                </MenuItem>
-                            </MenuItem>
-                            <Separator />
-                            <MenuItem Header="{DynamicResource Queue}" IsEnabled="{Binding MusicManager.SelectedTrack.TrackExists}">
-                                <MenuItem Header="{DynamicResource AddToQueue}" Command="{Binding MusicManager.Commands.AddTracksToQueue}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=ListView},Path=SelectedItems}" InputGestureText="Q"/>
-                                <MenuItem Header="{DynamicResource RemoveFromQueue}" Command="{Binding MusicManager.Commands.RemoveFromQueue}" InputGestureText="Alt+Q"/>
-                                <MenuItem Header="{DynamicResource ClearQueue}" Command="{Binding MusicManager.Commands.ClearQueue}" IsEnabled="{Binding MusicManager.Queue.HasTracks}"/>
+                        <ResourceDictionary>
+                            <ResourceDictionary.MergedDictionaries>
+                                <ResourceDictionary Source="/Resources/Styles/TrackListViewUtils.xaml"></ResourceDictionary>
+                            </ResourceDictionary.MergedDictionaries>
+                            <converter:TrueFalseValueConverter x:Key="BoldIfPlayingConverter" FalseValue="Normal" TrueValue="Bold"/>
+                            <ContextMenu x:Key="FileContextMenu" DataContext="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}, Path=DataContext}">
+                                <MenuItem Header="{DynamicResource Play}" Command="{Binding MusicManager.Commands.PlaySelectedTrack}" IsEnabled="{Binding MusicManager.SelectedTrack.TrackExists}" InputGestureText="Enter"/>
                                 <Separator />
-                                <MenuItem Header="{DynamicResource QueueManager}" Command="{Binding OpenQueueManager}" InputGestureText="{DynamicResource CtrlQ}"/>
-                            </MenuItem>
-                            <Separator />
-                            <MenuItem Header="{DynamicResource TrackInformation}" Command="{Binding OpenTrackInformation}" IsEnabled="{Binding MusicManager.SelectedTrack.TrackExists}" InputGestureText="F4"/>
-                            <MenuItem Header="{DynamicResource TagEditor}" Command="{Binding OpenTagEditor}" IsEnabled="{Binding MusicManager.SelectedTrack.TrackExists}" InputGestureText="F3"/>
-                            <MenuItem Header="{DynamicResource FileLocation}" Command="{Binding MusicManager.Commands.OpenTrackLocation}" InputGestureText="Alt+O" IsEnabled="{Binding MusicManager.SelectedTrack.TrackExists}"/>
-                            <Separator />
-                            <MenuItem Header="{DynamicResource Remove}" Command="{Binding RemoveSelectedTracks}" CommandParameter="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}, Path=SelectedItems}" InputGestureText="{DynamicResource Del}"/>
-                        </ContextMenu>
-                        <ContextMenu x:Key="StreamContextMenu">
-                            <MenuItem Header="{DynamicResource Play}" Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}, Path=DataContext.MusicManager.Commands.PlaySelectedTrack}" InputGestureText="Enter"/>
-                            <Separator />
-                            <MenuItem Header="{DynamicResource AddTracks}" IsEnabled="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}, Path=DataContext.MusicManager.SelectedPlaylist.CanEdit}">
-                                <MenuItem Header="{DynamicResource AddFiles}" Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}, Path=DataContext.AddFilesToPlaylist}" InputGestureText="{DynamicResource Ins}"/>
-                                <MenuItem Header="{DynamicResource AddDirectories}" Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}, Path=DataContext.AddFolderToPlaylist}" InputGestureText="{DynamicResource CtrlIns}"/>
-                            </MenuItem>
-                            <Separator />
-                            <MenuItem Header="{DynamicResource Queue}">
-                                <MenuItem Header="{DynamicResource AddToQueue}" Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}, Path=DataContext.MusicManager.Commands.AddTracksToQueue}" CommandParameter="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}},Path=SelectedItems}" InputGestureText="Q"/>
-                                <MenuItem Header="{DynamicResource RemoveFromQueue}" Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}, Path=DataContext.MusicManager.Commands.RemoveFromQueue}" InputGestureText="Alt+Q"/>
-                                <MenuItem Header="{DynamicResource ClearQueue}" Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}, Path=DataContext.MusicManager.Commands.ClearQueue}" IsEnabled="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}, Path=DataContext.MusicManager.Queue.HasTracks}"/>
+                                <MenuItem Header="{DynamicResource AddTracks}" IsEnabled="{Binding MusicManager.SelectedPlaylist.CanEdit}">
+                                    <MenuItem Header="{DynamicResource AddFiles}" Command="{Binding AddFilesToPlaylist}" InputGestureText="{DynamicResource Ins}">
+                                        <MenuItem.Icon>
+                                            <Viewbox Stretch="Uniform" Height="16" Width="16">
+                                                <Path Fill="{StaticResource BlackBrush}" Data="{StaticResource VectorAddFile}"/>
+                                            </Viewbox>
+                                        </MenuItem.Icon>
+                                    </MenuItem>
+                                    <MenuItem Header="{DynamicResource AddDirectories}" Command="{Binding AddFolderToPlaylist}" InputGestureText="{DynamicResource CtrlIns}">
+                                        <MenuItem.Icon>
+                                            <Viewbox Stretch="Uniform" Height="16" Width="16">
+                                                <Path Fill="{StaticResource BlackBrush}" Data="{StaticResource VectorAddFolder}"/>
+                                            </Viewbox>
+                                        </MenuItem.Icon>
+                                    </MenuItem>
+                                </MenuItem>
                                 <Separator />
-                                <MenuItem Header="{DynamicResource QueueManager}" Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}, Path=DataContext.OpenQueueManager}" InputGestureText="{DynamicResource CtrlQ}"/>
-                            </MenuItem>
-                            <Separator />
-                            <MenuItem Header="{DynamicResource TrackInformation}" Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}, Path=DataContext.OpenTrackInformation}" InputGestureText="F4"/>
-                            <MenuItem Header="{DynamicResource OpenUrl}" Command="{Binding OpenLinkCommand}" InputGestureText="Alt+O"/>
-                            <Separator />
-                            <MenuItem Header="{DynamicResource Remove}" Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}, Path=DataContext.RemoveSelectedTracks}" CommandParameter="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}, Path=SelectedItems}" InputGestureText="{DynamicResource Del}"/>
-                        </ContextMenu>
+                                <MenuItem Header="{DynamicResource Queue}" IsEnabled="{Binding MusicManager.SelectedTrack.TrackExists}">
+                                    <MenuItem Header="{DynamicResource AddToQueue}" Command="{Binding MusicManager.Commands.AddTracksToQueue}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=ListView},Path=SelectedItems}" InputGestureText="Q"/>
+                                    <MenuItem Header="{DynamicResource RemoveFromQueue}" Command="{Binding MusicManager.Commands.RemoveFromQueue}" InputGestureText="Alt+Q"/>
+                                    <MenuItem Header="{DynamicResource ClearQueue}" Command="{Binding MusicManager.Commands.ClearQueue}" IsEnabled="{Binding MusicManager.Queue.HasTracks}"/>
+                                    <Separator />
+                                    <MenuItem Header="{DynamicResource QueueManager}" Command="{Binding OpenQueueManager}" InputGestureText="{DynamicResource CtrlQ}"/>
+                                </MenuItem>
+                                <Separator />
+                                <MenuItem Header="{DynamicResource TrackInformation}" Command="{Binding OpenTrackInformation}" IsEnabled="{Binding MusicManager.SelectedTrack.TrackExists}" InputGestureText="F4"/>
+                                <MenuItem Header="{DynamicResource TagEditor}" Command="{Binding OpenTagEditor}" IsEnabled="{Binding MusicManager.SelectedTrack.TrackExists}" InputGestureText="F3"/>
+                                <MenuItem Header="{DynamicResource FileLocation}" Command="{Binding MusicManager.Commands.OpenTrackLocation}" InputGestureText="Alt+O" IsEnabled="{Binding MusicManager.SelectedTrack.TrackExists}"/>
+                                <Separator />
+                                <MenuItem Header="{DynamicResource Remove}" Command="{Binding RemoveSelectedTracks}" CommandParameter="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}, Path=SelectedItems}" InputGestureText="{DynamicResource Del}"/>
+                            </ContextMenu>
+                            <ContextMenu x:Key="StreamContextMenu">
+                                <MenuItem Header="{DynamicResource Play}" Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}, Path=DataContext.MusicManager.Commands.PlaySelectedTrack}" InputGestureText="Enter"/>
+                                <Separator />
+                                <MenuItem Header="{DynamicResource AddTracks}" IsEnabled="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}, Path=DataContext.MusicManager.SelectedPlaylist.CanEdit}">
+                                    <MenuItem Header="{DynamicResource AddFiles}" Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}, Path=DataContext.AddFilesToPlaylist}" InputGestureText="{DynamicResource Ins}"/>
+                                    <MenuItem Header="{DynamicResource AddDirectories}" Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}, Path=DataContext.AddFolderToPlaylist}" InputGestureText="{DynamicResource CtrlIns}"/>
+                                </MenuItem>
+                                <Separator />
+                                <MenuItem Header="{DynamicResource Queue}">
+                                    <MenuItem Header="{DynamicResource AddToQueue}" Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}, Path=DataContext.MusicManager.Commands.AddTracksToQueue}" CommandParameter="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}},Path=SelectedItems}" InputGestureText="Q"/>
+                                    <MenuItem Header="{DynamicResource RemoveFromQueue}" Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}, Path=DataContext.MusicManager.Commands.RemoveFromQueue}" InputGestureText="Alt+Q"/>
+                                    <MenuItem Header="{DynamicResource ClearQueue}" Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}, Path=DataContext.MusicManager.Commands.ClearQueue}" IsEnabled="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}, Path=DataContext.MusicManager.Queue.HasTracks}"/>
+                                    <Separator />
+                                    <MenuItem Header="{DynamicResource QueueManager}" Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}, Path=DataContext.OpenQueueManager}" InputGestureText="{DynamicResource CtrlQ}"/>
+                                </MenuItem>
+                                <Separator />
+                                <MenuItem Header="{DynamicResource TrackInformation}" Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}, Path=DataContext.OpenTrackInformation}" InputGestureText="F4"/>
+                                <MenuItem Header="{DynamicResource OpenUrl}" Command="{Binding OpenLinkCommand}" InputGestureText="Alt+O"/>
+                                <Separator />
+                                <MenuItem Header="{DynamicResource Remove}" Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}, Path=DataContext.RemoveSelectedTracks}" CommandParameter="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}, Path=SelectedItems}" InputGestureText="{DynamicResource Del}"/>
+                            </ContextMenu>
+                        </ResourceDictionary>
                     </ListView.Resources>
                     <ListView.ItemContainerStyle>
-                        <Style TargetType="ListViewItem" BasedOn="{StaticResource MetroListViewItem}">
-                            <Setter Property="Padding" Value="0,4" />
-                            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-                            <Setter Property="Border.BorderThickness" Value="0,0,0,0.5" />
-                            <Setter Property="Border.BorderBrush" Value="LightGray" />
-                            <Setter Property="LayoutTransform">
-                                <Setter.Value>
-                                    <ScaleTransform x:Name="transform" />
-                                </Setter.Value>
-                            </Setter>
+                        <Style TargetType="ListViewItem" BasedOn="{StaticResource ItemContainerStyle}">
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding TrackType}" Value="File">
                                     <Setter Property="ContextMenu" Value="{StaticResource FileContextMenu}"/>
                                 </DataTrigger>
                                 <DataTrigger Binding="{Binding TrackType}" Value="Stream">
                                     <Setter Property="ContextMenu" Value="{StaticResource StreamContextMenu}"/>
-                                </DataTrigger>
-                                <DataTrigger Binding="{Binding TrackExists}" Value="False">
-                                    <Setter Property="Background" Value="{StaticResource GrayBrush8}"/>
-                                </DataTrigger>
-                                <DataTrigger Binding="{Binding IsRemoving}" Value="True">
-                                    <DataTrigger.EnterActions>
-                                        <BeginStoryboard>
-                                            <Storyboard>
-                                                <ThicknessAnimation To="-40,0,40,0" Duration="0:0:0.5" Storyboard.TargetProperty="Margin"/>
-                                                <DoubleAnimation To="0" Duration="0:0:0.5" Storyboard.TargetProperty="Opacity"/>
-                                            </Storyboard>
-                                        </BeginStoryboard>
-                                    </DataTrigger.EnterActions>
-                                </DataTrigger>
-                                <DataTrigger Binding="{Binding IsAdded}" Value="True">
-                                    <DataTrigger.EnterActions>
-                                        <BeginStoryboard>
-                                            <Storyboard>
-                                                <ThicknessAnimation From="-40,0,40,0" To="0" Duration="0:0:0.5" Storyboard.TargetProperty="Margin" FillBehavior="Stop"/>
-                                                <DoubleAnimation From="0" To="1" Duration="0:0:0.5" Storyboard.TargetProperty="Opacity" FillBehavior="Stop"/>
-                                            </Storyboard>
-                                        </BeginStoryboard>
-                                    </DataTrigger.EnterActions>
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>

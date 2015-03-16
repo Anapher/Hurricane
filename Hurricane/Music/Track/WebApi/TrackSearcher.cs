@@ -143,13 +143,7 @@ namespace Hurricane.Music.Track.WebApi
                 {
                     if (SelectedTrack == null) return;
                     IsLoading = true;
-                    if (!(await SelectedTrack.CheckIfAvailable()))
-                    {
-                        await _baseWindow.WindowDialogService.ShowMessage(Application.Current.Resources["ExceptionOpenOnlineTrack"].ToString(), Application.Current.Resources["Exception"].ToString(), false, DialogMode.Single);
-                        IsLoading = false;
-                        return;
-                    }
-                    await _manager.CSCoreEngine.OpenTrack(await SelectedTrack.ToPlayable());
+                    await _manager.CSCoreEngine.OpenTrack(SelectedTrack.ToPlayable());
                     IsLoading = false;
                     _manager.CSCoreEngine.TogglePlayPause();
                 }));
@@ -167,12 +161,13 @@ namespace Hurricane.Music.Track.WebApi
                     var playlist = parameter as IPlaylist;
                     
                     IsLoading = true;
+                    /*
                     if (!(await SelectedTrack.CheckIfAvailable()))
                     {
                         await _baseWindow.WindowDialogService.ShowMessage(Application.Current.Resources["ExceptionAddOnlineTrack"].ToString(), Application.Current.Resources["Exception"].ToString(), false, DialogMode.Single);
                         IsLoading = false;
                         return;
-                    }
+                    }*/
                     if (playlist == null)
                     {
                         string result = await _baseWindow.WindowDialogService.ShowInputDialog(Application.Current.Resources["NewPlaylist"].ToString(), Application.Current.Resources["NameOfPlaylist"].ToString(), Application.Current.Resources["Create"].ToString(), "", DialogMode.Single);
@@ -187,14 +182,14 @@ namespace Hurricane.Music.Track.WebApi
                         playlist = newPlaylist;
                     }
 
-                    var track = await SelectedTrack.ToPlayable();
-                    track.TimeAdded = DateTime.Now;
+                    var track = SelectedTrack.ToPlayable();
                     playlist.AddTrack(track);
                     IsLoading = false;
                     ViewModels.MainViewModel.Instance.MainTabControlIndex = 0;
                     _manager.SelectedPlaylist = playlist;
                     _manager.SelectedTrack = track;
                     _manager.SaveToSettings();
+                    AsyncTrackLoader.Instance.RunAsync(playlist);
                     HurricaneSettings.Instance.Save();
                 }));
             }
@@ -226,7 +221,7 @@ namespace Hurricane.Music.Track.WebApi
                     var playlist = new NormalPlaylist() { Name = result };
                     _manager.Playlists.Add(playlist);
                     _manager.RegisterPlaylist(playlist);
-
+                    
                     if (await AddTracksToPlaylist(playlist, PlaylistResult))
                     {
                         ViewModels.MainViewModel.Instance.MainTabControlIndex = 0;
@@ -258,7 +253,7 @@ namespace Hurricane.Music.Track.WebApi
         private async Task<bool> AddTracksToPlaylist(IPlaylist playlist, IPlaylistResult result)
         {
             await Task.Delay(500);
-            var controller = await _baseWindow.ShowProgressAsync(playlist.Name, string.Empty, true, new MetroDialogSettings { NegativeButtonText = Application.Current.Resources["Cancel"].ToString() });
+            var controller = await _baseWindow.ShowProgressAsync(Application.Current.Resources["ImportTracks"].ToString(), string.Empty, true, new MetroDialogSettings { NegativeButtonText = Application.Current.Resources["Cancel"].ToString() });
             result.LoadingTracksProcessChanged += (s, e) =>
             {
                 controller.SetMessage(string.Format(Application.Current.Resources["LoadingTracks"].ToString(), e.CurrentTrackName, e.Value, e.Maximum));
@@ -278,6 +273,7 @@ namespace Hurricane.Music.Track.WebApi
             }
             _manager.SaveToSettings();
             HurricaneSettings.Instance.Save();
+            AsyncTrackLoader.Instance.RunAsync(playlist);
             await controller.CloseAsync();
             return true;
         }
