@@ -28,7 +28,9 @@ namespace Hurricane.Settings
                 restartApplication = true,
                 retrieveHostVersion = true,
                 autoCloseHostApplication = true,
-                Language = _language == Language.English ? Languages.English : Languages.Deutsch
+                Language = _language == Language.English ? Languages.English : Languages.Deutsch,
+                showTaskBarProgress = false,
+                autoCloseUpdateInstaller = true
             };
 
             _updController.updateFound += updController_updateFound;
