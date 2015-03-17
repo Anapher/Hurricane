@@ -603,7 +603,6 @@
                         <userControls:AboutView Margin="5" Focusable="False"/>
                     </TabItem>
                 </TabControl>
-                
             </TabItem>
             <TabItem Header="Online" Visibility="Collapsed">
                 <Grid>
@@ -728,7 +727,7 @@
                             </StackPanel>
                         </Grid>
                         <ListView ItemsSource="{Binding TrackSearcher.Results}" ctrl:ListViewLayoutManager.Enabled="True" Style="{StaticResource VisualizingListView}" SelectedItem="{Binding TrackSearcher.SelectedTrack}"
-                                  extensions:GridViewSort.AutoSort="True" Grid.Row="1">
+                                  extensions:GridViewSort.AutoSort="True" Grid.Row="1" Background="Transparent" BorderThickness="0">
                             <ListView.Resources>
                                 <converter:FormatLargeNumber x:Key="FormatLargeNumber"/>
                                 <ContextMenu x:Key="ContextMenu" DataContext="{Binding RelativeSource={RelativeSource AncestorType=ListView},Path=DataContext}">

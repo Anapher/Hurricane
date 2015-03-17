@@ -13,7 +13,7 @@ namespace Hurricane.Music
 
         public double OutDuration { get; set; }
 
-        protected AutoResetEvent cancelledwaiter;
+        private readonly AutoResetEvent _canceledWaiter;
 
         protected async Task Fade(float from, float to, TimeSpan duration, bool getLouder, ISoundOut soundout)
         {
@@ -43,14 +43,14 @@ namespace Hurricane.Music
         #region Cancel
         protected virtual void OnCancelled()
         {
-            cancelledwaiter.Set();
+            _canceledWaiter.Set();
         }
 
         public void WaitForCancel()
         {
             if (IsFading)
             {
-                cancelledwaiter.WaitOne(50);
+                _canceledWaiter.WaitOne(50);
             }
         }
 
@@ -83,12 +83,12 @@ namespace Hurricane.Music
         #region Constructor and Deconstructor
         public void Dispose()
         {
-            cancelledwaiter.Dispose();
+            _canceledWaiter.Dispose();
         }
 
         public VolumeFading()
         {
-            cancelledwaiter = new AutoResetEvent(false);
+            _canceledWaiter = new AutoResetEvent(false);
         }
         #endregion
     }

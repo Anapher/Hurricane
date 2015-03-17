@@ -16,6 +16,8 @@ namespace Hurricane.Music.Download
     [Serializable]
     public class DownloadManager : PropertyChangedBase
     {
+        private const string DefaultFolderPlaceholder = "%downloads%";
+
         [XmlIgnore]
         public ObservableCollection<DownloadEntry> Entries { get; set; }
         
@@ -33,7 +35,7 @@ namespace Hurricane.Music.Download
         public void AddEntry<T>(T download) where T : IDownloadable, IMusicInformation
         {
             HasEntries = true;
-            var downloadDirectory = new DirectoryInfo(DownloadDirectory);
+            var downloadDirectory = GetDownloadDirectoryInfo();
             if (!downloadDirectory.Exists) downloadDirectory.Create();
             var entry = new DownloadEntry
             {
@@ -126,27 +128,34 @@ namespace Hurricane.Music.Download
         public DownloadManager()
         {
             Entries = new ObservableCollection<DownloadEntry>();
-            DownloadDirectory = Path.Combine(HurricaneSettings.Instance.BaseDirectory, "Downloads");
+            DownloadDirectory = "%downloads%";
             AddTagsToDownloads = true;
             SelectedService = 0;
             this.Searches = new ObservableCollection<string>();
         }
 
         #region Settings
+
+        [XmlElement(ElementName = "DownloadDirectory")]
+        public string SerializableDownloadDirectory { get; set; }
         
-        private string _downloadDirectory;
+        [XmlIgnore]
         public string DownloadDirectory
         {
-            get { return _downloadDirectory; }
+            get { return SerializableDownloadDirectory == DefaultFolderPlaceholder ? Path.Combine(HurricaneSettings.Instance.BaseDirectory, "Downloads") : SerializableDownloadDirectory; }
             set
             {
-                if (SetProperty(value, ref _downloadDirectory))
-                {
-                    OnPropertyChanged("FolderName");
-                }
+                SerializableDownloadDirectory = value;
+                OnPropertyChanged();
+                OnPropertyChanged("FolderName");
             }
         }
-        
+
+        public DirectoryInfo GetDownloadDirectoryInfo()
+        {
+            return new DirectoryInfo(DownloadDirectory);
+        }
+
         private bool _addTagsToDownloads;
         public bool AddTagsToDownloads
         {
@@ -171,7 +180,7 @@ namespace Hurricane.Music.Download
 
         public string FolderName
         {
-            get { return new DirectoryInfo(DownloadDirectory).Name; }
+            get { return GetDownloadDirectoryInfo().Name; }
         }
 
         
@@ -196,7 +205,7 @@ namespace Hurricane.Music.Download
             {
                 return _openDownloadFolder ?? (_openDownloadFolder = new RelayCommand(parameter =>
                 {
-                    Process.Start(new DirectoryInfo(DownloadDirectory).FullName);
+                    Process.Start(GetDownloadDirectoryInfo().FullName);
                 }));
             }
         }
