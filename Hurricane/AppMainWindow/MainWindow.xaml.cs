@@ -16,10 +16,10 @@ using Hurricane.Music.CustomEventArgs;
 using Hurricane.Settings;
 using Hurricane.Utilities;
 using Hurricane.Utilities.Native;
-using Hurricane.ViewModelBase;
 using Hurricane.ViewModels;
 using Hurricane.Views;
 using MahApps.Metro.Controls;
+using Microsoft.Win32;
 
 // ReSharper disable once CheckNamespace
 namespace Hurricane
@@ -93,6 +93,7 @@ namespace Hurricane
 
             MagicArrow.DockManager.CurrentSide = appsettings.ApplicationState.CurrentSide;
             WindowDialogService = new WindowDialogService(this);
+            SystemEvents.PowerModeChanged += SystemEventsOnPowerModeChanged;
         }
 
         public void CenterWindowOnScreen()
@@ -499,6 +500,15 @@ namespace Hurricane
                     img.Freeze();
                     return img;
                 });
+            }
+        }
+
+        private async void SystemEventsOnPowerModeChanged(object sender, PowerModeChangedEventArgs powerModeChangedEventArgs)
+        {
+            if (powerModeChangedEventArgs.Mode == PowerModes.Resume)
+            {
+                BackgroundMediaElement.Source = null; //Else it doesn't get refreshed
+                await SetBackground();
             }
         }
 

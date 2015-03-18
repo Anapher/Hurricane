@@ -426,6 +426,7 @@ namespace Hurricane.Music
         {
             //_client = new MMNotificationClient();
             RefreshSoundOut();
+            
             //_client.DefaultDeviceChanged += client_DefaultDeviceChanged;
             _fader = new VolumeFading();
             _crossfade = new Crossfade();

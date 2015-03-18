@@ -16,7 +16,6 @@ namespace Hurricane.DragDrop
         {
             dropInfo.Effects = DragDropEffects.Move;
             dropInfo.DropTargetAdorner = typeof(DropTargetInsertionAdorner);
-            
         }
 
         public void Drop(IDropInfo dropInfo)

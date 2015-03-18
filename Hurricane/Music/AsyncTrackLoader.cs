@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Hurricane.Music.Playlist;
+using Hurricane.ViewModels;
 
 namespace Hurricane.Music
 {
@@ -52,7 +52,8 @@ namespace Hurricane.Music
                 PlaylistsToCheck.Remove(p);
                 foreach (var track in p.Tracks.Where(x => x.TrackExists && !x.IsChecked).ToList())
                 {
-                    if (!await track.CheckTrack())
+                    if (!MainViewModel.Instance.MusicManager.Playlists.Contains(p)) break;
+                    if (p.Tracks.Contains(track) && !await track.CheckTrack())
                     {
                         if (p.Tracks.Contains(track)) p.RemoveTrack(track); //if the user removed the track
                     }
