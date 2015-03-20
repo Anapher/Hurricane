@@ -344,4 +344,5 @@
     <system:String x:Key="PlaySelectedTrackDescription">Play selected track</system:String>
     <system:String x:Key="OpenTrackSourceDescription">Open the source (url or path) of the track</system:String>
     <system:String x:Key="ImportTracks">Import Tracks</system:String>
+    <system:String x:Key="NoSoundOutDeviceFound">No sound device found.</system:String>
 </ResourceDictionary>

@@ -1,25 +1,21 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using AudioVisualisation;
 using CSCore;
-using CSCore.CoreAudioAPI;
 using CSCore.SoundOut;
-using CSCore.SoundOut.DirectSound;
 using CSCore.Streams;
 using Hurricane.Music.CustomEventArgs;
-using Hurricane.Music.Data;
 using Hurricane.Music.MusicEqualizer;
 using Hurricane.Music.Track;
 using Hurricane.Music.Visualization;
 using Hurricane.Settings;
 using Hurricane.ViewModelBase;
-using Equalizer = CSCore.Streams.Equalizer;
+// ReSharper disable InconsistentNaming
 
-namespace Hurricane.Music
+namespace Hurricane.Music.AudioEngine
 {
     public class CSCoreEngine : PropertyChangedBase, IDisposable, ISpectrumProvider
     {
@@ -38,11 +34,11 @@ namespace Hurricane.Music
         public event EventHandler VolumeChanged;
         public event EventHandler<Exception> ExceptionOccurred;
         public event EventHandler PlayStateChanged;
+        public event EventHandler<string> SoundOutErrorOccurred;
 
         #endregion
 
         #region Event handler
-
         protected void OnTrackFinished()
         {
             if (TrackFinished != null) TrackFinished(this, EventArgs.Empty);
@@ -51,6 +47,11 @@ namespace Hurricane.Music
         protected void OnTrackChanged()
         {
             if (TrackChanged != null) TrackChanged(this, new TrackChangedEventArgs(CurrentTrack));
+        }
+
+        protected void OnSoundOutErrorOccurred(string message)
+        {
+            if (SoundOutErrorOccurred != null) SoundOutErrorOccurred(this, message);
         }
 
         #endregion
@@ -171,6 +172,8 @@ namespace Hurricane.Music
 
         public ConfigSettings Settings { get { return HurricaneSettings.Instance.Config; } }
 
+        public SoundOutManager SoundOutManager { get; set; }
+
         private bool _isLoading;
         public bool IsLoading
         {
@@ -180,20 +183,30 @@ namespace Hurricane.Music
                 SetProperty(value, ref _isLoading);
             }
         }
+        
+        private bool _isEnabled;
+        public bool IsEnabled
+        {
+            get { return _isEnabled; }
+            set
+            {
+                SetProperty(value, ref _isEnabled);
+            }
+        }
         #endregion
 
         #region Members
-        private string _currentDeviceId;
-        private ISoundOut _soundOut;
-        private MMNotificationClient _client;
-        private bool _manualstop;
-        private readonly VolumeFading _fader;
-        private bool _isfadingout;
         private readonly Crossfade _crossfade;
+        private readonly VolumeFading _fader;
+
+        private ISoundOut _soundOut;
         private SimpleNotificationSource _simpleNotificationSource;
         private SingleBlockNotificationStream _singleBlockNotificationStream;
-        private bool _playAfterLoading;
 
+        private bool _manualstop;
+        private bool _isfadingout;
+        private bool _playAfterLoading;
+        
         #endregion
 
         #region Equalizer
@@ -237,6 +250,12 @@ namespace Hurricane.Music
         #region Public Methods
         public async Task<bool> OpenTrack(PlayableBase track)
         {
+            if (!IsEnabled)
+            {
+                OnSoundOutErrorOccurred(Application.Current.Resources["NoSoundOutDeviceFound"].ToString());
+                return false;
+            }
+
             _playAfterLoading = false;
             IsLoading = true;
             StopPlayback();
@@ -283,13 +302,14 @@ namespace Hurricane.Music
             {
                 _soundOut.Initialize(SoundSource);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                RefreshSoundOut();
-                _soundOut.Initialize(SoundSource);
+                track.IsOpened = false;
+                IsLoading = false;
+                OnSoundOutErrorOccurred(ex.Message);
+                return false;
             }
 
-            
             OnPropertyChanged("TrackLength");
             OnPropertyChanged("CurrentTrackLength");
 
@@ -405,6 +425,7 @@ namespace Hurricane.Music
             var totalseconds = (int)CurrentTrackLength.TotalSeconds;
             if (PositionChanged != null)
                 Application.Current.Dispatcher.Invoke(() => PositionChanged(this, new PositionChangedEventArgs(seconds, totalseconds)));
+
             if (Settings.IsCrossfadeEnabled && totalseconds - Settings.CrossfadeDuration > 6 && !_crossfade.IsCrossfading && totalseconds - seconds < Settings.CrossfadeDuration)
             {
                 _fader.OutDuration = totalseconds - seconds;
@@ -419,103 +440,46 @@ namespace Hurricane.Music
                 });
             }
         }
+
         #endregion
 
         #region Constructor
         public CSCoreEngine()
         {
-            //_client = new MMNotificationClient();
-            RefreshSoundOut();
-            
-            //_client.DefaultDeviceChanged += client_DefaultDeviceChanged;
             _fader = new VolumeFading();
             _crossfade = new Crossfade();
+            SoundOutManager = new SoundOutManager(this);
+            SoundOutManager.RefreshSoundOut += (sender, args) => Refresh();
+            SoundOutManager.Enable += (sender, args) => IsEnabled = true;
+            SoundOutManager.Disable += (sender, args) => IsEnabled = false;
+            SoundOutManager.Activate();
+            if (IsEnabled) RefreshSoundOut();
         }
 
         #endregion
 
         #region SoundOut
-        void client_DefaultDeviceChanged(object sender, DefaultDeviceChangedEventArgs e)
-        {
-            if (Settings.SoundOutDeviceID == "-0" && e.DeviceID != _currentDeviceId)
-            {
-                _currentDeviceId = e.DeviceID;
-                Thread t = new Thread(() =>
-                {
-                    Thread.Sleep(100);
-                    Application.Current.Dispatcher.Invoke(UpdateSoundOut);
-                }) { IsBackground = true };
-                t.Start();
-            }
-            _client.Dispose();
-        }
 
         public void RefreshSoundOut()
         {
-            if (Settings.SoundOutMode == SoundOutMode.DirectSound)
-            {
-                var enumerator = new DirectSoundDeviceEnumerator();
-                DirectSoundDevice device;
-                if (Settings.SoundOutDeviceID == "-0")
-                {
-                    using (var wasapiEnumerator = new MMDeviceEnumerator())
-                    {
-                        device = enumerator.Devices.FirstOrDefault(x => x.Description == wasapiEnumerator.GetDefaultAudioEndpoint(DataFlow.Render, Role.Multimedia).FriendlyName) ?? enumerator.Devices.First();
-                    }
-                }
-                else
-                {
-                    device = enumerator.Devices.FirstOrDefault(x => x.Guid.ToString() == Settings.SoundOutDeviceID);
-                    if (device == null)
-                    {
-                        Settings.SoundOutDeviceID = "-0";
-                        RefreshSoundOut();
-                        return;
-                    }
-                }
-
-                _soundOut = new DirectSoundOut { Device = device.Guid, Latency = Settings.Latency };
-            }
-            else
-            {
-                MMDevice device;
-                using (var enumerator = new MMDeviceEnumerator())
-                {
-                    if (Settings.SoundOutDeviceID == "-0")
-                    {
-                        device = enumerator.GetDefaultAudioEndpoint(DataFlow.Render, Role.Multimedia);
-                    }
-                    else
-                    {
-                        using (MMDeviceCollection devices = enumerator.EnumAudioEndpoints(DataFlow.Render, DeviceState.Active))
-                        {
-                            device = devices.FirstOrDefault(x => x.DeviceID == Settings.SoundOutDeviceID);
-
-                            if (device == null)
-                            {
-                                Settings.SoundOutDeviceID = "-0";
-                                RefreshSoundOut();
-                                return;
-                            }
-                        }
-                    }
-                }
-                _soundOut = new WasapiOut { Device = device, Latency = Settings.Latency };
-
-            }
+            _soundOut = SoundOutManager.GetNewSoundSource();
             _soundOut.Stopped += soundOut_Stopped;
         }
 
-        public async void UpdateSoundOut()
+        public async void Refresh()
         {
-            long position = Position;
-            bool isplaying = IsPlaying;
+            var position = Position;
+            var isplaying = IsPlaying;
             if (_soundOut != null) { StopPlayback(); _soundOut.Dispose(); }
+            if (SoundSource != null) SoundSource.Dispose();
             RefreshSoundOut();
             if (CurrentTrack != null)
             {
-                await OpenTrack(CurrentTrack); Position = position;
-                if (isplaying) TogglePlayPause();
+                if (await OpenTrack(CurrentTrack))
+                {
+                    Position = position;
+                    if (isplaying) TogglePlayPause();
+                }
             }
         }
 
@@ -523,7 +487,7 @@ namespace Hurricane.Music
         {
             if (_isdisposing) return;
             if (_manualstop) { _manualstop = false; return; }
-            OnTrackFinished();
+            if (!e.HasError) OnTrackFinished();
             CurrentStateChanged();
         }
         #endregion
@@ -553,58 +517,22 @@ namespace Hurricane.Music
 
         #region IDisposable Support
 
-        protected bool _isdisposing;
+        private bool _isdisposing;
         public void Dispose()
         {
             _isdisposing = true;
+            _fader.Dispose();
+             SoundOutManager.Dispose();
+
             if (_soundOut != null)
             {
                 if (_fader.IsFading) { _fader.CancelFading(); _fader.WaitForCancel(); }
                 _soundOut.Dispose();
-                _fader.Dispose();
                 _crossfade.CancelFading();
             }
             if (SoundSource != null) SoundSource.Dispose();
-            if (_client != null) _client.Dispose();
         }
 
-        #endregion
-
-        #region Static Methods
-
-        public static List<SoundOutRepresenter> GetSoundOutList()
-        {
-            List<SoundOutRepresenter> result = new List<SoundOutRepresenter>();
-            using (MMDeviceEnumerator enumerator = new MMDeviceEnumerator())
-            {
-                MMDevice standarddevice = enumerator.GetDefaultAudioEndpoint(DataFlow.Render, Role.Multimedia);
-                if (WasapiOut.IsSupportedOnCurrentPlatform)
-                {
-                    var wasApiItem = new SoundOutRepresenter { Name = "WASAPI", SoundOutMode = SoundOutMode.WASAPI };
-
-                    using (
-                        MMDeviceCollection devices = enumerator.EnumAudioEndpoints(DataFlow.Render, DeviceState.Active))
-                    {
-                        wasApiItem.AudioDevices.Add(new AudioDevice("-0", "Windows Default"));
-                        wasApiItem.AudioDevices.AddRange(
-                            devices.Select(
-                                device =>
-                                    new AudioDevice(device.DeviceID, device.FriendlyName,
-                                        standarddevice.DeviceID == device.DeviceID)));
-                    }
-                    result.Add(wasApiItem);
-                }
-
-                var directSoundItem = new SoundOutRepresenter { Name = "DirectSound", SoundOutMode = SoundOutMode.DirectSound };
-                directSoundItem.AudioDevices.Add(new AudioDevice("-0", "Windows Default"));
-                directSoundItem.AudioDevices.AddRange(
-                    new DirectSoundDeviceEnumerator().Devices.Select(x => new AudioDevice(x.Guid.ToString(), x.Description, x.Description == standarddevice.FriendlyName)));
-
-                result.Add(directSoundItem);
-
-                return result;
-            }
-        }
         #endregion
     }
 }

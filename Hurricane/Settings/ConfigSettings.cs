@@ -106,7 +106,7 @@ namespace Hurricane.Settings
 
         public override sealed void SetStandardValues()
         {
-            SoundOutDeviceID = "-0";
+            SoundOutDeviceID = Music.AudioEngine.SoundOutManager.DefaultDevicePlaceholder;
             DisableNotificationInGame = true;
             ShowMagicArrowBelowCursor = true;
             WaveSourceBits = 16;

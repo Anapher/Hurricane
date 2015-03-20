@@ -207,8 +207,9 @@
     <Compile Include="Music\Playlist\ImportCueSheet.cs" />
     <Compile Include="Music\Playlist\ImportM3uPlaylist.cs" />
     <Compile Include="Music\Playlist\Playlists.cs" />
+    <Compile Include="Music\AudioEngine\SoundOutManager.cs" />
     <Compile Include="Music\Track\LocalTrackFragment.cs" />
-    <Compile Include="Music\CutSource.cs" />
+    <Compile Include="Music\AudioEngine\CutSource.cs" />
     <Compile Include="Music\Track\WebApi\YouTubeApi\DataClasses\MediaDescription.cs" />
     <Compile Include="Settings\Converter\GroupConverter.cs" />
     <Compile Include="Settings\Converter\TransitionConverter.cs" />
@@ -323,7 +324,7 @@
     <Compile Include="Music\Track\WebApi\YouTubeApi\YouTubeVideoResult.cs" />
     <Compile Include="Music\Track\WebApi\YouTubeApi\YouTubeWebTrackResult.cs" />
     <Compile Include="Music\Track\YouTubeTrack.cs" />
-    <Compile Include="Music\VolumeFading.cs" />
+    <Compile Include="Music\AudioEngine\VolumeFading.cs" />
     <Compile Include="Notification\NotificationService.cs" />
     <Compile Include="Notification\Views\NotificationRightBottomWindow.xaml.cs">
       <DependentUpon>NotificationRightBottomWindow.xaml</DependentUpon>
@@ -704,7 +705,7 @@
     <Compile Include="Utilities\HookManager\HookManager.Structures.cs" />
     <Compile Include="Utilities\HookManager\HookManager.Windows.cs" />
     <Compile Include="Utilities\HookManager\MouseEventExtArgs.cs" />
-    <Compile Include="Music\CSCoreEngine.cs" />
+    <Compile Include="Music\AudioEngine\CSCoreEngine.cs" />
     <Compile Include="Music\CustomEventArgs\TrackChangedEventArgs.cs" />
     <Compile Include="Music\MusicManager.cs" />
     <Compile Include="Music\Playlist\NormalPlaylist.cs" />

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 using System.Xml.Serialization;
 using CSCore;
+using Hurricane.Music.AudioEngine;
 using Hurricane.Music.Data;
 using Hurricane.Music.MusicCover;
 using Hurricane.Settings;

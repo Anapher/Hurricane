@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using System.Xml.Serialization;
 using CSCore;
 using CSCore.Codecs;
+using Hurricane.Music.AudioEngine;
 
 namespace Hurricane.Music.Track
 {

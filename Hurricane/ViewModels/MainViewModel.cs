@@ -61,6 +61,7 @@ namespace Hurricane.ViewModels
             MusicManager = new MusicManager();
             MusicManager.CSCoreEngine.TrackChanged += CSCoreEngine_TrackChanged;
             MusicManager.CSCoreEngine.ExceptionOccurred += CSCoreEngine_ExceptionOccurred;
+            MusicManager.CSCoreEngine.SoundOutErrorOccurred += CSCoreEngine_SoundOutErrorOccurred;
             MusicManager.LoadFromSettings();
             MainTabControlIndex = MySettings.CurrentState.MainTabControlIndex;
             TrackSearcher = new TrackSearcher(MusicManager, window);
@@ -85,6 +86,11 @@ namespace Hurricane.ViewModels
         {
             await _baseWindow.WindowDialogService.ShowMessage(Application.Current.Resources["ExceptionOpenOnlineTrack"].ToString(),
                 Application.Current.Resources["Exception"].ToString(), false, DialogMode.Single);
+        }
+
+        async void CSCoreEngine_SoundOutErrorOccurred(object sender, string e)
+        {
+            await _baseWindow.WindowDialogService.ShowMessage(e, Application.Current.Resources["Exception"].ToString(), false, DialogMode.Single);
         }
 
         void KListener_KeyDown(object sender, RawKeyEventArgs args)

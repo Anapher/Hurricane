@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using Hurricane.Music.AudioEngine;
 using Hurricane.Music.CustomEventArgs;
 using Hurricane.Music.Data;
 using Hurricane.Music.Download;

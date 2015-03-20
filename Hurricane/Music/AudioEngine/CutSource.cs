@@ -1,7 +1,7 @@
 ﻿using System;
 using CSCore;
 
-namespace Hurricane.Music
+namespace Hurricane.Music.AudioEngine
 {
     class CutSource : WaveAggregatorBase
     {

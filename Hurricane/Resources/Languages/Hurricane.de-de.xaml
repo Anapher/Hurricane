@@ -344,4 +344,5 @@
     <system:String x:Key="PlaySelectedTrackDescription">Ausgewählten Track abspielen</system:String>
     <system:String x:Key="OpenTrackSourceDescription">Quelle des ausgewählten Tracks (Url oder Pfad) öffnen</system:String>
     <system:String x:Key="ImportTracks">Importiere Tracks</system:String>
+    <system:String x:Key="NoSoundOutDeviceFound">Es konnte kein Wiedergabegerät gefunden werden.</system:String>
 </ResourceDictionary>

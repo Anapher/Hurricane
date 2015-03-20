@@ -3,7 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using CSCore.SoundOut;
 
-namespace Hurricane.Music
+namespace Hurricane.Music.AudioEngine
 {
     public class VolumeFading : IDisposable
     {

@@ -1,10 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
+using System.Reflection;
 using System.Windows;
 using CSCore.SoundOut;
 using Hurricane.Music;
@@ -36,7 +37,7 @@ namespace Hurricane.ViewModels
 
         public void Load()
         {
-            SoundOutList = CSCoreEngine.GetSoundOutList();
+            SoundOutList = MusicManager.CSCoreEngine.SoundOutManager.SoundOutList;
             SelectedSoundOut = SoundOutList.First(x => x.SoundOutMode == Config.SoundOutMode);
             CurrentLanguage = Config.Languages.First(x => x.Code == Config.Language);
         }
@@ -76,13 +77,24 @@ namespace Hurricane.ViewModels
 
         #region Playback
 
-        private List<SoundOutRepresenter> _soundOutList;
-        public List<SoundOutRepresenter> SoundOutList
+        private ObservableCollection<SoundOutRepresenter> _soundOutList;
+        public ObservableCollection<SoundOutRepresenter> SoundOutList
         {
             get { return _soundOutList; }
             set
             {
                 SetProperty(value, ref _soundOutList);
+            }
+        }
+
+        
+        private int _selectedAudioDeviceIndex;
+        public int SelectedAudioDeviceIndex
+        {
+            get { return _selectedAudioDeviceIndex; }
+            set
+            {
+                SetProperty(value, ref _selectedAudioDeviceIndex);
             }
         }
 
@@ -93,6 +105,8 @@ namespace Hurricane.ViewModels
             set
             {
                 if (SetProperty(value, ref _selectedaudiodevice)) OnPropertyChanged("CanApplySoundOut");
+                if (value == null && SelectedSoundOut.AudioDevices.Count > 0)
+                    SelectedAudioDevice = SelectedSoundOut.AudioDevices.First();
             }
         }
 
@@ -104,8 +118,11 @@ namespace Hurricane.ViewModels
             {
                 if (SetProperty(value, ref _selectedSoundOut) && value != null)
                 {
-                    SelectedAudioDevice = value.AudioDevices.FirstOrDefault(x => x.ID == Config.SoundOutDeviceID) ?? SelectedSoundOut.AudioDevices.First(x => x.IsDefault);
                     OnPropertyChanged("CanApplySoundOut");
+
+                    var device = value.AudioDevices.FirstOrDefault(x => x.ID == Config.SoundOutDeviceID) ??
+                                 value.AudioDevices.FirstOrDefault(x => x.IsDefault);
+                    SelectedAudioDeviceIndex = device == null ? 0 : value.AudioDevices.IndexOf(device);
                 }
             }
         }
@@ -120,7 +137,7 @@ namespace Hurricane.ViewModels
                     if (!CanApplySoundOut) return;
                     Config.SoundOutMode = SelectedSoundOut.SoundOutMode;
                     Config.SoundOutDeviceID = SelectedAudioDevice.ID;
-                    MusicManager.CSCoreEngine.UpdateSoundOut();
+                    MusicManager.CSCoreEngine.Refresh();
                     OnPropertyChanged("CanApplySoundOut");
                 }));
             }
@@ -146,7 +163,7 @@ namespace Hurricane.ViewModels
             {
                 return _openDesigner ?? (_openDesigner = new RelayCommand(parameter =>
                 {
-                    Process.Start(System.Reflection.Assembly.GetExecutingAssembly().Location, "/designer");
+                    Process.Start(Assembly.GetExecutingAssembly().Location, "/designer");
                 }));
             }
         }
