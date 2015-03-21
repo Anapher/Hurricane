@@ -69,7 +69,7 @@
                 </Button>
             </Grid>
             <DockPanel Grid.Row="1" Margin="5,5,0,0" Visibility="{Binding MusicManager.CSCoreEngine.CurrentTrack,Converter={StaticResource CollapsedOnNullValue}}">
-                <Polygon Points="0,0 8,5, 0,10" Stroke="{StaticResource AccentColorBrush}" StrokeThickness="2" VerticalAlignment="Center" Margin="0,2,0,0" x:Name="polyplay"/>
+                <Polygon Points="0,0 8,5, 0,10" Stroke="{StaticResource AccentColorBrush}" StrokeThickness="2" VerticalAlignment="Center" Margin="0,2,0,0" x:Name="PlayPolygon"/>
                 <Grid Margin="5,0,5,0" VerticalAlignment="Center" MouseEnter="Grid_MouseEnter" MouseLeave="Grid_MouseLeave" Background="{StaticResource WhiteBrush}">
                     <controls:TransitioningContentControl Transition="Down" x:Name="TitleTransitioningControl" mahAppsExtensions:TransitioningExtensions.DisplayText="{Binding MusicManager.CSCoreEngine.CurrentTrack}">
                         <controls:TransitioningContentControl.InputBindings>

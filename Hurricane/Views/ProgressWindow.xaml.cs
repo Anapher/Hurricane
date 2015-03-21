@@ -1,32 +1,30 @@
-﻿using MahApps.Metro.Controls;
-
-namespace Hurricane.Views
+﻿namespace Hurricane.Views
 {
     /// <summary>
     /// Interaction logic for ProgressWindow.xaml
     /// </summary>
-    public partial class ProgressWindow : MetroWindow
+    public partial class ProgressWindow
     {
         public ProgressWindow(string title, bool indeterminate)
         {
             InitializeComponent();
-            this.Title = title;
-            this.prg.IsIndeterminate = indeterminate;
+            Title = title;
+            StatusProgressBar.IsIndeterminate = indeterminate;
         }
 
         public void SetText(string text)
         {
-          this.txtinfo.Text = text;
+            InfoTextBlock.Text = text;
         }
 
         public void SetProgress(double progress)
         {
-            prg.Value = progress;
+            StatusProgressBar.Value = progress;
         }
 
         public void SetTitle(string title)
         {
-            this.Title = title;
+            Title = title;
         }
     }
 }

@@ -113,14 +113,14 @@
                             </MenuItem.Style>
                         </MenuItem>
                     </Menu>
-                    <TextBox Grid.ColumnSpan="4" Margin="0,0,10,0" x:Name="txtSearch" VerticalAlignment="Center" controls:TextBoxHelper.ClearTextButton="True" HorizontalAlignment="Right" Width="200" controls:TextBoxHelper.Watermark="{StaticResource Search}" Text="{Binding MusicManager.SelectedPlaylist.SearchText,UpdateSourceTrigger=PropertyChanged}"/>
+                    <TextBox Grid.ColumnSpan="4" Margin="0,0,10,0" VerticalAlignment="Center" controls:TextBoxHelper.ClearTextButton="True" HorizontalAlignment="Right" Width="200" controls:TextBoxHelper.Watermark="{StaticResource Search}" Text="{Binding MusicManager.SelectedPlaylist.SearchText,UpdateSourceTrigger=PropertyChanged}"/>
                     <ListBox Grid.Row="1" DisplayMemberPath="Name" SelectedItem="{Binding MusicManager.SelectedPlaylist}" Margin="5" ItemsSource="{Binding MusicManager.Playlists}" Background="Transparent"
                              dd:DragDrop.IsDragSource="True" dd:DragDrop.IsDropTarget="True" dd:DragDrop.DropHandler="{Binding PlaylistListDropHandler}" dd:DragDrop.DragAdornerTemplate="{StaticResource DragAdornerPlaylist}" dd:DragDrop.DefaultDragAdornerOpacity=".8" ScrollViewer.HorizontalScrollBarVisibility="Hidden">
                         <ListBox.InputBindings>
                             <KeyBinding Key="Delete" Command="{Binding RemovePlaylist}"/>
                         </ListBox.InputBindings>
                         <ListBox.Resources>
-                            <ContextMenu x:Key="contexmenu">
+                            <ContextMenu x:Key="PlaylistContextMenu">
                                 <MenuItem IsEnabled="False" Foreground="{StaticResource BlackBrush}">
                                     <MenuItem.Resources>
                                         <converter:PlaylistInfoConverter x:Key="PlaylistInfoConverter"/>
@@ -155,12 +155,12 @@
                         </ListBox.Resources>
                         <ListBox.ItemContainerStyle>
                             <Style TargetType="ListBoxItem" BasedOn="{StaticResource MetroListBoxItem}">
-                                <Setter Property="ContextMenu" Value="{StaticResource contexmenu}"/>
+                                <Setter Property="ContextMenu" Value="{StaticResource PlaylistContextMenu}"/>
                             </Style>
                         </ListBox.ItemContainerStyle>
                     </ListBox>
                     <Rectangle Grid.Column="1" Width="1" Fill="Gray" Grid.Row="1"/>
-                    <Grid Grid.Column="2" Margin="5" x:Name="gridplaylist" Grid.Row="1">
+                    <Grid Grid.Column="2" Margin="5" Grid.Row="1">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="*"/>
                             <RowDefinition Height="auto"/>
@@ -195,6 +195,7 @@
                                             <Separator />
                                             <MenuItem Header="{DynamicResource Remove}" Command="{Binding RemoveSelectedTracks}" CommandParameter="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type hurricaneControls:AnimatedListView}}, Path=SelectedItems}" InputGestureText="{DynamicResource Del}"/>
                                         </ContextMenu>
+                                        
                                         <ContextMenu x:Key="StreamContextMenu">
                                             <MenuItem Header="{DynamicResource Play}" Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}, Path=DataContext.MusicManager.Commands.PlaySelectedTrack}" InputGestureText="Enter"/>
                                             <Separator />
@@ -670,7 +671,7 @@
                         </Grid.RowDefinitions>
                         <Grid Height="69" Margin="0,3,0,3">
                             <Grid.Resources>
-                                <ContextMenu x:Key="contextMenu">
+                                <ContextMenu x:Key="NotAddedStreamContextMenu">
                                     <MenuItem Header="{DynamicResource AddToExistingPlaylist}" ItemsSource="{Binding MusicManager.Playlists}">
                                         <MenuItem.ItemContainerStyle>
                                             <Style TargetType="MenuItem" BasedOn="{StaticResource MetroMenuItem}">
@@ -690,7 +691,7 @@
                             <Grid.Style>
                                 <Style TargetType="Grid">
                                     <Setter Property="Visibility" Value="Visible"/>
-                                    <Setter Property="ContextMenu" Value="{StaticResource contextMenu}"/>
+                                    <Setter Property="ContextMenu" Value="{StaticResource NotAddedStreamContextMenu}"/>
                                     <Setter Property="Background" Value="{StaticResource WhiteBrush}"/>
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding TrackSearcher.PlaylistResult}" Value="{x:Null}">

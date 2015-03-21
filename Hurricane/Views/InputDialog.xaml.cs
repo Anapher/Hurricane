@@ -1,13 +1,11 @@
-﻿using System;
-using System.ComponentModel;
-using MahApps.Metro.Controls;
+﻿using System.ComponentModel;
 
 namespace Hurricane.Views
 {
     /// <summary>
     /// Interaction logic for CreateNewPlaylistWindow.xaml
     /// </summary>
-    public partial class InputDialog : MetroWindow, INotifyPropertyChanged
+    public partial class InputDialog : INotifyPropertyChanged
     {
         public InputDialog()
         {
@@ -17,15 +15,15 @@ namespace Hurricane.Views
         public InputDialog(string title, string message, string buttonoktext, string defaulttext)
             : this()
         {
-            this.ResultText = defaulttext;
-            this.Title = title;
-            this.txtMessage.Text = message;
-            this.btnOK.Content = buttonoktext;
-            this.txt.SelectAll();
+            ResultText = defaulttext;
+            Title = title;
+            MessageTextBlock.Text = message;
+            OkButton.Content = buttonoktext;
+            ResultTextBox.SelectAll();
         }
 
-        private String _resulttext;
-        public String ResultText
+        private string _resulttext;
+        public string ResultText
         {
             get { return _resulttext; }
             set
@@ -34,9 +32,7 @@ namespace Hurricane.Views
                 {
                     _resulttext = value;
                     if (PropertyChanged != null)
-                    {
                         PropertyChanged(this, new PropertyChangedEventArgs("ResultText"));
-                    }
                 }
             }
         }

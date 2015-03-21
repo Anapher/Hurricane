@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "Hurricane"
-#define MyAppVersion "0.3.5"
+#define MyAppVersion "0.3.6"
 #define MyAppPublisher "Alkaline"
 #define MyAppURL "hurricaneproject.org"
 #define MyAppExeName "Hurricane.exe"

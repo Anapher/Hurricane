@@ -5,19 +5,18 @@ using System.Windows;
 using System.Windows.Controls;
 using Exceptionless;
 using Hurricane.Settings;
-using MahApps.Metro.Controls;
 
 namespace Hurricane.Views
 {
     /// <summary>
     /// Interaction logic for ReportExceptionWindow.xaml
     /// </summary>
-    public partial class ReportExceptionWindow : MetroWindow, INotifyPropertyChanged
+    public partial class ReportExceptionWindow : INotifyPropertyChanged
     {
         public ReportExceptionWindow(Exception error)
         {
             InitializeComponent();
-            this.Error = error;
+            Error = error;
             if (HurricaneSettings.Instance.IsLoaded) HurricaneSettings.Instance.Save();
         }
 
@@ -31,12 +30,12 @@ namespace Hurricane.Views
         private async void ButtonSendErrorReport_Click(object sender, RoutedEventArgs e)
         {
             var ex = Error.ToExceptionless();
-            ex.SetUserDescription(null, txtNote.Text);
+            ex.SetUserDescription(null, NoteTextBox.Text);
             ex.Submit();
             ((Button)sender).IsEnabled = false;
-            prg.IsIndeterminate = true;
+            StatusProgressBar.IsIndeterminate = true;
             await Task.Run(() => ExceptionlessClient.Default.ProcessQueue());
-            prg.IsIndeterminate = false;
+            StatusProgressBar.IsIndeterminate = false;
             Application.Current.Shutdown();
         }
 

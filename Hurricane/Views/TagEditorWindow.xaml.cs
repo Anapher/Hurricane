@@ -4,7 +4,6 @@ using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using Hurricane.Music.Track;
-using MahApps.Metro.Controls;
 using Microsoft.Win32;
 using TagLib;
 
@@ -13,16 +12,16 @@ namespace Hurricane.Views
     /// <summary>
     /// Interaction logic for TagEditorWindow.xaml
     /// </summary>
-    public partial class TagEditorWindow : MetroWindow, INotifyPropertyChanged
+    public partial class TagEditorWindow : INotifyPropertyChanged
     {
         public TagEditorWindow(LocalTrack track)
         {
-            this.TagFile = File.Create(track.Path);
-            this.CurrentTrack = track;
+            TagFile = File.Create(track.Path);
+            CurrentTrack = track;
             InitializeComponent();
 
             List<Genre> genres = Genres.Audio.Select(item => new Genre(item, TagFile.Tag.Genres.Contains(item))).ToList();
-            lstGenre.ItemsSource = genres;
+            GenreListBox.ItemsSource = genres;
         }
 
         public LocalTrack CurrentTrack { get; set; }
@@ -56,13 +55,13 @@ namespace Hurricane.Views
 
         private void MenuItemRemoveAllText_Click(object sender, RoutedEventArgs e)
         {
-            txtLyrics.Clear();
+            LyrcisTextBox.Clear();
         }
         #endregion
 
         private async void ButtonSave_Click(object sender, RoutedEventArgs e)
         {
-            TagFile.Tag.Genres = (from item in (List<Genre>)lstGenre.ItemsSource where item.IsChecked select item.Text).ToArray();
+            TagFile.Tag.Genres = (from item in (List<Genre>)GenreListBox.ItemsSource where item.IsChecked select item.Text).ToArray();
             try
             {
                 TagFile.Save();
@@ -96,7 +95,7 @@ namespace Hurricane.Views
 
         private void ButtonClose_Click(object sender, RoutedEventArgs e)
         {
-            this.Close();
+            Close();
         }
 
         public class Genre
@@ -106,8 +105,8 @@ namespace Hurricane.Views
 
             public Genre(string genre, bool ischecked)
             {
-                this.Text = genre;
-                this.IsChecked = ischecked;
+                Text = genre;
+                IsChecked = ischecked;
             }
         }
     }

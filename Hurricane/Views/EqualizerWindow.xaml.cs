@@ -2,30 +2,27 @@
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Media.Animation;
-using Hurricane.Music;
 using Hurricane.Utilities;
 using Hurricane.Utilities.Native;
-using Hurricane.Views.UserControls;
-using MahApps.Metro.Controls;
 
 namespace Hurricane.Views
 {
     /// <summary>
     /// Interaction logic for EqualizerWindow.xaml
     /// </summary>
-    public partial class EqualizerWindow : MetroWindow
+    public partial class EqualizerWindow
     {
         public event EventHandler BeginCloseAnimation;
 
         public EqualizerWindow(RECT rect, double width)
         {
             InitializeComponent();
-            this.SetPosition(rect, width);
-            this.Closing += EqualizerWindow_Closing;
+            SetPosition(rect, width);
+            Closing += EqualizerWindow_Closing;
         }
 
-        bool _isClosing = false;
-        bool _canClose = false;
+        bool _isClosing;
+        bool _canClose;
         void EqualizerWindow_Closing(object sender, CancelEventArgs e)
         {
             if (!_canClose)
@@ -35,12 +32,12 @@ namespace Hurricane.Views
                 {
                     _isClosing = true;
                     Storyboard story = new Storyboard();
-                    DoubleAnimation doubleanimation = new DoubleAnimation(IsLeft ? this.Left - 25 : this.Left + 25, TimeSpan.FromMilliseconds(100));
+                    DoubleAnimation doubleanimation = new DoubleAnimation(_isLeft ? Left - 25 : Left + 25, TimeSpan.FromMilliseconds(100));
                     Storyboard.SetTargetProperty(doubleanimation, new PropertyPath(LeftProperty));
                     Storyboard.SetTarget(doubleanimation, this);
                     story.Children.Add(doubleanimation);
 
-                    story.Completed += (s, es) => { _canClose = true; this.Close(); };
+                    story.Completed += (s, es) => { _canClose = true; Close(); };
                     story.Begin(this);
 
                     if (BeginCloseAnimation != null) BeginCloseAnimation(this, EventArgs.Empty);
@@ -48,26 +45,25 @@ namespace Hurricane.Views
             }
         }
 
-        protected const double width = 300; //the widht of this window. we can't use this.ActualWidth because the window isn't always initialized
-        protected bool IsLeft;
+        private bool _isLeft;
         public void SetPosition(RECT parentRecantgle, double windowWidth)
         {
-            this.Top = parentRecantgle.top + 25;
+            Top = parentRecantgle.top + 25;
             if (parentRecantgle.left + windowWidth + windowWidth - WpfScreen.MostRightX > 0) //If left from the parent isn't 300 space
             {
-                this.Left = parentRecantgle.left - windowWidth;
-                IsLeft = false;
+                Left = parentRecantgle.left - windowWidth;
+                _isLeft = false;
             }
             else
             {
-                this.Left = parentRecantgle.left + windowWidth;
-                IsLeft = true;
+                Left = parentRecantgle.left + windowWidth;
+                _isLeft = true;
             }
         }
 
         private void EqualizerView_OnWantClose(object sender, EventArgs e)
         {
-            this.Close();
+            Close();
         }
     }
 }

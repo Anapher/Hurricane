@@ -5,8 +5,9 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:converter="clr-namespace:Hurricane.Extensions.Converter"
              xmlns:ex="clr-namespace:Hurricane.Extensions"
+             xmlns:system="clr-namespace:System;assembly=mscorlib"
              mc:Ignorable="d" 
-             d:DesignHeight="600" d:DesignWidth="800" Background="Transparent" x:Name="aboutcontrol">
+             d:DesignHeight="600" d:DesignWidth="800" Background="Transparent" x:Name="AboutControl">
     <UserControl.Resources>
         <ResourceDictionary>
             <Style TargetType="TextBlock" x:Key="TextBlockHeader">
@@ -14,7 +15,6 @@
                 <Setter Property="FontSize" Value="14"/>
                 <Setter Property="Foreground" Value="{StaticResource AccentColorBrush}"/>
             </Style>
-            <converter:TextWithHyperlinkParametersConverter x:Key="TextWithHyperlinkParametersConverter"/>
             <Style TargetType="Hyperlink" x:Key="HyperlinkStyle">
                 <Setter Property="TextBlock.TextDecorations" Value="{x:Null}"/>
                 <Setter Property="Foreground" Value="{StaticResource NormalColorBrush}"/>
@@ -49,7 +49,7 @@
                 <TextBlock Text="Hurricane" FontSize="24" FontFamily="Segoe UI Light"/>
                 <StackPanel Orientation="Horizontal"  Margin="0,5,0,0">
                     <TextBlock Text="Version: "/>
-                    <TextBlock Text="{Binding ElementName=aboutcontrol,Path=CurrentVersion}" FontWeight="Bold"/>
+                    <TextBlock Text="{Binding ElementName=AboutControl,Path=CurrentVersion}" FontWeight="Bold"/>
                     <TextBlock Text="Beta" Foreground="{DynamicResource AccentColorBrush}" FontWeight="Bold" Margin="5,0,0,0"/>
                 </StackPanel>
                 <TextBlock Text="{DynamicResource AboutCopyright}" Margin="0,10,0,0"/>
@@ -141,7 +141,7 @@
                 </StackPanel>
             </StackPanel>
             <TextBlock ex:TextBlockHelper.UpperText="{DynamicResource Libraries}" Style="{StaticResource TextBlockHeader}" Margin="0,40,0,0"/>
-            <ItemsControl ItemsSource="{Binding ElementName=aboutcontrol,Path=Components}" Margin="0,10,0,0">
+            <ItemsControl ItemsSource="{Binding ElementName=AboutControl,Path=Components}" Margin="0,10,0,0">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <Grid Margin="0,5,0,0">
@@ -160,7 +160,7 @@
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
             <TextBlock ex:TextBlockHelper.UpperText="{DynamicResource Images}" Style="{StaticResource TextBlockHeader}" Margin="0,30,0,0"/>
-            <ItemsControl ItemsSource="{Binding ElementName=aboutcontrol,Path=ImageCreators}" Margin="0,10,0,0">
+            <ItemsControl ItemsSource="{Binding ElementName=AboutControl,Path=ImageCreators}" Margin="0,10,0,0">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <Grid>
@@ -196,22 +196,26 @@
                     <TextBlock TextWrapping="Wrap" Text="{DynamicResource AboutThanks2}"/>
                 </Label>
                 <Label>
-                    <Label.Content>
-                        <MultiBinding Converter="{StaticResource TextWithHyperlinkParametersConverter}">
-                            <Binding Source="{StaticResource AboutThanks3}" />
-                            <Binding Source="ConnyKarras$https://www.vb-paradise.de/index.php/User/16654/"/>
-                            <Binding Source="GimpTutWorks$https://www.vb-paradise.de/index.php/User/10535/"/>
-                            <Binding Source="filoe$https://www.vb-paradise.de/index.php/User/8712/"/>
-                        </MultiBinding>
-                    </Label.Content>
+                    <ex:ContentControlExtensions.FormatValues>
+                        <x:Array Type="system:String">
+                            <system:String>ConnyKarras$https://www.vb-paradise.de/index.php/User/16654/</system:String>
+                            <system:String>GimpTutWorks$https://www.vb-paradise.de/index.php/User/10535/</system:String>
+                            <system:String>filoe$https://www.vb-paradise.de/index.php/User/8712/</system:String>
+                        </x:Array>
+                    </ex:ContentControlExtensions.FormatValues>
+                    <ex:ContentControlExtensions.FormattedContent>
+                        <DynamicResource ResourceKey="AboutThanks3"/>
+                    </ex:ContentControlExtensions.FormattedContent>
                 </Label>
                 <Label>
-                    <Label.Content>
-                        <MultiBinding Converter="{StaticResource TextWithHyperlinkParametersConverter}">
-                            <Binding Source="{StaticResource AboutThanks4}" />
-                            <Binding Source="VB-Paradise$https://www.vb-paradise.de/"/>
-                        </MultiBinding>
-                    </Label.Content>
+                    <ex:ContentControlExtensions.FormatValues>
+                        <x:Array Type="system:String">
+                            <system:String>VB-Paradise$https://www.vb-paradise.de/</system:String>
+                        </x:Array>
+                    </ex:ContentControlExtensions.FormatValues>
+                    <ex:ContentControlExtensions.FormattedContent>
+                        <DynamicResource ResourceKey="AboutThanks4"/>
+                    </ex:ContentControlExtensions.FormattedContent>
                 </Label>
             </StackPanel>
         </StackPanel>

@@ -197,6 +197,7 @@
     <Compile Include="Extensions\Converter\InvertBooleanConverter.cs" />
     <Compile Include="Extensions\Converter\MillisecondsToStringConverter.cs" />
     <Compile Include="Extensions\Converter\PlaylistInfoConverter.cs" />
+    <Compile Include="Extensions\ContentControlExtensions.cs" />
     <Compile Include="Extensions\MahApps\TransitioningExtensions.cs" />
     <Compile Include="Extensions\Controls\SliderWhichMakesMoves.cs" />
     <Compile Include="Extensions\TextBlockTextFormat.cs" />
@@ -228,9 +229,6 @@
     <Compile Include="Extensions\Converter\PlaceholderConverter.cs" />
     <Compile Include="Extensions\Converter\TimeSpanProgressConverter.cs" />
     <Compile Include="Extensions\Converter\StringArrayToStringConverter.cs" />
-    <Compile Include="Extensions\Converter\TextWithHyperlinkParametersConverter.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Extensions\Converter\TimespanToMinutesSeconds.cs" />
     <Compile Include="Extensions\GridViewSort.cs" />
     <Compile Include="Extensions\Controls\VectorMenuItem.cs" />

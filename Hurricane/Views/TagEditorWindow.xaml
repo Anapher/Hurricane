@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
         xmlns:converter="clr-namespace:Hurricane.Extensions.Converter"
-        Title="{StaticResource TagEditor}" GlowBrush="{StaticResource AccentColorBrush}" x:Name="window" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" Width="600" Height="500" DataContext="{Binding ElementName=window}" ShowInTaskbar="False">
+        Title="{StaticResource TagEditor}" GlowBrush="{StaticResource AccentColorBrush}" x:Name="BaseWindow" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" Width="600" Height="500" DataContext="{Binding ElementName=BaseWindow}" ShowInTaskbar="False">
     <Window.Resources>
         <converter:StringArrayToStringConverter x:Key="StringArrayToStringConverter"/>
     </Window.Resources>
@@ -49,7 +49,7 @@
                             <TextBox Text="{Binding TagFile.Tag.Year,ValidatesOnDataErrors=True,UpdateSourceTrigger=PropertyChanged,NotifyOnValidationError=True}" Grid.Column="1" VerticalAlignment="Center"/>
                         </Grid>
                         <Expander Header="{StaticResource Genre}" Margin="30,0,0,0">
-                            <ListBox x:Name="lstGenre" Height="200">
+                            <ListBox x:Name="GenreListBox" Height="200">
                                 <ListBox.ItemTemplate>
                                     <DataTemplate>
                                         <CheckBox Content="{Binding Text}" IsChecked="{Binding IsChecked}"/>
@@ -126,7 +126,7 @@
                         </MenuItem>
                         <MenuItem Header="{StaticResource Remove}" Click="MenuItemRemoveAllText_Click"/>
                     </Menu>
-                    <TextBox x:Name="txtLyrics"  Grid.Row="1" AcceptsReturn="True" AcceptsTab="True" Text="{Binding TagFile.Tag.Lyrics}"/>
+                    <TextBox x:Name="LyrcisTextBox"  Grid.Row="1" AcceptsReturn="True" AcceptsTab="True" Text="{Binding TagFile.Tag.Lyrics}"/>
                 </Grid>
             </TabItem>
         </TabControl>

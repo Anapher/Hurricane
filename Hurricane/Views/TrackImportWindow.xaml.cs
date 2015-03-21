@@ -1,19 +1,18 @@
 ﻿using System.Collections.ObjectModel;
 using Hurricane.Music.Playlist;
-using MahApps.Metro.Controls;
 
 namespace Hurricane.Views
 {
     /// <summary>
     /// Interaction logic for TrackImportWindow.xaml
     /// </summary>
-    public partial class TrackImportWindow : MetroWindow
+    public partial class TrackImportWindow
     {
         public TrackImportWindow(ObservableCollection<NormalPlaylist> playlists, NormalPlaylist selectedplaylist, string trackname)
         {
-            this.Playlists = playlists;
-            this.SelectedPlaylist = selectedplaylist;
-            this.Trackname = trackname;
+            Playlists = playlists;
+            SelectedPlaylist = selectedplaylist;
+            Trackname = trackname;
             InitializeComponent();
         }
 

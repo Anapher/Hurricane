@@ -6,10 +6,8 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using AudioVisualisation;
-using Hurricane.Music;
 using Hurricane.Utilities;
 using Hurricane.ViewModels;
-using WPFSoundVisualizationLib;
 
 namespace Hurricane.AppMainWindow.WindowSkins
 {
@@ -43,14 +41,14 @@ namespace Hurricane.AppMainWindow.WindowSkins
         {
             var textBlock = TitleTransitioningControl.Content as TextBlock;
             if (textBlock == null) return;
-            CurrentTrackAnimation(textBlock, polyplay, true);
+            CurrentTrackAnimation(textBlock, PlayPolygon, true);
         }
 
         private void Grid_MouseLeave(object sender, MouseEventArgs e)
         {
             var textBlock = TitleTransitioningControl.Content as TextBlock;
             if (textBlock == null) return;
-            CurrentTrackAnimation(textBlock, polyplay, false);
+            CurrentTrackAnimation(textBlock, PlayPolygon, false);
         }
 
         private void CurrentTrackAnimation(TextBlock txt, Polygon poly, bool inAnimate)

@@ -7,7 +7,6 @@
              xmlns:extensions="clr-namespace:Hurricane.Extensions"
              xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
              xmlns:converter="clr-namespace:Hurricane.Settings.Converter"
-             xmlns:userControls="clr-namespace:Hurricane.Views.UserControls"
              xmlns:appCommunication="clr-namespace:Hurricane.AppCommunication"
              xmlns:lvm="clr-namespace:Hurricane.Extensions.ListViewLayoutManager"
              xmlns:qrCodeNet="clr-namespace:Gma.QrCodeNet.Encoding.Windows.WPF;assembly=Gma.QrCodeNet.Encoding"
@@ -66,27 +65,27 @@
                                         <ComboBox ItemsSource="{Binding SelectedSoundOut.AudioDevices}" Margin="10,0,0,0" SelectedItem="{Binding SelectedAudioDevice}" Width="300" HorizontalAlignment="Left" ItemTemplateSelector="{StaticResource ComboBoxItemTemplateChooser}" SelectedIndex="{Binding SelectedAudioDeviceIndex}">
                                             <extensions:ComboBoxItemTemplateChooser.DropDownTemplate>
                                                 <DataTemplate>
-                                                    <Grid x:Name="grid">
-                                                        <TextBlock Text="{Binding}" x:Name="txt"/>
+                                                    <Grid>
+                                                        <TextBlock Text="{Binding}" x:Name="TextBlock"/>
                                                     </Grid>
                                                     <DataTemplate.Triggers>
                                                         <DataTrigger Binding="{Binding IsDefault}" Value="True">
-                                                            <Setter TargetName="txt" Property="Foreground" Value="#FFC15757"/>
+                                                            <Setter TargetName="TextBlock" Property="Foreground" Value="#FFC15757"/>
                                                         </DataTrigger>
                                                         <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=ComboBoxItem},Path=IsSelected}" Value="True">
-                                                            <Setter TargetName="txt" Property="Foreground" Value="White"/>
+                                                            <Setter TargetName="TextBlock" Property="Foreground" Value="White"/>
                                                         </DataTrigger>
                                                     </DataTemplate.Triggers>
                                                 </DataTemplate>
                                             </extensions:ComboBoxItemTemplateChooser.DropDownTemplate>
                                             <extensions:ComboBoxItemTemplateChooser.SelectedTemplate>
                                                 <DataTemplate>
-                                                    <Grid x:Name="grid">
-                                                        <TextBlock Text="{Binding}" x:Name="txt"/>
+                                                    <Grid>
+                                                        <TextBlock Text="{Binding}" x:Name="TextBlock"/>
                                                     </Grid>
                                                     <DataTemplate.Triggers>
                                                         <DataTrigger Binding="{Binding IsDefault}" Value="True">
-                                                            <Setter TargetName="txt" Property="Foreground" Value="#FFC15757"/>
+                                                            <Setter TargetName="TextBlock" Property="Foreground" Value="#FFC15757"/>
                                                         </DataTrigger>
                                                     </DataTemplate.Triggers>
                                                 </DataTemplate>

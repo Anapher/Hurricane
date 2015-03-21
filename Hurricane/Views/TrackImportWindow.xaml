@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
         xmlns:extensions="clr-namespace:Hurricane.Extensions"
-        Title="{StaticResource ImportTrack}" SizeToContent="Height" Width="400" GlowBrush="{StaticResource AccentColorBrush}" ShowInTaskbar="False" ResizeMode="NoResize" x:Name="window" WindowStartupLocation="CenterOwner">
+        Title="{StaticResource ImportTrack}" SizeToContent="Height" Width="400" GlowBrush="{StaticResource AccentColorBrush}" ShowInTaskbar="False" ResizeMode="NoResize" x:Name="BaseWindow" WindowStartupLocation="CenterOwner">
     <StackPanel Orientation="Vertical" Margin="10">
         <Grid>
             <Grid.ColumnDefinitions>
@@ -14,7 +14,7 @@
                 <TextBlock Text="{StaticResource TrackName}"/>
                 <TextBlock Text=":"/>
             </StackPanel>
-            <TextBlock Text="{Binding ElementName=window,Path=Trackname}" Grid.Column="1"/>
+            <TextBlock Text="{Binding ElementName=BaseWindow,Path=Trackname}" Grid.Column="1"/>
         </Grid>
         <Grid Margin="0,10,0,0">
             <Grid.ColumnDefinitions>
@@ -25,11 +25,11 @@
                 <TextBlock Text="{StaticResource Playlist}"/>
                 <TextBlock Text=":"/>
             </StackPanel>
-            <ComboBox Grid.Column="1" ItemsSource="{Binding ElementName=window,Path=Playlists}" SelectedItem="{Binding ElementName=window,Path=SelectedPlaylist}" DisplayMemberPath="Name"/>
+            <ComboBox Grid.Column="1" ItemsSource="{Binding ElementName=BaseWindow,Path=Playlists}" SelectedItem="{Binding ElementName=BaseWindow,Path=SelectedPlaylist}" DisplayMemberPath="Name"/>
         </Grid>
         <DockPanel Margin="0,15,0,0">
-            <CheckBox Content="{StaticResource Remember}" IsChecked="{Binding ElementName=window,Path=RememberChoice}" x:Name="chkremember"/>
-            <CheckBox Content="{StaticResource AlsoAfterRestart}" Margin="5,0,0,0" IsChecked="{Binding ElementName=window,Path=RememberAlsoAfterRestart}" IsEnabled="{Binding ElementName=chkremember,Path=IsChecked}" ToolTip="{StaticResource CanBeResetedInSettings}"/>
+            <CheckBox Content="{StaticResource Remember}" IsChecked="{Binding ElementName=BaseWindow,Path=RememberChoice}" x:Name="RememberCheckBox"/>
+            <CheckBox Content="{StaticResource AlsoAfterRestart}" Margin="5,0,0,0" IsChecked="{Binding ElementName=BaseWindow,Path=RememberAlsoAfterRestart}" IsEnabled="{Binding ElementName=RememberCheckBox,Path=IsChecked}" ToolTip="{StaticResource CanBeResetedInSettings}"/>
             <Grid Grid.IsSharedSizeScope="True" HorizontalAlignment="Right">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition SharedSizeGroup="Buttons"/>

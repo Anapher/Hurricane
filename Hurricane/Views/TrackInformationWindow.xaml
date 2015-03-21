@@ -5,13 +5,12 @@
         xmlns:converter="clr-namespace:Hurricane.Extensions.Converter"
         xmlns:track="clr-namespace:Hurricane.Music.Track"
         xmlns:hurricaneControls="clr-namespace:Hurricane.Extensions.Controls"
-        Title="{StaticResource TrackInformation}" SizeToContent="Height" GlowBrush="{StaticResource AccentColorBrush}" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" Width="800" x:Name="window" ShowInTaskbar="False" DataContext="{Binding ElementName=window}">
+        Title="{StaticResource TrackInformation}" SizeToContent="Height" GlowBrush="{StaticResource AccentColorBrush}" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" Width="800" x:Name="BaseWindow" ShowInTaskbar="False" DataContext="{Binding ElementName=BaseWindow}">
     <Window.Resources>
         <converter:RoundSizeConverter x:Key="RoundSizeConverter"/>
         <converter:NeverIfDateIsNull x:Key="NeverIfDateIsNull"/>
         <converter:PlaceholderConverter x:Key="PlaceholderConverter"/>
         <converter:MillisecondsToStringConverter x:Key="MillisecondsToStringConverter"/>
-
         <Style TargetType="Button" x:Key="TextButton">
             <Setter Property="Template">
                 <Setter.Value>
@@ -235,7 +234,7 @@
                     </ContentControl.Resources>
                 </ContentControl>
             </StackPanel>
-            <hurricaneControls:TrackImagePreseter Track="{Binding ElementName=window,Path=CurrentTrack}" Height="136" Width="136" HorizontalAlignment="Left" Grid.Column="1">
+            <hurricaneControls:TrackImagePreseter Track="{Binding ElementName=BaseWindow,Path=CurrentTrack}" Height="136" Width="136" HorizontalAlignment="Left" Grid.Column="1">
                 <hurricaneControls:TrackImagePreseter.ContextMenu>
                     <ContextMenu>
                         <MenuItem Header="{StaticResource Save}" Command="{Binding SaveImage}">
@@ -264,7 +263,7 @@
                     <TextBlock Text="{StaticResource Title}"/>
                     <TextBlock Text=":"/>
                 </StackPanel>
-                <TextBox Text="{Binding ElementName=window,Path=CurrentTrack.Title}" Grid.Column="1"/>
+                <TextBox Text="{Binding ElementName=BaseWindow,Path=CurrentTrack.Title}" Grid.Column="1"/>
             </Grid>
             <Grid Margin="0,5,0,0">
                 <Grid.ColumnDefinitions>
@@ -275,7 +274,7 @@
                     <TextBlock Text="{StaticResource Artist}"/>
                     <TextBlock Text=":"/>
                 </StackPanel>
-                <TextBox Text="{Binding ElementName=window,Path=CurrentTrack.Artist}" Grid.Column="1"/>
+                <TextBox Text="{Binding ElementName=BaseWindow,Path=CurrentTrack.Artist}" Grid.Column="1"/>
             </Grid>
             <Grid Margin="0,5,0,0">
                 <Grid.ColumnDefinitions>
@@ -286,7 +285,7 @@
                     <TextBlock Text="{StaticResource Album}"/>
                     <TextBlock Text=":"/>
                 </StackPanel>
-                <TextBox Grid.Column="1" Text="{Binding ElementName=window,Path=CurrentTrack.Album}"/>
+                <TextBox Grid.Column="1" Text="{Binding ElementName=BaseWindow,Path=CurrentTrack.Album}"/>
             </Grid>
             <Grid Margin="0,5,0,0">
                 <Grid.ColumnDefinitions>
@@ -297,7 +296,7 @@
                     <TextBlock Text="{StaticResource Genre}"/>
                     <TextBlock Text=":"/>
                 </StackPanel>
-                <TextBox Text="{Binding ElementName=window,Path=CurrentTrack.Genres}" Grid.Column="1"/>
+                <TextBox Text="{Binding ElementName=BaseWindow,Path=CurrentTrack.Genres}" Grid.Column="1"/>
             </Grid>
             <Grid Margin="0,5,0,0">
                 <Grid.ColumnDefinitions>
@@ -308,7 +307,7 @@
                     <TextBlock Text="{StaticResource Year}"/>
                     <TextBlock Text=":"/>
                 </StackPanel>
-                <TextBox Text="{Binding ElementName=window,Path=CurrentTrack.Year,ValidatesOnDataErrors=True,UpdateSourceTrigger=PropertyChanged,NotifyOnValidationError=True}" Grid.Column="1"/>
+                <TextBox Text="{Binding ElementName=BaseWindow,Path=CurrentTrack.Year,ValidatesOnDataErrors=True,UpdateSourceTrigger=PropertyChanged,NotifyOnValidationError=True}" Grid.Column="1"/>
             </Grid>
             <Separator Margin="0,10"/>
             <Grid>
@@ -338,7 +337,7 @@
                     <TextBlock Text="{StaticResource Added}"/>
                     <TextBlock Text=":"/>
                 </StackPanel>
-                <TextBlock Text="{Binding ElementName=window,Path=CurrentTrack.TimeAdded,StringFormat={StaticResource DateFormat}}" Grid.Column="1"/>
+                <TextBlock Text="{Binding ElementName=BaseWindow,Path=CurrentTrack.TimeAdded,StringFormat={StaticResource DateFormat}}" Grid.Column="1"/>
             </Grid>
             <Grid Margin="0,5,0,0">
                 <Grid.ColumnDefinitions>
@@ -349,7 +348,7 @@
                     <TextBlock Text="{StaticResource Played}"/>
                     <TextBlock Text=":"/>
                 </StackPanel>
-                <TextBlock Text="{Binding ElementName=window,Path=CurrentTrack.LastTimePlayed,Converter={StaticResource NeverIfDateIsNull}}" Grid.Column="1"/>
+                <TextBlock Text="{Binding ElementName=BaseWindow,Path=CurrentTrack.LastTimePlayed,Converter={StaticResource NeverIfDateIsNull}}" Grid.Column="1"/>
             </Grid>
         </StackPanel>
     </Grid>
