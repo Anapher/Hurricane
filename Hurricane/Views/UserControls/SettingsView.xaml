@@ -446,6 +446,21 @@
                     <Button Margin="0,10,0,0" Content="{DynamicResource Reset}" HorizontalAlignment="Left" Width="200" IsEnabled="{Binding Config.RememberTrackImportPlaylist}" Command="{Binding ResetTrackImport}"/>
                     <TextBlock Text="HURRICANE" Style="{StaticResource TextBlockHeader}" Margin="0,30,0,0"/>
                     <Button Margin="0,10,0,0" Content="{DynamicResource TotalReset}" Foreground="#FFCF0606" Command="{Binding TotalReset}" HorizontalAlignment="Left" Width="200"/>
+                    <TextBlock extensions:TextBlockHelper.UpperText="{DynamicResource MoveSaveLocation}" Style="{StaticResource TextBlockHeader}" Margin="0,30,0,0"/>
+                    <Button Margin="0,10,0,0" HorizontalAlignment="Left" Width="250" Command="{Binding SwitchLocation}">
+                        <Button.Style>
+                            <Style TargetType="Button" BasedOn="{StaticResource MetroButton}">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding SaveSettingsToAppData}" Value="true">
+                                        <Setter Property="Content" Value="{DynamicResource MoveToAppFolder}"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding SaveSettingsToAppData}" Value="false">
+                                        <Setter Property="Content" Value="{DynamicResource MoveToAppData}"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
                 </StackPanel>
             </TabItem>
             <TabItem Header="Language">

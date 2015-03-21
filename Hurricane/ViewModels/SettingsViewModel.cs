@@ -329,6 +329,32 @@ namespace Hurricane.ViewModels
 
         #endregion
 
+        #region Reset
+
+        public bool SaveSettingsToAppData
+        {
+            get { return SaveLocationManager.IsInstalled(); }
+            set
+            {
+                if (value)
+                {
+                    SaveLocationManager.MoveToAppData(BaseWindow.WindowDialogService);
+                }
+                else
+                {
+                    SaveLocationManager.MoveToLocalFoler(BaseWindow.WindowDialogService);
+                }
+            }
+        }
+
+        private RelayCommand _switchLocation;
+        public RelayCommand SwitchLocation
+        {
+            get { return _switchLocation ?? (_switchLocation = new RelayCommand(parameter => { SaveSettingsToAppData = !SaveSettingsToAppData; })); }
+        }
+
+        #endregion
+
         private RelayCommand _testnotification;
         public RelayCommand TestNotification
         {

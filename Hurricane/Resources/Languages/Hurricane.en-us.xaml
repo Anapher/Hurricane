@@ -345,4 +345,9 @@
     <system:String x:Key="OpenTrackSourceDescription">Open the source (url or path) of the track</system:String>
     <system:String x:Key="ImportTracks">Import Tracks</system:String>
     <system:String x:Key="NoSoundOutDeviceFound">No sound device found.</system:String>
+    <system:String x:Key="MoveSaveLocation">Move location</system:String>
+    <system:String x:Key="ReplaceFilesAtNewSaveLocation">Should the existing files be replaced at the new location?</system:String>
+    <system:String x:Key="MoveSaveLocationSuccessful">To continue, Hurricane will get restarted.</system:String>
+    <system:String x:Key="MoveToAppData">Move to AppData</system:String>
+    <system:String x:Key="MoveToAppFolder">Move to program folder</system:String>
 </ResourceDictionary>

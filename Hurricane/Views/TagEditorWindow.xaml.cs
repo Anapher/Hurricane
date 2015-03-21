@@ -69,7 +69,10 @@ namespace Hurricane.Views
             }
             catch (Exception ex)
             {
-                MessageWindow message = new MessageWindow(string.Format(Application.Current.Resources["SaveTagsError"].ToString(), ex.Message), Application.Current.Resources["Error"].ToString(), false);
+                MessageWindow message =
+                    new MessageWindow(
+                        string.Format(Application.Current.Resources["SaveTagsError"].ToString(), ex.Message),
+                        Application.Current.Resources["Error"].ToString(), false) {Owner = this};
                 message.ShowDialog();
                 return;
             }

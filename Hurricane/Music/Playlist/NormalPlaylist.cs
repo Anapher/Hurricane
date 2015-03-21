@@ -30,6 +30,7 @@ namespace Hurricane.Music.Playlist
                 if (!await track.LoadInformation())
                     continue;
                 track.TimeAdded = DateTime.Now;
+                track.IsChecked = false;
                 AddTrack(track);
             }
 
@@ -49,6 +50,7 @@ namespace Hurricane.Music.Playlist
                     var t = new LocalTrack() { Path = fi.FullName };
                     if (!await t.LoadInformation()) continue;
                     t.TimeAdded = DateTime.Now;
+                    t.IsChecked = false;
                     AddTrack(t);
                 }
                 ++index;

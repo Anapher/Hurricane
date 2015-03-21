@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
         xmlns:converter="clr-namespace:Hurricane.Extensions.Converter"
-        Title="{StaticResource TagEditor}" GlowBrush="{StaticResource AccentColorBrush}" x:Name="window" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" Width="600" Height="500" DataContext="{Binding ElementName=window}">
+        Title="{StaticResource TagEditor}" GlowBrush="{StaticResource AccentColorBrush}" x:Name="window" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" Width="600" Height="500" DataContext="{Binding ElementName=window}" ShowInTaskbar="False">
     <Window.Resources>
         <converter:StringArrayToStringConverter x:Key="StringArrayToStringConverter"/>
     </Window.Resources>

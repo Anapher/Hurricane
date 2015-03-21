@@ -50,7 +50,7 @@ namespace Hurricane.AppMainWindow.Messages
             return prg;
         }
 
-        public async Task<bool> ShowMessage(string message, string title, bool cancancel, DialogMode mode)
+        public async Task<bool> ShowMessage(string message, string title, bool cancancel, DialogMode mode, string affirmativeButtonText = null, string negativeButtonText = null)
         {
             if (Configuration.ShowFullscreenDialogs)
             {
@@ -60,8 +60,8 @@ namespace Hurricane.AppMainWindow.Messages
                             cancancel ? MessageDialogStyle.AffirmativeAndNegative : MessageDialogStyle.Affirmative,
                             new MetroDialogSettings()
                             {
-                                AffirmativeButtonText = Application.Current.Resources["OK"].ToString(),
-                                NegativeButtonText = Application.Current.Resources["Cancel"].ToString(),
+                                AffirmativeButtonText = affirmativeButtonText ?? Application.Current.Resources["OK"].ToString(),
+                                NegativeButtonText = negativeButtonText ?? Application.Current.Resources["Cancel"].ToString(),
                                 AnimateHide = ShowHideAnimation(mode),
                                 AnimateShow = ShowShowAnimation(mode),
                                 ColorScheme = MetroDialogColorScheme.Theme
@@ -70,7 +70,7 @@ namespace Hurricane.AppMainWindow.Messages
             }
             else
             {
-                var messageWindow = new MessageWindow(message, title, cancancel) { Owner = BaseWindow };
+                var messageWindow = new MessageWindow(message, title, cancancel, affirmativeButtonText, negativeButtonText) { Owner = BaseWindow };
                 var result = false;
                 await Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => result = messageWindow.ShowDialog() == true));
                 return result;

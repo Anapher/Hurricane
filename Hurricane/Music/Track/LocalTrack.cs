@@ -31,7 +31,6 @@ namespace Hurricane.Music.Track
         public async override Task<bool> LoadInformation()
         {
             _trackinformation = null; //to refresh the fileinfo
-            IsChecked = false;
             Extension = TrackInformation.Extension.ToUpper().Replace(".", string.Empty);
 
             return await UpdateInformation(TrackInformation);

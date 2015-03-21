@@ -213,6 +213,7 @@
     <Compile Include="Music\Track\WebApi\YouTubeApi\DataClasses\MediaDescription.cs" />
     <Compile Include="Settings\Converter\GroupConverter.cs" />
     <Compile Include="Settings\Converter\TransitionConverter.cs" />
+    <Compile Include="Settings\SaveLocationManager.cs" />
     <Compile Include="Settings\Themes\AudioVisualisation\AudioVisualisationPluginHelper.cs" />
     <Compile Include="Settings\Themes\AudioVisualisation\CustomAudioVisualisation.cs" />
     <Compile Include="Settings\Themes\AudioVisualisation\DefaultAudioVisualisation\AdvancedWindowAudioVisualisation.cs" />
@@ -382,6 +383,7 @@
     <Compile Include="Utilities\UIHelper.cs" />
     <Compile Include="Utilities\WindowHelper.cs" />
     <Compile Include="Utilities\WpfScreen.cs" />
+    <Compile Include="ViewModels\QueueManagerViewModel.cs" />
     <Compile Include="ViewModels\SettingsViewModel.cs" />
     <Compile Include="Views\TagEditorWindow.xaml.cs">
       <DependentUpon>TagEditorWindow.xaml</DependentUpon>

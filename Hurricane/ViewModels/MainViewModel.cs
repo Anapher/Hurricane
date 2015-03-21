@@ -327,7 +327,7 @@ namespace Hurricane.ViewModels
             {
                 return _openqueuemanager ?? (_openqueuemanager = new RelayCommand(parameter =>
                 {
-                    _baseWindow.WindowDialogService.ShowDialog(new QueueManager());
+                    _baseWindow.WindowDialogService.ShowDialog(new QueueManager(MusicManager.Queue));
                 }));
             }
         }

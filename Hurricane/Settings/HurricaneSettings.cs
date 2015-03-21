@@ -28,7 +28,7 @@ namespace Hurricane.Settings
 
         public HurricaneSettings()
         {
-            if (File.Exists(".IsInstalled"))
+            if (SaveLocationManager.IsInstalled())
             {
                 var appDataDir = new DirectoryInfo(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Hurricane"));
                 if (!appDataDir.Exists) appDataDir.Create();

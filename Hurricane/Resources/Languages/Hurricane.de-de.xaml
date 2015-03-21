@@ -345,4 +345,9 @@
     <system:String x:Key="OpenTrackSourceDescription">Quelle des ausgewählten Tracks (Url oder Pfad) öffnen</system:String>
     <system:String x:Key="ImportTracks">Importiere Tracks</system:String>
     <system:String x:Key="NoSoundOutDeviceFound">Es konnte kein Wiedergabegerät gefunden werden.</system:String>
+    <system:String x:Key="MoveSaveLocation">Speicherort verschieben</system:String>
+    <system:String x:Key="ReplaceFilesAtNewSaveLocation">Sollen die bereits vorhandenen Dateien in dem neuen Speicherort ersetzt werden?</system:String>
+    <system:String x:Key="MoveSaveLocationSuccessful">Hurricane wird nun neu gestartet, um die Aktion abzuschließen.</system:String>
+    <system:String x:Key="MoveToAppData">Nach AppData verschieben</system:String>
+    <system:String x:Key="MoveToAppFolder">In den Anwendungsordner verschieben</system:String>
 </ResourceDictionary>
