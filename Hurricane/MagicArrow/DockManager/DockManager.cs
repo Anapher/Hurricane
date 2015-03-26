@@ -63,7 +63,7 @@ namespace Hurricane.MagicArrow.DockManager
             HookManager.MouseMove += HookManager_MouseMove;
         }
 
-        protected bool MouseIsLeftRightOrTop(int mouseX, int MouseY, out WindowPositionSide? side)
+        protected bool MouseIsLeftRightOrTop(int mouseX, int mouseY, out WindowPositionSide? side)
         {
             if (mouseX < WpfScreen.MostLeftX + 5)
             {
@@ -75,7 +75,7 @@ namespace Hurricane.MagicArrow.DockManager
                 side = WindowPositionSide.Right;
                 return true;
             }
-            if (MouseY < 5)
+            if (mouseY < 5)
             {
                 side = WindowPositionSide.Top;
                 return true;
@@ -173,9 +173,7 @@ namespace Hurricane.MagicArrow.DockManager
                     dockwindowWidth = 300;
                     break;
                 case WindowPositionSide.Top:
-                    dockwindowLeft = screen.WorkingArea.Left;
-                    dockwindowWidth = screen.WorkingArea.Width;
-                    break;
+                    return;
                 default:
                     throw new ArgumentOutOfRangeException("side");
             }

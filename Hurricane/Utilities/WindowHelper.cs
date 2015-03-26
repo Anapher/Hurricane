@@ -7,7 +7,7 @@ using Hurricane.Utilities.Native;
 
 namespace Hurricane.Utilities
 {
-    class WindowHelper
+    static class WindowHelper
     {
         public static string GetActiveWindowTitle(IntPtr handle)
         {
@@ -54,13 +54,21 @@ namespace Hurricane.Utilities
                           WS_MINIMIZEBOX = 0x20000;
 
 
-
         internal static void HideMinimizeAndMaximizeButtons(Window window)
         {
-            IntPtr hwnd = new WindowInteropHelper(window).Handle;
+            var hwnd = new WindowInteropHelper(window).Handle;
             var currentStyle = UnsafeNativeMethods.GetWindowLong(hwnd, GWL_STYLE);
 
             UnsafeNativeMethods.SetWindowLong(hwnd, GWL_STYLE, (currentStyle & ~WS_MAXIMIZEBOX & ~WS_MINIMIZEBOX));
+
+        }
+
+        internal static void ShowMinimizeAndMaximizeButtons(Window window)
+        {
+            var hwnd = new WindowInteropHelper(window).Handle;
+            var currentStyle = UnsafeNativeMethods.GetWindowLong(hwnd, GWL_STYLE);
+
+            UnsafeNativeMethods.SetWindowLong(hwnd, GWL_STYLE, (currentStyle | WS_MAXIMIZEBOX | WS_MINIMIZEBOX));
         }
     }
 }

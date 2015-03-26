@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading;
 using System.Windows;
 using System.Windows.Threading;
+using Exceptionless;
 using Hurricane.Notification.WindowMessages;
 using Hurricane.Settings;
 using Hurricane.Settings.RegistryManager;
@@ -162,6 +163,19 @@ namespace Hurricane
         {
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
             Current.DispatcherUnhandledException += Current_DispatcherUnhandledException;
+            ExceptionlessClient.Default.Register();
+            ExceptionlessClient.Default.SubmittingEvent += DefaultOnSubmittingEvent;
+        }
+
+        private bool _sendReport;
+        private void DefaultOnSubmittingEvent(object sender, EventSubmittingEventArgs eventSubmittingEventArgs)
+        {
+            if (_sendReport)
+            {
+                eventSubmittingEventArgs.Cancel = true;
+                return;
+            }
+            _sendReport = true;
         }
 
         private void Current_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)

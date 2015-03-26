@@ -60,16 +60,16 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Libraries\CSCore.dll</HintPath>
     </Reference>
-    <Reference Include="Exceptionless, Version=2.0.1247.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="Exceptionless.Extras, Version=2.0.1283.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Exceptionless.2.0.1247\lib\portable-net40+sl50+win+wpa81+wp80\Exceptionless.dll</HintPath>
+      <HintPath>..\packages\Exceptionless.Wpf.2.0.1283\lib\net45\Exceptionless.Extras.dll</HintPath>
     </Reference>
-    <Reference Include="Exceptionless.Extras">
-      <HintPath>..\packages\Exceptionless.Wpf.2.0.1247\lib\net45\Exceptionless.Extras.dll</HintPath>
+    <Reference Include="Exceptionless.Portable">
+      <HintPath>..\packages\Exceptionless.Portable.2.0.1283\lib\portable-net40+sl50+win+wpa81+wp80\Exceptionless.Portable.dll</HintPath>
     </Reference>
-    <Reference Include="Exceptionless.Wpf, Version=2.0.1247.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="Exceptionless.Wpf, Version=2.0.1283.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Exceptionless.Wpf.2.0.1247\lib\net45\Exceptionless.Wpf.dll</HintPath>
+      <HintPath>..\packages\Exceptionless.Wpf.2.0.1283\lib\net45\Exceptionless.Wpf.dll</HintPath>
     </Reference>
     <Reference Include="Gma.QrCodeNet.Encoding, Version=0.4.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -519,6 +519,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Resources\Styles\AdvancedTimelineSlider.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Resources\Styles\DefaultAudioVisualisation.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

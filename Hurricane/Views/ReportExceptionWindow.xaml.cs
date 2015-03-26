@@ -1,9 +1,12 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Threading.Tasks;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
+using System.Xml;
+using System.Xml.Serialization;
 using Exceptionless;
+using Newtonsoft.Json;
 using Hurricane.Settings;
 
 namespace Hurricane.Views
@@ -30,11 +33,26 @@ namespace Hurricane.Views
         private async void ButtonSendErrorReport_Click(object sender, RoutedEventArgs e)
         {
             var ex = Error.ToExceptionless();
-            ex.SetUserDescription(null, NoteTextBox.Text);
+            ex.SetUserDescription(string.Empty, NoteTextBox.Text);
+            ex.AddObject(HurricaneSettings.Instance.Config, "HurricaneSettings", null, null, true);
+
+            if (HurricaneSettings.Instance.IsLoaded)
+            {
+                using (var sw = new StringWriter())
+                {
+                    var xmls = new XmlSerializer(typeof(ConfigSettings));
+                    xmls.Serialize(sw, HurricaneSettings.Instance.Config);
+
+                    var doc = new XmlDocument();
+                    doc.LoadXml(sw.ToString());
+                    ex.SetProperty("HurricaneSettings", JsonConvert.SerializeXmlNode(doc));
+                }
+            }
+
             ex.Submit();
             ((Button)sender).IsEnabled = false;
             StatusProgressBar.IsIndeterminate = true;
-            await Task.Run(() => ExceptionlessClient.Default.ProcessQueue());
+            await ExceptionlessClient.Default.ProcessQueueAsync();
             StatusProgressBar.IsIndeterminate = false;
             Application.Current.Shutdown();
         }

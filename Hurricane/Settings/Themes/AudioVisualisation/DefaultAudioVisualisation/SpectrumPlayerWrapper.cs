@@ -36,6 +36,6 @@ namespace Hurricane.Settings.Themes.AudioVisualisation.DefaultAudioVisualisation
             }
         }
 
-        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler PropertyChanged;
     }
 }

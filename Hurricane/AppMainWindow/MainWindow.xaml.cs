@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -94,6 +95,12 @@ namespace Hurricane
             MagicArrow.DockManager.CurrentSide = appsettings.ApplicationState.CurrentSide;
             WindowDialogService = new WindowDialogService(this);
             SystemEvents.PowerModeChanged += SystemEventsOnPowerModeChanged;
+            MouseLeftButtonDown += OnMouseLeftButtonDown;
+        }
+
+        private void OnMouseLeftButtonDown(object sender, MouseButtonEventArgs mouseButtonEventArgs)
+        {
+            _isDragging = false;
         }
 
         public void CenterWindowOnScreen()
@@ -182,14 +189,20 @@ namespace Hurricane
             MinWidth = skin.Configuration.MinWidth;
             ShowTitleBar = skin.Configuration.ShowTitleBar;
             ShowSystemMenuOnRightClick = skin.Configuration.ShowSystemMenuOnRightClick;
-            if (skin.Configuration.IsResizable)
+
+            if (!_isDragging)
             {
-                ResizeMode = ResizeMode.CanResize;
-                WindowHelper.HideMinimizeAndMaximizeButtons(this);
-            }
-            else
-            {
-                ResizeMode = ResizeMode.NoResize;
+                Debug.Print("do something");
+                if (skin.Configuration.IsResizable)
+                {
+                    WindowHelper.ShowMinimizeAndMaximizeButtons(this);
+                    ResizeMode = ResizeMode.CanResize;
+                }
+                else
+                {
+                    WindowHelper.HideMinimizeAndMaximizeButtons(this);
+                    ResizeMode = ResizeMode.NoResize;
+                }
             }
 
             if (skin == AdvancedWindowSkin && saveinformation)
@@ -287,9 +300,15 @@ namespace Hurricane
         #region Titlebar
 
         private bool _restoreIfMove;
+        private bool _isDragging;
+
         void skin_DragMoveStart(object sender, EventArgs e)
         {
+            _isDragging = true;
             if (WindowState == WindowState.Maximized) _restoreIfMove = true;
+            WindowHelper.HideMinimizeAndMaximizeButtons(this);
+            ResizeMode = ResizeMode.CanResize;
+
             MagicArrow.DockManager.DragStart();
             if (HostedWindow.Configuration.NeedsMovingHelp)
             {
@@ -306,6 +325,16 @@ namespace Hurricane
         void skin_DragMoveStop(object sender, EventArgs e)
         {
             _restoreIfMove = false;
+            if (HostedWindow.Configuration.IsResizable)
+            {
+                WindowHelper.ShowMinimizeAndMaximizeButtons(this);
+                ResizeMode = ResizeMode.CanResize;
+            }
+            else
+            {
+                WindowHelper.HideMinimizeAndMaximizeButtons(this);
+                ResizeMode = ResizeMode.NoResize;
+            }
             MagicArrow.DockManager.DragStop();
         }
 
@@ -392,9 +421,9 @@ namespace Hurricane
                 if (!_equalizerIsOpen)
                 {
                     var rect = WindowHelper.GetWindowRectangle(this);
-                    _equalizerWindow = new EqualizerWindow(rect, this.ActualWidth);
+                    _equalizerWindow = new EqualizerWindow(rect, ActualWidth);
                     _equalizerWindow.Closed += (s, e) => _equalizerIsOpen = false;
-                    _equalizerWindow.BeginCloseAnimation += (s, e) => this.Activate();
+                    _equalizerWindow.BeginCloseAnimation += (s, e) => Activate();
                     _equalizerWindow.Show();
                     _equalizerIsOpen = true;
                 }
@@ -467,7 +496,6 @@ namespace Hurricane
             await SetBackground();
             var animation = new DoubleAnimation(0, 1, TimeSpan.FromMilliseconds(1000));
             BackgroundContainer.BeginAnimation(OpacityProperty, animation);
-            
         }
 
         private async Task SetBackground()
