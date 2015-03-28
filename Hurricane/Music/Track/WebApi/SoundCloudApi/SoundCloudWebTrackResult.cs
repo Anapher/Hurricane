@@ -42,7 +42,7 @@ namespace Hurricane.Music.Track.WebApi.SoundCloudApi
 
         public override string DownloadFilename
         {
-            get { return Utilities.GeneralHelper.EscapeFilename(Title) + ".mp3"; }
+            get { return Utilities.GeneralHelper.EscapeFilename(Title); }
         }
 
         public override DownloadMethod DownloadMethod

@@ -204,6 +204,8 @@
     <Compile Include="Extensions\Controls\VolumeIcon.xaml.cs">
       <DependentUpon>VolumeIcon.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Music\Download\ConverterSettings.cs" />
+    <Compile Include="Music\Download\ffmpeg.cs" />
     <Compile Include="Music\Playlist\CueSharp.cs" />
     <Compile Include="Music\Playlist\ImportCueSheet.cs" />
     <Compile Include="Music\Playlist\ImportM3uPlaylist.cs" />
@@ -212,6 +214,7 @@
     <Compile Include="Music\Track\LocalTrackFragment.cs" />
     <Compile Include="Music\AudioEngine\CutSource.cs" />
     <Compile Include="Music\Track\WebApi\YouTubeApi\DataClasses\MediaDescription.cs" />
+    <Compile Include="Settings\Converter\AudioFormatToIndexConverter.cs" />
     <Compile Include="Settings\Converter\GroupConverter.cs" />
     <Compile Include="Settings\Converter\TransitionConverter.cs" />
     <Compile Include="Settings\SaveLocationManager.cs" />
@@ -378,6 +381,7 @@
     <Compile Include="Utilities\Native\UnsafeNativeMethods.cs" />
     <Compile Include="Utilities\PasswordGenerator.cs" />
     <Compile Include="Utilities\RegistryExtensions.cs" />
+    <Compile Include="Utilities\TaskExtensions.cs" />
     <Compile Include="Utilities\UIHelper.cs" />
     <Compile Include="Utilities\WindowHelper.cs" />
     <Compile Include="Utilities\WpfScreen.cs" />
@@ -519,10 +523,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Resources\Styles\AdvancedTimelineSlider.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Resources\Styles\DefaultAudioVisualisation.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -856,9 +856,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Music\MusicCover\APIs\Amazon\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\AudioVisualisation\AudioVisualisation.csproj">
       <Project>{3374a3e8-73da-48e8-bf53-5574a714ed8b}</Project>

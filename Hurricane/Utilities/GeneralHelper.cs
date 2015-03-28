@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -12,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Hurricane.Utilities
 {
-    static class GeneralHelper
+    public static class GeneralHelper
     {
         /// <summary>
         /// Function to get file impression in form of string from a file location.
@@ -30,12 +29,16 @@ namespace Hurricane.Utilities
             }
         }
 
+        /// <summary>
+        /// Check if the internet is available. It connects to google.com
+        /// </summary>
+        /// <returns>If the connection to google was successful</returns>
         public async static Task<bool> CheckForInternetConnection()
         {
             try
             {
                 using (var client = new WebClient { Proxy = null })
-                using (var foo = await client.OpenReadTaskAsync("http://www.google.com"))
+                using (await client.OpenReadTaskAsync("http://www.google.com"))
                 {
                     return true;
                 }
@@ -46,25 +49,44 @@ namespace Hurricane.Utilities
             }
         }
 
+        /// <summary>
+        /// Check if the current user has administrator rights
+        /// </summary>
+        /// <returns>If the current user has administrator rights</returns>
         public static bool IsRunningWithAdministratorRights()
         {
             var localAdminGroupSid = new SecurityIdentifier(WellKnownSidType.BuiltinAdministratorsSid, null);
-            WindowsIdentity windowsIdentity = WindowsIdentity.GetCurrent();
+            var windowsIdentity = WindowsIdentity.GetCurrent();
             return windowsIdentity.Groups.Select(g => (SecurityIdentifier)g.Translate(typeof(SecurityIdentifier))).Any(s => s == localAdminGroupSid);
         }
 
-        public static string EscapeFilename(string filenametoescape)
+        /// <summary>
+        /// Remove all invalid chars for a file name
+        /// </summary>
+        /// <param name="fileNameToEscape">The name of the file which could contain invalid chars</param>
+        /// <returns>The <see cref="fileNameToEscape"/> without the invalid chars</returns>
+        public static string EscapeFilename(string fileNameToEscape)
         {
             char[] illegalchars = { '\\', '/', ':', '*', '?', '"', '<', '>', '|' };
-            return RemoveChars(filenametoescape, illegalchars);
+            return RemoveChars(fileNameToEscape, illegalchars);
         }
 
+        /// <summary>
+        /// Remove all invalid chars from an artist name
+        /// </summary>
+        /// <param name="artist">The artist name</param>
+        /// <returns>The <see cref="artist"/> without the invalid chars</returns>
         public static string EscapeArtistName(string artist)
         {
             char[] illegalchars = { '.' };
             return RemoveChars(artist, illegalchars);
         }
 
+        /// <summary>
+        /// Remove all invalid chars from an title
+        /// </summary>
+        /// <param name="title"></param>
+        /// <returns></returns>
         public static string EscapeTitleName(string title)
         {
             char[] illegalchars = { '&' };
@@ -77,17 +99,23 @@ namespace Hurricane.Utilities
             return illegalchars.Aggregate(content, (current, item) => current.Replace(item.ToString(), string.Empty));
         }
 
-        public static void CreateShortcut(string path, string targetpath, string iconlocation)
+        /// <summary>
+        /// Creates a new short cut for to the <see cref="targetPath"/>
+        /// </summary>
+        /// <param name="path">The save location for the shortcut</param>
+        /// <param name="targetPath">The destination of the shortcut</param>
+        /// <param name="iconLocation">The location of the icon for the shortcut</param>
+        public static void CreateShortcut(string path, string targetPath, string iconLocation)
         {
-            Type t = Type.GetTypeFromCLSID(new Guid("72C24DD5-D70A-438B-8A42-98424B88AFB8")); //Windows Script Host Shell Object
+            var t = Type.GetTypeFromCLSID(new Guid("72C24DD5-D70A-438B-8A42-98424B88AFB8")); //Windows Script Host Shell Object
             dynamic shell = Activator.CreateInstance(t);
             try
             {
                 var lnk = shell.CreateShortcut(path);
                 try
                 {
-                    lnk.TargetPath = targetpath;
-                    lnk.IconLocation = iconlocation;
+                    lnk.TargetPath = targetPath;
+                    lnk.IconLocation = iconLocation;
                     lnk.Save();
                 }
                 finally
@@ -101,13 +129,18 @@ namespace Hurricane.Utilities
             }
         }
 
-        public static bool IsFileReady(String sFilename)
+        /// <summary>
+        /// Check if the file can be opened
+        /// </summary>
+        /// <param name="fileName">The path to the file</param>
+        /// <returns>If the file can be opened</returns>
+        public static bool IsFileReady(string fileName)
         {
             // If the file can be opened for exclusive access it means that the file
             // is no longer locked by another process.
             try
             {
-                using (FileStream inputStream = File.Open(sFilename, FileMode.Open, FileAccess.Read, FileShare.None))
+                using (FileStream inputStream = File.Open(fileName, FileMode.Open, FileAccess.Read, FileShare.None))
                 {
                     return inputStream.Length > 0;
                 }
@@ -118,17 +151,60 @@ namespace Hurricane.Utilities
             }
         }
 
+        /// <summary>
+        /// Check if the file is a video (for Hurricane)
+        /// </summary>
+        /// <param name="fileName">The path to the file</param>
+        /// <returns>If the file is a video</returns>
         public static bool IsVideo(string fileName)
         {
             return fileName.EndsWith(".mp4") || fileName.EndsWith(".wmv");
         }
 
+        /// <summary>
+        /// Builds the secounds part of a filter entry by the array and adds the missing dots: .mp4|mp3|.wmv|m4a -> .mp4;.mp3;.wmv;.m4a
+        /// </summary>
+        /// <param name="extensions">The list of the extensions</param>
+        /// <returns>The string which contains the extensions, ready for the dialog filter</returns>
         public static string GetFileDialogFilterFromArray(IEnumerable<string> extensions)
         {
             var stringBuilder = new StringBuilder();
-            stringBuilder.Append(String.Concat(extensions.Select(x => (x.StartsWith("*.") ? null : (x.StartsWith(".") ? "*" : "*.")) + x + ";").ToArray()));
+            stringBuilder.Append(string.Concat(extensions.Select(x => (x.StartsWith("*.") ? null : (x.StartsWith(".") ? "*" : "*.")) + x + ";").ToArray()));
             stringBuilder.Remove(stringBuilder.Length - 1, 1);
             return stringBuilder.ToString();
+        }
+
+        /// <summary>
+        /// Generates a free file name in the give <see cref="directory"/> and with the <see cref="extension"/>
+        /// </summary>
+        /// <param name="directory">The directory where the file should be created</param>
+        /// <param name="extension">The extension of the file</param>
+        /// <returns>A free random file name with the <see cref="extension"/></returns>
+        public static FileInfo GetFreeFileName(DirectoryInfo directory, string extension)
+        {
+            while (true)
+            {
+                var file = new FileInfo(Path.Combine(directory.FullName, Guid.NewGuid() + (extension.StartsWith(".") ? null : ".") + extension));
+                if (file.Exists) continue;
+                return file;
+            }
+        }
+
+        /// <summary>
+        /// Check if the path is a file or a folder
+        /// </summary>
+        /// <param name="path">The path</param>
+        /// <returns>True if the path is a file</returns>
+        public static bool PathIsFile(string path)
+        {
+            var attr = File.GetAttributes(path);
+            return (attr & FileAttributes.Directory) != FileAttributes.Directory;
+        }
+
+        public static string GetFilePathWithoutExtension(string path)
+        {
+            return Path.Combine(path.Substring(0, path.LastIndexOf("\\")),
+                Path.GetFileNameWithoutExtension(path));
         }
     }
 }

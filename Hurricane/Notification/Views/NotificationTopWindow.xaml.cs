@@ -15,12 +15,12 @@ namespace Hurricane.Notification.Views
     {
         public NotificationTopWindow(PlayableBase track, TimeSpan timestayopened)
         {
-            this.CurrentTrack = track;
+            CurrentTrack = track;
             InitializeComponent();
-            this.Width = SystemParameters.WorkArea.Width;
-            this.MouseMove += NotificationTopWindow_MouseMove;
-            this.Closing += NotificationTopWindow_Closing;
-            this.Top = SystemParameters.WorkArea.Top;
+            Width = SystemParameters.WorkArea.Width;
+            MouseMove += NotificationTopWindow_MouseMove;
+            Closing += NotificationTopWindow_Closing;
+            Top = SystemParameters.WorkArea.Top;
             Thread t = new Thread(() =>
             {
                 Thread.Sleep(timestayopened);
@@ -58,7 +58,7 @@ namespace Hurricane.Notification.Views
         void story_Completed(object sender, EventArgs e)
         {
             _canClose = true;
-            this.Close();
+            Close();
         }
 
         public PlayableBase CurrentTrack { get; set; }

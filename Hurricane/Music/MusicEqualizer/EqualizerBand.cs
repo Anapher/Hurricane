@@ -5,10 +5,10 @@ using Hurricane.ViewModelBase;
 namespace Hurricane.Music.MusicEqualizer
 {
     [Serializable]
-  public  class EqualizerBand : PropertyChangedBase
+    public class EqualizerBand : PropertyChangedBase
     {
         public event EventHandler EqualizerChanged; //We build the full event in the EqualizerSettings, because the EqualizerBand doesn't know his number
-        
+
         private double _value = 0;
         public double Value
         {
@@ -17,7 +17,7 @@ namespace Hurricane.Music.MusicEqualizer
             {
                 if (SetProperty(value, ref _value))
                 {
-                   if (EqualizerChanged != null) EqualizerChanged(this, EventArgs.Empty);
+                    if (EqualizerChanged != null) EqualizerChanged(this, EventArgs.Empty);
                 }
             }
         }

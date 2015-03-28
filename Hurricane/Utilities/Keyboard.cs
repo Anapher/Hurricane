@@ -6,7 +6,7 @@ using System.Windows.Input;
 
 namespace Hurricane.Utilities
 {
-  public class KeyboardListener : IDisposable
+    public class KeyboardListener : IDisposable
     {
         /// <summary>
         /// Creates global keyboard listener.
@@ -69,7 +69,7 @@ namespace Hurricane.Utilities
                     wParam.ToUInt32() == (int)InterceptKeys.KeyEvent.WM_KEYUP ||
                     wParam.ToUInt32() == (int)InterceptKeys.KeyEvent.WM_SYSKEYDOWN ||
                     wParam.ToUInt32() == (int)InterceptKeys.KeyEvent.WM_SYSKEYUP)
-                    hookedKeyboardCallbackAsync.BeginInvoke((InterceptKeys.KeyEvent) wParam.ToUInt32(), Marshal.ReadInt32(lParam), null, null);
+                    hookedKeyboardCallbackAsync.BeginInvoke((InterceptKeys.KeyEvent)wParam.ToUInt32(), Marshal.ReadInt32(lParam), null, null);
 
             return InterceptKeys.CallNextHookEx(hookId, nCode, wParam, lParam);
         }
@@ -182,7 +182,8 @@ namespace Hurricane.Utilities
         public delegate IntPtr LowLevelKeyboardProc(int nCode, UIntPtr wParam, IntPtr lParam);
         public static int WH_KEYBOARD_LL = 13;
 
-        public enum KeyEvent : int {    
+        public enum KeyEvent : int
+        {
             WM_KEYDOWN = 256,
             WM_KEYUP = 257,
             WM_SYSKEYUP = 261,

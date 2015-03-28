@@ -15,6 +15,7 @@ using Hurricane.Music.Download;
 using Hurricane.Music.MusicCover;
 using Hurricane.Music.Track.WebApi.SoundCloudApi;
 using Hurricane.Settings;
+using Hurricane.Utilities;
 
 namespace Hurricane.Music.Track
 {
@@ -141,7 +142,7 @@ namespace Hurricane.Music.Track
 
         public override string DownloadFilename
         {
-            get { return Utilities.GeneralHelper.EscapeFilename(Title) + ".mp3"; }
+            get { return GeneralHelper.EscapeFilename(Title); }
         }
 
         public override DownloadMethod DownloadMethod

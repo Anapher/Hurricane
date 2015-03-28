@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Hurricane.Music.Playlist;
+using Hurricane.Utilities;
 using Hurricane.ViewModels;
 
 namespace Hurricane.Music
@@ -39,7 +40,7 @@ namespace Hurricane.Music
         private void Run()
         {
             _havetocheck = true;
-            var t = LoadTracks();
+            LoadTracks().Forget();
         }
 
         protected async Task LoadTracks()

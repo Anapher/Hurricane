@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Text.RegularExpressions;
 using CSCore;
 using Hurricane.Music;
+using Hurricane.Utilities;
 
 namespace Hurricane.AppCommunication.Commands
 {
@@ -35,7 +35,7 @@ namespace Hurricane.AppCommunication.Commands
                             Utilities.GetTrackByAuthenticationCode(
                                 long.Parse(Regex.Match(s, "^openTrack;(?<id>([0-9]+))$").Groups["id"].Value), arg3.Playlists);
                         if (track == null) return;
-                        arg3.CSCoreEngine.OpenTrack(track);
+                        arg3.CSCoreEngine.OpenTrack(track).Forget();
                     }),
                     new MediaCommand("^getIsPlaying$", (s, provider, arg3) => provider.SendLine(arg3.CSCoreEngine.IsPlaying.ToString().ToLower())),
                     new MediaCommand("^toggleIsPlaying$", (s, provider, arg3) => arg3.CSCoreEngine.TogglePlayPause())

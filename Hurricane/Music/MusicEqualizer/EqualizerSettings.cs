@@ -11,7 +11,7 @@ namespace Hurricane.Music.MusicEqualizer
     {
         public event EventHandler<EqualizerChangedEventArgs> EqualizerChanged;
 
-        protected List<string> bandlabels = new List<string>(new string[] { "31", "62", "125", "250", "500", "1K", "2K", "4K", "8K", "16K" });
+        protected List<string> Bandlabels = new List<string>(new [] { "31", "62", "125", "250", "500", "1K", "2K", "4K", "8K", "16K" });
 
         public void CreateNew()
         {
@@ -19,7 +19,7 @@ namespace Hurricane.Music.MusicEqualizer
 
             for (int i = 0; i < 10; i++)
             {
-                Bands.Add(new EqualizerBand(bandlabels[i]));
+                Bands.Add(new EqualizerBand(Bandlabels[i]));
             }
             Loaded();
         }
@@ -33,7 +33,7 @@ namespace Hurricane.Music.MusicEqualizer
                     if (EqualizerChanged != null)
                         EqualizerChanged(this, new EqualizerChangedEventArgs(Bands.IndexOf(b), b.Value));
                 };
-                b.Label = bandlabels[Bands.IndexOf(b)];
+                b.Label = Bandlabels[Bands.IndexOf(b)];
             }
         }
 

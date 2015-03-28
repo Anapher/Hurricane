@@ -157,7 +157,7 @@ namespace Hurricane.Music
             DownloadManager = settings.Config.Downloader;
 
             FavoritePlaylist = new FavoriteList();
-            FavoritePlaylist.Initalize(this.Playlists);
+            FavoritePlaylist.Initalize(Playlists);
 
             if (currentState.LastPlaylistIndex > -10)
             {

@@ -350,4 +350,8 @@
     <system:String x:Key="MoveSaveLocationSuccessful">To continue, Hurricane will get restarted.</system:String>
     <system:String x:Key="MoveToAppData">Move to AppData</system:String>
     <system:String x:Key="MoveToAppFolder">Move to program folder</system:String>
+    <system:String x:Key="SaveLocation">Location</system:String>
+    <system:String x:Key="Convert">Convert</system:String>
+    <system:String x:Key="ConvertTrack">Convert track</system:String>
+    <system:String x:Key="CopyFromOriginal">Copy</system:String>
 </ResourceDictionary>

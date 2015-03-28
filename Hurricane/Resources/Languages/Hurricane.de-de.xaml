@@ -350,4 +350,8 @@
     <system:String x:Key="MoveSaveLocationSuccessful">Hurricane wird nun neu gestartet, um die Aktion abzuschließen.</system:String>
     <system:String x:Key="MoveToAppData">Nach AppData verschieben</system:String>
     <system:String x:Key="MoveToAppFolder">In den Anwendungsordner verschieben</system:String>
+    <system:String x:Key="SaveLocation">Speicherort</system:String>
+    <system:String x:Key="Convert">Konvertieren</system:String>
+    <system:String x:Key="ConvertTrack">Track konvertieren</system:String>
+    <system:String x:Key="CopyFromOriginal">Übernehmen</system:String>
 </ResourceDictionary>

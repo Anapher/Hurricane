@@ -8,8 +8,10 @@ using System.Windows.Media.Imaging;
 using System.Xml.Serialization;
 using Hurricane.Music.Track;
 using Hurricane.Settings;
+using Hurricane.Utilities;
 using Hurricane.ViewModelBase;
 using TagLib;
+using File = TagLib.File;
 
 namespace Hurricane.Music.Download
 {
@@ -20,7 +22,7 @@ namespace Hurricane.Music.Download
 
         [XmlIgnore]
         public ObservableCollection<DownloadEntry> Entries { get; set; }
-        
+
         private bool _isOpen;
         [XmlIgnore]
         public bool IsOpen
@@ -40,7 +42,7 @@ namespace Hurricane.Music.Download
             var entry = new DownloadEntry
             {
                 IsWaiting = true,
-                DownloadFilename = Path.Combine(downloadDirectory.FullName, Utilities.GeneralHelper.EscapeFilename(download.DownloadFilename)),
+                DownloadFilename = Path.Combine(downloadDirectory.FullName, GeneralHelper.EscapeFilename(download.DownloadFilename)),
                 Trackname = download.DownloadFilename,
                 DownloadParameter = download.DownloadParameter,
                 DownloadMethod = download.DownloadMethod,
@@ -66,9 +68,8 @@ namespace Hurricane.Music.Download
                 {
                     entry.IsWaiting = false;
                     var currentEntry = entry;
-                    await DownloadTrack(entry, entry.DownloadFilename, (d) => currentEntry.Progress = d);
+                    await DownloadAndConfigureTrack(entry, entry.MusicInformation, entry.DownloadFilename, d => currentEntry.Progress = d);
                     entry.IsDownloaded = true;
-                    if (AddTagsToDownloads) AddTags(entry.MusicInformation, entry.DownloadFilename);
                 }
 
                 _isRunning = false;
@@ -77,17 +78,58 @@ namespace Hurricane.Music.Download
             }
         }
 
-        public static Task<bool> DownloadTrack(IDownloadable download, string fileName, Action<double> progressChangedAction)
+        private async static Task<string> DownloadTrack(IDownloadable download, string fileNameWithoutExtension, Action<double> progressChangedAction)
         {
-            switch (download.DownloadMethod)
+            string fileName;
+
+            try
             {
-                case DownloadMethod.SoundCloud:
-                    return SoundCloudDownloader.DownloadSoundCloudTrack(download.DownloadParameter, fileName, progressChangedAction);
-                case DownloadMethod.youtube_dl:
-                    return youtube_dl.Instance.DownloadYouTubeVideo(download.DownloadParameter, fileName, progressChangedAction);
-                default:
-                    throw new ArgumentException();
+                switch (download.DownloadMethod)
+                {
+                    case DownloadMethod.SoundCloud:
+                        fileName = await SoundCloudDownloader.DownloadSoundCloudTrack(download.DownloadParameter, fileNameWithoutExtension, progressChangedAction);
+                        break;
+                    case DownloadMethod.youtube_dl:
+                        fileName = await youtube_dl.Instance.DownloadYouTubeVideo(download.DownloadParameter, fileNameWithoutExtension, progressChangedAction);
+                        break;
+                    default:
+                        throw new ArgumentException();
+                }
             }
+            catch (Exception)
+            {
+                return string.Empty;
+            }
+            return fileName;
+        }
+
+        public async static Task<string> DownloadAndConfigureTrack(IDownloadable downloadInformation, IMusicInformation musicInformation, string filename, Action<double> progressChangedAction, AudioFormat? format = null)
+        {
+            string fileNameWithoutExtension;
+
+            if (new DirectoryInfo(filename).Exists)
+            {
+                fileNameWithoutExtension = filename + downloadInformation.DownloadFilename;
+            }
+            else
+            {
+                fileNameWithoutExtension = GeneralHelper.GetFilePathWithoutExtension(filename);
+            }
+
+            var downloadedFileName = await DownloadTrack(downloadInformation, fileNameWithoutExtension, progressChangedAction);
+
+            if (string.IsNullOrEmpty(downloadedFileName)) return null; //Because an empty file name means error
+            var converterSettings = HurricaneSettings.Instance.Config.ConverterSettings;
+
+            if (format.HasValue || converterSettings.IsEnabled)
+            {
+                var oldFile = new FileInfo(downloadedFileName);
+                oldFile.MoveTo(GeneralHelper.GetFreeFileName(oldFile.Directory, oldFile.Extension).FullName); //We move the downloaded file to a temp location
+                downloadedFileName = await ffmpeg.ConvertFile(oldFile.FullName, GeneralHelper.GetFilePathWithoutExtension(downloadedFileName), converterSettings.Quality, format ?? converterSettings.Format);
+            }
+
+            if (HurricaneSettings.Instance.Config.Downloader.AddTagsToDownloads) await AddTags(musicInformation, downloadedFileName);
+            return downloadedFileName;
         }
 
         public async static Task AddTags(IMusicInformation information, string path)
@@ -96,7 +138,7 @@ namespace Hurricane.Music.Download
             if (!filePath.Exists) return;
             try
             {
-                using (var file = TagLib.File.Create(filePath.FullName))
+                using (var file = File.Create(filePath.FullName))
                 {
                     file.Tag.Album = information.Album;
                     file.Tag.Performers = new[] { information.Artist };
@@ -115,7 +157,7 @@ namespace Hurricane.Music.Download
                             encoder.Save(ms);
                             data = ms.ToArray();
                         }
-                        file.Tag.Pictures = new IPicture[] { new TagLib.Picture(new ByteVector(data, data.Length)) };
+                        file.Tag.Pictures = new IPicture[] { new Picture(new ByteVector(data, data.Length)) };
                     }
                     await Task.Run(() => file.Save());
                 }
@@ -131,14 +173,14 @@ namespace Hurricane.Music.Download
             DownloadDirectory = "%downloads%";
             AddTagsToDownloads = true;
             SelectedService = 0;
-            this.Searches = new ObservableCollection<string>();
+            Searches = new ObservableCollection<string>();
         }
 
         #region Settings
 
         [XmlElement(ElementName = "DownloadDirectory")]
         public string SerializableDownloadDirectory { get; set; }
-        
+
         [XmlIgnore]
         public string DownloadDirectory
         {
@@ -183,7 +225,7 @@ namespace Hurricane.Music.Download
             get { return GetDownloadDirectoryInfo().Name; }
         }
 
-        
+
         private bool _hasEntries;
         [XmlIgnore]
         public bool HasEntries

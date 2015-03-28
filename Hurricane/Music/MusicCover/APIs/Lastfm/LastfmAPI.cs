@@ -14,15 +14,15 @@ namespace Hurricane.Music.MusicCover.APIs.Lastfm
 {
     class LastfmAPI
     {
-        public async static Task<BitmapImage> GetImage(ImageQuality imagequality, bool saveimage, DirectoryInfo directory, PlayableBase track, bool trimtrackname, bool UseArtist = true)
+        public async static Task<BitmapImage> GetImage(ImageQuality imagequality, bool saveimage, DirectoryInfo directory, PlayableBase track, bool trimtrackname, bool useArtist = true)
         {
             string apikey = SensitiveInformation.LastfmAPIKey;
 
-            string _title = track.Title;
-            string _artist = UseArtist ? track.Artist : string.Empty;
-            if (trimtrackname) _title = TrimTrackTitle(track.Title);
+            string title = track.Title;
+            string artist = useArtist ? track.Artist : string.Empty;
+            if (trimtrackname) title = TrimTrackTitle(track.Title);
 
-            string url = Uri.EscapeUriString(string.Format("http://ws.audioscrobbler.com/2.0/?method=track.search&track={0}{1}&api_key={2}", GeneralHelper.EscapeTitleName(_title), !string.IsNullOrEmpty(_artist) ? "&artist=" + GeneralHelper.EscapeArtistName(_artist) : string.Empty, apikey));
+            string url = Uri.EscapeUriString(string.Format("http://ws.audioscrobbler.com/2.0/?method=track.search&track={0}{1}&api_key={2}", GeneralHelper.EscapeTitleName(title), !string.IsNullOrEmpty(artist) ? "&artist=" + GeneralHelper.EscapeArtistName(artist) : string.Empty, apikey));
             using (WebClient web = new WebClient() { Proxy = null })
             {
                 string result = await web.DownloadStringTaskAsync(new Uri(url));
@@ -50,7 +50,7 @@ namespace Hurricane.Music.MusicCover.APIs.Lastfm
                                     string album;
                                     if (string.IsNullOrEmpty(trackinfo.track.album.title))
                                     {
-                                        album = string.IsNullOrEmpty(track.Album) ? _title : track.Album;
+                                        album = string.IsNullOrEmpty(track.Album) ? title : track.Album;
                                     }
                                     else { album = trackinfo.track.album.title; }
                                     if (saveimage) await ImageHelper.SaveImage(img, album, directory.FullName);
@@ -63,7 +63,7 @@ namespace Hurricane.Music.MusicCover.APIs.Lastfm
                             {
                                 foreach (var file in directory.GetFiles("*.png"))
                                 {
-                                    if (GeneralHelper.EscapeFilename(_artist).ToLower() == Path.GetFileNameWithoutExtension(file.FullName).ToLower())
+                                    if (GeneralHelper.EscapeFilename(artist).ToLower() == Path.GetFileNameWithoutExtension(file.FullName).ToLower())
                                     {
                                         var img = new BitmapImage(new Uri(file.FullName));
                                         img.Freeze();
@@ -80,9 +80,9 @@ namespace Hurricane.Music.MusicCover.APIs.Lastfm
                             {
                                 url = string.Format("http://ws.audioscrobbler.com/2.0/?method=artist.getinfo&artist={0}&api_key={1}", trackinfo.track.artist.name, apikey);
                             }
-                            else if(!string.IsNullOrEmpty(_artist))
+                            else if (!string.IsNullOrEmpty(artist))
                             {
-                                url = string.Format("http://ws.audioscrobbler.com/2.0/?method=artist.getinfo&artist={0}&autocorrect=1&api_key={1}", _artist, apikey);
+                                url = string.Format("http://ws.audioscrobbler.com/2.0/?method=artist.getinfo&artist={0}&autocorrect=1&api_key={1}", artist, apikey);
                             }
 
                             if (string.IsNullOrEmpty(url)) return null;
@@ -100,7 +100,7 @@ namespace Hurricane.Music.MusicCover.APIs.Lastfm
                                         string artistname;
                                         if (string.IsNullOrEmpty(artistinfo.artist.name))
                                         {
-                                            artistname = string.IsNullOrEmpty(_artist) ? track.Title : _artist;
+                                            artistname = string.IsNullOrEmpty(artist) ? track.Title : artist;
                                         }
                                         else { artistname = artistinfo.artist.name; }
                                         if (saveimage) await ImageHelper.SaveImage(img, artistname, directory.FullName);
@@ -117,7 +117,7 @@ namespace Hurricane.Music.MusicCover.APIs.Lastfm
             return null;
         }
 
-        protected static string GetImageLink(lfmArtistImage[] image,ImageQuality quality)
+        protected static string GetImageLink(lfmArtistImage[] image, ImageQuality quality)
         {
             if (image.Length == 1) return image[0].Value;
             switch (quality)

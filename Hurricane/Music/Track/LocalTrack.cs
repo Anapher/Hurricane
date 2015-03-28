@@ -201,17 +201,6 @@ namespace Hurricane.Music.Track
             var otherAsLocalTrack = (LocalTrack)other;
 
             if (UniqueId == otherAsLocalTrack.UniqueId) return true;
-
-            // Mike: commented out temporarily; this is drastic measure, why is it needed?
-            //if (TrackInformation.Length == otherAsLocalTrack.TrackInformation.Length)
-            //{
-            //    if (string.IsNullOrEmpty(_fileHash))
-            //        _fileHash = GeneralHelper.FileToMD5Hash(TrackInformation.FullName);
-            //    if (string.IsNullOrEmpty(otherAsLocalTrack._fileHash))
-            //        otherAsLocalTrack._fileHash = GeneralHelper.FileToMD5Hash(TrackInformation.FullName);
-            //    if (otherAsLocalTrack._fileHash == _fileHash) return true;
-            //}
-
             return false;
         }
 

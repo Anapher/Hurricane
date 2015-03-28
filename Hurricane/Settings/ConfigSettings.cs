@@ -6,6 +6,7 @@ using System.Threading;
 using System.Windows;
 using System.Xml.Serialization;
 using Hurricane.AppCommunication;
+using Hurricane.Music.AudioEngine;
 using Hurricane.Music.Download;
 using Hurricane.Notification;
 using Hurricane.Settings.Themes;
@@ -71,12 +72,13 @@ namespace Hurricane.Settings
         public bool DisableNotificationInGame { get; set; }
         public int NotificationShowTime { get; set; }
 
-        //Album Cover
+        //Music
         public bool LoadAlbumCoverFromInternet { get; set; }
         public ImageQuality DownloadAlbumCoverQuality { get; set; }
         public bool SaveCoverLocal { get; set; }
         public bool TrimTrackname { get; set; }
         public DownloadManager Downloader { get; set; }
+        public ConverterSettings ConverterSettings { get; set; }
 
         //App
         public AppCommunicationSettings AppCommunicationSettings { get; set; }
@@ -106,7 +108,7 @@ namespace Hurricane.Settings
 
         public override sealed void SetStandardValues()
         {
-            SoundOutDeviceID = Music.AudioEngine.SoundOutManager.DefaultDevicePlaceholder;
+            SoundOutDeviceID = SoundOutManager.DefaultDevicePlaceholder;
             DisableNotificationInGame = true;
             ShowMagicArrowBelowCursor = true;
             WaveSourceBits = 16;
@@ -136,6 +138,8 @@ namespace Hurricane.Settings
             ShowProgressInTaskbar = true;
             AppCommunicationSettings = new AppCommunicationSettings();
             AppCommunicationSettings.SetStandard();
+            ConverterSettings = new ConverterSettings();
+            ConverterSettings.SetDefault();
         }
 
         public ConfigSettings()

@@ -567,27 +567,41 @@ namespace Hurricane.ViewModels
 
                     var sfd = new SaveFileDialog
                     {
-                        Filter =
-                            string.Format("M4A {0}|*.m4a|{1}|*.*", Application.Current.Resources["File"],
-                                Application.Current.Resources["AllFiles"]),
+                        Filter = string.Format("{0}|*|.mp3 {1}|*.mp3|.aac {1}|*.aac", Application.Current.Resources["Default"], Application.Current.Resources["File"]),
                         FileName = track.Title
                     };
+
                     if (sfd.ShowDialog() == true)
                     {
                         var downloadFile = new FileInfo(sfd.FileName);
                         if (downloadFile.Exists) downloadFile.Delete();
 
                         var controller = await _baseWindow.ShowProgressAsync(Application.Current.Resources["Download"].ToString(), MusicManager.SelectedTrack.Title);
-                        if (await
-                            DownloadManager.DownloadTrack(track, sfd.FileName,
+                        AudioFormat? format = null;
+
+                        switch (sfd.FilterIndex)
+                        {
+                            case 0:
+                                format = AudioFormat.Copy;
+                                break;
+                            case 1:
+                                format = AudioFormat.MP3;
+                                break;
+                            case 2:
+                                format = AudioFormat.AAC;
+                                break;
+                        }
+
+                        var fileName = await
+                            DownloadManager.DownloadAndConfigureTrack(track, track, sfd.FileName,
                                 d =>
                                 {
                                     controller.SetProgress(d / 100);
-                                }))
+                                }, format);
+                        if (!string.IsNullOrEmpty(fileName))
                         {
-                            if (MySettings.Config.Downloader.AddTagsToDownloads)
-                                await DownloadManager.AddTags(track, sfd.FileName);
-                            var newTrack = new LocalTrack { Path = sfd.FileName };
+
+                            var newTrack = new LocalTrack { Path = fileName };
                             if (await newTrack.LoadInformation())
                             {
                                 newTrack.TimeAdded = track.TimeAdded;
@@ -596,7 +610,7 @@ namespace Hurricane.ViewModels
                                 newTrack.Title = track.Title;
                                 newTrack.Album = track.Album;
                                 newTrack.Genres = track.Genres;
-                                
+
                                 if (MusicManager.FavoriteListIsSelected)
                                 {
                                     foreach (var normalPlaylist in MusicManager.Playlists)
@@ -666,16 +680,17 @@ namespace Hurricane.ViewModels
                         controller.SetMessage(track.Title);
                         var downloadFile = new FileInfo(Path.Combine(fdb.FileName, track.DownloadFilename));
                         if (downloadFile.Exists) continue;
-                        if (await
-                            DownloadManager.DownloadTrack(track, downloadFile.FullName,
+
+                        var fileName = await
+                            DownloadManager.DownloadAndConfigureTrack(track, track, downloadFile.FullName,
                                 d =>
                                 {
-                                    controller.SetProgress(lst.IndexOf(track) / (double)lst.Count + 1 / (double)lst.Count / 100 * d);
-                                }))
+                                    controller.SetProgress(lst.IndexOf(track) / (double)lst.Count +
+                                                           1 / (double)lst.Count / 100 * d);
+                                });
+                        if (!string.IsNullOrEmpty(fileName))
                         {
-                            if (MySettings.Config.Downloader.AddTagsToDownloads)
-                                await DownloadManager.AddTags(track, downloadFile.FullName);
-                            var newTrack = new LocalTrack { Path = downloadFile.FullName };
+                            var newTrack = new LocalTrack { Path = fileName };
                             if (await newTrack.LoadInformation())
                             {
                                 newTrack.TimeAdded = track.TimeAdded;

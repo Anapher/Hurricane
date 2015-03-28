@@ -90,7 +90,7 @@ namespace Hurricane.Music
         {
             get
             {
-                return _toggleplaypause ?? (_toggleplaypause = new RelayCommand(async parameter =>
+                return _toggleplaypause ?? (_toggleplaypause = new RelayCommand(parameter =>
                 {
                     if (Musicmanager.CSCoreEngine.CurrentTrack != null)
                     {

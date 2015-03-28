@@ -34,6 +34,7 @@
             <ListBoxItem Content="{DynamicResource Playback}"/>
             <ListBoxItem Content="{DynamicResource Appearance}"/>
             <ListBoxItem Content="{DynamicResource Behaviour}"/>
+            <ListBoxItem Content="{DynamicResource Downloads}"/>
             <ListBoxItem Content="API"/>
             <ListBoxItem Content="{DynamicResource Reset}"/>
             <ListBoxItem Content="{DynamicResource Language}"/>
@@ -320,23 +321,66 @@
                         </Grid>
                         <CheckBox Content="{DynamicResource SaveAlbumCoverLocal}" Margin="0,10,0,0" IsChecked="{Binding Config.SaveCoverLocal}" IsEnabled="{Binding ElementName=DownloadCoverCheckBox,Path=IsChecked}"/>
                         <CheckBox Content="{DynamicResource TrimTrackname}" ToolTip="{DynamicResource TrimTracknameDescription}" Margin="0,10,0,0" IsChecked="{Binding Config.TrimTrackname}" IsEnabled="{Binding ElementName=DownloadCoverCheckBox,Path=IsChecked}"/>
-                        <TextBlock extensions:TextBlockHelper.UpperText="{DynamicResource Downloads}" Margin="0,30,0,0" Style="{StaticResource TextBlockHeader}"/>
-                        <Grid Margin="0,10,0,0">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="Auto"/>
-                            </Grid.ColumnDefinitions>
-                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,10,0">
-                                <TextBlock Text="{DynamicResource Folder}"/>
-                                <TextBlock Text=":"/>
-                            </StackPanel>
-                            <TextBox Text="{Binding MusicManager.DownloadManager.DownloadDirectory}" Grid.Column="1" IsReadOnly="True"/>
-                            <Button Content="..." Grid.Column="2" Width="35" Margin="10,0,0,0" Command="{Binding SelectDownloadPath}"/>
-                        </Grid>
-                        <CheckBox Content="{DynamicResource AddTagsToDownloads}" Margin="0,10,0,0" IsChecked="{Binding MusicManager.DownloadManager.AddTagsToDownloads}"/>
                     </StackPanel>
                 </ScrollViewer>
+            </TabItem>
+            <TabItem Header="Downloads">
+                <StackPanel Orientation="Vertical" Margin="10">
+                    <TextBlock extensions:TextBlockHelper.UpperText="{DynamicResource SaveLocation}" Style="{StaticResource TextBlockHeader}"/>
+                    <Grid Margin="0,10,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,10,0">
+                            <TextBlock Text="{DynamicResource Folder}"/>
+                            <TextBlock Text=":"/>
+                        </StackPanel>
+                        <TextBox Text="{Binding MusicManager.DownloadManager.DownloadDirectory}" Grid.Column="1" IsReadOnly="True"/>
+                        <Button Content="..." Grid.Column="2" Width="35" Margin="10,0,0,0" Command="{Binding SelectDownloadPath}"/>
+                    </Grid>
+                    <CheckBox Content="{DynamicResource AddTagsToDownloads}" Margin="0,10,0,0" IsChecked="{Binding MusicManager.DownloadManager.AddTagsToDownloads}"/>
+                    <TextBlock extensions:TextBlockHelper.UpperText="{DynamicResource Convert}" Margin="0,30,0,0" Style="{StaticResource TextBlockHeader}"/>
+                    <CheckBox Content="{DynamicResource ConvertTrack}" Margin="0,10,0,0" IsChecked="{Binding Config.ConverterSettings.IsEnabled}" x:Name="ConvertDownloadCheckBox"/>
+                    <Grid Margin="0,10,0,0" IsEnabled="{Binding ElementName=ConvertDownloadCheckBox,Path=IsChecked}">
+                        <Grid.Style>
+                            <Style TargetType="Grid">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding ElementName=ConvertDownloadCheckBox,Path=IsChecked}" Value="false">
+                                        <Setter Property="Opacity" Value=".6"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Grid.Style>
+                        <StackPanel Orientation="Vertical" Margin="10">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="200"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.Resources>
+                                    <converter:AudioFormatToIndexConverter x:Key="AudioFormatToIndexConverter"/>
+                                </Grid.Resources>
+                                <TextBlock Text="{DynamicResource Format}" VerticalAlignment="Center"/>
+                                <ComboBox Grid.Column="1" Width="150" HorizontalAlignment="Left" SelectedIndex="{Binding Config.ConverterSettings.Format,Converter={StaticResource AudioFormatToIndexConverter}}">
+                                    <ComboBoxItem Content="{DynamicResource CopyFromOriginal}"/>
+                                    <ComboBoxItem Content="MP3"/>
+                                    <ComboBoxItem Content="AAC"/>
+                                    <ComboBoxItem Content="OGG"/>
+                                </ComboBox>
+                            </Grid>
+                            <Grid Margin="0,15,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="200"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="{DynamicResource Quality}" VerticalAlignment="Center"/>
+                                <Slider Grid.Column="1" HorizontalAlignment="Left" Width="300" Value="{Binding Config.ConverterSettings.Quality}" Minimum="0" Maximum="10" TickPlacement="BottomRight" SmallChange="1" />
+                            </Grid>
+                        </StackPanel>
+                    </Grid>
+                </StackPanel>
             </TabItem>
             <TabItem Header="API">
                 <Grid Margin="10">

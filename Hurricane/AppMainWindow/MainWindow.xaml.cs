@@ -213,7 +213,7 @@ namespace Hurricane
 
             if (skin.Configuration.SupportsCustomBackground)
             {
-                SetBackground();
+                SetBackground().Forget();
             }
             else
             {

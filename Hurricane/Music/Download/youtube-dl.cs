@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
@@ -46,7 +43,7 @@ namespace Hurricane.Music.Download
             {
                 StartInfo =
                 {
-                    CreateNoWindow = true, 
+                    CreateNoWindow = true,
                     FileName = ExecutablePath,
                     Arguments = "-U",
                     RedirectStandardOutput = true,
@@ -60,7 +57,7 @@ namespace Hurricane.Music.Download
             var match = regex.Match(info);
             if (match.Success)
             {
-                var metrowindow = (MetroWindow) Application.Current.MainWindow;
+                var metrowindow = (MetroWindow)Application.Current.MainWindow;
                 var controller = await metrowindow.ShowProgressAsync(Application.Current.Resources["UpdateYoutubedl"].ToString(), string.Format(Application.Current.Resources["UpdateYoutubedlMessage"].ToString(), match.Groups["version"].Value));
                 controller.SetIndeterminate();
                 await Task.Run(() => p.WaitForExit());
@@ -105,9 +102,10 @@ namespace Hurricane.Music.Download
             }
         }
 
-        public async Task<bool> DownloadYouTubeVideo(string youTubeLink, string fileName, Action<double> progressChangedAction)
+        public async Task<string> DownloadYouTubeVideo(string youTubeLink, string fileNameWithoutExtension, Action<double> progressChangedAction)
         {
             await Load();
+            var file = fileNameWithoutExtension + ".m4a";
             using (var p = new Process()
             {
                 StartInfo = new ProcessStartInfo
@@ -116,7 +114,7 @@ namespace Hurricane.Music.Download
                     RedirectStandardOutput = true,
                     UseShellExecute = false,
                     FileName = ExecutablePath,
-                    Arguments = string.Format("{0} --extract-audio --output \"{1}\"", youTubeLink, fileName)
+                    Arguments = string.Format("{0} --extract-audio --output \"{1}\"", youTubeLink, file)
                 }
             })
             {
@@ -134,7 +132,9 @@ namespace Hurricane.Music.Download
                         progressChangedAction.Invoke(doub);
                     }
                 }
-                return File.Exists(fileName);
+
+                if (!File.Exists(file)) throw new Exception();
+                return file;
             }
         }
     }

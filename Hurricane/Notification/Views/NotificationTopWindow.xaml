@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:converter="clr-namespace:Hurricane.Extensions.Converter"
         xmlns:track="clr-namespace:Hurricane.Music.Track"
-        Title="HurricaneNotification" Height="75" Width="1920" Topmost="True" AllowsTransparency="True" WindowStyle="None" ShowInTaskbar="False" Focusable="False" Opacity="0.85" DataContext="{Binding ElementName=window,Path=CurrentTrack}" x:Name="window" ShowActivated="False" Top="0" Left="0">
+        Title="HurricaneNotification" Height="75" Width="1920" Topmost="True" AllowsTransparency="True" WindowStyle="None" ShowInTaskbar="False" Focusable="False" Opacity="0.85" DataContext="{Binding ElementName=BaseWindow,Path=CurrentTrack}" x:Name="BaseWindow" ShowActivated="False" Top="0" Left="0">
     <Window.Triggers>
         <EventTrigger RoutedEvent="Loaded">
             <BeginStoryboard >

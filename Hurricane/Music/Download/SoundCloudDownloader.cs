@@ -7,20 +7,17 @@ namespace Hurricane.Music.Download
 {
     class SoundCloudDownloader
     {
-        public static async Task<bool> DownloadSoundCloudTrack(string SoundCloudID, string fileName, Action<double> progressChangedAction)
+        public static async Task<string> DownloadSoundCloudTrack(string soundCloudId, string fileNameWithoutExtension, Action<double> progressChangedAction)
         {
-            using (var client = new WebClient {Proxy = null})
+            var fileName = fileNameWithoutExtension + ".mp3";
+            using (var client = new WebClient { Proxy = null })
             {
-                client.DownloadProgressChanged += (s, e) =>  progressChangedAction.Invoke(e.ProgressPercentage);
-                try
-                {
-                    await client.DownloadFileTaskAsync(string.Format("https://api.soundcloud.com/tracks/{0}/download?client_id={1}", SoundCloudID, SensitiveInformation.SoundCloudKey), fileName);
-                }
-                catch (WebException)
-                {
-                    return false;
-                }
-                return true;
+                client.DownloadProgressChanged += (s, e) => progressChangedAction.Invoke(e.ProgressPercentage);
+                await
+                    client.DownloadFileTaskAsync(
+                        string.Format("https://api.soundcloud.com/tracks/{0}/download?client_id={1}", soundCloudId,
+                            SensitiveInformation.SoundCloudKey), fileName);
+                return fileName;
             }
         }
     }
