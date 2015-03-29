@@ -85,6 +85,10 @@ namespace Hurricane.Settings
         [XmlIgnore]
         public AppCommunicationManager AppCommunicationManager { get; set; }
 
+        //Updates
+        public bool CheckForHurricaneUpdates { get; set; }
+        public bool CheckForYoutubeDlUpdates { get; set; }
+
         private List<LanguageInfo> _languages;
         [XmlIgnore]
         public List<LanguageInfo> Languages
@@ -140,6 +144,8 @@ namespace Hurricane.Settings
             AppCommunicationSettings.SetStandard();
             ConverterSettings = new ConverterSettings();
             ConverterSettings.SetDefault();
+            CheckForHurricaneUpdates = true;
+            CheckForYoutubeDlUpdates = true;
         }
 
         public ConfigSettings()

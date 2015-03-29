@@ -69,7 +69,7 @@ namespace Hurricane.ViewModels
             _keyboardListener = new KeyboardListener();
             _keyboardListener.KeyDown += KListener_KeyDown;
             Updater = new UpdateService(MySettings.Config.Language == "de" ? UpdateService.Language.German : UpdateService.Language.English);
-            Updater.CheckForUpdates(_baseWindow);
+            if (MySettings.Config.CheckForHurricaneUpdates) Updater.CheckForUpdates(_baseWindow);
         }
 
         #endregion
@@ -567,7 +567,7 @@ namespace Hurricane.ViewModels
 
                     var sfd = new SaveFileDialog
                     {
-                        Filter = string.Format("{0}|*|.mp3 {1}|*.mp3|.aac {1}|*.aac", Application.Current.Resources["Default"], Application.Current.Resources["File"]),
+                        Filter = string.Format("{0}|*|MP3 {1}|*.mp3|AAC {1}|*.aac|WMA {1}|*.wma", Application.Current.Resources["Default"], Application.Current.Resources["File"]),
                         FileName = track.Title
                     };
 
@@ -590,6 +590,9 @@ namespace Hurricane.ViewModels
                             case 2:
                                 format = AudioFormat.AAC;
                                 break;
+                            case 3:
+                                format = AudioFormat.WMA;
+                                break;
                         }
 
                         var fileName = await
@@ -600,7 +603,6 @@ namespace Hurricane.ViewModels
                                 }, format);
                         if (!string.IsNullOrEmpty(fileName))
                         {
-
                             var newTrack = new LocalTrack { Path = fileName };
                             if (await newTrack.LoadInformation())
                             {

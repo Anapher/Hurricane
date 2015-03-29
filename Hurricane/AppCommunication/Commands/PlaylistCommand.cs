@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -37,8 +38,29 @@ namespace Hurricane.AppCommunication.Commands
                 var bytesToSend = Encoding.UTF8.GetBytes(stringWriter.ToString());
                 binaryWriter.Write(bytesToSend.Length);
                 MessageBox.Show(bytesToSend.ToString());
-                binaryWriter.Write(bytesToSend);
-                binaryWriter.Flush();
+                MessageBox.Show(Encoding.UTF8.GetString(bytesToSend));
+
+                const int bufferSize = 1024;
+                int noOfPackets = (int)Math.Ceiling((double)bytesToSend.Length / bufferSize);
+                int totalLength = bytesToSend.Length;
+
+                for (int i = 0; i < noOfPackets; i++)
+                {
+                    int currentPacketLength;
+                    if (totalLength > bufferSize)
+                    {
+                        currentPacketLength = bufferSize;
+                        totalLength -= currentPacketLength;
+                    }
+                    else
+                    {
+                        currentPacketLength = totalLength;
+                    }
+
+                    var sendingBuffer = new byte[currentPacketLength];
+                    binaryWriter.Write(sendingBuffer, 0, sendingBuffer.Length);
+                    binaryWriter.Flush();
+                }
             }
         }
     }

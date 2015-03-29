@@ -149,7 +149,6 @@
                                     </StackPanel>
                                 </Grid>
                             </StackPanel>
-                            <CheckBox ToolTip="{DynamicResource PreferFavoriteDescription}" Margin="0,15,0,0" Content="{DynamicResource PreferFavoriteTracks}" IsChecked="{Binding Config.ShufflePreferFavoriteTracks}"/>
                         </StackPanel>
                     </Grid>
                 </ScrollViewer>
@@ -258,7 +257,9 @@
             <TabItem Header="Behaviour">
                 <ScrollViewer>
                     <StackPanel Orientation="Vertical" Margin="10">
-                        <TextBlock Text="MAGIC ARROW" Style="{StaticResource TextBlockHeader}"/>
+                        <TextBlock extensions:TextBlockHelper.UpperText="{DynamicResource Music}" Style="{StaticResource TextBlockHeader}"/>
+                        <CheckBox ToolTip="{DynamicResource PreferFavoriteDescription}" Margin="0,10,0,0" Content="{DynamicResource PreferFavoriteTracks}" IsChecked="{Binding Config.ShufflePreferFavoriteTracks}"/>
+                        <TextBlock Text="MAGIC ARROW" Style="{StaticResource TextBlockHeader}" Margin="0,30,0,0"/>
                         <CheckBox Content="{DynamicResource ShowMagicArrowBelowCursor}" IsChecked="{Binding Config.ShowMagicArrowBelowCursor}" Margin="0,10,0,0"/>
                         <TextBlock extensions:TextBlockHelper.UpperText="{DynamicResource Notifications}" Margin="0,30,0,0" Style="{StaticResource TextBlockHeader}"/>
                         <Grid Margin="0,5,0,0">
@@ -298,6 +299,10 @@
                         <CheckBox Content="{DynamicResource MinimizeToTray}" Margin="0,10,0,0" x:Name="MinimizeToTrayCheckBox" IsChecked="{Binding Config.MinimizeToTray}"/>
                         <CheckBox Content="{DynamicResource NotifyIfMinimizeToTray}" Margin="0,10,0,0" IsChecked="{Binding Config.ShowNotificationIfMinimizeToTray}" IsEnabled="{Binding ElementName=MinimizeToTrayCheckBox,Path=IsChecked}"/>
 
+                        <TextBlock extensions:TextBlockHelper.UpperText="{DynamicResource Update}" Margin="0,30,0,0" Style="{StaticResource TextBlockHeader}"/>
+                        <CheckBox Content="{DynamicResource CheckForHurricaneUpdatesOnStart}" Margin="0,10,0,0" IsChecked="{Binding Config.CheckForHurricaneUpdates}"/>
+                        <CheckBox Content="{DynamicResource CheckForYouTubeUpdatesIfNeeded}" Margin="0,10,0,0" IsChecked="{Binding Config.CheckForYoutubeDlUpdates}"/>
+                        
                         <TextBlock extensions:TextBlockHelper.UpperText="{DynamicResource CoverArt}" Margin="0,30,0,0" Style="{StaticResource TextBlockHeader}"/>
                         <CheckBox Content="{DynamicResource LoadAlbumCoverFromInternet}" Margin="0,10,0,0" x:Name="DownloadCoverCheckBox" IsChecked="{Binding Config.LoadAlbumCoverFromInternet}"/>
                         <Grid IsEnabled="{Binding ElementName=DownloadCoverCheckBox,Path=IsChecked}" Margin="0,10,0,0">
@@ -367,7 +372,7 @@
                                     <ComboBoxItem Content="{DynamicResource CopyFromOriginal}"/>
                                     <ComboBoxItem Content="MP3"/>
                                     <ComboBoxItem Content="AAC"/>
-                                    <ComboBoxItem Content="OGG"/>
+                                    <ComboBoxItem Content="WMA"/>
                                 </ComboBox>
                             </Grid>
                             <Grid Margin="0,15,0,0">

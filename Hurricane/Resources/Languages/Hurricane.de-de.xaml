@@ -354,4 +354,8 @@
     <system:String x:Key="Convert">Konvertieren</system:String>
     <system:String x:Key="ConvertTrack">Track konvertieren</system:String>
     <system:String x:Key="CopyFromOriginal">Übernehmen</system:String>
+
+    <system:String x:Key="Music">Musik</system:String>
+    <system:String x:Key="CheckForHurricaneUpdatesOnStart">Bei jedem Start auf Updates von Hurricane prüfen</system:String>
+    <system:String x:Key="CheckForYouTubeUpdatesIfNeeded">Bei jeder Verwendung von youtube-dl auf Updates prüfen</system:String>
 </ResourceDictionary>

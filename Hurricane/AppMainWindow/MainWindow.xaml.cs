@@ -1,6 +1,5 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -47,9 +46,14 @@ namespace Hurricane
             InitializeComponent();
             HostedWindow = null;
             MagicArrow = new MagicArrow.MagicArrow();
-            MagicArrow.MoveOut += (s, e) => { HideEqualizer(); HostedWindow.DisableWindow(); };
+            MagicArrow.MoveOut += (s, e) =>
+            {
+                HideEqualizer();
+                HostedWindow.DisableWindow();
+            };
             MagicArrow.MoveIn += (s, e) => { HostedWindow.EnableWindow(); };
-            MagicArrow.FilesDropped += (s, e) => { MainViewModel.Instance.DragDropFiles((string[])e.Data.GetData(DataFormats.FileDrop)); };
+            MagicArrow.FilesDropped +=
+                (s, e) => { MainViewModel.Instance.DragDropFiles((string[]) e.Data.GetData(DataFormats.FileDrop)); };
             MagicArrow.Register(this);
 
             Closing += MainWindow_Closing;
@@ -57,10 +61,8 @@ namespace Hurricane
             StateChanged += MainWindow_StateChanged;
 
             MagicArrow.DockManager.Docked += (s, e) => { ApplyHostWindow(SmartWindowSkin); };
-            MagicArrow.DockManager.Undocked += (s, e) =>
-            {
-                ApplyHostWindow(AdvancedWindowSkin);
-            };
+            MagicArrow.DockManager.Undocked += (s, e) => { ApplyHostWindow(AdvancedWindowSkin); };
+            MagicArrow.DockManager.DragStopped += DockManagerOnDragStopped;
 
             var appsettings = HurricaneSettings.Instance.CurrentState;
             if (appsettings.ApplicationState == null)
@@ -78,7 +80,8 @@ namespace Hurricane
 
             if (appsettings.ApplicationState.CurrentSide == DockingSide.None)
             {
-                if (appsettings.ApplicationState.Left < WpfScreen.MostRightX) //To prevent that the window is out of view when the user unplugs a monitor
+                if (appsettings.ApplicationState.Left < WpfScreen.MostRightX)
+                    //To prevent that the window is out of view when the user unplugs a monitor
                 {
                     Height = appsettings.ApplicationState.Height;
                     Width = appsettings.ApplicationState.Width;
@@ -95,12 +98,6 @@ namespace Hurricane
             MagicArrow.DockManager.CurrentSide = appsettings.ApplicationState.CurrentSide;
             WindowDialogService = new WindowDialogService(this);
             SystemEvents.PowerModeChanged += SystemEventsOnPowerModeChanged;
-            MouseLeftButtonDown += OnMouseLeftButtonDown;
-        }
-
-        private void OnMouseLeftButtonDown(object sender, MouseButtonEventArgs mouseButtonEventArgs)
-        {
-            _isDragging = false;
         }
 
         public void CenterWindowOnScreen()
@@ -192,7 +189,6 @@ namespace Hurricane
 
             if (!_isDragging)
             {
-                Debug.Print("do something");
                 if (skin.Configuration.IsResizable)
                 {
                     WindowHelper.ShowMinimizeAndMaximizeButtons(this);
@@ -297,7 +293,7 @@ namespace Hurricane
             WindowState = WindowState == WindowState.Normal ? WindowState.Maximized : WindowState.Normal;
         }
 
-        #region Titlebar
+        #region Dragging
 
         private bool _restoreIfMove;
         private bool _isDragging;
@@ -306,8 +302,8 @@ namespace Hurricane
         {
             _isDragging = true;
             if (WindowState == WindowState.Maximized) _restoreIfMove = true;
-            WindowHelper.HideMinimizeAndMaximizeButtons(this);
             ResizeMode = ResizeMode.CanResize;
+            WindowHelper.HideMinimizeAndMaximizeButtons(this);
 
             MagicArrow.DockManager.DragStart();
             if (HostedWindow.Configuration.NeedsMovingHelp)
@@ -318,13 +314,14 @@ namespace Hurricane
                 }
                 catch (InvalidOperationException)
                 {
+                    //ignore
                 }
             }
         }
 
-        void skin_DragMoveStop(object sender, EventArgs e)
+        private void DockManagerOnDragStopped(object sender, EventArgs eventArgs)
         {
-            _restoreIfMove = false;
+            _isDragging = false;
             if (HostedWindow.Configuration.IsResizable)
             {
                 WindowHelper.ShowMinimizeAndMaximizeButtons(this);
@@ -335,6 +332,11 @@ namespace Hurricane
                 WindowHelper.HideMinimizeAndMaximizeButtons(this);
                 ResizeMode = ResizeMode.NoResize;
             }
+        }
+
+        void skin_DragMoveStop(object sender, EventArgs e)
+        {
+            _restoreIfMove = false;
             MagicArrow.DockManager.DragStop();
         }
 

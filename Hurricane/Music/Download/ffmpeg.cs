@@ -73,8 +73,8 @@ namespace Hurricane.Music.Download
                     return "libmp3lame"; //works
                 case AudioFormat.AAC:
                     return "libvo_aacenc";
-                case AudioFormat.OGG:
-                    return "libvorbis";
+                case AudioFormat.WMA:
+                    return "wmav2";
                 default:
                     throw new ArgumentOutOfRangeException();
             }
@@ -90,8 +90,8 @@ namespace Hurricane.Music.Download
                     return ".mp3";
                 case AudioFormat.AAC:
                     return ".aac";
-                case AudioFormat.OGG:
-                    return ".ogg";
+                case AudioFormat.WMA:
+                    return ".wma";
                 default:
                     throw new ArgumentOutOfRangeException();
             }

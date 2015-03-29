@@ -5,7 +5,6 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:designer="clr-namespace:Hurricane.Designer"
              xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
-             xmlns:extensions="clr-namespace:Hurricane.Extensions"
              xmlns:hurricaneControls="clr-namespace:Hurricane.Extensions.Controls"
              mc:Ignorable="d" 
              d:DesignHeight="434" d:DesignWidth="960" DataContext="{x:Static designer:DesignerViewModel.Instance}" SnapsToDevicePixels="True">
@@ -296,7 +295,7 @@
                     </StackPanel>
                     <DockPanel HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,20,0">
                         <Viewbox Margin="0,0,5,0" VerticalAlignment="Center" Width="15" Height="15">
-                            <hurricaneControls:VolumeIcon CurrentVolume="0.5"/>
+                            <hurricaneControls:VolumeIcon CurrentVolume="{Binding ElementName=VolumeSlider,Path=Value}"/>
                         </Viewbox>
                         <Slider x:Name="VolumeSlider" Value="0.5" Maximum="1" Minimum="0" IsMoveToPointEnabled="True" Style="{StaticResource AdvancedTimelineSlider}" VerticalAlignment="Center" LargeChange="0.1"/>
                     </DockPanel>

@@ -363,9 +363,13 @@ namespace Hurricane.Music.AudioEngine
 
         public void KickTrack()
         {
-            CurrentTrack.Unload();
-            CurrentTrack = null;
-            SoundSource = null;
+            if (CurrentTrack != null)
+            {
+                CurrentTrack.Unload();
+                CurrentTrack = null;
+                SoundSource = null;
+            }
+            
             OnPropertyChanged("TrackLength");
             OnPropertyChanged("CurrentTrackLength");
             OnPropertyChanged("Position");

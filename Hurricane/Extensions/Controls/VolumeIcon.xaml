@@ -5,8 +5,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" x:Name="VolumeIconControl">
     <StackPanel Orientation="Horizontal">
-        <Path Data="{StaticResource VectorVolumeSpeaker}" Fill="{StaticResource BlackBrush}" SnapsToDevicePixels="True"/>
-        <Path Data="{StaticResource VectorVolumeMedium}" Fill="{StaticResource BlackBrush}" Margin="3,0,0,0" SnapsToDevicePixels="True">
+        <Path Data="{StaticResource VectorVolumeSpeaker}" Fill="{DynamicResource BlackBrush}" SnapsToDevicePixels="True"/>
+        <Path Data="{StaticResource VectorVolumeMedium}" Fill="{DynamicResource BlackBrush}" Margin="3,0,0,0" SnapsToDevicePixels="True">
             <Path.Style>
                 <Style TargetType="Path">
                     <Setter Property="Visibility" Value="Visible"/>

@@ -849,9 +849,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Resource Include="Resources\App\Icon.ico" />
-    <Resource Include="Resources\App\AudioVisualisation.png" />
     <Resource Include="Resources\App\LanguageCreator.png" />
     <Resource Include="Resources\Languages\Icons\nl.png" />
+    <Resource Include="Resources\App\bottom.png" />
     <Content Include="youtube-dl.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

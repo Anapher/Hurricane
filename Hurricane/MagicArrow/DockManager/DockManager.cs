@@ -14,6 +14,7 @@ namespace Hurricane.MagicArrow.DockManager
 
         public event EventHandler Undocked;
         public event EventHandler Docked;
+        public event EventHandler DragStopped;
 
         protected void OnUndocked()
         {
@@ -23,6 +24,11 @@ namespace Hurricane.MagicArrow.DockManager
         protected void OnDocked()
         {
             if (Docked != null) Docked(this, EventArgs.Empty);
+        }
+
+        protected void OnDragStopped()
+        {
+            if (DragStopped != null) DragStopped(this, EventArgs.Empty);
         }
 
         #endregion
@@ -60,6 +66,7 @@ namespace Hurricane.MagicArrow.DockManager
             if (IsEnabled) return;
             IsEnabled = true;
             NewSide = null;
+            _firedUndocked = false;
             HookManager.MouseMove += HookManager_MouseMove;
         }
 
@@ -89,8 +96,10 @@ namespace Hurricane.MagicArrow.DockManager
             return _basewindow.Left == WpfScreen.MostLeftX || (_basewindow.Left == WpfScreen.MostRightX - _basewindow.Width);
         }
 
+        private bool _firedUndocked;
         void HookManager_MouseMove(object sender, MouseEventArgs e)
         {
+            
             //Side dock > top dock
             if (!IsEnabled) return;
             if (Mouse.LeftButton == MouseButtonState.Released) //If the user doubleclicks the window, relocates the window and releases the mouse, it doesn't get stopped
@@ -129,7 +138,11 @@ namespace Hurricane.MagicArrow.DockManager
             }
             else
             {
-                OnUndocked();
+                if (!_firedUndocked)
+                {
+                    _firedUndocked = true;
+                    OnUndocked();
+                }
                 if (IsAtTop)
                 {
                     IsAtTop = false;
@@ -190,6 +203,7 @@ namespace Hurricane.MagicArrow.DockManager
             IsEnabled = false;
             HookManager.MouseMove -= HookManager_MouseMove;
             CloseWindowIfExists();
+            OnDragStopped();
             if (NewSide.HasValue)
             {
                 switch (NewSide)
@@ -198,7 +212,7 @@ namespace Hurricane.MagicArrow.DockManager
                     case WindowPositionSide.Right:
                         CurrentSide = NewSide == WindowPositionSide.Left ? DockingSide.Left : DockingSide.Right;
                         ApplyCurrentSide();
-                        if (Docked != null) Docked(this, EventArgs.Empty);
+                        OnDocked();
                         return;
                     case WindowPositionSide.Top:
                         _basewindow.WindowState = WindowState.Maximized;

@@ -8,41 +8,44 @@
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
     </Window.Resources>
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="8*"/>
-            <RowDefinition Height="5*"/>
-        </Grid.RowDefinitions>
-        <DockPanel>
-            <Button Width="30" Height="30" Visibility="{Binding CanGoBack,Converter={StaticResource BooleanToVisibilityConverter}}" Command="{Binding GoBack}">
-                <Button.Style>
-                    <Style TargetType="Button">
-                        <Setter Property="Template">
-                            <Setter.Value>
-                                <ControlTemplate TargetType="Button">
-                                    <Grid Background="Transparent">
-                                        <Viewbox>
-                                            <Path Data="{StaticResource VectorBackArrow}" x:Name="Path" Fill="DarkGray"/>
-                                        </Viewbox>
-                                    </Grid>
-                                    <ControlTemplate.Triggers>
-                                        <Trigger Property="IsMouseOver" Value="True">
-                                            <Setter TargetName="Path" Property="Fill" Value="#FFBBBBBB"/>
-                                        </Trigger>
-                                        <Trigger Property="IsPressed" Value="True">
-                                            <Setter TargetName="Path" Property="Fill" Value="#FFDADADA"/>
-                                        </Trigger>
-                                    </ControlTemplate.Triggers>
-                                </ControlTemplate>
-                            </Setter.Value>
-                        </Setter>
-                    </Style>
-                </Button.Style>
-            </Button>
-            <TextBlock Text="{Binding CurrentTitle}" FontSize="26" Margin="15" FontFamily="Segoe UI Light"/>
-        </DockPanel>
-        
-        <controls:TransitioningContentControl Grid.Row="1" Content="{Binding PreviewControl}" Margin="10" RestartTransitionOnContentChange="True" Transition="Left"/>
-        <controls:TransitioningContentControl Grid.Row="2" Content="{Binding CurrentView}" Margin="15" RestartTransitionOnContentChange="True" Transition="Left"/>
+        <Image Source="/Resources/App/bottom.png" VerticalAlignment="Bottom" RenderOptions.EdgeMode="Aliased" RenderOptions.BitmapScalingMode="HighQuality"/>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="8*"/>
+                <RowDefinition Height="5*"/>
+            </Grid.RowDefinitions>
+            <DockPanel>
+                <Button Width="30" Height="30" Visibility="{Binding CanGoBack,Converter={StaticResource BooleanToVisibilityConverter}}" Command="{Binding GoBack}">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="Button">
+                                        <Grid Background="Transparent">
+                                            <Viewbox>
+                                                <Path Data="{StaticResource VectorBackArrow}" x:Name="Path" Fill="DarkGray"/>
+                                            </Viewbox>
+                                        </Grid>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter TargetName="Path" Property="Fill" Value="#FFBBBBBB"/>
+                                            </Trigger>
+                                            <Trigger Property="IsPressed" Value="True">
+                                                <Setter TargetName="Path" Property="Fill" Value="#FFDADADA"/>
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </Button.Style>
+                </Button>
+                <TextBlock Text="{Binding CurrentTitle}" FontSize="26" Margin="15" FontFamily="Segoe UI Light"/>
+            </DockPanel>
+
+            <controls:TransitioningContentControl Grid.Row="1" Content="{Binding PreviewControl}" Margin="10" RestartTransitionOnContentChange="True" Transition="Left" Background="Transparent"/>
+            <controls:TransitioningContentControl Grid.Row="2" Content="{Binding CurrentView}" Margin="15" RestartTransitionOnContentChange="True" Transition="Left" Background="Transparent"/>
+        </Grid>
     </Grid>
 </controls:MetroWindow>

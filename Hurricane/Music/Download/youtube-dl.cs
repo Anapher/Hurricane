@@ -37,7 +37,7 @@ namespace Hurricane.Music.Download
 
         public async Task Load()
         {
-            if (_isLoaded) return;
+            if (_isLoaded || !HurricaneSettings.Instance.Config.CheckForYoutubeDlUpdates) return;
 
             var p = new Process
             {

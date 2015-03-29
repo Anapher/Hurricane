@@ -14,20 +14,6 @@ namespace Hurricane.Music.Download
             Quality = 10;
             Format = AudioFormat.Copy;
         }
-
-        public static AudioFormat ExtensionToFormat(string extension)
-        {
-            switch (extension.ToLower())
-            {
-                case ".mp3":
-                    return AudioFormat.MP3;
-                case ".aac":
-                    return AudioFormat.AAC;
-                case ".ogg":
-                    return AudioFormat.OGG;
-            }
-            return AudioFormat.Copy;
-        }
     }
 
     [SuppressMessage("ReSharper", "InconsistentNaming")]
@@ -36,6 +22,6 @@ namespace Hurricane.Music.Download
         Copy,
         MP3,
         AAC,
-        OGG
+        WMA
     }
 }

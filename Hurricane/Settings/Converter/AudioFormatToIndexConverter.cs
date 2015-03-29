@@ -13,7 +13,7 @@ namespace Hurricane.Settings.Converter
             {0, AudioFormat.Copy},
             {1, AudioFormat.MP3},
             {2, AudioFormat.AAC},
-            {3, AudioFormat.OGG}
+            {3, AudioFormat.WMA}
         };
 
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
