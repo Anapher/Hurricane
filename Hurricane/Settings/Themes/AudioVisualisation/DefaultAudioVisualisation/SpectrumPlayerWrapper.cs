@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel;
-using AudioVisualisation;
+using Hurricane.PluginAPI.AudioVisualisation;
 using WPFSoundVisualizationLib;
 
 namespace Hurricane.Settings.Themes.AudioVisualisation.DefaultAudioVisualisation

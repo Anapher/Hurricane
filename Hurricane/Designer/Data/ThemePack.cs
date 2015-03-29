@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Markup;
 using System.Xml.Serialization;
-using AudioVisualisation;
+using Hurricane.PluginAPI.AudioVisualisation;
 using Hurricane.Settings.Themes;
 using Hurricane.Settings.Themes.AudioVisualisation;
 using Hurricane.Settings.Themes.Background;

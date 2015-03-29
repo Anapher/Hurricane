@@ -2,7 +2,7 @@
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using AudioVisualisation;
+using Hurricane.PluginAPI.AudioVisualisation;
 
 namespace Hurricane.Settings.Themes.AudioVisualisation
 {

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace AudioVisualisation
+namespace Hurricane.PluginAPI.AudioVisualisation
 {
     /// <summary>
     /// Provides access to audio engine functionality needed to render the audio visualisation

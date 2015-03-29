@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Media;
-using AudioVisualisation;
+using Hurricane.PluginAPI.AudioVisualisation;
 
 namespace Hurricane.Settings.Themes.AudioVisualisation.DefaultAudioVisualisation
 {

@@ -4,7 +4,6 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Media.Imaging;
 using System.Xml.Serialization;
-using AudioVisualisation;
 using Hurricane.Settings.Themes;
 using Hurricane.Settings.Themes.AudioVisualisation;
 using Hurricane.Settings.Themes.Background;

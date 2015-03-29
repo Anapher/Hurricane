@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using AudioVisualisation;
 using CSCore;
 using CSCore.SoundOut;
 using CSCore.Streams;
@@ -11,6 +9,7 @@ using Hurricane.Music.CustomEventArgs;
 using Hurricane.Music.MusicEqualizer;
 using Hurricane.Music.Track;
 using Hurricane.Music.Visualization;
+using Hurricane.PluginAPI.AudioVisualisation;
 using Hurricane.Settings;
 using Hurricane.ViewModelBase;
 // ReSharper disable InconsistentNaming
@@ -376,28 +375,35 @@ namespace Hurricane.Music.AudioEngine
 
         public async void TogglePlayPause()
         {
-            if (IsLoading)
+            try
             {
-                _playAfterLoading = !_playAfterLoading;
-                return;
-            }
+                if (IsLoading)
+                {
+                    _playAfterLoading = !_playAfterLoading;
+                    return;
+                }
 
-            if (CurrentTrack == null) return;
-            if (_fader != null && _fader.IsFading) { _fader.CancelFading(); _fader.WaitForCancel(); }
-            if (_soundOut.PlaybackState == PlaybackState.Playing)
-            {
-                if (_crossfade != null && _crossfade.IsCrossfading) { _crossfade.CancelFading(); }
-                _isfadingout = true;
-                await _fader.FadeOut(_soundOut, this.Volume);
-                _soundOut.Pause();
-                CurrentStateChanged();
-                _isfadingout = false;
+                if (CurrentTrack == null) return;
+                if (_fader != null && _fader.IsFading) { _fader.CancelFading(); _fader.WaitForCancel(); }
+                if (_soundOut.PlaybackState == PlaybackState.Playing)
+                {
+                    if (_crossfade != null && _crossfade.IsCrossfading) { _crossfade.CancelFading(); }
+                    _isfadingout = true;
+                    await _fader.FadeOut(_soundOut, Volume);
+                    _soundOut.Pause();
+                    CurrentStateChanged();
+                    _isfadingout = false;
+                }
+                else
+                {
+                    _soundOut.Play();
+                    CurrentStateChanged();
+                    await _fader.FadeIn(_soundOut, Volume);
+                }
             }
-            else
+            catch (ObjectDisposedException)
             {
-                _soundOut.Play();
-                CurrentStateChanged();
-                await _fader.FadeIn(_soundOut, this.Volume);
+                //Nearly everywhere in this code block can an ObjectDisposedException get thrown. We can safely ignore that
             }
         }
         #endregion

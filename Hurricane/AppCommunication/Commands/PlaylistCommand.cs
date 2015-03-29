@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Windows;
 using System.Xml;
 using System.Xml.Serialization;
 using Hurricane.Music;
@@ -35,6 +36,7 @@ namespace Hurricane.AppCommunication.Commands
                 var binaryWriter = streams.BinaryWriter;
                 var bytesToSend = Encoding.UTF8.GetBytes(stringWriter.ToString());
                 binaryWriter.Write(bytesToSend.Length);
+                MessageBox.Show(bytesToSend.ToString());
                 binaryWriter.Write(bytesToSend);
                 binaryWriter.Flush();
             }

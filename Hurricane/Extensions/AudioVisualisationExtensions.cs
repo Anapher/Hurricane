@@ -2,7 +2,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using AudioVisualisation;
+using Hurricane.PluginAPI.AudioVisualisation;
 using Hurricane.ViewModels;
 
 namespace Hurricane.Extensions

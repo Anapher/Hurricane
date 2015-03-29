@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Shapes;
-using AudioVisualisation;
+using Hurricane.PluginAPI.AudioVisualisation;
 using WPFSoundVisualizationLib;
 
 namespace Hurricane.Settings.Themes.AudioVisualisation.DefaultAudioVisualisation

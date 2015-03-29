@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 
-namespace AudioVisualisation
+namespace Hurricane.PluginAPI.AudioVisualisation
 {
     /// <summary>
     /// The audio visualisation interface

@@ -8,11 +8,8 @@ namespace Hurricane.Music.AudioEngine
     public class VolumeFading : IDisposable
     {
         public bool IsFading { get; set; }
-
         private bool _cancel;
-
         public double OutDuration { get; set; }
-
         private readonly AutoResetEvent _canceledWaiter;
 
         protected async Task Fade(float from, float to, TimeSpan duration, bool getLouder, ISoundOut soundout)
@@ -43,14 +40,21 @@ namespace Hurricane.Music.AudioEngine
         #region Cancel
         protected virtual void OnCancelled()
         {
-            _canceledWaiter.Set();
+            if (!_isDisposed) _canceledWaiter.Set();
         }
 
         public void WaitForCancel()
         {
             if (IsFading)
             {
-                _canceledWaiter.WaitOne(50);
+                try
+                {
+                    _canceledWaiter.WaitOne(50);
+                }
+                catch (ObjectDisposedException)
+                {
+                    //ignore
+                }
             }
         }
 
@@ -81,9 +85,12 @@ namespace Hurricane.Music.AudioEngine
         #endregion
 
         #region Constructor and Deconstructor
+
+        private bool _isDisposed;
         public void Dispose()
         {
             _canceledWaiter.Dispose();
+            _isDisposed = true;
         }
 
         public VolumeFading()

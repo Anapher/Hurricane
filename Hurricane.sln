@@ -5,7 +5,7 @@ VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hurricane", "Hurricane\Hurricane.csproj", "{8C1DA3B1-DB8E-4F06-849D-CCF71FA1929F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AudioVisualisation", "AudioVisualisation\AudioVisualisation.csproj", "{3374A3E8-73DA-48E8-BF53-5574A714ED8B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hurricane.PluginAPI", "Hurricane.PluginAPI\Hurricane.PluginAPI.csproj", "{6680C804-3260-450F-8D2B-42484BC39FF4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,10 +17,10 @@ Global
 		{8C1DA3B1-DB8E-4F06-849D-CCF71FA1929F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8C1DA3B1-DB8E-4F06-849D-CCF71FA1929F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8C1DA3B1-DB8E-4F06-849D-CCF71FA1929F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3374A3E8-73DA-48E8-BF53-5574A714ED8B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3374A3E8-73DA-48E8-BF53-5574A714ED8B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3374A3E8-73DA-48E8-BF53-5574A714ED8B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3374A3E8-73DA-48E8-BF53-5574A714ED8B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6680C804-3260-450F-8D2B-42484BC39FF4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6680C804-3260-450F-8D2B-42484BC39FF4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6680C804-3260-450F-8D2B-42484BC39FF4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6680C804-3260-450F-8D2B-42484BC39FF4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

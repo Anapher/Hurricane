@@ -163,7 +163,7 @@ namespace Hurricane
         {
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
             Current.DispatcherUnhandledException += Current_DispatcherUnhandledException;
-            ExceptionlessClient.Default.Register();
+            ExceptionlessClient.Default.Register(false);
             ExceptionlessClient.Default.SubmittingEvent += DefaultOnSubmittingEvent;
         }
 

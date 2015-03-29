@@ -57,9 +57,10 @@ Source: "..\Hurricane\bin\Release\ffmpeg.exe"; DestDir: "{app}"; Flags: ignoreve
 Source: "..\Hurricane\bin\Release\youtube-dl.exe"; DestDir: "{userappdata}\Hurricane"; Flags: ignoreversion
 Source: "..\Hurricane\bin\Release\GongSolutions.Wpf.DragDrop.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\Hurricane\bin\Release\Hardcodet.Wpf.TaskbarNotification.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\Hurricane\bin\Release\AudioVisualisation.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\Hurricane\bin\Release\Hurricane.PluginAPI.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\Hurricane\bin\Release\ICSharpCode.SharpZipLib.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\Hurricane\bin\Release\Gma.QrCodeNet.Encoding.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\Hurricane\bin\Release\Hurricane.pdb"; DestDir: "{app}"; Flags: ignoreversion
 
 Source: "special_files\.IsInstalled"; DestDir: "{app}"; Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files

@@ -856,11 +856,10 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
-    <ProjectReference Include="..\AudioVisualisation\AudioVisualisation.csproj">
-      <Project>{3374a3e8-73da-48e8-bf53-5574a714ed8b}</Project>
-      <Name>AudioVisualisation</Name>
+    <ProjectReference Include="..\Hurricane.PluginAPI\Hurricane.PluginAPI.csproj">
+      <Project>{6680c804-3260-450f-8d2b-42484bc39ff4}</Project>
+      <Name>Hurricane.PluginAPI</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
