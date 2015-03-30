@@ -21,7 +21,12 @@ namespace Hurricane.Settings
 
         public override void Save(string programPath)
         {
-            Save<PlaylistSettings>(Path.Combine(programPath, Filename));
+            var tempFile = new FileInfo(Path.GetTempFileName());
+            Save<PlaylistSettings>(tempFile.FullName);
+
+            var settingsFile = new FileInfo(Path.Combine(programPath, Filename));
+            if (settingsFile.Exists) settingsFile.Delete();
+            tempFile.MoveTo(settingsFile.FullName);
         }
 
         public static PlaylistSettings Load(string programpath)

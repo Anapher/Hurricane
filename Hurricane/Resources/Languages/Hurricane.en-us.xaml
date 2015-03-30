@@ -254,7 +254,6 @@
     <system:String x:Key="Downloadable">Downloadable</system:String>
     <system:String x:Key="Yes">Yes</system:String>
     <system:String x:Key="No">No</system:String>
-    <system:String x:Key="AddTagsToDownloads">Add tags to downloads</system:String>
     <system:String x:Key="CreateNewPlaylist">Create new playlist</system:String>
     <system:String x:Key="AddToExistingPlaylist">Add to exisiting playlist</system:String>
     <system:String x:Key="AddTracksToPlaylist">Add tracks to '{0}'</system:String>

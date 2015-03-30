@@ -313,12 +313,11 @@ namespace Hurricane.Music.Track
         {
             if (Image == null)
             {
-                using (var waiter = new AutoResetEvent(false))
-                {
-                    ImageLoadedComplete += (s, e) => { waiter.Set(); };
-                    Load();
-                    await Task.Run(() => waiter.WaitOne(2000));
-                }
+                var waiter = new AutoResetEvent(false);
+
+                ImageLoadedComplete += (s, e) => { waiter.Set(); };
+                Load();
+                await Task.Run(() => waiter.WaitOne(2000));
             }
             return Image;
         }

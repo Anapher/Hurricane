@@ -125,7 +125,8 @@ namespace Hurricane.Music.Download
 
             }
 
-            if (settings.AddTags) await AddTags(musicInformation, fileName);
+            //TagLib# destroys all aac files...
+            if (settings.AddTags && settings.Format != AudioFormat.AAC) await AddTags(musicInformation, fileName);
             return true;
         }
 

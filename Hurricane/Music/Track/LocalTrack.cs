@@ -60,7 +60,14 @@ namespace Hurricane.Music.Track
                 Title = !string.IsNullOrWhiteSpace(info.Tag.Title) ? RemoveInvalidXmlChars(info.Tag.Title) : System.IO.Path.GetFileNameWithoutExtension(filename.FullName);
                 Album = RemoveInvalidXmlChars(info.Tag.Album);
                 Genres = string.Join(", ", info.Tag.Genres);
-                kbps = info.Properties.AudioBitrate;
+                if (info.Properties.AudioBitrate > 56000) //No idea what TagLib# is thinking, but sometimes it shows the bitrate * 1000
+                {
+                    kbps = (int) Math.Round(info.Properties.AudioBitrate/(double) 1000, 0);
+                }
+                else
+                {
+                    kbps = info.Properties.AudioBitrate;
+                }
                 kHz = info.Properties.AudioSampleRate / 1000;
                 Year = info.Tag.Year;
                 SetDuration(info.Properties.Duration);
@@ -70,7 +77,7 @@ namespace Hurricane.Music.Track
 
         private async Task<bool> TryLoadWithCSCore(FileInfo filename)
         {
-            this.Title = System.IO.Path.GetFileNameWithoutExtension(filename.FullName);
+            Title = System.IO.Path.GetFileNameWithoutExtension(filename.FullName);
             Mp3Frame frame = null;
 
             try
@@ -81,7 +88,7 @@ namespace Hurricane.Music.Track
                         frame = Mp3Frame.FromStream(sr);
                 });
 
-                if (frame != null) { kbps = frame.BitRate / 1000; }
+                if (frame != null) { kbps = (int)Math.Round(frame.BitRate / (double)1000, 0); }
                 TimeSpan duration = TimeSpan.Zero;
                 int samplerate = 0;
 

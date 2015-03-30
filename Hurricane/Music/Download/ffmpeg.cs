@@ -39,7 +39,6 @@ namespace Hurricane.Music.Download
                     CreateNoWindow = true,
                     FileName = HurricaneSettings.Paths.FFmpegPath,
                     Arguments = GetParameter(fileName, newFileName, bitrate, format),
-                    RedirectStandardOutput = true,
                     UseShellExecute = false
                 }
             };
@@ -59,7 +58,7 @@ namespace Hurricane.Music.Download
 
         private static string GetParameter(string inputFile, string outputFile, AudioBitrate bitrate, AudioFormat format)
         {
-            return string.Format("-i \"{0}\" -c:a {1} -vn -q:a 0 -b:a {2}k \"{3}\"", inputFile, GetAudioLibraryFromFormat(format), bitrate.ToString().Remove(0, 1), outputFile);
+            return string.Format("-i \"{0}\" -c:a {1} -vn -b:a {2}k \"{3}\"", inputFile, GetAudioLibraryFromFormat(format), bitrate.ToString().Remove(0, 1), outputFile);
         }
 
         public static string GetAudioLibraryFromFormat(AudioFormat format)
@@ -71,7 +70,7 @@ namespace Hurricane.Music.Download
                 case AudioFormat.MP3:
                     return "libmp3lame"; //works
                 case AudioFormat.AAC:
-                    return "libvo_aacenc";
+                    return "libfdk_aac";
                 case AudioFormat.WMA:
                     return "wmav2";
                 default:

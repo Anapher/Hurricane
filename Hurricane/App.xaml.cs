@@ -163,19 +163,6 @@ namespace Hurricane
         {
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
             Current.DispatcherUnhandledException += Current_DispatcherUnhandledException;
-            ExceptionlessClient.Default.Register(false);
-            ExceptionlessClient.Default.SubmittingEvent += DefaultOnSubmittingEvent;
-        }
-
-        private bool _sendReport;
-        private void DefaultOnSubmittingEvent(object sender, EventSubmittingEventArgs eventSubmittingEventArgs)
-        {
-            if (_sendReport)
-            {
-                eventSubmittingEventArgs.Cancel = true;
-                return;
-            }
-            _sendReport = true;
         }
 
         private void Current_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
@@ -197,6 +184,7 @@ namespace Hurricane
                 _isHandled = true;
                 if (MainViewModel.Instance.MusicManager != null && MainViewModel.Instance.MusicManager.CSCoreEngine.IsPlaying)
                     MainViewModel.Instance.MusicManager.CSCoreEngine.StopPlayback();
+                ExceptionlessClient.Default.Register(false);
                 ReportExceptionWindow window = new ReportExceptionWindow(ex);
                 window.ShowDialog();
             }
