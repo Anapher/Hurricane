@@ -83,7 +83,7 @@ namespace Hurricane.Designer.Data.ThemeData
 
         public override string BaseDirectory
         {
-            get { return HurricaneSettings.Instance.AccentColorsDirectory; }
+            get { return HurricaneSettings.Paths.AccentColorsDirectory; }
         }
     }
 }

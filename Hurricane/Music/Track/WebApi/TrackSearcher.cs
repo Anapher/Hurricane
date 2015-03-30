@@ -6,9 +6,11 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using Hurricane.Music.Download;
 using Hurricane.Music.Playlist;
 using Hurricane.Settings;
 using Hurricane.ViewModelBase;
+using Hurricane.Views;
 using MahApps.Metro.Controls.Dialogs;
 
 namespace Hurricane.Music.Track.WebApi
@@ -202,8 +204,14 @@ namespace Hurricane.Music.Track.WebApi
             {
                 return _downloadTrack ?? (_downloadTrack = new RelayCommand(parameter =>
                 {
-                    _manager.DownloadManager.AddEntry(SelectedTrack);
-                    _manager.DownloadManager.IsOpen = true;
+                    var track = SelectedTrack;
+                    if (track == null) return;
+                    var downloadDialog = new DownloadTrackWindow(track.DownloadFilename, DownloadManager.GetExtension(track)){Owner = _baseWindow};
+                    if (downloadDialog.ShowDialog() == true)
+                    {
+                        _manager.DownloadManager.AddEntry(track, downloadDialog.DownloadSettings.Clone(), downloadDialog.SelectedPath);
+                        _manager.DownloadManager.IsOpen = true;
+                    }
                 }));
             }
         }

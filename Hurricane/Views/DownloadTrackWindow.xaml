@@ -1,0 +1,80 @@
+﻿<controls:MetroWindow x:Class="Hurricane.Views.DownloadTrackWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
+        xmlns:extensions="clr-namespace:Hurricane.Extensions"
+        xmlns:types="clr-namespace:Hurricane.Music.Download"
+        Title="{StaticResource DownloadTrack}" Width="548" SizeToContent="Height" x:Name="BaseWindow" DataContext="{Binding ElementName=BaseWindow}" GlowBrush="{StaticResource AccentColorBrush}"
+        ResizeMode="NoResize" WindowStartupLocation="CenterOwner" ShowInTaskbar="False">
+    <StackPanel Margin="10">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="75"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                <TextBlock Text="{StaticResource Destination}"/>
+                <TextBlock Text=":"/>
+            </StackPanel>
+            <TextBox Grid.Column="1" IsReadOnly="True" x:Name="PathTextBox" Text="{Binding SelectedPath}"/>
+            <Button Content="..." Grid.Column="2" Width="40" Margin="10,0,0,0" Click="SelectPath_Click"/>
+        </Grid>
+        <CheckBox Content="{StaticResource AddTags}" Margin="0,20,0,0" IsChecked="{Binding DownloadSettings.AddTags}"/>
+        <CheckBox Content="{StaticResource Convert}" Margin="0,10,0,0" x:Name="ConvertTrackCheckBox" IsChecked="{Binding DownloadSettings.IsConverterEnabled}"/>
+        <StackPanel Orientation="Vertical" Margin="5,10,0,0">
+            <StackPanel.Style>
+                <Style TargetType="StackPanel">
+                    <Setter Property="Height" Value="0"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding ElementName=ConvertTrackCheckBox,Path=IsChecked}" Value="false">
+                            <DataTrigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation To="0" Duration="0:0:0.4" Storyboard.TargetProperty="Height"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </DataTrigger.EnterActions>
+                            <DataTrigger.ExitActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation To="104" Duration="0:0:0.4" Storyboard.TargetProperty="Height"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </DataTrigger.ExitActions>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding ElementName=ConvertTrackCheckBox,Path=IsChecked}" Value="true">
+                            <DataTrigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation To="104" Duration="0:0:0.4" Storyboard.TargetProperty="Height"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </DataTrigger.EnterActions>
+                            <DataTrigger.ExitActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation To="0" Duration="0:0:0.4" Storyboard.TargetProperty="Height"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </DataTrigger.ExitActions>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </StackPanel.Style>
+            <TextBlock Text="{StaticResource Format}"/>
+            <ComboBox Margin="0,5,0,0" ItemsSource="{Binding Source={extensions:Enumeration {x:Type types:AudioFormat}}}" DisplayMemberPath="Description" SelectedValue="{Binding DownloadSettings.Format}" SelectedValuePath="Value" Width="200" HorizontalAlignment="Left" SelectionChanged="Selector_OnSelectionChanged"/>
+            <TextBlock Text="{StaticResource Bitrate}" Margin="0,10,0,0"/>
+            <ComboBox Margin="0,5,0,0" ItemsSource="{Binding Source={extensions:Enumeration {x:Type types:AudioBitrate}}}" DisplayMemberPath="Description" SelectedValue="{Binding DownloadSettings.Bitrate}" SelectedValuePath="Value" Width="200" HorizontalAlignment="Left"/>
+        </StackPanel>
+        <Grid Grid.IsSharedSizeScope="True" Margin="0,10,0,0" HorizontalAlignment="Right">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition SharedSizeGroup="buttons"/>
+                <ColumnDefinition Width="10"/>
+                <ColumnDefinition SharedSizeGroup="buttons"/>
+            </Grid.ColumnDefinitions>
+            <Button Content="{StaticResource OK}" IsDefault="True" IsEnabled="{Binding CanAccept}" Click="OkButton_Click"/>
+            <Button Content="{StaticResource Cancel}" Grid.Column="2" Width="75" IsCancel="True" Click="CancelButton_Click"/>
+        </Grid>
+    </StackPanel>
+</controls:MetroWindow>

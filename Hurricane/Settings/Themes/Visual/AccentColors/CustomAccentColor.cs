@@ -59,7 +59,7 @@ namespace Hurricane.Settings.Themes.Visual.AccentColors
                 return new ResourceDictionary
                 {
                     Source =
-                        new Uri(Path.Combine(HurricaneSettings.Instance.AccentColorsDirectory, Name),
+                        new Uri(Path.Combine(HurricaneSettings.Paths.AccentColorsDirectory, Name),
                             UriKind.RelativeOrAbsolute)
                 };
             }

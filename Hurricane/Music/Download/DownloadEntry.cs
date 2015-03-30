@@ -5,6 +5,8 @@ namespace Hurricane.Music.Download
 {
     public class DownloadEntry : PropertyChangedBase, IDownloadable
     {
+        public DownloadSettings DownloadSettings { get; set; }
+
         private bool _isWaiting;
         public bool IsWaiting
         {

@@ -88,7 +88,7 @@ namespace Hurricane.Settings.Themes
 
             _audioVisualisations.Add(DefaultAudioVisualisation.GetDefault());
 
-            var accentColorsFolder = new DirectoryInfo(HurricaneSettings.Instance.AccentColorsDirectory);
+            var accentColorsFolder = new DirectoryInfo(HurricaneSettings.Paths.AccentColorsDirectory);
             if (accentColorsFolder.Exists)
             {
                 foreach (var file in accentColorsFolder.GetFiles("*.xaml"))
@@ -100,7 +100,7 @@ namespace Hurricane.Settings.Themes
                 }
             }
 
-            var appThemesFolder = new DirectoryInfo(HurricaneSettings.Instance.AppThemesDirectory);
+            var appThemesFolder = new DirectoryInfo(HurricaneSettings.Paths.AppThemesDirectory);
             if (appThemesFolder.Exists)
             {
                 foreach (var file in appThemesFolder.GetFiles("*.xaml"))
@@ -111,7 +111,7 @@ namespace Hurricane.Settings.Themes
                 }
             }
 
-            var themePacksFolder = new DirectoryInfo(HurricaneSettings.Instance.ThemePacksDirectory);
+            var themePacksFolder = new DirectoryInfo(HurricaneSettings.Paths.ThemePacksDirectory);
             if (themePacksFolder.Exists)
             {
                 foreach (var file in themePacksFolder.GetFiles("*.htp"))
@@ -124,7 +124,7 @@ namespace Hurricane.Settings.Themes
                 }
             }
 
-            var audioVisualisations = new DirectoryInfo(HurricaneSettings.Instance.AudioVisualisationsDirectory);
+            var audioVisualisations = new DirectoryInfo(HurricaneSettings.Paths.AudioVisualisationsDirectory);
             if (audioVisualisations.Exists)
             {
                 foreach (var file in audioVisualisations.GetFiles("*.dll"))

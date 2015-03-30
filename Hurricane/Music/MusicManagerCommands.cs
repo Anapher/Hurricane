@@ -1,7 +1,11 @@
 ﻿using System.Collections;
+using System.IO;
 using System.Linq;
+using System.Windows;
+using Hurricane.Music.Download;
 using Hurricane.Music.Track;
 using Hurricane.ViewModelBase;
+using Hurricane.Views;
 
 namespace Hurricane.Music
 {
@@ -174,14 +178,34 @@ namespace Hurricane.Music
                 return _downloadTracks ?? (_downloadTracks = new RelayCommand(parameter =>
                 {
                     if (parameter == null) return;
-                    var tracks = ((IList)parameter).Cast<PlayableBase>().ToList();
-                    bool open = false;
-                    foreach (var track in tracks.OfType<StreamableBase>().Where(x => x.CanDownload))
+                    var tracks = ((IList)parameter).Cast<PlayableBase>().ToList().OfType<StreamableBase>().Where(x => x.CanDownload).ToList();
+                    if (tracks.Count == 0) return;
+
+                    if (tracks.Count == 1)
                     {
-                        Musicmanager.DownloadManager.AddEntry(track);
-                        open = true;
+                        var track = tracks[0];
+
+                        var downloadDialog = new DownloadTrackWindow(track.DownloadFilename, DownloadManager.GetExtension(track)) { Owner = Application.Current.MainWindow };
+                        if (downloadDialog.ShowDialog() == true)
+                        {
+                            var settings = downloadDialog.DownloadSettings.Clone();
+                            Musicmanager.DownloadManager.AddEntry(track, settings, downloadDialog.SelectedPath);
+                            Musicmanager.DownloadManager.IsOpen = true;
+                        }
                     }
-                    if (open) Musicmanager.DownloadManager.IsOpen = true;
+                    else
+                    {
+                        var downloadDialog = new DownloadTrackWindow { Owner = Application.Current.MainWindow };
+                        if (downloadDialog.ShowDialog() == true)
+                        {
+                            var settings = downloadDialog.DownloadSettings.Clone();
+                            foreach (var track in tracks)
+                            {
+                                Musicmanager.DownloadManager.AddEntry(track, settings, Path.Combine(downloadDialog.SelectedPath, track.DownloadFilename + (settings.Format == AudioFormat.Copy ? DownloadManager.GetExtension(track) : ffmpeg.GetAudioExtension(null, settings.Format))));
+                            }
+                            Musicmanager.DownloadManager.IsOpen = true;
+                        }
+                    }
                 }));
             }
         }

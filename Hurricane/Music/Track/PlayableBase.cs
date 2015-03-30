@@ -178,7 +178,7 @@ namespace Hurricane.Music.Track
             if (Image == null)
             {
                 IsLoadingImage = true;
-                var albumCoverDirectory = new DirectoryInfo(HurricaneSettings.Instance.CoverDirectory);
+                var albumCoverDirectory = new DirectoryInfo(HurricaneSettings.Paths.CoverDirectory);
                 Image = MusicCoverManager.GetTrackImage(this, albumCoverDirectory);
                 if (Image == null) await LoadImage(albumCoverDirectory);
                 IsLoadingImage = false;

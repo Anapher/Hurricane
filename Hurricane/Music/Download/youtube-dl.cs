@@ -30,7 +30,7 @@ namespace Hurricane.Music.Download
 
         public string ExecutablePath
         {
-            get { return Path.Combine(HurricaneSettings.Instance.BaseDirectory, "youtube-dl.exe"); }
+            get { return Path.Combine(HurricaneSettings.Paths.BaseDirectory, "youtube-dl.exe"); }
         }
 
         private bool _isLoaded;
@@ -102,10 +102,9 @@ namespace Hurricane.Music.Download
             }
         }
 
-        public async Task<string> DownloadYouTubeVideo(string youTubeLink, string fileNameWithoutExtension, Action<double> progressChangedAction)
+        public async Task DownloadYouTubeVideo(string youTubeLink, string fileName, Action<double> progressChangedAction)
         {
             await Load();
-            var file = fileNameWithoutExtension + ".m4a";
             using (var p = new Process()
             {
                 StartInfo = new ProcessStartInfo
@@ -114,7 +113,7 @@ namespace Hurricane.Music.Download
                     RedirectStandardOutput = true,
                     UseShellExecute = false,
                     FileName = ExecutablePath,
-                    Arguments = string.Format("{0} --extract-audio --output \"{1}\"", youTubeLink, file)
+                    Arguments = string.Format("{0} --extract-audio --ffmpeg-location \"{1}\" --output \"{2}\"", youTubeLink, HurricaneSettings.Paths.FFmpegPath, fileName)
                 }
             })
             {
@@ -133,8 +132,7 @@ namespace Hurricane.Music.Download
                     }
                 }
 
-                if (!File.Exists(file)) throw new Exception();
-                return file;
+                if (!File.Exists(fileName)) throw new Exception();
             }
         }
     }

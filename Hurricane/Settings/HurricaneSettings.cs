@@ -6,13 +6,46 @@ namespace Hurricane.Settings
 {
     public class HurricaneSettings
     {
-        public readonly string BaseDirectory;
-        public readonly string CoverDirectory;
+        public class PathProvider
+        {
+            public readonly string BaseDirectory;
+            public readonly string CoverDirectory;
 
-        public readonly string AccentColorsDirectory;
-        public readonly string AppThemesDirectory;
-        public readonly string ThemePacksDirectory;
-        public readonly string AudioVisualisationsDirectory;
+            public readonly string AccentColorsDirectory;
+            public readonly string AppThemesDirectory;
+            public readonly string ThemePacksDirectory;
+            public readonly string AudioVisualisationsDirectory;
+            // ReSharper disable once UnassignedReadonlyField
+            public readonly string FFmpegPath;
+
+            public PathProvider()
+            {
+                if (SaveLocationManager.IsInstalled())
+                {
+                    var appDataDir = new DirectoryInfo(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Hurricane"));
+                    if (!appDataDir.Exists) appDataDir.Create();
+                    BaseDirectory = appDataDir.FullName;
+                }
+                else
+                {
+                    BaseDirectory = AppDomain.CurrentDomain.BaseDirectory;
+                }
+                CoverDirectory = Path.Combine(BaseDirectory, "AlbumCover");
+
+                var themeDirectory = CheckDirectory(Path.Combine(BaseDirectory, "Themes"));
+                AccentColorsDirectory = CheckDirectory(Path.Combine(themeDirectory, "AccentColors"));
+                AppThemesDirectory = CheckDirectory(Path.Combine(themeDirectory, "AppThemes"));
+                ThemePacksDirectory = CheckDirectory(Path.Combine(themeDirectory, "ThemePacks"));
+                AudioVisualisationsDirectory = CheckDirectory(Path.Combine(themeDirectory, "AudioVisualisations"));
+                FFmpegPath = Path.Combine(BaseDirectory, "ffmpeg.exe");
+            }
+        }
+
+        private static PathProvider _paths;
+        public static PathProvider Paths
+        {
+            get { return _paths ?? (_paths = new PathProvider()); }
+        }
 
         private static HurricaneSettings _instance;
         public static HurricaneSettings Instance
@@ -26,27 +59,6 @@ namespace Hurricane.Settings
 
         public bool IsLoaded { get; set; }
 
-        public HurricaneSettings()
-        {
-            if (SaveLocationManager.IsInstalled())
-            {
-                var appDataDir = new DirectoryInfo(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Hurricane"));
-                if (!appDataDir.Exists) appDataDir.Create();
-                BaseDirectory = appDataDir.FullName;
-            }
-            else
-            {
-                BaseDirectory = AppDomain.CurrentDomain.BaseDirectory;
-            }
-            CoverDirectory = Path.Combine(BaseDirectory, "AlbumCover");
-
-            var themeDirectory = CheckDirectory(Path.Combine(BaseDirectory, "Themes"));
-            AccentColorsDirectory = CheckDirectory(Path.Combine(themeDirectory, "AccentColors"));
-            AppThemesDirectory = CheckDirectory(Path.Combine(themeDirectory, "AppThemes"));
-            ThemePacksDirectory = CheckDirectory(Path.Combine(themeDirectory, "ThemePacks"));
-            AudioVisualisationsDirectory = CheckDirectory(Path.Combine(themeDirectory, "AudioVisualisations"));
-        }
-
         private static string CheckDirectory(string path)
         {
             var folder = new DirectoryInfo(path);
@@ -57,17 +69,17 @@ namespace Hurricane.Settings
         public void Load()
         {
             ApplicationThemeManager.Instance.Refresh();
-            Playlists = PlaylistSettings.Load(BaseDirectory);
-            Config = ConfigSettings.Load(BaseDirectory);
-            CurrentState = CurrentState.Load(BaseDirectory);
+            Playlists = PlaylistSettings.Load(Paths.BaseDirectory);
+            Config = ConfigSettings.Load(Paths.BaseDirectory);
+            CurrentState = CurrentState.Load(Paths.BaseDirectory);
             IsLoaded = true;
         }
 
         public void Save()
         {
-            if (Playlists != null) Playlists.Save(BaseDirectory);
-            if (Config != null) Config.Save(BaseDirectory);
-            if (CurrentState != null) CurrentState.Save(BaseDirectory);
+            if (Playlists != null) Playlists.Save(Paths.BaseDirectory);
+            if (Config != null) Config.Save(Paths.BaseDirectory);
+            if (CurrentState != null) CurrentState.Save(Paths.BaseDirectory);
         }
     }
 }

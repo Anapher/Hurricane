@@ -17,76 +17,44 @@
         <controls:Flyout Theme="Accent" Opacity="1" AnimateOpacity="True" Foreground="White" IsOpen="{Binding MusicManager.DownloadManager.IsOpen}" Position="Right" Width="300" Header="{DynamicResource Downloads}" x:Key="DownloadFlyout" x:Shared="False">
             <Grid Margin="10">
                 <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="*"/>
-                    </Grid.RowDefinitions>
-                    <DockPanel Margin="5,0,0,0">
-                        <Button Command="{Binding MusicManager.DownloadManager.OpenDownloadFolder}">
-                            <Button.Style>
-                                <Style TargetType="Button">
-                                    <Setter Property="Template">
-                                        <Setter.Value>
-                                            <ControlTemplate TargetType="Button">
-                                                <StackPanel Orientation="Horizontal">
-                                                    <Path Data="{StaticResource VectorFolder2}" Fill="White" x:Name="path">
-                                                        <Path.LayoutTransform>
-                                                            <ScaleTransform ScaleX="0.8" ScaleY="0.8"/>
-                                                        </Path.LayoutTransform>
-                                                    </Path>
-                                                    <TextBlock x:Name="txt" Text="{Binding MusicManager.DownloadManager.FolderName}" Foreground="White" Margin="5,0,0,0" VerticalAlignment="Center"/>
-                                                </StackPanel>
-                                                <ControlTemplate.Triggers>
-                                                    <Trigger Property="IsMouseOver" Value="True">
-                                                        <Trigger.EnterActions>
-                                                            <BeginStoryboard>
-                                                                <Storyboard>
-                                                                    <ColorAnimation To="#FFEDEDED" Duration="0:0:0.2" Storyboard.TargetName="path" Storyboard.TargetProperty="(Path.Fill).(SolidColorBrush.Color)"/>
-                                                                    <ColorAnimation To="#FFEDEDED" Duration="0:0:0.2" Storyboard.TargetName="txt" Storyboard.TargetProperty="(TextBlock.Foreground).(SolidColorBrush.Color)"/>
-                                                                </Storyboard>
-                                                            </BeginStoryboard>
-                                                        </Trigger.EnterActions>
-                                                        <Trigger.ExitActions>
-                                                            <BeginStoryboard>
-                                                                <Storyboard>
-                                                                    <ColorAnimation To="White" Duration="0:0:0.2" Storyboard.TargetName="path" Storyboard.TargetProperty="(Path.Fill).(SolidColorBrush.Color)"/>
-                                                                    <ColorAnimation To="White" Duration="0:0:0.2" Storyboard.TargetName="txt" Storyboard.TargetProperty="(TextBlock.Foreground).(SolidColorBrush.Color)"/>
-                                                                </Storyboard>
-                                                            </BeginStoryboard>
-                                                        </Trigger.ExitActions>
-                                                    </Trigger>
-                                                </ControlTemplate.Triggers>
-                                            </ControlTemplate>
-                                        </Setter.Value>
-                                    </Setter>
-                                </Style>
-                            </Button.Style>
-                        </Button>
-                    </DockPanel>
-                    <ScrollViewer Grid.Row="1" Margin="0,10,0,0" VerticalScrollBarVisibility="Auto">
+                    <ScrollViewer Margin="0,5,0,0" VerticalScrollBarVisibility="Auto">
                         <ItemsControl ItemsSource="{Binding MusicManager.DownloadManager.Entries}">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
-                                    <StackPanel Orientation="Vertical" Margin="5">
-                                        <Separator x:Name="Separator"/>
-                                        <DockPanel Margin="0,10,0,0">
-                                            <Viewbox Width="15" Height="15" VerticalAlignment="Center" Margin="0,0,5,0">
-                                                <Path Data="{StaticResource VectorCheck}" Fill="White"/>
-                                                <Viewbox.Style>
-                                                    <Style TargetType="Viewbox">
-                                                        <Setter Property="Visibility" Value="Collapsed"/>
-                                                        <Style.Triggers>
-                                                            <DataTrigger Binding="{Binding IsDownloaded}" Value="true">
-                                                                <Setter Property="Visibility" Value="Visible"/>
-                                                            </DataTrigger>
-                                                        </Style.Triggers>
-                                                    </Style>
-                                                </Viewbox.Style>
-                                            </Viewbox>
-                                            <TextBlock Text="{Binding Trackname}" TextTrimming="CharacterEllipsis" FontSize="16" VerticalAlignment="Center"/>
-                                        </DockPanel>
-                                        <controls:MetroProgressBar Value="{Binding Progress}" Foreground="White" IsIndeterminate="{Binding IsWaiting}" VerticalAlignment="Center" Margin="0,5,0,0"/>
-                                    </StackPanel>
+                                    <Button Command="{Binding RelativeSource={RelativeSource AncestorType=ItemsControl},Path=DataContext.OpenFileLocation}" CommandParameter="{Binding DownloadFilename}">
+                                        <Button.Style>
+                                            <Style TargetType="Button">
+                                                <Setter Property="OverridesDefaultStyle" Value="True"/>
+                                                <Setter Property="Template">
+                                                    <Setter.Value>
+                                                        <ControlTemplate TargetType="Button">
+                                                            <ContentPresenter />
+                                                        </ControlTemplate>
+                                                    </Setter.Value>
+                                                </Setter>
+                                            </Style>
+                                        </Button.Style>
+                                        <StackPanel Orientation="Vertical" Margin="5">
+                                            <Separator x:Name="Separator"/>
+                                            <DockPanel Margin="0,10,0,0">
+                                                <Viewbox Width="15" Height="15" VerticalAlignment="Center" Margin="0,0,5,0">
+                                                    <Path Data="{StaticResource VectorCheck}" Fill="White"/>
+                                                    <Viewbox.Style>
+                                                        <Style TargetType="Viewbox">
+                                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding IsDownloaded}" Value="true">
+                                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Viewbox.Style>
+                                                </Viewbox>
+                                                <TextBlock Text="{Binding Trackname}" TextTrimming="CharacterEllipsis" FontSize="16" VerticalAlignment="Center"/>
+                                            </DockPanel>
+                                            <controls:MetroProgressBar Value="{Binding Progress}" Foreground="White" IsIndeterminate="{Binding IsWaiting}" VerticalAlignment="Center" Margin="0,5,0,0"/>
+                                        </StackPanel>
+                                    </Button>
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>

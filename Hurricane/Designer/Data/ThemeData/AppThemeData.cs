@@ -202,7 +202,7 @@ namespace Hurricane.Designer.Data.ThemeData
 
         public override string BaseDirectory
         {
-            get { return HurricaneSettings.Instance.AppThemesDirectory; }
+            get { return HurricaneSettings.Paths.AppThemesDirectory; }
         }
     }
 }

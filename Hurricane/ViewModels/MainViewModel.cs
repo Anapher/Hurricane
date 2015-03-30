@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -565,45 +566,19 @@ namespace Hurricane.ViewModels
                     if (track == null) return;
                     if (!track.CanDownload) return;
 
-                    var sfd = new SaveFileDialog
+                    var downloadDialog = new DownloadTrackWindow(track.DownloadFilename, DownloadManager.GetExtension(track)) { Owner = _baseWindow };
+                    if (downloadDialog.ShowDialog() == true)
                     {
-                        Filter = string.Format("{0}|*|MP3 {1}|*.mp3|AAC {1}|*.aac|WMA {1}|*.wma", Application.Current.Resources["Default"], Application.Current.Resources["File"]),
-                        FileName = track.Title
-                    };
-
-                    if (sfd.ShowDialog() == true)
-                    {
-                        var downloadFile = new FileInfo(sfd.FileName);
-                        if (downloadFile.Exists) downloadFile.Delete();
-
                         var controller = await _baseWindow.ShowProgressAsync(Application.Current.Resources["Download"].ToString(), MusicManager.SelectedTrack.Title);
-                        AudioFormat? format = null;
 
-                        switch (sfd.FilterIndex)
-                        {
-                            case 0:
-                                format = AudioFormat.Copy;
-                                break;
-                            case 1:
-                                format = AudioFormat.MP3;
-                                break;
-                            case 2:
-                                format = AudioFormat.AAC;
-                                break;
-                            case 3:
-                                format = AudioFormat.WMA;
-                                break;
-                        }
-
-                        var fileName = await
-                            DownloadManager.DownloadAndConfigureTrack(track, track, sfd.FileName,
+                        if (await
+                            DownloadManager.DownloadAndConfigureTrack(track, track, downloadDialog.SelectedPath,
                                 d =>
                                 {
-                                    controller.SetProgress(d / 100);
-                                }, format);
-                        if (!string.IsNullOrEmpty(fileName))
+                                    controller.SetProgress(d/100);
+                                }, downloadDialog.DownloadSettings.Clone()))
                         {
-                            var newTrack = new LocalTrack { Path = fileName };
+                            var newTrack = new LocalTrack {Path = downloadDialog.SelectedPath};
                             if (await newTrack.LoadInformation())
                             {
                                 newTrack.TimeAdded = track.TimeAdded;
@@ -626,7 +601,8 @@ namespace Hurricane.ViewModels
                                 }
                                 else
                                 {
-                                    MusicManager.SelectedPlaylist.Tracks[MusicManager.SelectedPlaylist.Tracks.IndexOf(track)] = newTrack;
+                                    MusicManager.SelectedPlaylist.Tracks[
+                                        MusicManager.SelectedPlaylist.Tracks.IndexOf(track)] = newTrack;
                                 }
 
                                 newTrack.IsFavorite = track.IsFavorite;
@@ -664,50 +640,49 @@ namespace Hurricane.ViewModels
                     if (MusicManager.FavoriteListIsSelected) return;
                     var lst = MusicManager.SelectedPlaylist.Tracks.OfType<StreamableBase>().Where(x => x.CanDownload).ToList();
                     if (!lst.Any()) return;
-                    var fdb = new WPFFolderBrowserDialog
-                    {
-                        InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyMusic),
-                        Title = MusicManager.SelectedPlaylist.Name
-                    };
 
-                    if (fdb.ShowDialog() != true) return;
-                    var controller = await _baseWindow.ShowProgressAsync(Application.Current.Resources["Download"].ToString(), "", true);
-                    foreach (var track in lst)
+                    var downloadDialog = new DownloadTrackWindow {Owner = _baseWindow};
+                    if (downloadDialog.ShowDialog() == true)
                     {
-                        if (controller.IsCanceled)
+                        var downloadSettings = downloadDialog.DownloadSettings.Clone();
+                        var controller = await _baseWindow.ShowProgressAsync(Application.Current.Resources["Download"].ToString(), "", true);
+                        foreach (var track in lst)
                         {
-                            await controller.CloseAsync();
-                            return;
-                        }
-                        controller.SetMessage(track.Title);
-                        var downloadFile = new FileInfo(Path.Combine(fdb.FileName, track.DownloadFilename));
-                        if (downloadFile.Exists) continue;
-
-                        var fileName = await
-                            DownloadManager.DownloadAndConfigureTrack(track, track, downloadFile.FullName,
-                                d =>
-                                {
-                                    controller.SetProgress(lst.IndexOf(track) / (double)lst.Count +
-                                                           1 / (double)lst.Count / 100 * d);
-                                });
-                        if (!string.IsNullOrEmpty(fileName))
-                        {
-                            var newTrack = new LocalTrack { Path = fileName };
-                            if (await newTrack.LoadInformation())
+                            if (controller.IsCanceled)
                             {
-                                newTrack.TimeAdded = track.TimeAdded;
-                                newTrack.Artist = track.Artist;
-                                newTrack.Year = track.Year;
-                                newTrack.Title = track.Title;
-                                newTrack.Album = track.Album;
-                                newTrack.Genres = track.Genres;
-                                MusicManager.SelectedPlaylist.Tracks[MusicManager.SelectedPlaylist.Tracks.IndexOf(track)] = newTrack;
+                                await controller.CloseAsync();
+                                return;
+                            }
+                            controller.SetMessage(track.Title);
+                            var downloadFile = new FileInfo(Path.Combine(downloadDialog.SelectedPath, track.DownloadFilename + DownloadManager.GetExtension(track)));
+                            if (downloadFile.Exists) continue;
+
+                            if (await
+                                DownloadManager.DownloadAndConfigureTrack(track, track, downloadFile.FullName,
+                                    d =>
+                                    {
+                                        controller.SetProgress(lst.IndexOf(track)/(double) lst.Count +
+                                                               1/(double) lst.Count/100*d);
+                                    }, downloadSettings))
+                            {
+                                var newTrack = new LocalTrack { Path = downloadFile.FullName };
+                                if (await newTrack.LoadInformation())
+                                {
+                                    newTrack.TimeAdded = track.TimeAdded;
+                                    newTrack.Artist = track.Artist;
+                                    newTrack.Year = track.Year;
+                                    newTrack.Title = track.Title;
+                                    newTrack.Album = track.Album;
+                                    newTrack.Genres = track.Genres;
+                                    MusicManager.SelectedPlaylist.Tracks[MusicManager.SelectedPlaylist.Tracks.IndexOf(track)] = newTrack;
+                                }
                             }
                         }
+
+                        MusicManager.SaveToSettings();
+                        HurricaneSettings.Instance.Save();
+                        await controller.CloseAsync();
                     }
-                    MusicManager.SaveToSettings();
-                    HurricaneSettings.Instance.Save();
-                    await controller.CloseAsync();
                 }));
             }
         }
@@ -770,6 +745,21 @@ namespace Hurricane.ViewModels
         public RelayCommand ShowWindowCommand
         {
             get { return _showWindoCommand ?? (_showWindoCommand = new RelayCommand(parameter => { _baseWindow.ShowWindow(); })); }
+        }
+
+        private RelayCommand _openFileLocation;
+        public RelayCommand OpenFileLocation
+        {
+            get
+            {
+                return _openFileLocation ?? (_openFileLocation = new RelayCommand(parameter =>
+                {
+                    if (parameter == null || string.IsNullOrEmpty(parameter.ToString())) return;
+                    var file = new FileInfo(parameter.ToString());
+                    if (!file.Exists) return;
+                    Process.Start("explorer.exe", string.Format("/select,\"{0}\"", file.FullName));
+                }));
+            }
         }
         #endregion
 

@@ -198,13 +198,14 @@
     <Compile Include="Extensions\Converter\MillisecondsToStringConverter.cs" />
     <Compile Include="Extensions\Converter\PlaylistInfoConverter.cs" />
     <Compile Include="Extensions\ContentControlExtensions.cs" />
+    <Compile Include="Extensions\EnumerationExtension.cs" />
     <Compile Include="Extensions\MahApps\TransitioningExtensions.cs" />
     <Compile Include="Extensions\Controls\SliderWhichMakesMoves.cs" />
     <Compile Include="Extensions\TextBlockTextFormat.cs" />
     <Compile Include="Extensions\Controls\VolumeIcon.xaml.cs">
       <DependentUpon>VolumeIcon.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Music\Download\ConverterSettings.cs" />
+    <Compile Include="Music\Download\DownloadSettings.cs" />
     <Compile Include="Music\Download\ffmpeg.cs" />
     <Compile Include="Music\Playlist\CueSharp.cs" />
     <Compile Include="Music\Playlist\ImportCueSheet.cs" />
@@ -387,6 +388,9 @@
     <Compile Include="Utilities\WpfScreen.cs" />
     <Compile Include="ViewModels\QueueManagerViewModel.cs" />
     <Compile Include="ViewModels\SettingsViewModel.cs" />
+    <Compile Include="Views\DownloadTrackWindow.xaml.cs">
+      <DependentUpon>DownloadTrackWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\TagEditorWindow.xaml.cs">
       <DependentUpon>TagEditorWindow.xaml</DependentUpon>
     </Compile>
@@ -655,6 +659,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Resources\VectorGraphics.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\DownloadTrackWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

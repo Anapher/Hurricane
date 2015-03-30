@@ -254,7 +254,6 @@
     <system:String x:Key="Downloadable">Herunterladbar</system:String>
     <system:String x:Key="Yes">Ja</system:String>
     <system:String x:Key="No">Nein</system:String>
-    <system:String x:Key="AddTagsToDownloads">Tags zu Downloads hinzufügen</system:String>
     <system:String x:Key="CreateNewPlaylist">Neue Wiedergabeliste erstellen</system:String>
     <system:String x:Key="AddToExistingPlaylist">Zu vorhandener Wiedergabeliste hinzufügen</system:String>
     <system:String x:Key="AddTracksToPlaylist">Tracks werden zur Wiedergabeliste '{0}' hinzugefügt</system:String>
@@ -351,11 +350,17 @@
     <system:String x:Key="MoveToAppData">Nach AppData verschieben</system:String>
     <system:String x:Key="MoveToAppFolder">In den Anwendungsordner verschieben</system:String>
     <system:String x:Key="SaveLocation">Speicherort</system:String>
-    <system:String x:Key="Convert">Konvertieren</system:String>
     <system:String x:Key="ConvertTrack">Track konvertieren</system:String>
     <system:String x:Key="CopyFromOriginal">Übernehmen</system:String>
 
     <system:String x:Key="Music">Musik</system:String>
     <system:String x:Key="CheckForHurricaneUpdatesOnStart">Bei jedem Start auf Updates von Hurricane prüfen</system:String>
     <system:String x:Key="CheckForYouTubeUpdatesIfNeeded">Bei jeder Verwendung von youtube-dl auf Updates prüfen</system:String>
+
+    <system:String x:Key="FileAlreadyExists">Die Datei ist bereits vorhanden</system:String>
+    <system:String x:Key="DownloadTrack">Track herunterladen</system:String>
+    <system:String x:Key="DownloadTracks">Tracks herunterladen</system:String>
+    <system:String x:Key="Destination">Ziel</system:String>
+    <system:String x:Key="AddTags">Tags hinzufügen</system:String>
+    <system:String x:Key="Convert">Konvertieren</system:String>
 </ResourceDictionary>

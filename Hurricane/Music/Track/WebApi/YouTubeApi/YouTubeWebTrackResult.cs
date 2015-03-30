@@ -43,7 +43,7 @@ namespace Hurricane.Music.Track.WebApi.YouTubeApi
 
         public override string DownloadFilename
         {
-            get { return Utilities.GeneralHelper.EscapeFilename(Title) + ".m4a"; }
+            get { return Utilities.GeneralHelper.EscapeFilename(Title); }
         }
 
         public override DownloadMethod DownloadMethod

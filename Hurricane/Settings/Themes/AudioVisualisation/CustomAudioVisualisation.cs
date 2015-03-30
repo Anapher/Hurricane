@@ -10,7 +10,7 @@ namespace Hurricane.Settings.Themes.AudioVisualisation
         private IAudioVisualisationPlugin _loadedPlugin;
         public IAudioVisualisationPlugin AudioVisualisationPlugin
         {
-            get { return _loadedPlugin ?? (_loadedPlugin = AudioVisualisationPluginHelper.FromFile(Path.Combine(HurricaneSettings.Instance.AudioVisualisationsDirectory, FileName))); }
+            get { return _loadedPlugin ?? (_loadedPlugin = AudioVisualisationPluginHelper.FromFile(Path.Combine(HurricaneSettings.Paths.AudioVisualisationsDirectory, FileName))); }
         }
 
         public string Name

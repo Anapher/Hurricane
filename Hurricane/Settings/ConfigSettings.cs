@@ -78,7 +78,7 @@ namespace Hurricane.Settings
         public bool SaveCoverLocal { get; set; }
         public bool TrimTrackname { get; set; }
         public DownloadManager Downloader { get; set; }
-        public ConverterSettings ConverterSettings { get; set; }
+        public DownloadSettings DownloadSettings { get; set; }
 
         //App
         public AppCommunicationSettings AppCommunicationSettings { get; set; }
@@ -142,8 +142,8 @@ namespace Hurricane.Settings
             ShowProgressInTaskbar = true;
             AppCommunicationSettings = new AppCommunicationSettings();
             AppCommunicationSettings.SetStandard();
-            ConverterSettings = new ConverterSettings();
-            ConverterSettings.SetDefault();
+            DownloadSettings = new DownloadSettings();
+            DownloadSettings.SetDefault();
             CheckForHurricaneUpdates = true;
             CheckForYoutubeDlUpdates = true;
         }

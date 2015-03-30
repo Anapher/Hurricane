@@ -178,7 +178,6 @@
     <system:String x:Key="Changelog">Changelog:</system:String>
     <system:String x:Key="Number">Aantal</system:String>
     <system:String x:Key="RightBottom">Rechtsonder</system:String>
-    <system:String x:Key="AddTagsToDownloads">Tags toevoegen voor Downloads</system:String>
     <system:String x:Key="Composers">Componisten</system:String>
     <system:String x:Key="RemoveFromQueue">Verwijderen uit de wachtrij</system:String>
     <system:String x:Key="Rename">Andere naam geven</system:String>

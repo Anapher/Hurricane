@@ -391,26 +391,5 @@ namespace Hurricane.ViewModels
                 }));
             }
         }
-        
-        private RelayCommand _selectDownloadPath;
-        public RelayCommand SelectDownloadPath
-        {
-            get
-            {
-                return _selectDownloadPath ?? (_selectDownloadPath = new RelayCommand(parameter =>
-                {
-                    var directory = new DirectoryInfo(MusicManager.DownloadManager.DownloadDirectory);
-                    var folderBrowserDialog = new WPFFolderBrowserDialog
-                    {
-                        InitialDirectory = directory.Parent != null ? directory.Parent.FullName : directory.FullName
-                    };
-
-                    if (folderBrowserDialog.ShowDialog() == true)
-                    {
-                        MusicManager.DownloadManager.DownloadDirectory = folderBrowserDialog.FileName;
-                    }
-                }));
-            }
-        }
     }
 }
