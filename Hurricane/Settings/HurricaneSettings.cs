@@ -38,7 +38,7 @@ namespace Hurricane.Settings
                 AppThemesDirectory = CheckDirectory(Path.Combine(themeDirectory, "AppThemes"));
                 ThemePacksDirectory = CheckDirectory(Path.Combine(themeDirectory, "ThemePacks"));
                 AudioVisualisationsDirectory = CheckDirectory(Path.Combine(themeDirectory, "AudioVisualisations"));
-                FFmpegPath = Path.Combine(BaseDirectory, "ffmpeg.exe");
+                FFmpegPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ffmpeg.exe");
             }
         }
 

@@ -363,4 +363,5 @@
     <system:String x:Key="Destination">Destination</system:String>
     <system:String x:Key="AddTags">Add tags</system:String>
     <system:String x:Key="Convert">Convert</system:String>
+    <system:String x:Key="TrackIsDownloading">"{0}" is downloading</system:String>
 </ResourceDictionary>

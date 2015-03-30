@@ -159,10 +159,7 @@ namespace Hurricane.Views
 
             SelectedPath =
                 Path.Combine(selectedPath.DirectoryName,
-                    Path.GetFileNameWithoutExtension(selectedPath.FullName) + (DownloadSettings.Format ==
-                    AudioFormat.Copy
-                        ? _defaultExtension
-                        : ffmpeg.GetAudioExtension(null, DownloadSettings.Format)));
+                    Path.GetFileNameWithoutExtension(selectedPath.FullName) + DownloadSettings.GetExtension(_defaultExtension));
 
             CheckIfFileExists();
         }

@@ -78,22 +78,7 @@ namespace Hurricane.Music.Download
             }
         }
 
-        public static string GetAudioExtension(string inputFile, AudioFormat format)
-        {
-            switch (format)
-            {
-                case AudioFormat.Copy:
-                    return new FileInfo(inputFile).Extension;
-                case AudioFormat.MP3:
-                    return ".mp3";
-                case AudioFormat.AAC:
-                    return ".aac";
-                case AudioFormat.WMA:
-                    return ".wma";
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-        }
+
     }
 
     [SuppressMessage("ReSharper", "InconsistentNaming")]

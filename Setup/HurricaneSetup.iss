@@ -39,12 +39,18 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 Name: "quicklaunchicon"; Description: "{cm:CreateQuickLaunchIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked; OnlyBelowVersion: 0,6.1
 
 [Files]
-Source: "dependencies\dotNetFx45_Full_setup.exe"; DestDir: {tmp}; Flags: deleteafterinstall; AfterInstall: InstallFramework; Check: FrameworkIsNotInstalled
-Source: "..\Hurricane\bin\Release\Hurricane.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\Hurricane\bin\Release\CSCore.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\Hurricane\bin\Release\Exceptionless.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\Hurricane\bin\Release\Exceptionless.Extras.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\Hurricane\bin\Release\Exceptionless.Portable.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\Hurricane\bin\Release\Exceptionless.Wpf.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\Hurricane\bin\Release\ffmpeg.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\Hurricane\bin\Release\Gma.QrCodeNet.Encoding.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\Hurricane\bin\Release\GongSolutions.Wpf.DragDrop.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\Hurricane\bin\Release\Hardcodet.Wpf.TaskbarNotification.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\Hurricane\bin\Release\Hurricane.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\Hurricane\bin\Release\Hurricane.pdb"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\Hurricane\bin\Release\Hurricane.PluginAPI.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\Hurricane\bin\Release\ICSharpCode.SharpZipLib.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\Hurricane\bin\Release\MahApps.Metro.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\Hurricane\bin\Release\Newtonsoft.Json.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\Hurricane\bin\Release\System.Windows.Interactivity.dll"; DestDir: "{app}"; Flags: ignoreversion
@@ -53,14 +59,8 @@ Source: "..\Hurricane\bin\Release\updateSystemDotNet.Controller.dll"; DestDir: "
 Source: "..\Hurricane\bin\Release\WPFFolderBrowser.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\Hurricane\bin\Release\WPFSoundVisualizationLib.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\Hurricane\bin\Release\Xceed.Wpf.Toolkit.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\Hurricane\bin\Release\ffmpeg.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\Hurricane\bin\Release\youtube-dl.exe"; DestDir: "{userappdata}\Hurricane"; Flags: ignoreversion
-Source: "..\Hurricane\bin\Release\GongSolutions.Wpf.DragDrop.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\Hurricane\bin\Release\Hardcodet.Wpf.TaskbarNotification.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\Hurricane\bin\Release\Hurricane.PluginAPI.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\Hurricane\bin\Release\ICSharpCode.SharpZipLib.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\Hurricane\bin\Release\Gma.QrCodeNet.Encoding.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\Hurricane\bin\Release\Hurricane.pdb"; DestDir: "{app}"; Flags: ignoreversion
+Source: "dependencies\dotNetFx45_Full_setup.exe"; DestDir: {tmp}; Flags: deleteafterinstall; AfterInstall: InstallFramework; Check: FrameworkIsNotInstalled
 
 Source: "special_files\.IsInstalled"; DestDir: "{app}"; Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files

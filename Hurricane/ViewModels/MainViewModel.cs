@@ -645,7 +645,7 @@ namespace Hurricane.ViewModels
                     if (downloadDialog.ShowDialog() == true)
                     {
                         var downloadSettings = downloadDialog.DownloadSettings.Clone();
-                        var controller = await _baseWindow.ShowProgressAsync(Application.Current.Resources["Download"].ToString(), "", true);
+                        var controller = await _baseWindow.ShowProgressAsync(Application.Current.Resources["Download"].ToString(), "", true, new MetroDialogSettings { NegativeButtonText = Application.Current.Resources["Cancel"].ToString() });
                         foreach (var track in lst)
                         {
                             if (controller.IsCanceled)
@@ -653,8 +653,8 @@ namespace Hurricane.ViewModels
                                 await controller.CloseAsync();
                                 return;
                             }
-                            controller.SetMessage(track.Title);
-                            var downloadFile = new FileInfo(Path.Combine(downloadDialog.SelectedPath, track.DownloadFilename + DownloadManager.GetExtension(track)));
+                            controller.SetMessage(string.Format(Application.Current.Resources["TrackIsDownloading"].ToString(), track.Title));
+                            var downloadFile = new FileInfo(Path.Combine(downloadDialog.SelectedPath, track.DownloadFilename + downloadSettings.GetExtension(track)));
                             if (downloadFile.Exists) continue;
 
                             if (await

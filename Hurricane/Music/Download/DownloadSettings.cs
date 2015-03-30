@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Xml.Serialization;
+using Hurricane.Music.Track;
 
 namespace Hurricane.Music.Download
 {
@@ -33,6 +34,28 @@ namespace Hurricane.Music.Download
         public bool IsConverterEnabled { get; set; }
         public AudioBitrate Bitrate { get; set; }
         public AudioFormat Format { get; set; }
+
+        public string GetExtension(IDownloadable track)
+        {
+            return GetExtension(DownloadManager.GetExtension(track));
+        }
+
+        public string GetExtension(string defaultExtension)
+        {
+            switch (Format)
+            {
+                case AudioFormat.Copy:
+                    return defaultExtension;
+                case AudioFormat.MP3:
+                    return ".mp3";
+                case AudioFormat.AAC:
+                    return ".aac";
+                case AudioFormat.WMA:
+                    return ".wma";
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
 
         public void SetDefault()
         {

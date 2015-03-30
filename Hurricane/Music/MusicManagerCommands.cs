@@ -30,7 +30,9 @@ namespace Hurricane.Music
                 {
                     if (Musicmanager.FavoritePlaylist == Musicmanager.CurrentPlaylist)
                         Musicmanager.SelectedPlaylist = null;
+
                     Musicmanager.SelectedPlaylist = Musicmanager.CurrentPlaylist;
+                    Musicmanager.SelectedTrack = null;
                     Musicmanager.SelectedTrack = Musicmanager.CSCoreEngine.CurrentTrack;
                 }));
             }
@@ -201,7 +203,7 @@ namespace Hurricane.Music
                             var settings = downloadDialog.DownloadSettings.Clone();
                             foreach (var track in tracks)
                             {
-                                Musicmanager.DownloadManager.AddEntry(track, settings, Path.Combine(downloadDialog.SelectedPath, track.DownloadFilename + (settings.Format == AudioFormat.Copy ? DownloadManager.GetExtension(track) : ffmpeg.GetAudioExtension(null, settings.Format))));
+                                Musicmanager.DownloadManager.AddEntry(track, settings, Path.Combine(downloadDialog.SelectedPath, track.DownloadFilename + settings.GetExtension(track)));
                             }
                             Musicmanager.DownloadManager.IsOpen = true;
                         }
