@@ -20,6 +20,7 @@ using Hurricane.Settings;
 using Hurricane.Utilities;
 using Hurricane.ViewModelBase;
 using Hurricane.Views;
+using Hurricane.Views.UserControls;
 using MahApps.Metro.Controls.Dialogs;
 using Microsoft.Win32;
 using WPFFolderBrowser;
@@ -683,6 +684,19 @@ namespace Hurricane.ViewModels
                         HurricaneSettings.Instance.Save();
                         await controller.CloseAsync();
                     }
+                }));
+            }
+        }
+
+        private RelayCommand _addCustomStream;
+        public RelayCommand AddCustomStream
+        {
+            get
+            {
+                return _addCustomStream ?? (_addCustomStream = new RelayCommand(async parameter =>
+                {
+                    var dialog = new AddCustomStreamView((NormalPlaylist)MusicManager.SelectedPlaylist, MusicManager, x => _baseWindow.HideMetroDialogAsync(x));
+                    await _baseWindow.ShowMetroDialogAsync(dialog);
                 }));
             }
         }

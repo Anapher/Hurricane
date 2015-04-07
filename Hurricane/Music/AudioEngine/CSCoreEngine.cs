@@ -12,8 +12,9 @@ using Hurricane.Music.Visualization;
 using Hurricane.PluginAPI.AudioVisualisation;
 using Hurricane.Settings;
 using Hurricane.ViewModelBase;
-// ReSharper disable InconsistentNaming
+// ReSharper disable ExplicitCallerInfoArgument
 
+// ReSharper disable InconsistentNaming
 namespace Hurricane.Music.AudioEngine
 {
     public class CSCoreEngine : PropertyChangedBase, IDisposable, ISpectrumProvider
@@ -99,7 +100,7 @@ namespace Hurricane.Music.AudioEngine
                     }
                 }
                 OnPropertyChanged("CurrentTrackPosition");
-                if (PositionChanged != null) PositionChanged(this, new PositionChangedEventArgs((int)this.CurrentTrackPosition.TotalSeconds, (int)this.CurrentTrackLength.TotalSeconds));
+                if (PositionChanged != null) PositionChanged(this, new PositionChangedEventArgs((int)CurrentTrackPosition.TotalSeconds, (int)CurrentTrackLength.TotalSeconds));
             }
         }
 
@@ -283,6 +284,7 @@ namespace Hurricane.Music.AudioEngine
                 SoundSource = SoundSource.ChangeSampleRate(44100);
             }
             else if (Settings.SampleRate > -1) { SoundSource = SoundSource.ChangeSampleRate(Settings.SampleRate); }
+
             SoundSource = SoundSource
                 .AppendSource(Equalizer.Create10BandEqualizer, out equalizer)
                 .AppendSource(x => new SingleBlockNotificationStream(x), out _singleBlockNotificationStream)

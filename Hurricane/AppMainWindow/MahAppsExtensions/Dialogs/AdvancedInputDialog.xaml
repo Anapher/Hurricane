@@ -6,9 +6,6 @@
                          xmlns:converter="clr-namespace:Hurricane.Extensions.Converter"
                          x:Class=" Hurricane.AppMainWindow.MahAppsExtensions.Dialogs.AdvancedInputDialog"
                          Loaded="Dialog_Loaded">
-    <dialogs:BaseMetroDialog.Resources>
-        <converter:FalseOnEmptyString x:Key="FalseOnEmptyString"/>
-    </dialogs:BaseMetroDialog.Resources>
     <Grid Margin="0 10 0 0">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"

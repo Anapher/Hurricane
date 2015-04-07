@@ -25,7 +25,7 @@
             </ListView.InputBindings>
             <ListView.View>
                 <GridView>
-                    <GridViewColumn Header="{StaticResource Number}" Width="75" DisplayMemberBinding="{Binding Track.QueueID}"/>
+                    <GridViewColumn Header="{StaticResource Number}" Width="75" DisplayMemberBinding="{Binding Track.QueueId}"/>
                     <GridViewColumn Header="{StaticResource Filename}" Width="200" DisplayMemberBinding="{Binding Track}"/>
                     <GridViewColumn Header="{StaticResource Playlist}" Width="150" DisplayMemberBinding="{Binding Playlist.Name}"/>
                     <GridViewColumn Header="{StaticResource Duration}" Width="75" DisplayMemberBinding="{Binding Track.Duration}"/>

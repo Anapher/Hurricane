@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Reflection;
 using System.Windows;
-using Hurricane.Music;
 using Hurricane.Music.AudioEngine;
 using Hurricane.Music.CustomEventArgs;
 using Hurricane.Music.Track;
@@ -12,7 +11,7 @@ using Hurricane.Utilities.Native;
 
 namespace Hurricane.Notification
 {
-    class NotificationService
+    public class NotificationService
     {
         public NotificationService(CSCoreEngine cscore)
         {

@@ -9,7 +9,7 @@ using Hurricane.Views;
 
 namespace Hurricane.Music
 {
-    class MusicManagerCommands
+    public class MusicManagerCommands
     {
         #region "Constructor"
 
@@ -159,7 +159,7 @@ namespace Hurricane.Music
                 }));
             }
         }
-            
+
         private RelayCommand _openFavorites;
         public RelayCommand OpenFavorites
         {

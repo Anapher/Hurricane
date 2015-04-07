@@ -84,7 +84,7 @@ namespace Hurricane.Music.Download
                         await SoundCloudDownloader.DownloadSoundCloudTrack(download.DownloadParameter, fileName, progressChangedAction);
                         break;
                     case DownloadMethod.youtube_dl:
-                        await youtube_dl.Instance.DownloadYouTubeVideo(download.DownloadParameter, fileName, progressChangedAction);
+                        await youtube_dl.Instance.Download(download.DownloadParameter, fileName, progressChangedAction);
                         break;
                     default:
                         throw new ArgumentException();

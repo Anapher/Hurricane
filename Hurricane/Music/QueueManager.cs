@@ -27,7 +27,7 @@ namespace Hurricane.Music
             {
                 var playlist = item.GetTrack(playlists);
                 TrackPlaylists.Add(new TrackPlaylistPair(item.Track, playlist));
-                item.Track.QueueID = (IndexOf(item) + 1).ToString();
+                item.Track.QueueId = (IndexOf(item) + 1).ToString();
             }
             RefreshDuration();
         }
@@ -36,7 +36,7 @@ namespace Hurricane.Music
         {
             Add(new TrackRepresenter(track));
             TrackPlaylists.Add(new TrackPlaylistPair(track, playlist));
-            track.QueueID = (IndexOf(GetTrackRepresenter(track)) + 1).ToString();
+            track.QueueId = (IndexOf(GetTrackRepresenter(track)) + 1).ToString();
             RefreshDuration();
         }
 
@@ -51,7 +51,7 @@ namespace Hurricane.Music
             if (trackrepresentertoremove == null) return;
             Remove(trackrepresentertoremove);
             TrackPlaylists.Remove(TrackPlaylists.First(x => x.Track == track));
-            track.QueueID = null;
+            track.QueueId = null;
             RefreshQueuePositionIds();
             RefreshDuration();
         }
@@ -118,7 +118,7 @@ namespace Hurricane.Music
         public void ClearTracks()
         {
             foreach (var item in this)
-                item.Track.QueueID = null;    
+                item.Track.QueueId = null;    
             Clear();
             TrackPlaylists.Clear();
             RefreshQueuePositionIds();
@@ -133,7 +133,7 @@ namespace Hurricane.Music
         public void RefreshQueuePositionIds()
         {
             for (int i = 0; i < Count; i++)
-                this[i].Track.QueueID = (i + 1).ToString();
+                this[i].Track.QueueId = (i + 1).ToString();
         }
 
         public Tuple<PlayableBase, IPlaylist> PlayNextTrack()
@@ -177,7 +177,7 @@ namespace Hurricane.Music
             set { _track = value; }
         }
 
-        public long TrackID { get; set; }
+        public long TrackId { get; set; }
 
         public NormalPlaylist GetTrack(IEnumerable<NormalPlaylist> playlists)
         {
@@ -185,7 +185,7 @@ namespace Hurricane.Music
             {
                 foreach (var t in playlist.Tracks)
                 {
-                    if (t.AuthenticationCode == TrackID)
+                    if (t.AuthenticationCode == TrackId)
                     {
                         Track = t;
                         return playlist;
@@ -202,7 +202,7 @@ namespace Hurricane.Music
         public TrackRepresenter(PlayableBase t)
         {
             Track = t;
-            TrackID = t.AuthenticationCode;
+            TrackId = t.AuthenticationCode;
         }
     }
 }

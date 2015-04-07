@@ -137,8 +137,7 @@ namespace Hurricane.Music.Track.WebApi.YouTubeApi
             {
                 var link = string.Format("https://gdata.youtube.com/feeds/api/videos?q={0}&alt=json&max-results=50",
                     GeneralHelper.EscapeTitleName(searchText));
-                var resultstr = await web.DownloadStringTaskAsync(link);
-                var result = JsonConvert.DeserializeObject<YouTubeSearchResult>(resultstr);
+                var result = JsonConvert.DeserializeObject<YouTubeSearchResult>(await web.DownloadStringTaskAsync(link));
                 if (result.feed == null || result.feed.entry == null || result.feed.entry.Count == 0) return new List<WebTrackResultBase>();
                 return result.feed.entry.Where(x => x.MediaGroup.Duration != null).Select(x => new YouTubeWebTrackResult
                 {

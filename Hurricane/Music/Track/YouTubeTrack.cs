@@ -75,7 +75,7 @@ namespace Hurricane.Music.Track
 
         public async override Task<IWaveSource> GetSoundSource()
         {
-            var streamUri = await youtube_dl.Instance.GetStreamUri(Link);
+            var streamUri = await youtube_dl.Instance.GetYouTubeStreamUri(Link);
             return await Task.Run(() => CutWaveSource(CodecFactory.Instance.GetCodec(streamUri)));
         }
 
@@ -146,7 +146,6 @@ namespace Hurricane.Music.Track
                     return;
                 }
 
-
                 Image = MusicCoverManager.GetAlbumImage(this, albumCoverDirectory);
                 if (Image != null) return;
             }
@@ -169,6 +168,11 @@ namespace Hurricane.Music.Track
                     //Happens, doesn't matter
                 }
             }
+        }
+
+        public override bool IsInfinityStream
+        {
+            get { return false; }
         }
     }
 }

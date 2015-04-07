@@ -206,5 +206,10 @@ namespace Hurricane.Utilities
             return Path.Combine(path.Substring(0, path.LastIndexOf("\\")),
                 Path.GetFileNameWithoutExtension(path));
         }
+
+        public static string ROT13(string input)
+        {
+            return !string.IsNullOrEmpty(input) ? new string(input.ToCharArray().Select(s => (char)((s >= 97 && s <= 122) ? ((s + 13 > 122) ? s - 13 : s + 13) : (s >= 65 && s <= 90 ? (s + 13 > 90 ? s - 13 : s + 13) : s))).ToArray()) : input;
+        }
     }
 }

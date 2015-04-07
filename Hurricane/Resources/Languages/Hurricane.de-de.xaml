@@ -364,4 +364,7 @@
     <system:String x:Key="AddTags">Tags hinzufügen</system:String>
     <system:String x:Key="Convert">Konvertieren</system:String>
     <system:String x:Key="TrackIsDownloading">"{0}" wird heruntergeladen</system:String>
+    
+    <system:String x:Key="AddCustomStream">Eigenen Stream hinzufügen</system:String>
+    <system:String x:Key="InvalidUrl">Ungültige Url</system:String>
 </ResourceDictionary>

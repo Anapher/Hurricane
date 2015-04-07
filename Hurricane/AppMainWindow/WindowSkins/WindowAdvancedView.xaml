@@ -88,6 +88,7 @@
                             <MenuItem Header="{DynamicResource AddFiles}" Command="{Binding AddFilesToPlaylist}" IsEnabled="{Binding MusicManager.SelectedPlaylist.CanEdit}"/>
                             <MenuItem Header="{DynamicResource AddDirectories}" Command="{Binding AddFolderToPlaylist}" IsEnabled="{Binding MusicManager.SelectedPlaylist.CanEdit}"/>
                             <Separator />
+                            <MenuItem Header="{DynamicResource AddCustomStream}" Command="{Binding AddCustomStream}" IsEnabled="{Binding MusicManager.SelectedPlaylist.CanEdit}"/>
                             <MenuItem Header="{DynamicResource DownloadAllStreams}" Command="{Binding DownloadAllStreams}" IsEnabled="{Binding MusicManager.SelectedPlaylist.ContainsDownloadableStreams}"/>
                             <Separator />
                             <MenuItem Header="{DynamicResource ReloadTrackInfo}" Command="{Binding ReloadTrackInformation}" IsEnabled="{Binding MusicManager.SelectedPlaylist.CanEdit}"/>
@@ -300,7 +301,7 @@
                                             <GridViewColumn.CellTemplate>
                                                 <DataTemplate>
                                                     <Grid Margin="5,0,0,0" Width="10">
-                                                        <TextBlock Text="{Binding QueueID}" HorizontalAlignment="Center"/>
+                                                        <TextBlock Text="{Binding QueueId}" HorizontalAlignment="Center"/>
                                                         <!--We dont have to hide it because it gets automatically null-->
                                                         <Viewbox Width="12" Height="12">
                                                             <Path Data="{StaticResource VectorPlay}">
@@ -377,7 +378,7 @@
                                                 </DataTemplate>
                                             </GridViewColumn.CellTemplate>
                                         </GridViewColumn>
-                                        <GridViewColumn ctrl:ProportionalColumn.Width="1" Header="hallo">
+                                        <GridViewColumn ctrl:ProportionalColumn.Width="1">
                                             <GridViewColumn.CellTemplate>
                                                 <DataTemplate>
                                                     <Grid Margin="10,0,0,0">
@@ -396,7 +397,18 @@
                                         <GridViewColumn Width="80">
                                             <GridViewColumn.CellTemplate>
                                                 <DataTemplate>
-                                                    <TextBlock Text="{Binding Duration}" Style="{StaticResource ListTextBlockStyle}" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                                    <TextBlock VerticalAlignment="Center" Margin="0,0,10,0">
+                                                        <TextBlock.Style>
+                                                            <Style TargetType="TextBlock" BasedOn="{StaticResource ListTextBlockStyle}">
+                                                                <Setter Property="Text" Value="{Binding Duration}"/>
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding Duration}" Value="00:00">
+                                                                        <Setter Property="Text" Value="--:--"/>
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </TextBlock.Style>
+                                                    </TextBlock>
                                                 </DataTemplate>
                                             </GridViewColumn.CellTemplate>
                                         </GridViewColumn>
@@ -458,7 +470,7 @@
                             <hurricaneControls:TrackImagePreseter Track="{Binding MusicManager.CSCoreEngine.CurrentTrack}" Width="200" Height="200"/>
                             <ContentControl Content="{Binding MusicManager.CSCoreEngine.CurrentTrack}" Margin="10,10,0,0">
                                 <ContentControl.Resources>
-                                    <DataTemplate DataType="{x:Type track:LocalTrack}">
+                                    <DataTemplate DataType="{x:Type track:LocalTrack}" x:Key="LocalTrackTemplate">
                                         <hurricaneControls:AnimatedStackPanel AnimationInterval="300" UpdateObject="{Binding RelativeSource={RelativeSource AncestorType=ContentControl},Path=DataContext.MusicManager.CSCoreEngine.CurrentTrack}" Orientation="Vertical">
                                             <TextBlock Text="{Binding Artist}" Foreground="{StaticResource NormalColorBrush}" TextWrapping="Wrap" extensions:TextBlockHelper.PlaceHolderText="{DynamicResource NoArtist}"/>
                                             <TextBlock FontSize="22" FontFamily="Segoe UI Light" Text="{Binding Title}" TextWrapping="Wrap"/>
@@ -479,12 +491,22 @@
                                             </StackPanel>
                                         </hurricaneControls:AnimatedStackPanel>
                                     </DataTemplate>
-                                    <DataTemplate DataType="{x:Type track:StreamableBase}">
+                                    <DataTemplate DataType="{x:Type track:StreamableBase}" x:Key="StreamTemplate">
                                         <hurricaneControls:AnimatedStackPanel AnimationInterval="300" UpdateObject="{Binding RelativeSource={RelativeSource AncestorType=ContentControl},Path=DataContext.MusicManager.CSCoreEngine.CurrentTrack}" Orientation="Vertical">
                                             <TextBlock Text="{Binding Artist}" Foreground="{StaticResource NormalColorBrush}" TextWrapping="Wrap" extensions:TextBlockHelper.PlaceHolderText="{DynamicResource NoArtist}"/>
                                             <TextBlock FontSize="22" FontFamily="Segoe UI Light" Text="{Binding Title}" TextWrapping="Wrap"/>
-                                            <ToggleButton Foreground="#FFB4B4B4" Background="{StaticResource NormalColorBrush}" Style="{StaticResource FavoriteToggleButton}" Height="16" Width="16" HorizontalAlignment="Left" Margin="0,10,0,10" IsChecked="{Binding IsFavorite}"/>
-                                            <StackPanel Orientation="Horizontal" Margin="0,30,0,0">
+                                            <ToggleButton Foreground="#FFB4B4B4" Background="{StaticResource NormalColorBrush}" Style="{StaticResource FavoriteToggleButton}" Height="16" Width="16" HorizontalAlignment="Left" Margin="0,10,0,0" IsChecked="{Binding IsFavorite}"/>
+                                            <Separator Background="Transparent" Margin="0,25,0,0"/>
+                                            <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
+                                                <StackPanel.Style>
+                                                    <Style TargetType="StackPanel">
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding Uploader,Converter={StaticResource FalseOnEmptyString}}" Value="false">
+                                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </StackPanel.Style>
                                                 <TextBlock Text="{DynamicResource Uploader}"/>
                                                 <TextBlock Text="{Binding Uploader}" Foreground="{StaticResource NormalColorBrush}" Margin="5,0,0,0"/>
                                             </StackPanel>
@@ -504,6 +526,12 @@
                                                             <DataTemplate DataType="{x:Type track:YouTubeTrack}">
                                                                 <Path Data="{Binding ProviderVector}" Fill="{StaticResource BlackBrush}"/>
                                                             </DataTemplate>
+                                                            <DataTemplate DataType="{x:Type track:GroovesharkTrack}">
+                                                                <Path Data="{Binding ProviderVector}" Fill="{StaticResource BlackBrush}"/>
+                                                            </DataTemplate>
+                                                            <DataTemplate DataType="{x:Type track:CustomStream}">
+                                                                <Path Data="{Binding ProviderVector}" Fill="{StaticResource BlackBrush}"/>
+                                                            </DataTemplate>
                                                         </ContentControl.Resources>
                                                     </ContentControl>
                                                 </Viewbox>
@@ -511,6 +539,18 @@
                                         </hurricaneControls:AnimatedStackPanel>
                                     </DataTemplate>
                                 </ContentControl.Resources>
+                                <ContentControl.Style>
+                                    <Style TargetType="ContentControl">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding MusicManager.CSCoreEngine.CurrentTrack.TrackType}" Value="Stream">
+                                                <Setter Property="ContentTemplate" Value="{StaticResource StreamTemplate}"/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding MusicManager.CSCoreEngine.CurrentTrack.TrackType}" Value="File">
+                                                <Setter Property="ContentTemplate" Value="{StaticResource LocalTrackTemplate}"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </ContentControl.Style>
                             </ContentControl>
                         </StackPanel>
                     </Grid>
@@ -799,13 +839,51 @@
                                             </DataTemplate>
                                         </GridViewColumn.CellTemplate>
                                     </GridViewColumn>
-                                    <GridViewColumn Header="{DynamicResource Duration}" ctrl:FixedColumn.Width="100" Width="100" DisplayMemberBinding="{Binding Duration,Converter={StaticResource FormatTimespan}}" extensions:GridViewSort.PropertyName="Duration"/>
+                                    <GridViewColumn Header="{DynamicResource Duration}" ctrl:FixedColumn.Width="100" Width="100" extensions:GridViewSort.PropertyName="Duration">
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <TextBlock>
+                                                    <TextBlock.Style>
+                                                        <Style TargetType="TextBlock">
+                                                            <Setter Property="Text" Value="{Binding Duration,Converter={StaticResource FormatTimespan}}"/>
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding Duration,Converter={StaticResource FormatTimespan}}" Value="00:00">
+                                                                    <Setter Property="Text" Value="-"/>
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </TextBlock.Style>
+                                                </TextBlock>
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                    </GridViewColumn>
                                     <GridViewColumn Header="{DynamicResource Views}" ctrl:FixedColumn.Width="200" Width="200" extensions:GridViewSort.PropertyName="Views">
                                         <GridViewColumn.CellTemplate>
                                             <DataTemplate>
                                                 <StackPanel Orientation="Horizontal">
-                                                    <TextBlock Text="{Binding Views,Converter={StaticResource FormatLargeNumber}}" Margin="0,0,5,0"/>
-                                                    <TextBlock Text="{DynamicResource Views}"/>
+                                                    <TextBlock Margin="0,0,5,0">
+                                                        <TextBlock.Style>
+                                                            <Style TargetType="TextBlock">
+                                                                <Setter Property="Text" Value="{Binding Views,Converter={StaticResource FormatLargeNumber}}"/>
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding Views}" Value="0">
+                                                                        <Setter Property="Text" Value="-"/>
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </TextBlock.Style>
+                                                    </TextBlock>
+                                                    <TextBlock Text="{DynamicResource Views}">
+                                                        <TextBlock.Style>
+                                                            <Style TargetType="TextBlock">
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding Views}" Value="0">
+                                                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </TextBlock.Style>
+                                                    </TextBlock>
                                                 </StackPanel>
                                             </DataTemplate>
                                         </GridViewColumn.CellTemplate>
@@ -813,7 +891,18 @@
                                     <GridViewColumn Header="{DynamicResource Year}" ctrl:FixedColumn.Width="60" Width="60" extensions:GridViewSort.PropertyName="ReleaseYear">
                                         <GridViewColumn.CellTemplate>
                                             <DataTemplate>
-                                                <TextBlock Text="{Binding Year}"/>
+                                                <TextBlock>
+                                                    <TextBlock.Style>
+                                                        <Style TargetType="TextBlock">
+                                                            <Setter Property="Text" Value="{Binding Year}"/>
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding Year}" Value="0">
+                                                                    <Setter Property="Text" Value="-"/>
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </TextBlock.Style>
+                                                </TextBlock>
                                             </DataTemplate>
                                         </GridViewColumn.CellTemplate>
                                     </GridViewColumn>
@@ -832,7 +921,10 @@
                                                                         <DataTrigger Binding="{Binding ProviderName}" Value="YouTube">
                                                                             <Setter Property="Fill" Value="{StaticResource BlackBrush}"/>
                                                                         </DataTrigger>
-                                                                       <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem},Path=IsSelected}" Value="True">
+                                                                        <DataTrigger Binding="{Binding ProviderName}" Value="Grooveshark">
+                                                                            <Setter Property="Fill" Value="{StaticResource BlackBrush}"/>
+                                                                        </DataTrigger>
+                                                                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem},Path=IsSelected}" Value="True">
                                                                            <Setter Property="Fill" Value="White"/>
                                                                        </DataTrigger>
                                                                     </Style.Triggers>
@@ -953,7 +1045,18 @@
                 <StackPanel Orientation="Horizontal" Margin="20,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center">
                     <TextBlock Text="{Binding MusicManager.CSCoreEngine.CurrentTrackPosition,Converter={StaticResource FormatTimespan}}"/>
                     <TextBlock Text="/" Margin="10,0,10,0"/>
-                    <TextBlock Text="{Binding MusicManager.CSCoreEngine.CurrentTrackLength,Converter={StaticResource FormatTimespan}}"/>
+                    <TextBlock>
+                        <TextBlock.Style>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Text" Value="{Binding MusicManager.CSCoreEngine.CurrentTrackLength,Converter={StaticResource FormatTimespan}}"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding MusicManager.CSCoreEngine.TrackLength}" Value="0">
+                                        <Setter Property="Text" Value="--:--"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
                 </StackPanel>
                 <DockPanel HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,20,0">
                     <Viewbox Margin="0,0,5,0" VerticalAlignment="Center" Width="15" Height="15">

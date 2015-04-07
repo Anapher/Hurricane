@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using Hurricane.Music.AudioEngine;
 using Hurricane.Music.CustomEventArgs;
@@ -11,10 +12,11 @@ using Hurricane.Music.Track;
 using Hurricane.Notification;
 using Hurricane.Settings;
 using Hurricane.ViewModelBase;
+// ReSharper disable ExplicitCallerInfoArgument
 
 namespace Hurricane.Music
 {
-    class MusicManager : PropertyChangedBase, IDisposable
+   public class MusicManager : PropertyChangedBase, IDisposable
     {
         #region Public Properties
         private PlayableBase _selectedtrack;
@@ -90,6 +92,7 @@ namespace Hurricane.Music
             }
         }
 
+       // ReSharper disable once InconsistentNaming
         public CSCoreEngine CSCoreEngine { get; protected set; }
 
         public NotificationService Notification { get; set; }
@@ -232,7 +235,7 @@ namespace Hurricane.Music
         {
             CSCoreEngine.StopPlayback();
 
-            if (Queue.HasTracks && Queue.FirstOrDefault(t => t.TrackID == track.AuthenticationCode) != null)
+            if (Queue.HasTracks && Queue.FirstOrDefault(t => t.TrackId == track.AuthenticationCode) != null)
                 Queue.RemoveTrack(track);
 
             if (await CSCoreEngine.OpenTrack(track))
@@ -351,7 +354,7 @@ namespace Hurricane.Music
             currentState.SelectedTrack = SelectedTrack == null ? -1 : SelectedPlaylist.Tracks.IndexOf(SelectedTrack);
             currentState.IsLoopEnabled = IsLoopEnabled;
             currentState.IsShuffleEnabled = IsShuffleEnabled;
-            currentState.TrackPosition = CSCoreEngine.CurrentTrack == null ? 0 : CSCoreEngine.Position;
+            currentState.TrackPosition = CSCoreEngine.CurrentTrack == null || (CSCoreEngine.CurrentTrack is StreamableBase && ((StreamableBase)CSCoreEngine.CurrentTrack).IsInfinityStream) ? 0 : CSCoreEngine.Position;
             currentState.EqualizerSettings = CSCoreEngine.EqualizerSettings;
             currentState.Queue = Queue.Count > 0 ? Queue : null;
         }

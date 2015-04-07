@@ -8,9 +8,6 @@
              xmlns:converter="clr-namespace:Hurricane.Extensions.Converter"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="1000" DataContext="{x:Static designer:DesignerViewModel.Instance}">
-    <UserControl.Resources>
-        <converter:FalseOnEmptyString x:Key="FalseOnEmptyString"/>
-    </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>

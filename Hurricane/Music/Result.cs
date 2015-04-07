@@ -11,8 +11,8 @@
 
         public Result(State state, object customState)
         {
-            this.State = state;
-            this.CustomState = customState;
+            State = state;
+            CustomState = customState;
         }
     }
 

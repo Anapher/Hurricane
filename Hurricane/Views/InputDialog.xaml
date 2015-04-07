@@ -5,9 +5,6 @@
         xmlns:converter="clr-namespace:Hurricane.Extensions.Converter"
         xmlns:ex="clr-namespace:Hurricane.Extensions"
         Title="" SizeToContent="Height" Width="300" GlowBrush="{StaticResource AccentColorBrush}" ResizeMode="NoResize" x:Name="BaseWindow" WindowStartupLocation="CenterOwner" FocusManager.FocusedElement="{Binding ElementName=txt}" ShowIconOnTitleBar="False">
-    <Window.Resources>
-        <converter:FalseOnEmptyString x:Key="FalseOnEmptyString"/>
-    </Window.Resources>
     <StackPanel Margin="10">
         <TextBlock Text="" x:Name="MessageTextBlock"/>
         <TextBox Margin="0,5,0,0" Text="{Binding ElementName=BaseWindow,Path=ResultText}" x:Name="ResultTextBox"/>

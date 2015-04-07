@@ -5,9 +5,6 @@
         xmlns:converter="clr-namespace:Hurricane.Extensions.Converter"
         xmlns:extensions="clr-namespace:Hurricane.Extensions"
         Title="{StaticResource AddDirectories}" SizeToContent="Height" Width="400" ResizeMode="NoResize" ShowInTaskbar="False" x:Name="BaseWindow" WindowStartupLocation="CenterOwner" GlowBrush="{DynamicResource AccentColorBrush}">
-    <Window.Resources>
-        <converter:FalseOnEmptyString x:Key="FalseOnEmptyString"/>
-    </Window.Resources>
     <StackPanel Orientation="Vertical" Margin="10">
         <Grid>
             <Grid.ColumnDefinitions>

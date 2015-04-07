@@ -34,7 +34,7 @@ namespace Hurricane.Extensions.Controls
             if (stackPanel.FadeAnimationStoryboard != null)
                 stackPanel.FadeAnimationStoryboard.Stop(stackPanel);
 
-            stackPanel.FadeAnimationStoryboard = FadeInAnimation(stackPanel.AnimationInterval, stackPanel.Children.OfType<FrameworkElement>().Where(x => !(x is TextBlock) || !string.IsNullOrEmpty(((TextBlock)x).Text)).ToArray());
+            stackPanel.FadeAnimationStoryboard = FadeInAnimation(stackPanel.AnimationInterval, stackPanel.Children.OfType<FrameworkElement>().Where(x => (x.Visibility == Visibility.Visible && (!(x is TextBlock) || !string.IsNullOrEmpty(((TextBlock)x).Text)))).ToArray());
             stackPanel.FadeAnimationStoryboard.Begin(stackPanel, true);
         }
 

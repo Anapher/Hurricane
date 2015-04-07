@@ -164,5 +164,10 @@ namespace Hurricane.Music.Track
         {
             get { return "https://soundcloud.com/"; }
         }
+
+        public override bool IsInfinityStream
+        {
+            get { return false; }
+        }
     }
 }

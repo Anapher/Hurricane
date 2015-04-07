@@ -1,0 +1,74 @@
+﻿<dialogs:CustomDialog x:Class="Hurricane.Views.UserControls.AddCustomStreamView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:dialogs="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
+             mc:Ignorable="d" d:DesignHeight="500" d:DesignWidth="1000" x:Name="Dialog">
+    <StackPanel Orientation="Vertical">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <Grid.Style>
+                <Style TargetType="Grid">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding ElementName=Dialog,Path=IsChecking}" Value="True">
+                            <Setter Property="IsEnabled" Value="False"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Grid.Style>
+            <TextBlock Text="URL:" VerticalAlignment="Center"/>
+            <TextBox Grid.Column="1" Margin="10,0,10,0" VerticalAlignment="Center" Text="{Binding ElementName=Dialog,Path=StreamUrl}" x:Name="StreamUrlTextBox"/>
+            <Button Content="Check" Grid.Column="2" Width="70" Click="Check_OnClick" IsEnabled="{Binding ElementName=StreamUrlTextBox,Path=Text,Converter={StaticResource FalseOnEmptyString}}"/>
+        </Grid>
+        <StackPanel Orientation="Vertical" Margin="0,10,0,0">
+            <StackPanel.Style>
+                <Style TargetType="StackPanel">
+                    <Setter Property="Visibility" Value="Collapsed"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding ElementName=Dialog,Path=CanAddTrack}" Value="True">
+                            <Setter Property="Visibility" Value="Visible"/>
+                            <Setter Property="Height" Value="0"/>
+                            <DataTrigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation To="90" Duration="0:0:0.2" Storyboard.TargetProperty="Height"></DoubleAnimation>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </DataTrigger.EnterActions>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </StackPanel.Style>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="75"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="{StaticResource Title}" VerticalAlignment="Center"/>
+                <TextBox Grid.Column="1" Text="{Binding ElementName=Dialog,Path=CurrentTrack.Title}"/>
+            </Grid>
+            <Grid Margin="0,10,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="75"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="{StaticResource Artist}" VerticalAlignment="Center"/>
+                <TextBox Grid.Column="1" Text="{Binding ElementName=Dialog,Path=CurrentTrack.Artist}"/>
+            </Grid>
+        </StackPanel>
+        <Grid Grid.IsSharedSizeScope="True" HorizontalAlignment="Right" Margin="0,10,0,20">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition SharedSizeGroup="button"/>
+                <ColumnDefinition Width="10"/>
+                <ColumnDefinition SharedSizeGroup="button"/>
+            </Grid.ColumnDefinitions>
+            <Button Content="{StaticResource Cancel}" Click="CancelButton_OnClick"/>
+            <Button Content="{StaticResource Add}" Style="{DynamicResource AccentedDialogSquareButton}" Grid.Column="2" MinWidth="90" Height="30" Click="AddButton_OnClick" IsEnabled="{Binding ElementName=Dialog,Path=CanAddTrack}"/>
+        </Grid>
+    </StackPanel>
+</dialogs:CustomDialog>

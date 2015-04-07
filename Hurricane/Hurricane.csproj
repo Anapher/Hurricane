@@ -207,13 +207,21 @@
     </Compile>
     <Compile Include="Music\Download\DownloadSettings.cs" />
     <Compile Include="Music\Download\ffmpeg.cs" />
+    <Compile Include="Music\Download\GroovesharkApi.cs" />
     <Compile Include="Music\Playlist\CueSharp.cs" />
     <Compile Include="Music\Playlist\ImportCueSheet.cs" />
     <Compile Include="Music\Playlist\ImportM3uPlaylist.cs" />
     <Compile Include="Music\Playlist\Playlists.cs" />
     <Compile Include="Music\AudioEngine\SoundOutManager.cs" />
+    <Compile Include="Music\Proxy\HttpProxy.cs" />
+    <Compile Include="Music\Proxy\ProxyEntry.cs" />
+    <Compile Include="Music\Track\GroovesharkTrack.cs" />
     <Compile Include="Music\Track\LocalTrackFragment.cs" />
     <Compile Include="Music\AudioEngine\CutSource.cs" />
+    <Compile Include="Music\Track\CustomStream.cs" />
+    <Compile Include="Music\Track\WebApi\GroovesharkApi\GroovesharkApi.cs" />
+    <Compile Include="Music\Track\WebApi\GroovesharkApi\GroovesharkWebTrackResult.cs" />
+    <Compile Include="Music\Track\WebApi\GroovesharkApi\SearchResult.cs" />
     <Compile Include="Music\Track\WebApi\YouTubeApi\DataClasses\MediaDescription.cs" />
     <Compile Include="Settings\Converter\GroupConverter.cs" />
     <Compile Include="Settings\Converter\TransitionConverter.cs" />
@@ -380,6 +388,7 @@
     <Compile Include="Utilities\Native\WINDOWPLACEMENT.cs" />
     <Compile Include="Utilities\Native\UnsafeNativeMethods.cs" />
     <Compile Include="Utilities\PasswordGenerator.cs" />
+    <Compile Include="Music\Proxy\ProxyManager.cs" />
     <Compile Include="Utilities\RegistryExtensions.cs" />
     <Compile Include="Utilities\TaskExtensions.cs" />
     <Compile Include="Utilities\UIHelper.cs" />
@@ -434,6 +443,9 @@
     </Compile>
     <Compile Include="Views\ReportExceptionWindow.xaml.cs">
       <DependentUpon>ReportExceptionWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\UserControls\AddCustomStreamView.xaml.cs">
+      <DependentUpon>AddCustomStreamView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\UserControls\EqualizerView.xaml.cs">
       <DependentUpon>EqualizerView.xaml</DependentUpon>
@@ -753,6 +765,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\ReportExceptionWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\UserControls\AddCustomStreamView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

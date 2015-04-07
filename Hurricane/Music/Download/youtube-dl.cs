@@ -2,12 +2,16 @@
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using System.Net;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
+using Hurricane.Music.Proxy;
 using Hurricane.Settings;
 using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
+using Newtonsoft.Json;
 
 namespace Hurricane.Music.Download
 {
@@ -67,10 +71,10 @@ namespace Hurricane.Music.Download
         }
 
         private bool _tryagain;
-        public async Task<Uri> GetStreamUri(string youTubeLink)
+        public async Task<Uri> GetYouTubeStreamUri(string youTubeLink)
         {
             await Load();
-            using (var p = new Process()
+            using (var p = new Process
             {
                 StartInfo = new ProcessStartInfo
                 {
@@ -91,7 +95,7 @@ namespace Hurricane.Music.Download
                         _tryagain = false; throw new Exception(url);
                     }
                     _tryagain = true;
-                    return await GetStreamUri(youTubeLink);
+                    return await GetYouTubeStreamUri(youTubeLink);
                 }
                 if (!url.ToLower().StartsWith("error"))
                 {
@@ -102,10 +106,74 @@ namespace Hurricane.Music.Download
             }
         }
 
-        public async Task DownloadYouTubeVideo(string youTubeLink, string fileName, Action<double> progressChangedAction)
+        public async Task<Stream> GetGroovesharkStream(string groovesharkUrl)
         {
             await Load();
-            using (var p = new Process()
+
+            string streamUrl;
+            GroovesharkApi.GroovesharkResult parameters;
+
+            HttpProxy proxy = null;
+            if (await GroovesharkApi.IsProxyRequired())
+            {
+                proxy = await ProxyManager.Instance.GetWebProxy();
+            }
+            
+            using (var p = new Process
+            {
+                StartInfo = new ProcessStartInfo
+                {
+                    CreateNoWindow = true,
+                    RedirectStandardOutput = true,
+                    UseShellExecute = false,
+                    FileName = "youtube-dl.exe",
+                    Arguments = string.Format("-g {0}{1} -j", groovesharkUrl, proxy != null ? string.Format(" --proxy \"{0}\"", proxy) : null)
+                }
+            })
+            {
+                p.Start();
+                streamUrl = await p.StandardOutput.ReadLineAsync();
+                parameters = JsonConvert.DeserializeObject<GroovesharkApi.GroovesharkResult>(await p.StandardOutput.ReadToEndAsync());
+            }
+
+            if (string.IsNullOrEmpty(streamUrl))
+            {
+                Debug.Print("invalid proxy: " + proxy);
+                ProxyManager.Instance.AddInvalid(proxy);
+                return await GetGroovesharkStream(groovesharkUrl);
+            }
+
+            Debug.Print("everything is awesome");
+
+            var data = Encoding.ASCII.GetBytes(parameters.HttpPostData);
+
+            var request = (HttpWebRequest)WebRequest.Create(streamUrl);
+            request.Headers.Add("Accept-Charset", parameters.HttpHeaders.AcceptCharset);
+            request.Headers.Add("Accept-Language", parameters.HttpHeaders.AcceptLanguage);
+            request.Headers.Add("Accept-Encoding", parameters.HttpHeaders.AcceptEncoding);
+            request.Headers.Add("Cookie", parameters.HttpHeaders.Cookie);
+
+            request.Method = "POST";
+            request.ContentType = parameters.HttpHeaders.ContentType;
+            request.ContentLength = data.Length;
+            request.UserAgent = parameters.HttpHeaders.UserAgent;
+            request.Accept = parameters.HttpHeaders.Accept;
+
+            request.Proxy = proxy != null ? proxy.ToWebProxy() : null;
+
+            var requestStream = request.GetRequestStream();
+            requestStream.Write(data, 0, data.Length);
+            requestStream.Close();
+
+            var myHttpWebResponse = (HttpWebResponse)request.GetResponse();
+
+            return myHttpWebResponse.GetResponseStream();
+        }
+
+        public async Task Download(string link, string fileName, Action<double> progressChangedAction)
+        {
+            await Load();
+            using (var p = new Process
             {
                 StartInfo = new ProcessStartInfo
                 {
@@ -113,7 +181,7 @@ namespace Hurricane.Music.Download
                     RedirectStandardOutput = true,
                     UseShellExecute = false,
                     FileName = ExecutablePath,
-                    Arguments = string.Format("{0} --extract-audio --ffmpeg-location \"{1}\" --output \"{2}\"", youTubeLink, HurricaneSettings.Paths.FFmpegPath, fileName)
+                    Arguments = string.Format("{0} --extract-audio --ffmpeg-location \"{1}\" --output \"{2}\"", link, HurricaneSettings.Paths.FFmpegPath, fileName)
                 }
             })
             {

@@ -11,10 +11,17 @@ using Hurricane.Music.Data;
 using Hurricane.Music.MusicCover;
 using Hurricane.Settings;
 using Hurricane.ViewModelBase;
+// ReSharper disable ExplicitCallerInfoArgument
 
 namespace Hurricane.Music.Track
 {
-    [Serializable, XmlInclude(typeof(LocalTrack)), XmlInclude(typeof(LocalTrackFragment)), XmlInclude(typeof(SoundCloudTrack)), XmlInclude(typeof(YouTubeTrack)), XmlType(TypeName = "Playable")]
+    [Serializable, XmlType(TypeName = "Playable"),
+    XmlInclude(typeof(LocalTrack)),
+    XmlInclude(typeof(LocalTrackFragment)),
+    XmlInclude(typeof(SoundCloudTrack)),
+    XmlInclude(typeof(YouTubeTrack)),
+    XmlInclude(typeof(GroovesharkTrack)),
+    XmlInclude(typeof(CustomStream))]
     public abstract class PlayableBase : PropertyChangedBase, IEquatable<PlayableBase>, IRepresentable, IMusicInformation
     {
         #region Events
@@ -23,9 +30,12 @@ namespace Hurricane.Music.Track
         #endregion
 
         public long AuthenticationCode { get; set; }
-        
+
         public string Duration { get; set; }
+        // ReSharper disable once InconsistentNaming
+        [DefaultValue(0)]
         public int kHz { get; set; }
+        // ReSharper disable once InconsistentNaming
         public int kbps { get; set; }
         public DateTime TimeAdded { get; set; }
         public DateTime LastTimePlayed { get; set; }
@@ -34,7 +44,7 @@ namespace Hurricane.Music.Track
         public string Genres { get; set; }
 
         [DefaultValue(0)]
-        public int TrackNumber { get; set; }    // number of this track in album; useful for sorting
+        public int TrackNumber { get; set; } // number of this track in album; useful for sorting
 
         [DefaultValue(0.0)]
         public double StartTime { get; set; }
@@ -53,14 +63,14 @@ namespace Hurricane.Music.Track
             }
         }
 
-        private bool _isfavorite;
+        private bool _isFavorite;
         [DefaultValue(false)]
         public bool IsFavorite
         {
-            get { return _isfavorite; }
+            get { return _isFavorite; }
             set
             {
-                if (SetProperty(value, ref _isfavorite))
+                if (SetProperty(value, ref _isFavorite))
                 {
                     if (ViewModels.MainViewModel.Instance.MusicManager == null) return;
                     if (value) // I know that this is ugly as hell but it would be a pain to drop all events to the favorite list. If you got an idea to solve this problem, please tell me
@@ -119,25 +129,25 @@ namespace Hurricane.Music.Track
             }
         }
 
-        private bool _isloadingimage;
+        private bool _isLoadingImage;
         [XmlIgnore]
         public bool IsLoadingImage
         {
-            get { return _isloadingimage; }
+            get { return _isLoadingImage; }
             set
             {
-                SetProperty(value, ref _isloadingimage);
+                SetProperty(value, ref _isLoadingImage);
             }
         }
 
-        private String _queueid;
+        private string _queueId;
         [XmlIgnore]
-        public String QueueID //I know that the id should be an int, but it wouldn't make sense because what would be the id for non queued track? We would need a converter -> less performance -> string is wurf
+        public string QueueId //I know that the id should be an int, but it wouldn't make sense because what would be the id for non queued track? We would need a converter -> less performance -> string is wurf
         {
-            get { return _queueid; }
+            get { return _queueId; }
             set
             {
-                SetProperty(value, ref _queueid);
+                SetProperty(value, ref _queueId);
             }
         }
 
@@ -221,25 +231,25 @@ namespace Hurricane.Music.Track
 
         #region Animations
 
-        private bool _isremoving;
+        private bool _isRemoving;
         [XmlIgnore]
         public bool IsRemoving
         {
-            get { return _isremoving; }
+            get { return _isRemoving; }
             set
             {
-                SetProperty(value, ref _isremoving);
+                SetProperty(value, ref _isRemoving);
             }
         }
 
-        private bool _isadded;
+        private bool _isAdded;
         [XmlIgnore]
         public bool IsAdded
         {
-            get { return _isadded; }
+            get { return _isAdded; }
             set
             {
-                SetProperty(value, ref _isadded);
+                SetProperty(value, ref _isAdded);
             }
         }
 
@@ -260,6 +270,7 @@ namespace Hurricane.Music.Track
 
         protected IWaveSource CutWaveSource(IWaveSource source)
         {
+            // ReSharper disable CompareOfFloatsByEqualityOperator
             if (StartTime == 0 && EndTime == 0)
                 return source;
 
@@ -272,7 +283,7 @@ namespace Hurricane.Music.Track
 
         #region Public Methods
 
-        public async Task<bool> CheckTrack()
+        public virtual async Task<bool> CheckTrack()
         {
             if (!TrackExists) return false;
             try
@@ -280,7 +291,7 @@ namespace Hurricane.Music.Track
                 using (var soundSource = await GetSoundSource())
                 {
                     SetDuration(soundSource.GetLength());
-                    kHz = soundSource.WaveFormat.SampleRate/1000;
+                    kHz = soundSource.WaveFormat.SampleRate / 1000;
                 }
             }
             catch (Exception)

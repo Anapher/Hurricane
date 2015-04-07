@@ -47,7 +47,7 @@ namespace Hurricane.Music.Track.WebApi
 
         public IRepresentable Representer { get { return this; } }
 
-        public async Task DownloadImage()
+        public virtual async Task DownloadImage()
         {
             try
             {
@@ -102,5 +102,5 @@ namespace Hurricane.Music.Track.WebApi
         public event EventHandler ImageLoadedComplete;
     }
 
-    public enum ProviderName { SoundCloud, YouTube}
+    public enum ProviderName { SoundCloud, YouTube, Grooveshark }
 }

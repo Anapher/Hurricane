@@ -436,13 +436,24 @@
                                                 <ColumnDefinition Width="*"/>
                                                 <ColumnDefinition Width="50"/>
                                             </Grid.ColumnDefinitions>
-                                            <StackPanel Visibility="{Binding QueueID,Converter={StaticResource CollapsedOnNullValue}}" Orientation="Horizontal">
+                                            <StackPanel Visibility="{Binding QueueId,Converter={StaticResource CollapsedOnNullValue}}" Orientation="Horizontal">
                                                 <TextBlock Text="["/>
-                                                <TextBlock Text="{Binding QueueID}"/>
+                                                <TextBlock Text="{Binding QueueId}"/>
                                                 <TextBlock Text="]"/>
                                             </StackPanel>
                                             <TextBlock Text="{Binding Title}" TextTrimming="CharacterEllipsis" FontWeight="{Binding IsOpened,Converter={StaticResource BoldIfPlayingConverter}}" Grid.Column="1"/>
-                                            <TextBlock Text="{Binding Duration}" TextAlignment="Right" x:Name="txt2" FontWeight="{Binding IsOpened,Converter={StaticResource BoldIfPlayingConverter}}" Grid.Column="2"/>
+                                            <TextBlock TextAlignment="Right" FontWeight="{Binding IsOpened,Converter={StaticResource BoldIfPlayingConverter}}" Grid.Column="2">
+                                                <TextBlock.Style>
+                                                    <Style TargetType="TextBlock">
+                                                        <Setter Property="Text" Value="{Binding Duration}"/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding Duration}" Value="00:00">
+                                                                <Setter Property="Text" Value="--:--"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </TextBlock.Style>
+                                            </TextBlock>
                                         </Grid>
                                         <DockPanel LastChildFill="False">
                                             <DockPanel.Resources>
@@ -462,8 +473,19 @@
                                                             <TextBlock Text=" :: "/>
                                                             <TextBlock Text="{Binding kHz}"/>
                                                             <TextBlock Text=" kHz"/>
-                                                            <TextBlock Text=" :: "/>
-                                                            <TextBlock Text="{Binding Uploader}" MaxWidth="120" TextTrimming="CharacterEllipsis"/>
+                                                            <StackPanel Orientation="Horizontal">
+                                                                <StackPanel.Style>
+                                                                    <Style TargetType="StackPanel">
+                                                                        <Style.Triggers>
+                                                                            <DataTrigger Binding="{Binding Uploader,Converter={StaticResource FalseOnEmptyString}}" Value="false">
+                                                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                                            </DataTrigger>
+                                                                        </Style.Triggers>
+                                                                    </Style>
+                                                                </StackPanel.Style>
+                                                                <TextBlock Text=" :: "/>
+                                                                <TextBlock Text="{Binding Uploader}" MaxWidth="120" TextTrimming="CharacterEllipsis"/>
+                                                            </StackPanel>
                                                         </StackPanel>
                                                     </DataTemplate>
                                                     <DataTemplate DataType="{x:Type track:LocalTrack}">

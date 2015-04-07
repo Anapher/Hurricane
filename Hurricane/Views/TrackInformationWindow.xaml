@@ -15,20 +15,20 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
-                        <TextBlock Text="{TemplateBinding Content}" Foreground="{StaticResource BlackBrush}" x:Name="txt"/>
+                        <TextBlock Text="{TemplateBinding Content}" Foreground="{StaticResource BlackBrush}" x:Name="TextBlock" TextTrimming="CharacterEllipsis"/>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
                                 <Trigger.EnterActions>
                                     <BeginStoryboard>
                                         <Storyboard>
-                                            <ColorAnimation To="{StaticResource AccentColor}" Duration="0:0:0.2" Storyboard.TargetName="txt" Storyboard.TargetProperty="(TextBlock.Foreground).(SolidColorBrush.Color)"/>
+                                            <ColorAnimation To="{StaticResource AccentColor}" Duration="0:0:0.2" Storyboard.TargetName="TextBlock" Storyboard.TargetProperty="(TextBlock.Foreground).(SolidColorBrush.Color)"/>
                                         </Storyboard>
                                     </BeginStoryboard>
                                 </Trigger.EnterActions>
                                 <Trigger.ExitActions>
                                     <BeginStoryboard>
                                         <Storyboard>
-                                            <ColorAnimation To="{StaticResource BlackColor}" Duration="0:0:0.2" Storyboard.TargetName="txt" Storyboard.TargetProperty="(TextBlock.Foreground).(SolidColorBrush.Color)"/>
+                                            <ColorAnimation To="{StaticResource BlackColor}" Duration="0:0:0.2" Storyboard.TargetName="TextBlock" Storyboard.TargetProperty="(TextBlock.Foreground).(SolidColorBrush.Color)"/>
                                         </Storyboard>
                                     </BeginStoryboard>
                                 </Trigger.ExitActions>
@@ -202,7 +202,18 @@
                                         <TextBlock Text="{StaticResource Duration}"/>
                                         <TextBlock Text=":"/>
                                     </StackPanel>
-                                    <TextBlock Text="{Binding Duration,Converter={StaticResource PlaceholderConverter}}" Grid.Column="1"/>
+                                    <TextBlock Grid.Column="1">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="Text" Value="{Binding Duration}"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding Duration}" Value="00:00">
+                                                        <Setter Property="Text" Value="--:--"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
                                 </Grid>
                                 <Grid Margin="0,5,0,0">
                                     <Grid.ColumnDefinitions>
@@ -223,6 +234,15 @@
                                         <ColumnDefinition Width="200"/>
                                         <ColumnDefinition Width="*"/>
                                     </Grid.ColumnDefinitions>
+                                    <Grid.Style>
+                                        <Style TargetType="Grid">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Uploader,Converter={StaticResource FalseOnEmptyString}}" Value="false">
+                                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Grid.Style>
                                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                                         <TextBlock Text="{StaticResource Uploader}"/>
                                         <TextBlock Text=":"/>
@@ -263,7 +283,7 @@
                     <TextBlock Text="{StaticResource Title}"/>
                     <TextBlock Text=":"/>
                 </StackPanel>
-                <TextBox Text="{Binding ElementName=BaseWindow,Path=CurrentTrack.Title}" Grid.Column="1"/>
+                <TextBox Text="{Binding ElementName=BaseWindow,Path=CurrentTrack.Title,UpdateSourceTrigger=PropertyChanged}" Grid.Column="1"/>
             </Grid>
             <Grid Margin="0,5,0,0">
                 <Grid.ColumnDefinitions>
@@ -274,7 +294,7 @@
                     <TextBlock Text="{StaticResource Artist}"/>
                     <TextBlock Text=":"/>
                 </StackPanel>
-                <TextBox Text="{Binding ElementName=BaseWindow,Path=CurrentTrack.Artist}" Grid.Column="1"/>
+                <TextBox Text="{Binding ElementName=BaseWindow,Path=CurrentTrack.Artist,UpdateSourceTrigger=PropertyChanged}" Grid.Column="1"/>
             </Grid>
             <Grid Margin="0,5,0,0">
                 <Grid.ColumnDefinitions>
@@ -309,17 +329,34 @@
                 </StackPanel>
                 <TextBox Text="{Binding ElementName=BaseWindow,Path=CurrentTrack.Year,ValidatesOnDataErrors=True,UpdateSourceTrigger=PropertyChanged,NotifyOnValidationError=True}" Grid.Column="1"/>
             </Grid>
-            <Separator Margin="0,10"/>
             <Grid>
+                <Grid.Style>
+                    <Style TargetType="Grid">
+                        <Style.Triggers>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding ElementName=BaseWindow,Path=CurrentTrack.TrackType}" Value="Stream"/>
+                                    <Condition Binding="{Binding ElementName=BaseWindow,Path=CurrentTrack.IsInfinityStream}" Value="True"/>
+                                </MultiDataTrigger.Conditions>
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                            </MultiDataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Grid.Style>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="200"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                <Separator Margin="0,10" Grid.ColumnSpan="2"/>
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Grid.Row="1" Grid.Column="0">
                     <TextBlock Text="{StaticResource Duration}"/>
                     <TextBlock Text=":"/>
                 </StackPanel>
-                <StackPanel Orientation="Vertical" Grid.Column="1">
+                <StackPanel Orientation="Vertical" Grid.Column="1" Grid.Row="1">
                     <controls:RangeSlider AutoToolTipPlacement="TopLeft" LowerValue="{Binding StartTime}" UpperValue="{Binding EndTime}" MinRange="1000" Maximum="{Binding MaximumTime}" AutoToolTipPrecision="0" MinRangeWidth="10" IsMoveToPointEnabled="True" Interval="1000"/>
                     <Grid Margin="0,2,0,0">
                         <TextBlock Text="00:00"/>

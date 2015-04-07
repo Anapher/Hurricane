@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Net;
@@ -11,6 +10,7 @@ using Hurricane.Music.Playlist;
 using Hurricane.Settings;
 using Hurricane.ViewModelBase;
 using Hurricane.Views;
+using Hurricane.Views.UserControls;
 using MahApps.Metro.Controls.Dialogs;
 
 namespace Hurricane.Music.Track.WebApi
@@ -163,13 +163,6 @@ namespace Hurricane.Music.Track.WebApi
                     var playlist = parameter as IPlaylist;
                     
                     IsLoading = true;
-                    /*
-                    if (!(await SelectedTrack.CheckIfAvailable()))
-                    {
-                        await _baseWindow.WindowDialogService.ShowMessage(Application.Current.Resources["ExceptionAddOnlineTrack"].ToString(), Application.Current.Resources["Exception"].ToString(), false, DialogMode.Single);
-                        IsLoading = false;
-                        return;
-                    }*/
                     if (playlist == null)
                     {
                         string result = await _baseWindow.WindowDialogService.ShowInputDialog(Application.Current.Resources["NewPlaylist"].ToString(), Application.Current.Resources["NameOfPlaylist"].ToString(), Application.Current.Resources["Create"].ToString(), "", DialogMode.Single);
@@ -315,7 +308,7 @@ namespace Hurricane.Music.Track.WebApi
             _cancelWaiter = new AutoResetEvent(false);
             _manager = manager;
             _baseWindow = baseWindow;
-            MusicApis = new List<IMusicApi> { new YouTubeApi.YouTubeApi(), new SoundCloudApi.SoundCloudApi() };
+            MusicApis = new List<IMusicApi> { new YouTubeApi.YouTubeApi(), new SoundCloudApi.SoundCloudApi(), new GroovesharkApi.GroovesharkApi() };
         }
     }
 }

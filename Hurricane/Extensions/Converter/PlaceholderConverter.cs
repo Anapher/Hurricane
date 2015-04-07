@@ -6,7 +6,6 @@ namespace Hurricane.Extensions.Converter
 {
     class PlaceholderConverter : IValueConverter
     {
-
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (value == null) return "-";
@@ -18,6 +17,9 @@ namespace Hurricane.Extensions.Converter
 
             if (value is uint)
                 return (uint)value == 0 ? "-" : value;
+
+            if (value is TimeSpan)
+                return (TimeSpan) value == TimeSpan.Zero ? "--:--" : value;
 
             return value;
         }

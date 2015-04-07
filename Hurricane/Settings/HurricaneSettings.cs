@@ -76,14 +76,18 @@ namespace Hurricane.Settings
             IsLoaded = true;
         }
 
+        private bool _isSaving;
         public void Save()
         {
+            if (_isSaving) return;
+            _isSaving = true;
             //Important if the app gets closed
             var saveThread = new Thread(() =>
             {
                 if (Playlists != null) Playlists.Save(Paths.BaseDirectory);
                 if (Config != null) Config.Save(Paths.BaseDirectory);
                 if (CurrentState != null) CurrentState.Save(Paths.BaseDirectory);
+                _isSaving = false;
             }) {IsBackground = false, Priority = ThreadPriority.Highest};
             saveThread.Start();
         }
