@@ -26,16 +26,16 @@ namespace Hurricane.Settings
         {
             foreach (LanguageInfo info in list)
             {
-                if (info.Code == this.Code)
+                if (info.Code == Code)
                 {
-                    this.Name = info.Name;
-                    this.Path = info.Path;
-                    this.Icon = info.Icon;
-                    this.Translator = info.Translator;
+                    Name = info.Name;
+                    Path = info.Path;
+                    Icon = info.Icon;
+                    Translator = info.Translator;
                     return;
                 }
             }
-            throw new ArgumentException(string.Format("The current code {0} isn't in the list", this.Code));
+            throw new ArgumentException(string.Format("The current code {0} isn't in the list", Code));
         }
 
         public LanguageInfo()
@@ -44,16 +44,16 @@ namespace Hurricane.Settings
 
         public LanguageInfo(string code)
         {
-            this.Code = code;
+            Code = code;
         }
 
         public LanguageInfo(string name, string path, BitmapImage icon, string translator, string code)
         {
-            this.Name = name;
-            this.Path = path;
-            this.Icon = icon;
-            this.Translator = translator;
-            this.Code = code;
+            Name = name;
+            Path = path;
+            Icon = icon;
+            Translator = translator;
+            Code = code;
         }
 
         public LanguageInfo(string name, string path, Uri iconPath, string translator, string code) : this(name, path, new BitmapImage(iconPath), translator, code) { }

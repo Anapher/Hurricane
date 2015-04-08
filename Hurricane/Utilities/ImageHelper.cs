@@ -85,10 +85,17 @@ namespace Hurricane.Utilities
             catch { return null; }
         }
 
-
+        /// <summary>
+        /// Returns the resource as icon
+        /// </summary>
+        /// <param name="path">The resource path</param>
+        /// <returns>The icon</returns>
         public static Icon GetIconFromResource(string path)
         {
-            return new Icon(Application.GetResourceStream(new Uri(string.Format("pack://application:,,,/Hurricane;component/{0}", path))).Stream);
+            var streamResourceInfo = Application.GetResourceStream(new Uri(string.Format("pack://application:,,,/Hurricane;component/{0}", path)));
+            if (streamResourceInfo == null)
+                throw new ArgumentException(path);
+            return new Icon(streamResourceInfo.Stream);
         }
 
         /// <summary>

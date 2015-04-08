@@ -4,7 +4,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
-namespace Hurricane.Utilities.HookManager.MouseHook
+namespace Hurricane.Utilities.HookManager
 {
     public static partial class HookManager
     {
@@ -49,15 +49,15 @@ namespace Hurricane.Utilities.HookManager.MouseHook
         /// When passing delegates to unmanaged code, they must be kept alive by the managed application 
         /// until it is guaranteed that they will never be called.
         /// </summary>
-        private static HookProc s_MouseDelegate;
+        private static HookProc _mouseDelegate;
 
         /// <summary>
         /// Stores the handle to the mouse hook procedure.
         /// </summary>
-        private static int s_MouseHookHandle;
+        private static int _mouseHookHandle;
 
-        private static int m_OldX;
-        private static int m_OldY;
+        private static int _oldX;
+        private static int _oldY;
 
         /// <summary>
         /// A callback function which will be called every Time a mouse activity detected.
@@ -186,13 +186,13 @@ namespace Hurricane.Utilities.HookManager.MouseHook
                 }
 
                 //If someone listens to move and there was a change in coordinates raise move event
-                if ((s_MouseMove != null || s_MouseMoveExt != null) && (m_OldX != mouseHookStruct.Point.X || m_OldY != mouseHookStruct.Point.Y))
+                if ((_mouseMove != null || s_MouseMoveExt != null) && (_oldX != mouseHookStruct.Point.X || _oldY != mouseHookStruct.Point.Y))
                 {
-                    m_OldX = mouseHookStruct.Point.X;
-                    m_OldY = mouseHookStruct.Point.Y;
-                    if (s_MouseMove != null)
+                    _oldX = mouseHookStruct.Point.X;
+                    _oldY = mouseHookStruct.Point.Y;
+                    if (_mouseMove != null)
                     {
-                        s_MouseMove.Invoke(null, e);
+                        _mouseMove.Invoke(null, e);
                     }
 
                     if (s_MouseMoveExt != null)
@@ -208,24 +208,24 @@ namespace Hurricane.Utilities.HookManager.MouseHook
             }
 
             //call next hook
-            return CallNextHookEx(s_MouseHookHandle, nCode, wParam, lParam);
+            return CallNextHookEx(_mouseHookHandle, nCode, wParam, lParam);
         }
 
         private static void EnsureSubscribedToGlobalMouseEvents()
         {
             // install Mouse hook only if it is not installed and must be installed
-            if (s_MouseHookHandle == 0)
+            if (_mouseHookHandle == 0)
             {
                 //See comment of this field. To avoid GC to clean it up.
-                s_MouseDelegate = MouseHookProc;
+                _mouseDelegate = MouseHookProc;
                 //install hook
-                s_MouseHookHandle = SetWindowsHookEx(
+                _mouseHookHandle = SetWindowsHookEx(
                     WH_MOUSE_LL,
-                    s_MouseDelegate,
+                    _mouseDelegate,
                     IntPtr.Zero,
                     0); //Marshal.GetHINSTANCE(Assembly.GetExecutingAssembly().GetModules()[0])
                 //If SetWindowsHookEx fails.
-                if (s_MouseHookHandle == 0)
+                if (_mouseHookHandle == 0)
                 {
                     //Returns the error code returned by the last unmanaged function called using platform invoke that has the DllImportAttribute.SetLastError flag set. 
                     int errorCode = Marshal.GetLastWin32Error();
@@ -242,7 +242,7 @@ namespace Hurricane.Utilities.HookManager.MouseHook
             //if no subsribers are registered unsubsribe from hook
             if (s_MouseClick == null &&
                 s_MouseDown == null &&
-                s_MouseMove == null &&
+                _mouseMove == null &&
                 s_MouseUp == null &&
                 s_MouseClickExt == null &&
                 s_MouseMoveExt == null &&
@@ -254,14 +254,14 @@ namespace Hurricane.Utilities.HookManager.MouseHook
 
         private static void ForceUnsubscribeFromGlobalMouseEvents()
         {
-            if (s_MouseHookHandle != 0)
+            if (_mouseHookHandle != 0)
             {
                 //uninstall hook
-                int result = UnhookWindowsHookEx(s_MouseHookHandle);
+                int result = UnhookWindowsHookEx(_mouseHookHandle);
                 //reset invalid handle
-                s_MouseHookHandle = 0;
+                _mouseHookHandle = 0;
                 //Free up for GC
-                s_MouseDelegate = null;
+                _mouseDelegate = null;
                 //if failed and exception must be thrown
                 if (result == 0)
                 {
@@ -284,12 +284,12 @@ namespace Hurricane.Utilities.HookManager.MouseHook
         /// When passing delegates to unmanaged code, they must be kept alive by the managed application 
         /// until it is guaranteed that they will never be called.
         /// </summary>
-        private static HookProc s_KeyboardDelegate;
+        private static HookProc _keyboardDelegate;
 
         /// <summary>
         /// Stores the handle to the Keyboard hook procedure.
         /// </summary>
-        private static int s_KeyboardHookHandle;
+        private static int _keyboardHookHandle;
 
         /// <summary>
         /// A callback function which will be called every Time a keyboard activity detected.
@@ -323,11 +323,11 @@ namespace Hurricane.Utilities.HookManager.MouseHook
             if (nCode >= 0)
             {
                 //read structure KeyboardHookStruct at lParam
-                KeyboardHookStruct MyKeyboardHookStruct = (KeyboardHookStruct)Marshal.PtrToStructure(lParam, typeof(KeyboardHookStruct));
+                KeyboardHookStruct myKeyboardHookStruct = (KeyboardHookStruct)Marshal.PtrToStructure(lParam, typeof(KeyboardHookStruct));
                 //raise KeyDown
                 if (s_KeyDown != null && (wParam == WM_KEYDOWN || wParam == WM_SYSKEYDOWN))
                 {
-                    Keys keyData = (Keys)MyKeyboardHookStruct.VirtualKeyCode;
+                    Keys keyData = (Keys)myKeyboardHookStruct.VirtualKeyCode;
                     KeyEventArgs e = new KeyEventArgs(keyData);
                     s_KeyDown.Invoke(null, e);
                     handled = e.Handled;
@@ -336,17 +336,17 @@ namespace Hurricane.Utilities.HookManager.MouseHook
                 // raise KeyPress
                 if (s_KeyPress != null && wParam == WM_KEYDOWN)
                 {
-                    bool isDownShift = ((GetKeyState(VK_SHIFT) & 0x80) == 0x80 ? true : false);
-                    bool isDownCapslock = (GetKeyState(VK_CAPITAL) != 0 ? true : false);
+                    bool isDownShift = ((GetKeyState(VK_SHIFT) & 0x80) == 0x80);
+                    bool isDownCapslock = (GetKeyState(VK_CAPITAL) != 0);
 
                     byte[] keyState = new byte[256];
                     GetKeyboardState(keyState);
                     byte[] inBuffer = new byte[2];
-                    if (ToAscii(MyKeyboardHookStruct.VirtualKeyCode,
-                              MyKeyboardHookStruct.ScanCode,
+                    if (ToAscii(myKeyboardHookStruct.VirtualKeyCode,
+                              myKeyboardHookStruct.ScanCode,
                               keyState,
                               inBuffer,
-                              MyKeyboardHookStruct.Flags) == 1)
+                              myKeyboardHookStruct.Flags) == 1)
                     {
                         char key = (char)inBuffer[0];
                         if ((isDownCapslock ^ isDownShift) && Char.IsLetter(key)) key = Char.ToUpper(key);
@@ -359,7 +359,7 @@ namespace Hurricane.Utilities.HookManager.MouseHook
                 // raise KeyUp
                 if (s_KeyUp != null && (wParam == WM_KEYUP || wParam == WM_SYSKEYUP))
                 {
-                    Keys keyData = (Keys)MyKeyboardHookStruct.VirtualKeyCode;
+                    Keys keyData = (Keys)myKeyboardHookStruct.VirtualKeyCode;
                     KeyEventArgs e = new KeyEventArgs(keyData);
                     s_KeyUp.Invoke(null, e);
                     handled = handled || e.Handled;
@@ -372,25 +372,25 @@ namespace Hurricane.Utilities.HookManager.MouseHook
                 return -1;
 
             //forward to other application
-            return CallNextHookEx(s_KeyboardHookHandle, nCode, wParam, lParam);
+            return CallNextHookEx(_keyboardHookHandle, nCode, wParam, lParam);
         }
 
         private static void EnsureSubscribedToGlobalKeyboardEvents()
         {
             // install Keyboard hook only if it is not installed and must be installed
-            if (s_KeyboardHookHandle == 0)
+            if (_keyboardHookHandle == 0)
             {
                 //See comment of this field. To avoid GC to clean it up.
-                s_KeyboardDelegate = KeyboardHookProc;
+                _keyboardDelegate = KeyboardHookProc;
                 //install hook
-                s_KeyboardHookHandle = SetWindowsHookEx(
+                _keyboardHookHandle = SetWindowsHookEx(
                     WH_KEYBOARD_LL,
-                    s_KeyboardDelegate,
+                    _keyboardDelegate,
                     Marshal.GetHINSTANCE(
                         Assembly.GetExecutingAssembly().GetModules()[0]),
                     0);
                 //If SetWindowsHookEx fails.
-                if (s_KeyboardHookHandle == 0)
+                if (_keyboardHookHandle == 0)
                 {
                     //Returns the error code returned by the last unmanaged function called using platform invoke that has the DllImportAttribute.SetLastError flag set. 
                     int errorCode = Marshal.GetLastWin32Error();
@@ -415,14 +415,14 @@ namespace Hurricane.Utilities.HookManager.MouseHook
 
         private static void ForceUnsunscribeFromGlobalKeyboardEvents()
         {
-            if (s_KeyboardHookHandle != 0)
+            if (_keyboardHookHandle != 0)
             {
                 //uninstall hook
-                int result = UnhookWindowsHookEx(s_KeyboardHookHandle);
+                int result = UnhookWindowsHookEx(_keyboardHookHandle);
                 //reset invalid handle
-                s_KeyboardHookHandle = 0;
+                _keyboardHookHandle = 0;
                 //Free up for GC
-                s_KeyboardDelegate = null;
+                _keyboardDelegate = null;
                 //if failed and exception must be thrown
                 if (result == 0)
                 {

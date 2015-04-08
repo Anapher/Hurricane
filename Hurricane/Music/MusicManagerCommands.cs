@@ -6,6 +6,7 @@ using Hurricane.Music.Download;
 using Hurricane.Music.Track;
 using Hurricane.ViewModelBase;
 using Hurricane.Views;
+// ReSharper disable ExplicitCallerInfoArgument
 
 namespace Hurricane.Music
 {

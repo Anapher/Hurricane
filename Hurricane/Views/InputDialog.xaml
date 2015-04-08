@@ -2,15 +2,14 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
-        xmlns:converter="clr-namespace:Hurricane.Extensions.Converter"
-        xmlns:ex="clr-namespace:Hurricane.Extensions"
+        xmlns:behaviors="clr-namespace:Hurricane.GUI.Behaviors"
         Title="" SizeToContent="Height" Width="300" GlowBrush="{StaticResource AccentColorBrush}" ResizeMode="NoResize" x:Name="BaseWindow" WindowStartupLocation="CenterOwner" FocusManager.FocusedElement="{Binding ElementName=txt}" ShowIconOnTitleBar="False">
     <StackPanel Margin="10">
         <TextBlock Text="" x:Name="MessageTextBlock"/>
         <TextBox Margin="0,5,0,0" Text="{Binding ElementName=BaseWindow,Path=ResultText}" x:Name="ResultTextBox"/>
         <StackPanel Orientation="Horizontal" Margin="0,10,0,0" HorizontalAlignment="Center">
-            <Button ex:ButtonHelper.DialogResult="true" IsEnabled="{Binding ElementName=ResultTextBox,Path=Text,Converter={StaticResource FalseOnEmptyString}}" IsDefault="True" x:Name="OkButton"/>
-            <Button Content="{StaticResource Cancel}" ex:ButtonHelper.DialogResult="false" Margin="10,0,0,0" IsCancel="True"/>
+            <Button behaviors:ButtonBehavior.DialogResult="true" IsEnabled="{Binding ElementName=ResultTextBox,Path=Text,Converter={StaticResource FalseOnEmptyString}}" IsDefault="True" x:Name="OkButton"/>
+            <Button Content="{StaticResource Cancel}" behaviors:ButtonBehavior.DialogResult="false" Margin="10,0,0,0" IsCancel="True"/>
         </StackPanel>
     </StackPanel>
 </controls:MetroWindow>

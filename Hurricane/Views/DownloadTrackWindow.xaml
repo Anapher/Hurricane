@@ -2,8 +2,8 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
-        xmlns:extensions="clr-namespace:Hurricane.Extensions"
         xmlns:types="clr-namespace:Hurricane.Music.Download"
+        xmlns:extensions="clr-namespace:Hurricane.GUI.Extensions"
         Title="{StaticResource DownloadTrack}" Width="548" SizeToContent="Height" x:Name="BaseWindow" DataContext="{Binding ElementName=BaseWindow}" GlowBrush="{StaticResource AccentColorBrush}"
         ResizeMode="NoResize" WindowStartupLocation="CenterOwner" ShowInTaskbar="False">
     <StackPanel Margin="10">

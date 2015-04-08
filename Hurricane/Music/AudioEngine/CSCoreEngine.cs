@@ -276,6 +276,7 @@ namespace Hurricane.Music.AudioEngine
                     track.IsOpened = false;
                     IsLoading = false;
                     if (ExceptionOccurred != null) ExceptionOccurred(this, (Exception)result.CustomState);
+                    StopPlayback();
                     return false;
             }
 

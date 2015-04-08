@@ -2,9 +2,9 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
-        xmlns:converter="clr-namespace:Hurricane.Extensions.Converter"
-        xmlns:track="clr-namespace:Hurricane.Music.Track"
-        xmlns:hurricaneControls="clr-namespace:Hurricane.Extensions.Controls"
+                      xmlns:track="clr-namespace:Hurricane.Music.Track"
+        xmlns:hurricaneControls="clr-namespace:Hurricane.GUI.Controls"
+        xmlns:converter="clr-namespace:Hurricane.GUI.Converter"
         Title="{StaticResource TrackInformation}" SizeToContent="Height" GlowBrush="{StaticResource AccentColorBrush}" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" Width="800" x:Name="BaseWindow" ShowInTaskbar="False" DataContext="{Binding ElementName=BaseWindow}">
     <Window.Resources>
         <converter:RoundSizeConverter x:Key="RoundSizeConverter"/>

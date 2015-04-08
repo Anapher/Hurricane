@@ -1,5 +1,6 @@
 ﻿using System;
 using Hurricane.Utilities.Native;
+// ReSharper disable InconsistentNaming
 
 namespace Hurricane.Utilities
 {
@@ -16,7 +17,7 @@ namespace Hurricane.Utilities
 
         public ActiveWindowHook()
         {
-            _winEventProc = new WinEventDelegate(WinEventProc);
+            _winEventProc = WinEventProc;
         }
 
         public void Hook()

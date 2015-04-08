@@ -18,6 +18,7 @@ namespace Hurricane.Utilities
         /// </summary>
         /// <param name="filename">File Path to get file impression.</param>
         /// <returns>Byte Array</returns>
+        // ReSharper disable once InconsistentNaming
         public static string FileToMD5Hash(string filename)
         {
             using (var md5 = MD5.Create())
@@ -57,6 +58,7 @@ namespace Hurricane.Utilities
         {
             var localAdminGroupSid = new SecurityIdentifier(WellKnownSidType.BuiltinAdministratorsSid, null);
             var windowsIdentity = WindowsIdentity.GetCurrent();
+            if (windowsIdentity == null || windowsIdentity.Groups == null) return false;
             return windowsIdentity.Groups.Select(g => (SecurityIdentifier)g.Translate(typeof(SecurityIdentifier))).Any(s => s == localAdminGroupSid);
         }
 
@@ -203,10 +205,16 @@ namespace Hurricane.Utilities
 
         public static string GetFilePathWithoutExtension(string path)
         {
-            return Path.Combine(path.Substring(0, path.LastIndexOf("\\")),
+            return Path.Combine(path.Substring(0, path.LastIndexOf("\\", StringComparison.Ordinal)),
                 Path.GetFileNameWithoutExtension(path));
         }
-
+        
+        /// <summary>
+        /// Decodes the input with the ROT13 algorithm
+        /// </summary>
+        /// <param name="input">The ROT13 encrypted string</param>
+        /// <returns>The decrypted string</returns>
+        // ReSharper disable once InconsistentNaming
         public static string ROT13(string input)
         {
             return !string.IsNullOrEmpty(input) ? new string(input.ToCharArray().Select(s => (char)((s >= 97 && s <= 122) ? ((s + 13 > 122) ? s - 13 : s + 13) : (s >= 65 && s <= 90 ? (s + 13 > 90 ? s - 13 : s + 13) : s))).ToArray()) : input;

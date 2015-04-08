@@ -61,6 +61,7 @@ namespace Hurricane.Utilities
                         if (_mostRightX == null || _mostRightX <= screen.WorkingArea.X) _mostRightX = screen.WorkingArea.X + screen.WorkingArea.Width;
                     }
                 }
+                // ReSharper disable once PossibleInvalidOperationException
                 return _mostRightX.Value;
             }
         }
@@ -77,6 +78,7 @@ namespace Hurricane.Utilities
                         if (_mostLeftX == null || _mostLeftX > screen.WorkingArea.X) _mostLeftX = screen.WorkingArea.X;
                     }
                 }
+                // ReSharper disable once PossibleInvalidOperationException
                 return _mostLeftX.Value;
             }
         }
@@ -90,17 +92,17 @@ namespace Hurricane.Utilities
 
         internal WpfScreen(Screen screen)
         {
-            this._screen = screen;
+            _screen = screen;
         }
 
         public Rect DeviceBounds
         {
-            get { return this.GetRect(this._screen.Bounds); }
+            get { return GetRect(_screen.Bounds); }
         }
 
         public Rect WorkingArea
         {
-            get { return this.GetRect(this._screen.WorkingArea); }
+            get { return GetRect(_screen.WorkingArea); }
         }
 
         private Rect GetRect(Rectangle value)
@@ -116,12 +118,12 @@ namespace Hurricane.Utilities
 
         public bool IsPrimary
         {
-            get { return this._screen.Primary; }
+            get { return _screen.Primary; }
         }
 
         public string DeviceName
         {
-            get { return this._screen.DeviceName; }
+            get { return _screen.DeviceName; }
         }
     }
 }

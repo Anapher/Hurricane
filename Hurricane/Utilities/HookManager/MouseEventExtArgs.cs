@@ -1,6 +1,6 @@
 ﻿using System.Windows.Forms;
 
-namespace Hurricane.Utilities.HookManager.MouseHook
+namespace Hurricane.Utilities.HookManager
 {
     /// <summary>
     /// Provides data for the MouseClickExt and MouseMoveExt events. It also provides a property Handled.
@@ -28,15 +28,9 @@ namespace Hurricane.Utilities.HookManager.MouseHook
             : base(e.Button, e.Clicks, e.X, e.Y, e.Delta)
         { }
 
-        private bool m_Handled;
-
         /// <summary>
         /// Set this property to <b>true</b> inside your event handler to prevent further processing of the event in other applications.
         /// </summary>
-        public bool Handled
-        {
-            get { return m_Handled; }
-            set { m_Handled = value; }
-        }
+        public bool Handled { get; set; }
     }
 }

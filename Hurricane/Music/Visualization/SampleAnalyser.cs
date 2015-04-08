@@ -64,6 +64,7 @@ namespace Hurricane.Music.Visualization
             }
         }
 
+        // ReSharper disable once InconsistentNaming
         public void CalculateFFT(float[] resultBuffer)
         {
             Complex[] input = new Complex[_storedSamples.Length];

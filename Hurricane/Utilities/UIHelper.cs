@@ -3,6 +3,7 @@ using System.Windows.Media;
 
 namespace Hurricane.Utilities
 {
+    // ReSharper disable once InconsistentNaming
     public static class UIHelper
     {
         // walk up the visual tree to find object of type T, starting from initial object

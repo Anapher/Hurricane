@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.InteropServices;
+// ReSharper disable InconsistentNaming
 
 namespace Hurricane.Utilities.Native
 {
@@ -11,7 +12,7 @@ namespace Hurricane.Utilities.Native
         public int right;
         public int bottom;
 
-        public static readonly RECT Empty = new RECT();
+        public static readonly RECT Empty;
 
         public int Width
         {

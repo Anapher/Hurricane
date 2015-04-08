@@ -20,10 +20,10 @@ using Hurricane.Settings;
 using Hurricane.Utilities;
 using Hurricane.ViewModelBase;
 using Hurricane.Views;
+using Hurricane.Views.MetroDialogs;
 using Hurricane.Views.UserControls;
 using MahApps.Metro.Controls.Dialogs;
 using Microsoft.Win32;
-using WPFFolderBrowser;
 using QueueManager = Hurricane.Views.QueueManagerWindow;
 
 namespace Hurricane.ViewModels
@@ -86,6 +86,7 @@ namespace Hurricane.ViewModels
 
         async void CSCoreEngine_ExceptionOccurred(object sender, Exception e)
         {
+
             await _baseWindow.WindowDialogService.ShowMessage(Application.Current.Resources["ExceptionOpenOnlineTrack"].ToString(),
                 Application.Current.Resources["Exception"].ToString(), false, DialogMode.Single);
         }
@@ -198,7 +199,7 @@ namespace Hurricane.ViewModels
 
             if (config.RememberTrackImportPlaylist)
             {
-                var items = MusicManager.Playlists.Where((x) => x.Name == config.PlaylistToImportTrack);
+                var items = MusicManager.Playlists.Where(x => x.Name == config.PlaylistToImportTrack).ToList();
                 if (items.Any())
                 {
                     selectedplaylist = items.First();
@@ -294,9 +295,12 @@ namespace Hurricane.ViewModels
                 {
                     if (MusicManager.SelectedPlaylist.CanEdit && await _baseWindow.WindowDialogService.ShowMessage(Application.Current.Resources["DeleteAllMissingTracks"].ToString(), Application.Current.Resources["RemoveMissingTracks"].ToString(), true, DialogMode.Single))
                     {
-                        ((NormalPlaylist)MusicManager.SelectedPlaylist).RemoveMissingTracks();
-                        MusicManager.SaveToSettings();
-                        MySettings.Save();
+                        var playlist = (NormalPlaylist) MusicManager.SelectedPlaylist;
+                        foreach (var track in playlist.Tracks)
+                        {
+                            track.IsChecked = false;
+                        }
+                        AsyncTrackLoader.Instance.RunAsync(playlist);
                     }
                 }));
             }
@@ -519,6 +523,7 @@ namespace Hurricane.ViewModels
             {
                 return _toggleVolume ?? (_toggleVolume = new RelayCommand(parameter =>
                 {
+                    // ReSharper disable once CompareOfFloatsByEqualityOperator
                     if (MusicManager.CSCoreEngine.Volume == 0)
                     {
                         MusicManager.CSCoreEngine.Volume = _oldVolume;
@@ -657,12 +662,12 @@ namespace Hurricane.ViewModels
                             controller.SetMessage(string.Format(Application.Current.Resources["TrackIsDownloading"].ToString(), track.Title));
                             var downloadFile = new FileInfo(Path.Combine(downloadDialog.SelectedPath, track.DownloadFilename + downloadSettings.GetExtension(track)));
                             if (downloadFile.Exists) continue;
-
+                            var staticTrack = track;
                             if (await
                                 DownloadManager.DownloadAndConfigureTrack(track, track, downloadFile.FullName,
                                     d =>
                                     {
-                                        controller.SetProgress(lst.IndexOf(track)/(double) lst.Count +
+                                        controller.SetProgress(lst.IndexOf(staticTrack) / (double)lst.Count +
                                                                1/(double) lst.Count/100*d);
                                     }, downloadSettings))
                             {

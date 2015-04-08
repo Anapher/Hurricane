@@ -1,18 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Windows;
 using System.Xml.Serialization;
+using CSCore.SoundOut;
 using Hurricane.AppCommunication;
 using Hurricane.Music.AudioEngine;
 using Hurricane.Music.Download;
 using Hurricane.Notification;
 using Hurricane.Settings.Themes;
 using MahApps.Metro.Controls;
-// ReSharper disable InconsistentNaming
 
+// ReSharper disable InconsistentNaming
 namespace Hurricane.Settings
 {
     [Serializable, XmlType(TypeName = "Settings")]
@@ -55,6 +57,13 @@ namespace Hurricane.Settings
             {
                 SetProperty(value, ref _tabControlTransition);
             }
+        }
+
+        private TrackListAnimation _trackListAnimation;
+        public TrackListAnimation TrackListAnimation
+        {
+            get { return _trackListAnimation; }
+            set { SetProperty(value, ref _trackListAnimation); }
         }
 
         //General
@@ -130,7 +139,7 @@ namespace Hurricane.Settings
             SaveCoverLocal = false;
             TrimTrackname = true;
             ShowArtistAndTitle = true;
-            SoundOutMode = CSCore.SoundOut.WasapiOut.IsSupportedOnCurrentPlatform ? SoundOutMode.WASAPI : SoundOutMode.DirectSound;
+            SoundOutMode = WasapiOut.IsSupportedOnCurrentPlatform ? SoundOutMode.WASAPI : SoundOutMode.DirectSound;
             Latency = 100;
             IsCrossfadeEnabled = false;
             CrossfadeDuration = 4;
@@ -146,6 +155,7 @@ namespace Hurricane.Settings
             DownloadSettings.SetDefault();
             CheckForHurricaneUpdates = true;
             CheckForYoutubeDlUpdates = true;
+            TrackListAnimation = TrackListAnimation.FadeEveryItem;
         }
 
         public ConfigSettings()
@@ -209,5 +219,13 @@ namespace Hurricane.Settings
     public enum SoundOutMode
     {
         DirectSound, WASAPI
+    }
+
+    public enum TrackListAnimation
+    {
+        [Description("Fade every item")]
+        FadeEveryItem,
+        [Description("Fade list")]
+        FadeList
     }
 }

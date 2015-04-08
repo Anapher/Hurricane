@@ -9,7 +9,7 @@ namespace Hurricane.Settings.Converter
 {
     class NotificationTypeConverter : IValueConverter
     {
-        private static readonly Dictionary<int, NotificationType> indexValueDictionary = new Dictionary<int, NotificationType>()
+        private static readonly Dictionary<int, NotificationType> IndexValueDictionary = new Dictionary<int, NotificationType>()
         {
             {0, NotificationType.None},
             {1, NotificationType.Top},
@@ -18,12 +18,12 @@ namespace Hurricane.Settings.Converter
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return indexValueDictionary.First(x => x.Value == (NotificationType)value).Key;
+            return IndexValueDictionary.First(x => x.Value == (NotificationType)value).Key;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return indexValueDictionary[(int)value];
+            return IndexValueDictionary[(int)value];
         }
     }
 }

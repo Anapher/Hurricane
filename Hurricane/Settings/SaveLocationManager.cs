@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
-using System.Threading.Tasks;
 using System.Windows;
 using Hurricane.AppMainWindow.Messages;
 
@@ -68,6 +67,7 @@ namespace Hurricane.Settings
 
             File.Move("youtube-dl.exe", Path.Combine(appDataDir.FullName, "youtube-dl.exe"));
 
+            // ReSharper disable once LocalizableElement
             File.WriteAllText(InstalledInfoFile.FullName, "garcon?");
 
             await

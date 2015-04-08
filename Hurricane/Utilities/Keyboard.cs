@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Windows.Input;
@@ -14,13 +15,13 @@ namespace Hurricane.Utilities
         public KeyboardListener()
         {
             // We have to store the HookCallback, so that it is not garbage collected runtime
-            hookedLowLevelKeyboardProc = (InterceptKeys.LowLevelKeyboardProc)LowLevelKeyboardProc;
+            _hookedLowLevelKeyboardProc = LowLevelKeyboardProc;
 
             // Set the hook
-            hookId = InterceptKeys.SetHook(hookedLowLevelKeyboardProc);
+            _hookId = InterceptKeys.SetHook(_hookedLowLevelKeyboardProc);
 
             // Assign the asynchronous callback event
-            hookedKeyboardCallbackAsync = new KeyboardCallbackAsync(KeyboardListener_KeyboardCallbackAsync);
+            _hookedKeyboardCallbackAsync = KeyboardListener_KeyboardCallbackAsync;
         }
 
         /// <summary>
@@ -45,7 +46,7 @@ namespace Hurricane.Utilities
         /// <summary>
         /// Hook ID
         /// </summary>
-        private readonly IntPtr hookId = IntPtr.Zero;
+        private readonly IntPtr _hookId;
 
         /// <summary>
         /// Asynchronous callback hook.
@@ -69,20 +70,21 @@ namespace Hurricane.Utilities
                     wParam.ToUInt32() == (int)InterceptKeys.KeyEvent.WM_KEYUP ||
                     wParam.ToUInt32() == (int)InterceptKeys.KeyEvent.WM_SYSKEYDOWN ||
                     wParam.ToUInt32() == (int)InterceptKeys.KeyEvent.WM_SYSKEYUP)
-                    hookedKeyboardCallbackAsync.BeginInvoke((InterceptKeys.KeyEvent)wParam.ToUInt32(), Marshal.ReadInt32(lParam), null, null);
+                    _hookedKeyboardCallbackAsync.BeginInvoke((InterceptKeys.KeyEvent)wParam.ToUInt32(), Marshal.ReadInt32(lParam), null, null);
 
-            return InterceptKeys.CallNextHookEx(hookId, nCode, wParam, lParam);
+            return InterceptKeys.CallNextHookEx(_hookId, nCode, wParam, lParam);
         }
 
         /// <summary>
         /// Event to be invoked asynchronously (BeginInvoke) each time key is pressed.
         /// </summary>
-        private readonly KeyboardCallbackAsync hookedKeyboardCallbackAsync;
+        private readonly KeyboardCallbackAsync _hookedKeyboardCallbackAsync;
 
         /// <summary>
         /// Contains the hooked callback in runtime.
         /// </summary>
-        private readonly InterceptKeys.LowLevelKeyboardProc hookedLowLevelKeyboardProc;
+        // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
+        private readonly InterceptKeys.LowLevelKeyboardProc _hookedLowLevelKeyboardProc;
 
         /// <summary>
         /// HookCallbackAsync procedure that calls accordingly the KeyDown or KeyUp events.
@@ -112,9 +114,6 @@ namespace Hurricane.Utilities
                     if (KeyUp != null)
                         KeyUp(this, new RawKeyEventArgs(vkCode, true));
                     break;
-
-                default:
-                    break;
             }
         }
 
@@ -128,7 +127,7 @@ namespace Hurricane.Utilities
         /// </summary>
         public void Dispose()
         {
-            InterceptKeys.UnhookWindowsHookEx(hookId);
+            InterceptKeys.UnhookWindowsHookEx(_hookId);
         }
 
         #endregion
@@ -141,6 +140,7 @@ namespace Hurricane.Utilities
         /// <summary>
         /// VKCode of the key.
         /// </summary>
+        // ReSharper disable once InconsistentNaming
         public int VKCode;
 
         /// <summary>
@@ -156,13 +156,13 @@ namespace Hurricane.Utilities
         /// <summary>
         /// Create raw keyevent arguments.
         /// </summary>
-        /// <param name="VKCode"></param>
+        /// <param name="vkCode"></param>
         /// <param name="isSysKey"></param>
-        public RawKeyEventArgs(int VKCode, bool isSysKey)
+        public RawKeyEventArgs(int vkCode, bool isSysKey)
         {
-            this.VKCode = VKCode;
-            this.IsSysKey = isSysKey;
-            this.Key = KeyInterop.KeyFromVirtualKey(VKCode);
+            VKCode = vkCode;
+            IsSysKey = isSysKey;
+            Key = KeyInterop.KeyFromVirtualKey(vkCode);
         }
     }
 
@@ -180,9 +180,11 @@ namespace Hurricane.Utilities
     internal static class InterceptKeys
     {
         public delegate IntPtr LowLevelKeyboardProc(int nCode, UIntPtr wParam, IntPtr lParam);
+        // ReSharper disable once InconsistentNaming
         public static int WH_KEYBOARD_LL = 13;
 
-        public enum KeyEvent : int
+        [SuppressMessage("ReSharper", "InconsistentNaming")]
+        public enum KeyEvent
         {
             WM_KEYDOWN = 256,
             WM_KEYUP = 257,

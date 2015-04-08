@@ -18,7 +18,7 @@ namespace Hurricane.Views
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            WPFFolderBrowserDialog fbd = new WPFFolderBrowserDialog
+            var fbd = new WPFFolderBrowserDialog
             {
                 Title = Application.Current.Resources["SelectedFolder"].ToString(),
                 InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyMusic)

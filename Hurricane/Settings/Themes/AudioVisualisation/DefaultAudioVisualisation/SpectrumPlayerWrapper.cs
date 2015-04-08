@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using Hurricane.PluginAPI.AudioVisualisation;
 using WPFSoundVisualizationLib;
 
@@ -13,7 +14,7 @@ namespace Hurricane.Settings.Themes.AudioVisualisation.DefaultAudioVisualisation
             _spectrumProvider.PlayStateChanged += _spectrumProvider_PlayStateChanged;
         }
 
-        void _spectrumProvider_PlayStateChanged(object sender, System.EventArgs e)
+        void _spectrumProvider_PlayStateChanged(object sender, EventArgs e)
         {
             if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs("IsPlaying"));
         }

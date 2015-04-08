@@ -1,6 +1,9 @@
 ﻿using System.Runtime.InteropServices;
+// ReSharper disable FieldCanBeMadeReadOnly.Local
+// ReSharper disable MemberCanBePrivate.Local
+// ReSharper disable once InconsistentNaming
 
-namespace Hurricane.Utilities.HookManager.MouseHook
+namespace Hurricane.Utilities.HookManager
 {
     public static partial class HookManager
     {

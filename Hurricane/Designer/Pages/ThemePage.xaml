@@ -5,7 +5,6 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:designer="clr-namespace:Hurricane.Designer"
              xmlns:pages="clr-namespace:Hurricane.Designer.Pages"
-             xmlns:converter="clr-namespace:Hurricane.Extensions.Converter"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="1000" DataContext="{x:Static designer:DesignerViewModel.Instance}">
     <Grid>

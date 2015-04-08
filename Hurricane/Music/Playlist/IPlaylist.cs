@@ -13,7 +13,6 @@ namespace Hurricane.Music.Playlist
         string SearchText { get; set; }
         string Name { get; set; }
         bool CanEdit { get; }
-        bool ContainsMissingTracks { get; }
         bool ContainsDownloadableStreams { get; }
 
         PlayableBase GetRandomTrack(PlayableBase currentTrack);
@@ -21,6 +20,5 @@ namespace Hurricane.Music.Playlist
         void AddTrack(PlayableBase track);
         void RemoveTrack(PlayableBase track);
         void Clear();
-        void RemoveMissingTracks();
     }
 }

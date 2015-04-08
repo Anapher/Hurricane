@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:designer="clr-namespace:Hurricane.Designer"
              xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
-             xmlns:hurricaneControls="clr-namespace:Hurricane.Extensions.Controls"
+             xmlns:hurricaneControls="clr-namespace:Hurricane.GUI.Controls"
              mc:Ignorable="d" 
              d:DesignHeight="434" d:DesignWidth="960" DataContext="{x:Static designer:DesignerViewModel.Instance}" SnapsToDevicePixels="True">
     <UserControl.Resources>

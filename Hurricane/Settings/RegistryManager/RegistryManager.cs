@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
-using System.Windows;
 using Hurricane.Utilities;
 
 namespace Hurricane.Settings.RegistryManager

@@ -3,9 +3,9 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
         xmlns:viewmodels="clr-namespace:Hurricane.ViewModels"
-        xmlns:converter="clr-namespace:Hurricane.Extensions.Converter"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:converter="clr-namespace:Hurricane.GUI.Converter"
         mc:Ignorable="d"
         Title="{StaticResource QueueManager}" SizeToContent="Height" Width="520" GlowBrush="{StaticResource AccentColorBrush}" ResizeMode="NoResize" d:DataContext="{d:DesignInstance,Type=viewmodels:QueueManagerViewModel,IsDesignTimeCreatable=True}" ShowInTaskbar="False">
     <Window.Resources>

@@ -25,6 +25,7 @@ namespace Hurricane.Music
         {
             foreach (var item in this)
             {
+                // ReSharper disable once PossibleMultipleEnumeration
                 var playlist = item.GetTrack(playlists);
                 TrackPlaylists.Add(new TrackPlaylistPair(item.Track, playlist));
                 item.Track.QueueId = (IndexOf(item) + 1).ToString();

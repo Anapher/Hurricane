@@ -9,7 +9,7 @@ namespace Hurricane.Settings.Converter
 {
     public class TransitionConverter : IValueConverter
     {
-        private static readonly Dictionary<int, TransitionType> indexValueDictionary = new Dictionary<int, TransitionType>()
+        private static readonly Dictionary<int, TransitionType> IndexValueDictionary = new Dictionary<int, TransitionType>()
         {
             {0, TransitionType.Left},
             {1, TransitionType.Right},
@@ -21,12 +21,12 @@ namespace Hurricane.Settings.Converter
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return indexValueDictionary.First(x => x.Value == (TransitionType)value).Key;
+            return IndexValueDictionary.First(x => x.Value == (TransitionType)value).Key;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return indexValueDictionary[(int)value];
+            return IndexValueDictionary[(int)value];
         }
     }
 }

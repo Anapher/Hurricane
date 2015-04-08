@@ -16,7 +16,7 @@ namespace Hurricane.Music.MusicCover.APIs.Lastfm
     {
         public async static Task<BitmapImage> GetImage(ImageQuality imagequality, bool saveimage, DirectoryInfo directory, PlayableBase track, bool trimtrackname, bool useArtist = true)
         {
-            string apikey = SensitiveInformation.LastfmAPIKey;
+            string apikey = SensitiveInformation.LastfmKey;
 
             string title = track.Title;
             string artist = useArtist ? track.Artist : string.Empty;

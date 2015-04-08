@@ -11,11 +11,13 @@ using Hurricane.Music.Data;
 using Hurricane.Music.Track;
 using Hurricane.Settings;
 using Hurricane.ViewModelBase;
+// ReSharper disable ExplicitCallerInfoArgument
 
 namespace Hurricane.Music.Playlist
 {
     public abstract class PlaylistBase : PropertyChangedBase, IPlaylist
     {
+        // ReSharper disable once InconsistentNaming
         protected Random _random;
 
         protected PlaylistBase()
@@ -24,6 +26,7 @@ namespace Hurricane.Music.Playlist
             _random = new Random();
         }
 
+        // ReSharper disable once InconsistentNaming
         protected ObservableCollection<PlayableBase> _tracks;
         public ObservableCollection<PlayableBase> Tracks
         {
@@ -170,24 +173,8 @@ namespace Hurricane.Music.Playlist
 
         public abstract bool CanEdit { get; }
 
-        public bool ContainsMissingTracks
-        {
-            get { return Tracks.Any(t => !t.TrackExists); }
-        }
-
-        public void RemoveMissingTracks()
-        {
-            for (int i = Tracks.Count - 1; i > -1; i--)
-            {
-                PlayableBase t = Tracks[i];
-                if (!t.TrackExists) RemoveTrack(t);
-            }
-            OnTrackListChanged();
-        }
-
         protected void OnTrackListChanged()
         {
-            OnPropertyChanged("ContainsMissingTracks");
             OnPropertyChanged("ContainsDownloadableStreams");
         }
 

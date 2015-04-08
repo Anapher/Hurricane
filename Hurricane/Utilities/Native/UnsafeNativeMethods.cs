@@ -3,6 +3,7 @@ using System.Collections;
 using System.Runtime.InteropServices;
 using System.Security;
 using System.Text;
+// ReSharper disable InconsistentNaming
 
 namespace Hurricane.Utilities.Native
 {
@@ -46,8 +47,8 @@ namespace Hurricane.Utilities.Native
         /// window whose class name and window name match the specified strings.
         /// This function does not search child windows. This function does not perform a case-sensitive search.
         /// </summary>
-        /// <param name="strClassName">the class name for the window to search for</param>
-        /// <param name="strWindowName">the name of the window to search for</param>
+        /// <param name="lpClassName">the class name for the window to search for</param>
+        /// <param name="lpWindowName">the name of the window to search for</param>
         /// <returns></returns>
         [DllImport("user32.dll", SetLastError = true)]
         internal static extern IntPtr FindWindow(string lpClassName, string lpWindowName);

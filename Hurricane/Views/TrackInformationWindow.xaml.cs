@@ -4,7 +4,6 @@ using System.IO;
 using System.Windows.Media.Imaging;
 using Hurricane.Music.Track;
 using Hurricane.ViewModelBase;
-using MahApps.Metro.Controls;
 using Microsoft.Win32;
 // ReSharper disable CompareOfFloatsByEqualityOperator
 
@@ -13,7 +12,7 @@ namespace Hurricane.Views
     /// <summary>
     /// Interaction logic for TrackInformationWindow.xaml
     /// </summary>
-    public partial class TrackInformationWindow : MetroWindow
+    public partial class TrackInformationWindow
     {
         private BitmapImage _image;
         public TrackInformationWindow(PlayableBase track)

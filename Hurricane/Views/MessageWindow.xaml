@@ -2,13 +2,13 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
-        xmlns:ex="clr-namespace:Hurricane.Extensions"
+        xmlns:behaviors="clr-namespace:Hurricane.GUI.Behaviors"
         Title="Message" Width="300" SizeToContent="Height" GlowBrush="{DynamicResource AccentColorBrush}" WindowStartupLocation="CenterOwner" ResizeMode="NoResize">
     <StackPanel Orientation="Vertical" Margin="10">
         <TextBlock x:Name="MessageTextBlock" TextWrapping="Wrap"/>
         <StackPanel Orientation="Horizontal" Margin="0,10,0,0" HorizontalAlignment="Center">
-            <Button Content="{StaticResource OK}" Width="100" ex:ButtonHelper.DialogResult="true" IsDefault="True" x:Name="PositiveButton"/>
-            <Button Content="{StaticResource Cancel}" Margin="5,0,0,0" x:Name="NegativeButton" Width="100" ex:ButtonHelper.DialogResult="false" IsCancel="True"/>
+            <Button Content="{StaticResource OK}" Width="100" behaviors:ButtonBehavior.DialogResult="true" IsDefault="True" x:Name="PositiveButton"/>
+            <Button Content="{StaticResource Cancel}" Margin="5,0,0,0" x:Name="NegativeButton" Width="100" behaviors:ButtonBehavior.DialogResult="false" IsCancel="True"/>
         </StackPanel>
     </StackPanel>
 </controls:MetroWindow>

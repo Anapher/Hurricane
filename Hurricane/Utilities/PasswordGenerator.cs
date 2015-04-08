@@ -14,6 +14,7 @@ namespace Hurricane.Utilities
                 //16 chars are long enough
         }
 
+        // ReSharper disable once InconsistentNaming
         private static string GetMD5Hash(string textToHash)
         {
             using (var md5 = new MD5CryptoServiceProvider())

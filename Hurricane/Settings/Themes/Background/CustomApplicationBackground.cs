@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using Hurricane.Utilities;
 using Hurricane.ViewModelBase;
 
 namespace Hurricane.Settings.Themes.Background
@@ -41,7 +42,7 @@ namespace Hurricane.Settings.Themes.Background
 
         public bool IsAnimated
         {
-            get { return Utilities.GeneralHelper.IsVideo(BackgroundPath); }
+            get { return GeneralHelper.IsVideo(BackgroundPath); }
         }
 
         public bool IsAvailable

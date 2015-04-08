@@ -3,9 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:converter="clr-namespace:Hurricane.Extensions.Converter"
-             xmlns:ex="clr-namespace:Hurricane.Extensions"
              xmlns:system="clr-namespace:System;assembly=mscorlib"
+             xmlns:behaviors="clr-namespace:Hurricane.GUI.Behaviors"
              mc:Ignorable="d" 
              d:DesignHeight="600" d:DesignWidth="800" Background="Transparent" x:Name="AboutControl">
     <UserControl.Resources>
@@ -140,7 +139,7 @@
                     </Button>
                 </StackPanel>
             </StackPanel>
-            <TextBlock ex:TextBlockHelper.UpperText="{DynamicResource Libraries}" Style="{StaticResource TextBlockHeader}" Margin="0,40,0,0"/>
+            <TextBlock behaviors:TextBlockBehavior.UpperText="{DynamicResource Libraries}" Style="{StaticResource TextBlockHeader}" Margin="0,40,0,0"/>
             <ItemsControl ItemsSource="{Binding ElementName=AboutControl,Path=Components}" Margin="0,10,0,0">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
@@ -159,7 +158,7 @@
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
-            <TextBlock ex:TextBlockHelper.UpperText="{DynamicResource Images}" Style="{StaticResource TextBlockHeader}" Margin="0,30,0,0"/>
+            <TextBlock behaviors:TextBlockBehavior.UpperText="{DynamicResource Images}" Style="{StaticResource TextBlockHeader}" Margin="0,30,0,0"/>
             <ItemsControl ItemsSource="{Binding ElementName=AboutControl,Path=ImageCreators}" Margin="0,10,0,0">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
@@ -184,7 +183,7 @@
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
-            <TextBlock  ex:TextBlockHelper.UpperText="{DynamicResource Thanks}" Style="{StaticResource TextBlockHeader}" Margin="0,30,0,0"/>
+            <TextBlock  behaviors:TextBlockBehavior.UpperText="{DynamicResource Thanks}" Style="{StaticResource TextBlockHeader}" Margin="0,30,0,0"/>
             <StackPanel Orientation="Vertical">
                 <StackPanel.Resources>
                     <Style TargetType="Label">
@@ -196,26 +195,26 @@
                     <TextBlock TextWrapping="Wrap" Text="{DynamicResource AboutThanks2}"/>
                 </Label>
                 <Label>
-                    <ex:ContentControlExtensions.FormatValues>
+                    <behaviors:ContentControlBehavior.FormatValues>
                         <x:Array Type="system:String">
                             <system:String>ConnyKarras$https://www.vb-paradise.de/index.php/User/16654/</system:String>
                             <system:String>GimpTutWorks$https://www.vb-paradise.de/index.php/User/10535/</system:String>
                             <system:String>filoe$https://www.vb-paradise.de/index.php/User/8712/</system:String>
                         </x:Array>
-                    </ex:ContentControlExtensions.FormatValues>
-                    <ex:ContentControlExtensions.FormattedContent>
+                    </behaviors:ContentControlBehavior.FormatValues>
+                    <behaviors:ContentControlBehavior.FormattedContent>
                         <DynamicResource ResourceKey="AboutThanks3"/>
-                    </ex:ContentControlExtensions.FormattedContent>
+                    </behaviors:ContentControlBehavior.FormattedContent>
                 </Label>
                 <Label>
-                    <ex:ContentControlExtensions.FormatValues>
+                    <behaviors:ContentControlBehavior.FormatValues>
                         <x:Array Type="system:String">
                             <system:String>VB-Paradise$https://www.vb-paradise.de/</system:String>
                         </x:Array>
-                    </ex:ContentControlExtensions.FormatValues>
-                    <ex:ContentControlExtensions.FormattedContent>
+                    </behaviors:ContentControlBehavior.FormatValues>
+                    <behaviors:ContentControlBehavior.FormattedContent>
                         <DynamicResource ResourceKey="AboutThanks4"/>
-                    </ex:ContentControlExtensions.FormattedContent>
+                    </behaviors:ContentControlBehavior.FormattedContent>
                 </Label>
             </StackPanel>
         </StackPanel>

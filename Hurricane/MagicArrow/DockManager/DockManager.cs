@@ -3,7 +3,7 @@ using System.Windows;
 using System.Windows.Input;
 using Hurricane.Settings;
 using Hurricane.Utilities;
-using Hurricane.Utilities.HookManager.MouseHook;
+using Hurricane.Utilities.HookManager;
 using MouseEventArgs = System.Windows.Forms.MouseEventArgs;
 
 namespace Hurricane.MagicArrow.DockManager

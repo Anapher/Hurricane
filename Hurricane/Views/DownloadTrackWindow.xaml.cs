@@ -8,6 +8,7 @@ using Hurricane.Music.Download;
 using Hurricane.Settings;
 using Microsoft.Win32;
 using WPFFolderBrowser;
+// ReSharper disable ExplicitCallerInfoArgument
 
 namespace Hurricane.Views
 {

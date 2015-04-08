@@ -1,7 +1,6 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:extensions="clr-namespace:Hurricane.Extensions"
-                    xmlns:controls="clr-namespace:Hurricane.Extensions.Controls">
+                    xmlns:controls="clr-namespace:Hurricane.GUI.Controls">
     <Style TargetType="controls:VectorMenuItem" x:Key="VectorMenuItem">
         <Setter Property="Template">
             <Setter.Value>

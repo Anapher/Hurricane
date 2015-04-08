@@ -367,4 +367,5 @@
     
     <system:String x:Key="AddCustomStream">Eigenen Stream hinzufügen</system:String>
     <system:String x:Key="InvalidUrl">Ungültige Url</system:String>
+    <system:String x:Key="TrackListAnimation">Trackliste-Animation</system:String>
 </ResourceDictionary>

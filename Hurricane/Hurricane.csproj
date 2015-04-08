@@ -187,22 +187,21 @@
     <Compile Include="DragDrop\DropTargetAdorners\DropTargetInsertionAdorner.cs" />
     <Compile Include="DragDrop\PlaylistListDropHandler.cs" />
     <Compile Include="DragDrop\TrackListDropHandler.cs" />
-    <Compile Include="Extensions\AnimatedFrameworkElement.cs" />
-    <Compile Include="Extensions\Controls\AnimatedListView.cs" />
-    <Compile Include="Extensions\Controls\AnimatedStackPanel.cs" />
-    <Compile Include="Extensions\AudioVisualisationExtensions.cs" />
-    <Compile Include="Extensions\ComboBoxItemTemplateChooser.cs" />
-    <Compile Include="Extensions\ControlDoubleClick.cs" />
-    <Compile Include="Extensions\Converter\CollapsedOnNullValue.cs" />
-    <Compile Include="Extensions\Converter\InvertBooleanConverter.cs" />
-    <Compile Include="Extensions\Converter\MillisecondsToStringConverter.cs" />
-    <Compile Include="Extensions\Converter\PlaylistInfoConverter.cs" />
-    <Compile Include="Extensions\ContentControlExtensions.cs" />
-    <Compile Include="Extensions\EnumerationExtension.cs" />
-    <Compile Include="Extensions\MahApps\TransitioningExtensions.cs" />
-    <Compile Include="Extensions\Controls\SliderWhichMakesMoves.cs" />
-    <Compile Include="Extensions\TextBlockTextFormat.cs" />
-    <Compile Include="Extensions\Controls\VolumeIcon.xaml.cs">
+    <Compile Include="GUI\Behaviors\FrameworkElementBehavior.cs" />
+    <Compile Include="GUI\Controls\AnimatedListView.cs" />
+    <Compile Include="GUI\Controls\AnimatedStackPanel.cs" />
+    <Compile Include="GUI\Behaviors\AudioVisualisationBehavior.cs" />
+    <Compile Include="GUI\Behaviors\TransitioningContentControlBehavior.cs" />
+    <Compile Include="GUI\Extensions\ComboBoxItemTemplateChooser.cs" />
+    <Compile Include="GUI\Behaviors\ControlBehavior.cs" />
+    <Compile Include="GUI\Converter\CollapsedOnNullValue.cs" />
+    <Compile Include="GUI\Converter\InvertBooleanConverter.cs" />
+    <Compile Include="GUI\Converter\MillisecondsToStringConverter.cs" />
+    <Compile Include="GUI\Converter\PlaylistInfoConverter.cs" />
+    <Compile Include="GUI\Behaviors\ContentControlBehavior.cs" />
+    <Compile Include="GUI\Extensions\EnumerationExtension.cs" />
+    <Compile Include="GUI\Controls\SliderWhichMakesMoves.cs" />
+    <Compile Include="GUI\Controls\VolumeIcon.xaml.cs">
       <DependentUpon>VolumeIcon.xaml</DependentUpon>
     </Compile>
     <Compile Include="Music\Download\DownloadSettings.cs" />
@@ -234,37 +233,35 @@
     <Compile Include="Settings\Themes\AudioVisualisation\DefaultAudioVisualisation\SpectrumPlayerWrapper.cs" />
     <Compile Include="Settings\Themes\AudioVisualisation\IAudioVisualisationContainer.cs" />
     <Compile Include="Settings\Themes\Background\CustomApplicationBackground.cs" />
-    <Compile Include="Extensions\Converter\FalseOnNullValue.cs" />
-    <Compile Include="Extensions\Converter\FormatLargeNumber.cs" />
-    <Compile Include="Extensions\Converter\FormatTimespan.cs" />
-    <Compile Include="Extensions\Converter\PlaceholderConverter.cs" />
-    <Compile Include="Extensions\Converter\TimeSpanProgressConverter.cs" />
-    <Compile Include="Extensions\Converter\StringArrayToStringConverter.cs" />
-    <Compile Include="Extensions\Converter\TimespanToMinutesSeconds.cs" />
-    <Compile Include="Extensions\GridViewSort.cs" />
-    <Compile Include="Extensions\Controls\VectorMenuItem.cs" />
-    <Compile Include="Extensions\ListViewLayoutManager\ConverterGridViewColumn.cs" />
-    <Compile Include="Extensions\ListViewLayoutManager\FixedColumn.cs" />
-    <Compile Include="Extensions\ListViewLayoutManager\ImageGridViewColumn.cs" />
-    <Compile Include="Extensions\ListViewLayoutManager\LayoutColumn.cs" />
-    <Compile Include="Extensions\ListViewLayoutManager\ListViewLayoutManager.cs" />
-    <Compile Include="Extensions\ListViewLayoutManager\ProportionalColumn.cs" />
-    <Compile Include="Extensions\ListViewLayoutManager\RangeColumn.cs" />
-    <Compile Include="Extensions\TaskbarItemInfoEx.cs" />
-    <Compile Include="Extensions\Controls\TrackImagePreseter.xaml.cs">
+    <Compile Include="GUI\Converter\FalseOnNullValue.cs" />
+    <Compile Include="GUI\Converter\FormatLargeNumber.cs" />
+    <Compile Include="GUI\Converter\FormatTimespan.cs" />
+    <Compile Include="GUI\Converter\PlaceholderConverter.cs" />
+    <Compile Include="GUI\Converter\TimeSpanProgressConverter.cs" />
+    <Compile Include="GUI\Converter\StringArrayToStringConverter.cs" />
+    <Compile Include="GUI\Converter\TimespanToMinutesSeconds.cs" />
+    <Compile Include="GUI\Behaviors\GridViewSort.cs" />
+    <Compile Include="GUI\Controls\VectorMenuItem.cs" />
+    <Compile Include="GUI\Extensions\ListViewLayoutManager\ConverterGridViewColumn.cs" />
+    <Compile Include="GUI\Extensions\ListViewLayoutManager\FixedColumn.cs" />
+    <Compile Include="GUI\Extensions\ListViewLayoutManager\ImageGridViewColumn.cs" />
+    <Compile Include="GUI\Extensions\ListViewLayoutManager\LayoutColumn.cs" />
+    <Compile Include="GUI\Extensions\ListViewLayoutManager\ListViewLayoutManager.cs" />
+    <Compile Include="GUI\Extensions\ListViewLayoutManager\ProportionalColumn.cs" />
+    <Compile Include="GUI\Extensions\ListViewLayoutManager\RangeColumn.cs" />
+    <Compile Include="GUI\Behaviors\TaskbarItemInfoBehavior.cs" />
+    <Compile Include="GUI\Controls\TrackImagePreseter.xaml.cs">
       <DependentUpon>TrackImagePreseter.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Extensions\ItemsControlExtensions.cs" />
-    <Compile Include="Extensions\TextBlockHelper.cs" />
-    <Compile Include="Extensions\VisibilityAnimation.cs" />
+    <Compile Include="GUI\Behaviors\TextBlockBehavior.cs" />
+    <Compile Include="GUI\Behaviors\VisibilityAnimation.cs" />
     <Compile Include="MagicArrow\DockManager\DockingApplicationState.cs" />
     <Compile Include="MagicArrow\DockManager\DockManager.cs" />
     <Compile Include="MagicArrow\DockManager\DockRangeWindow.xaml.cs">
       <DependentUpon>DockRangeWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Extensions\Converter\RoundSizeConverter.cs" />
-    <Compile Include="Extensions\Converter\NeverIfDateIsNull.cs" />
-    <Compile Include="Extensions\WindowBehaviours.cs" />
+    <Compile Include="GUI\Converter\RoundSizeConverter.cs" />
+    <Compile Include="GUI\Converter\NeverIfDateIsNull.cs" />
     <Compile Include="MagicArrow\StrokeWindow.xaml.cs">
       <DependentUpon>StrokeWindow.xaml</DependentUpon>
     </Compile>
@@ -444,7 +441,7 @@
     <Compile Include="Views\ReportExceptionWindow.xaml.cs">
       <DependentUpon>ReportExceptionWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\UserControls\AddCustomStreamView.xaml.cs">
+    <Compile Include="Views\MetroDialogs\AddCustomStreamView.xaml.cs">
       <DependentUpon>AddCustomStreamView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\UserControls\EqualizerView.xaml.cs">
@@ -497,11 +494,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Extensions\Controls\TrackImagePreseter.xaml">
+    <Page Include="GUI\Controls\TrackImagePreseter.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Extensions\Controls\VolumeIcon.xaml">
+    <Page Include="GUI\Controls\VolumeIcon.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -713,11 +710,10 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Extensions\ButtonHelper.cs" />
-    <Compile Include="Extensions\Converter\CurrentStateDisplayConverter.cs" />
-    <Compile Include="Extensions\Converter\FalseOnEmptyString.cs" />
-    <Compile Include="Extensions\Converter\ToggleImageConverter.cs" />
-    <Compile Include="Extensions\Converter\TrueFalseValueConverter.cs" />
+    <Compile Include="GUI\Behaviors\ButtonBehavior.cs" />
+    <Compile Include="GUI\Converter\CurrentStateDisplayConverter.cs" />
+    <Compile Include="GUI\Converter\FalseOnEmptyString.cs" />
+    <Compile Include="GUI\Converter\TrueFalseValueConverter.cs" />
     <Compile Include="Utilities\ImageHelper.cs" />
     <Compile Include="MagicArrow\MagicArrow.cs" />
     <Compile Include="MagicArrow\MagicArrowWindow.xaml.cs">
@@ -768,7 +764,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\UserControls\AddCustomStreamView.xaml">
+    <Page Include="Views\MetroDialogs\AddCustomStreamView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -885,6 +881,7 @@
       <Name>Hurricane.PluginAPI</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

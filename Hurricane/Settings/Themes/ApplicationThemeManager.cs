@@ -10,7 +10,6 @@ using Hurricane.Settings.Themes.AudioVisualisation.DefaultAudioVisualisation;
 using Hurricane.Settings.Themes.Visual.AccentColors;
 using Hurricane.Settings.Themes.Visual.AppThemes;
 using MahApps.Metro;
-using Application = System.Windows.Application;
 using AppTheme = Hurricane.Settings.Themes.Visual.AppThemes.AppTheme;
 
 namespace Hurricane.Settings.Themes

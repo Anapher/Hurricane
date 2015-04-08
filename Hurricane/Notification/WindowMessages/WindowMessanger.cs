@@ -8,7 +8,9 @@ namespace Hurricane.Notification.WindowMessages
 {
     class WindowMessanger
     {
+        // ReSharper disable once InconsistentNaming
         public const int WM_OPENMUSICFILE = 0x4A;
+        // ReSharper disable once InconsistentNaming
         public const int WM_BRINGTOFRONT = 3532;
 
         public event EventHandler BringWindowToFront;
@@ -18,7 +20,8 @@ namespace Hurricane.Notification.WindowMessages
         {
             baseWindow.SourceInitialized += (s,e) =>
             {
-                HwndSource source = PresentationSource.FromVisual(baseWindow) as HwndSource;
+                var source = PresentationSource.FromVisual(baseWindow) as HwndSource;
+                if (source == null) return;
                 source.AddHook(WndProc);
             };
         }
@@ -66,7 +69,7 @@ namespace Hurricane.Notification.WindowMessages
 
         public PlayTrackEventArgs(string filename)
         {
-            this.Filename = filename;
+            Filename = filename;
         }
     }
 }

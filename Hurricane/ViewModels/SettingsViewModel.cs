@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
@@ -17,7 +16,7 @@ using Hurricane.Settings.Themes.Background;
 using Hurricane.Settings.Themes.Visual;
 using Hurricane.ViewModelBase;
 using Microsoft.Win32;
-using WPFFolderBrowser;
+// ReSharper disable ExplicitCallerInfoArgument
 
 namespace Hurricane.ViewModels
 {
@@ -249,7 +248,7 @@ namespace Hurricane.ViewModels
 
         #region App
 
-        public string LocalIPAddress
+        public string LocalIpAddress
         {
             get
             {
@@ -262,7 +261,7 @@ namespace Hurricane.ViewModels
         {
             get
             {
-                return string.Format("{0};{1};{2}", LocalIPAddress, Config.AppCommunicationSettings.Port,
+                return string.Format("{0};{1};{2}", LocalIpAddress, Config.AppCommunicationSettings.Port,
                     Config.AppCommunicationSettings.Password);
             }
         }

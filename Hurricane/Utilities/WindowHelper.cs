@@ -28,6 +28,7 @@ namespace Hurricane.Utilities
             UnsafeNativeMethods.GetWindowPlacement(window, ref placement);
             var workarea = SystemParameters.WorkArea;
             string cname = GetClassName(window);
+            // ReSharper disable once CompareOfFloatsByEqualityOperator
             return ((placement.showCmd == 1 && placement.minPosition.X == -1 && placement.minPosition.Y == -1 && placement.normalPosition.left == 0 && placement.normalPosition.top == 0 && placement.normalPosition.Width == workarea.Width && !(cname == "Progman" || cname == "WorkerW")));
         }
 

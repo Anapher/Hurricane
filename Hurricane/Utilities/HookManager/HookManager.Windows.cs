@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Runtime.InteropServices;
+// ReSharper disable InconsistentNaming
+// ReSharper disable UnusedMember.Local
 
-namespace Hurricane.Utilities.HookManager.MouseHook
+namespace Hurricane.Utilities.HookManager
 {
     public static partial class HookManager
     {

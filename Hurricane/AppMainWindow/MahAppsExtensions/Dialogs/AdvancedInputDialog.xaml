@@ -3,7 +3,6 @@
                          xmlns:dialogs="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
                          xmlns:hurricaneDialogs="clr-namespace:Hurricane.AppMainWindow.MahAppsExtensions.Dialogs"
                          xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
-                         xmlns:converter="clr-namespace:Hurricane.Extensions.Converter"
                          x:Class=" Hurricane.AppMainWindow.MahAppsExtensions.Dialogs.AdvancedInputDialog"
                          Loaded="Dialog_Loaded">
     <Grid Margin="0 10 0 0">

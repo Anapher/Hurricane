@@ -4,14 +4,15 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:viewmodels="clr-namespace:Hurricane.ViewModels"
-             xmlns:converter="clr-namespace:Hurricane.Extensions.Converter"
              xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
-             xmlns:extensions="clr-namespace:Hurricane.Extensions"
-             xmlns:ctrl="clr-namespace:Hurricane.Extensions.ListViewLayoutManager"
              xmlns:userControls="clr-namespace:Hurricane.Views.UserControls"
              xmlns:track="clr-namespace:Hurricane.Music.Track"
+             xmlns:web="clr-namespace:Hurricane.Music.Track.WebApi"
              xmlns:dd="clr-namespace:GongSolutions.Wpf.DragDrop;assembly=GongSolutions.Wpf.DragDrop"
-             xmlns:hurricaneControls="clr-namespace:Hurricane.Extensions.Controls"
+             xmlns:behaviors="clr-namespace:Hurricane.GUI.Behaviors"
+             xmlns:hurricaneControls="clr-namespace:Hurricane.GUI.Controls"
+             xmlns:converter="clr-namespace:Hurricane.GUI.Converter"
+             xmlns:listViewLayoutManager="clr-namespace:Hurricane.GUI.Extensions.ListViewLayoutManager"
              mc:Ignorable="d"
              d:DesignHeight="500" d:DesignWidth="1000" DataContext="{x:Static viewmodels:MainViewModel.Instance}">
     <UserControl.Resources>
@@ -57,7 +58,7 @@
                             <TextBlock Text="{Binding}" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0"/>
                         </Grid>
                     </DataTemplate>
-                    <DataTemplate x:Key="DragAdornerTrack">
+                    <DataTemplate x:Key="DragAdornerTrack" DataType="{x:Type track:PlayableBase}">
                         <Grid Background="{StaticResource AccentColorBrush3}" Width="400" Height="40" Margin="1">
                             <StackPanel Orientation="Vertical" Margin="10,0,0,0" VerticalAlignment="Center">
                                 <TextBlock Text="{Binding Title}" Foreground="White"/>
@@ -93,7 +94,7 @@
                             <Separator />
                             <MenuItem Header="{DynamicResource ReloadTrackInfo}" Command="{Binding ReloadTrackInformation}" IsEnabled="{Binding MusicManager.SelectedPlaylist.CanEdit}"/>
                             <MenuItem Header="{DynamicResource RemoveTracks}" IsEnabled="{Binding MusicManager.SelectedPlaylist.CanEdit}">
-                                <MenuItem Header="{DynamicResource RemoveMissingTracks}" Command="{Binding RemoveMissingTracks}" IsEnabled="{Binding MusicManager.SelectedPlaylist.ContainsMissingTracks}"/>
+                                <MenuItem Header="{DynamicResource RemoveMissingTracks}" Command="{Binding RemoveMissingTracks}"/>
                                 <MenuItem Header="{DynamicResource RemoveDuplicates}" Command="{Binding RemoveDuplicateTracks}"/>
                                 <Separator />
                                 <MenuItem Header="{DynamicResource RemoveAllTracks}" Command="{Binding ClearSelectedPlaylist}"/>
@@ -114,8 +115,8 @@
                             </MenuItem.Style>
                         </MenuItem>
                     </Menu>
-                    <TextBox Grid.ColumnSpan="4" Margin="0,0,10,0" VerticalAlignment="Center" controls:TextBoxHelper.ClearTextButton="True" HorizontalAlignment="Right" Width="200" controls:TextBoxHelper.Watermark="{StaticResource Search}" Text="{Binding MusicManager.SelectedPlaylist.SearchText,UpdateSourceTrigger=PropertyChanged}"/>
-                    <ListBox Grid.Row="1" DisplayMemberPath="Name" SelectedItem="{Binding MusicManager.SelectedPlaylist}" Margin="5" ItemsSource="{Binding MusicManager.Playlists}" Background="Transparent"
+                    <TextBox Grid.ColumnSpan="4" Grid.Column="0" Grid.Row="0" Margin="0,0,10,0" VerticalAlignment="Center" controls:TextBoxHelper.ClearTextButton="True" HorizontalAlignment="Right" Width="200" controls:TextBoxHelper.Watermark="{StaticResource Search}" Text="{Binding MusicManager.SelectedPlaylist.SearchText,UpdateSourceTrigger=PropertyChanged}"/>
+                    <ListBox Grid.Row="1" Grid.Column="0" DisplayMemberPath="Name" SelectedItem="{Binding MusicManager.SelectedPlaylist}" Margin="5" ItemsSource="{Binding MusicManager.Playlists}" Background="Transparent"
                              dd:DragDrop.IsDragSource="True" dd:DragDrop.IsDropTarget="True" dd:DragDrop.DropHandler="{Binding PlaylistListDropHandler}" dd:DragDrop.DragAdornerTemplate="{StaticResource DragAdornerPlaylist}" dd:DragDrop.DefaultDragAdornerOpacity=".8" ScrollViewer.HorizontalScrollBarVisibility="Hidden">
                         <ListBox.InputBindings>
                             <KeyBinding Key="Delete" Command="{Binding RemovePlaylist}"/>
@@ -168,7 +169,8 @@
                         </Grid.RowDefinitions>
                         <Grid>
                             <hurricaneControls:AnimatedListView SelectionMode="Extended" ItemsSource="{Binding MusicManager.SelectedPlaylist.ViewSource}" SelectedItem="{Binding MusicManager.SelectedTrack}" BorderThickness="0" SelectionChanged="ListView_SelectionChanged" Background="Transparent"
-                                  DragEnter="ListView_DragEnter" Drop="ListView_Drop" x:Name="TracksListView" ctrl:ListViewLayoutManager.Enabled="True" Style="{StaticResource VisualizingListView}" dd:DragDrop.IsDragSource="True" dd:DragDrop.IsDropTarget="True" dd:DragDrop.DragAdornerTemplate="{StaticResource DragAdornerTrack}" dd:DragDrop.DropHandler="{Binding TrackListDropHandler}">
+                                  DragEnter="ListView_DragEnter" Drop="ListView_Drop" x:Name="TracksListView" listViewLayoutManager:ListViewLayoutManager.Enabled="True" Style="{StaticResource VisualizingListView}" dd:DragDrop.IsDragSource="True" dd:DragDrop.IsDropTarget="True"
+                                  dd:DragDrop.DragAdornerTemplate="{StaticResource DragAdornerTrack}" dd:DragDrop.DropHandler="{Binding TrackListDropHandler}" Transition="{Binding MySettings.Config.TrackListAnimation}">
                                 <ListView.Resources>
                                     <ResourceDictionary>
                                         <ResourceDictionary.MergedDictionaries>
@@ -197,7 +199,7 @@
                                             <MenuItem Header="{DynamicResource Remove}" Command="{Binding RemoveSelectedTracks}" CommandParameter="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type hurricaneControls:AnimatedListView}}, Path=SelectedItems}" InputGestureText="{DynamicResource Del}"/>
                                         </ContextMenu>
                                         
-                                        <ContextMenu x:Key="StreamContextMenu">
+                                        <ContextMenu x:Key="StreamContextMenu" d:DataContext="{d:DesignInstance track:StreamableBase}">
                                             <MenuItem Header="{DynamicResource Play}" Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}, Path=DataContext.MusicManager.Commands.PlaySelectedTrack}" InputGestureText="Enter"/>
                                             <Separator />
                                             <MenuItem Header="{DynamicResource AddTracks}" IsEnabled="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}, Path=DataContext.MusicManager.SelectedPlaylist.CanEdit}">
@@ -230,7 +232,7 @@
                                             <Separator />
                                             <MenuItem Header="{DynamicResource Remove}" Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}, Path=DataContext.RemoveSelectedTracks}" CommandParameter="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}, Path=SelectedItems}" InputGestureText="{DynamicResource Del}"/>
                                         </ContextMenu>
-                                        <Style TargetType="TextBlock" x:Key="ListTextBlockStyle">
+                                        <Style TargetType="TextBlock" x:Key="ListTextBlockStyle" d:DataContext="{d:DesignInstance track:PlayableBase}">
                                             <Setter Property="Foreground" Value="{StaticResource BlackBrush}"/>
                                             <Style.Triggers>
                                                 <MultiDataTrigger>
@@ -264,7 +266,7 @@
                                     <KeyBinding Key="F3" Command="{Binding OpenTagEditor}"/>
                                 </ListView.InputBindings>
                                 <ListView.ItemContainerStyle>
-                                    <Style TargetType="ListViewItem" BasedOn="{StaticResource ItemContainerStyle}">
+                                    <Style TargetType="ListViewItem" BasedOn="{StaticResource ItemContainerStyle}" d:DataContext="{d:DesignInstance track:PlayableBase}">
                                         <EventSetter Event="MouseDoubleClick" Handler="ListViewItem_MouseDoubleClick"/>
                                         <Style.Triggers>
                                             <DataTrigger Binding="{Binding TrackType}" Value="File">
@@ -299,7 +301,7 @@
                                     <GridView>
                                         <GridViewColumn Width="27">
                                             <GridViewColumn.CellTemplate>
-                                                <DataTemplate>
+                                                <DataTemplate DataType="{x:Type track:PlayableBase}">
                                                     <Grid Margin="5,0,0,0" Width="10">
                                                         <TextBlock Text="{Binding QueueId}" HorizontalAlignment="Center"/>
                                                         <!--We dont have to hide it because it gets automatically null-->
@@ -378,9 +380,9 @@
                                                 </DataTemplate>
                                             </GridViewColumn.CellTemplate>
                                         </GridViewColumn>
-                                        <GridViewColumn ctrl:ProportionalColumn.Width="1">
+                                        <GridViewColumn listViewLayoutManager:ProportionalColumn.Width="1">
                                             <GridViewColumn.CellTemplate>
-                                                <DataTemplate>
+                                                <DataTemplate DataType="{x:Type track:PlayableBase}">
                                                     <Grid Margin="10,0,0,0">
                                                         <TextBlock Text="{Binding DisplayText}" Style="{StaticResource ListTextBlockStyle}" VerticalAlignment="Center" TextTrimming="CharacterEllipsis"/>
                                                     </Grid>
@@ -389,14 +391,14 @@
                                         </GridViewColumn>
                                         <GridViewColumn Width="80">
                                             <GridViewColumn.CellTemplate>
-                                                <DataTemplate>
+                                                <DataTemplate DataType="{x:Type track:PlayableBase}">
                                                     <ToggleButton Background="{StaticResource BlackBrush}" Foreground="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem},Path=IsSelected,Converter={StaticResource TrueFalseValueConverter}}" Style="{StaticResource FavoriteToggleButton}" Height="16" Width="16" HorizontalAlignment="Left" Margin="10,0,0,0" IsChecked="{Binding IsFavorite}"/>
                                                 </DataTemplate>
                                             </GridViewColumn.CellTemplate>
                                         </GridViewColumn>
                                         <GridViewColumn Width="80">
                                             <GridViewColumn.CellTemplate>
-                                                <DataTemplate>
+                                                <DataTemplate DataType="{x:Type track:PlayableBase}">
                                                     <TextBlock VerticalAlignment="Center" Margin="0,0,10,0">
                                                         <TextBlock.Style>
                                                             <Style TargetType="TextBlock" BasedOn="{StaticResource ListTextBlockStyle}">
@@ -414,17 +416,8 @@
                                         </GridViewColumn>
                                     </GridView>
                                 </ListView.View>
-                                <ListView.GroupStyle>
-                                    <GroupStyle>
-                                        <GroupStyle.HeaderTemplate>
-                                            <DataTemplate>
-                                                <TextBlock Foreground="{StaticResource BlackBrush}" FontWeight="Bold" FontSize="14" Text="{Binding Name}"/>
-                                            </DataTemplate>
-                                        </GroupStyle.HeaderTemplate>
-                                    </GroupStyle>
-                                </ListView.GroupStyle>
                             </hurricaneControls:AnimatedListView>
-                            <TextBlock extensions:AnimatedFrameworkElement.AnimationTrigger="{Binding MusicManager.SelectedPlaylist}" Visibility="{Binding MusicManager.SelectedPlaylist.ViewSource.IsEmpty,Converter={StaticResource BooleanToVisibilityConverter}}" Text="{DynamicResource NoTracksFound}" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="16" FontWeight="Light"/>
+                            <TextBlock behaviors:FrameworkElementBehavior.AnimationTrigger="{Binding MusicManager.SelectedPlaylist}" Visibility="{Binding MusicManager.SelectedPlaylist.ViewSource.IsEmpty,Converter={StaticResource BooleanToVisibilityConverter}}" Text="{DynamicResource NoTracksFound}" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="16" FontWeight="Light"/>
                         </Grid>
                         <userControls:EqualizerView Grid.Row="1" SliderThickness="10" ShowLabelBelowSlider="True" WantCloseCommand="{Binding CloseEqualizer}" ShowSeparator="True">
                             <userControls:EqualizerView.Style>
@@ -472,7 +465,7 @@
                                 <ContentControl.Resources>
                                     <DataTemplate DataType="{x:Type track:LocalTrack}" x:Key="LocalTrackTemplate">
                                         <hurricaneControls:AnimatedStackPanel AnimationInterval="300" UpdateObject="{Binding RelativeSource={RelativeSource AncestorType=ContentControl},Path=DataContext.MusicManager.CSCoreEngine.CurrentTrack}" Orientation="Vertical">
-                                            <TextBlock Text="{Binding Artist}" Foreground="{StaticResource NormalColorBrush}" TextWrapping="Wrap" extensions:TextBlockHelper.PlaceHolderText="{DynamicResource NoArtist}"/>
+                                            <TextBlock Text="{Binding Artist}" Foreground="{StaticResource NormalColorBrush}" TextWrapping="Wrap" behaviors:TextBlockBehavior.PlaceHolderText="{DynamicResource NoArtist}"/>
                                             <TextBlock FontSize="22" FontFamily="Segoe UI Light" Text="{Binding Title}" TextWrapping="Wrap"/>
                                             <ToggleButton Foreground="#FFB4B4B4" Background="{StaticResource NormalColorBrush}" Style="{StaticResource FavoriteToggleButton}" Height="16" Width="16" HorizontalAlignment="Left" Margin="0,10,0,10" IsChecked="{Binding IsFavorite}"/>
                                             <StackPanel Orientation="Horizontal" Margin="0,30,0,0">
@@ -493,7 +486,7 @@
                                     </DataTemplate>
                                     <DataTemplate DataType="{x:Type track:StreamableBase}" x:Key="StreamTemplate">
                                         <hurricaneControls:AnimatedStackPanel AnimationInterval="300" UpdateObject="{Binding RelativeSource={RelativeSource AncestorType=ContentControl},Path=DataContext.MusicManager.CSCoreEngine.CurrentTrack}" Orientation="Vertical">
-                                            <TextBlock Text="{Binding Artist}" Foreground="{StaticResource NormalColorBrush}" TextWrapping="Wrap" extensions:TextBlockHelper.PlaceHolderText="{DynamicResource NoArtist}"/>
+                                            <TextBlock Text="{Binding Artist}" Foreground="{StaticResource NormalColorBrush}" TextWrapping="Wrap" behaviors:TextBlockBehavior.PlaceHolderText="{DynamicResource NoArtist}"/>
                                             <TextBlock FontSize="22" FontFamily="Segoe UI Light" Text="{Binding Title}" TextWrapping="Wrap"/>
                                             <ToggleButton Foreground="#FFB4B4B4" Background="{StaticResource NormalColorBrush}" Style="{StaticResource FavoriteToggleButton}" Height="16" Width="16" HorizontalAlignment="Left" Margin="0,10,0,0" IsChecked="{Binding IsFavorite}"/>
                                             <Separator Background="Transparent" Margin="0,25,0,0"/>
@@ -572,7 +565,7 @@
                             </Grid.RowDefinitions>
                             <hurricaneControls:AnimatedStackPanel AnimationInterval="300" UpdateObject="{Binding MusicManager.CSCoreEngine.CurrentTrack}" Orientation="Vertical">
                                 <TextBlock Text="{Binding MusicManager.CSCoreEngine.CurrentTrack.Artist}" Foreground="{StaticResource NormalColorBrush}" FontSize="14"/>
-                                <TextBlock FontSize="32" Margin="0,5,0,0" FontFamily="Segoe UI Light" Text="{Binding MusicManager.CSCoreEngine.CurrentTrack.Title}" extensions:TextBlockHelper.PlaceHolderText="{DynamicResource NoArtist}" TextWrapping="Wrap"/>
+                                <TextBlock FontSize="32" Margin="0,5,0,0" FontFamily="Segoe UI Light" Text="{Binding MusicManager.CSCoreEngine.CurrentTrack.Title}" behaviors:TextBlockBehavior.PlaceHolderText="{DynamicResource NoArtist}" TextWrapping="Wrap"/>
                                 <TextBlock Text="{Binding MusicManager.CSCoreEngine.CurrentTrack.Album}" Margin="0,5,0,0" FontSize="18" FontFamily="Segoe UI Light" Foreground="DarkGray">
                                     <TextBlock.Style>
                                         <Style TargetType="TextBlock">
@@ -586,7 +579,7 @@
                                 </TextBlock>
                                 <ToggleButton Foreground="#FFB4B4B4" Background="{StaticResource NormalColorBrush}" Style="{StaticResource FavoriteToggleButton}" Height="18" Width="18" HorizontalAlignment="Left" Margin="0,10,0,10" IsChecked="{Binding MusicManager.CSCoreEngine.CurrentTrack.IsFavorite}"/>
                             </hurricaneControls:AnimatedStackPanel>
-                            <ContentControl Grid.Row="1" Height="100" VerticalAlignment="Bottom" Focusable="False" Margin="0,0,0,10" x:Name="AudioVisualisationContentControl" extensions:AudioVisualisationExtensions.AudioVisualisationForAdvancedWindow="{Binding MySettings.Config.ApplicationDesign.AudioVisualisation.AudioVisualisationPlugin}">
+                            <ContentControl Grid.Row="1" Height="100" VerticalAlignment="Bottom" Focusable="False" Margin="0,0,0,10" x:Name="AudioVisualisationContentControl" behaviors:AudioVisualisationBehavior.AudioVisualisationForAdvancedWindow="{Binding MySettings.Config.ApplicationDesign.AudioVisualisation.AudioVisualisationPlugin}">
                                 <ContentControl.Style>
                                     <Style TargetType="ContentControl">
                                         <Setter Property="Opacity" Value="0"/>
@@ -767,8 +760,8 @@
                                 </StackPanel>
                             </StackPanel>
                         </Grid>
-                        <ListView ItemsSource="{Binding TrackSearcher.Results}" ctrl:ListViewLayoutManager.Enabled="True" Style="{StaticResource VisualizingListView}" SelectedItem="{Binding TrackSearcher.SelectedTrack}"
-                                  extensions:GridViewSort.AutoSort="True" Grid.Row="1" Background="Transparent" BorderThickness="0">
+                        <ListView ItemsSource="{Binding TrackSearcher.Results}" listViewLayoutManager:ListViewLayoutManager.Enabled="True" Style="{StaticResource VisualizingListView}" SelectedItem="{Binding TrackSearcher.SelectedTrack}"
+                                  behaviors:GridViewSort.AutoSort="True" Grid.Row="1" Background="Transparent" BorderThickness="0">
                             <ListView.Resources>
                                 <converter:FormatLargeNumber x:Key="FormatLargeNumber"/>
                                 <ContextMenu x:Key="ContextMenu" DataContext="{Binding RelativeSource={RelativeSource AncestorType=ListView},Path=DataContext}">
@@ -816,15 +809,15 @@
                             </ListView.Resources>
                             <ListView.ItemContainerStyle>
                                 <Style TargetType="ListViewItem" BasedOn="{StaticResource MetroListViewItem}">
-                                    <Setter Property="extensions:ControlDoubleClick.Command" Value="{Binding RelativeSource={RelativeSource AncestorType=ListView},Path=DataContext.TrackSearcher.PlaySelectedTrack}"/>
+                                    <Setter Property="behaviors:ControlBehavior.Command" Value="{Binding RelativeSource={RelativeSource AncestorType=ListView},Path=DataContext.TrackSearcher.PlaySelectedTrack}"/>
                                     <Setter Property="ContextMenu" Value="{StaticResource ContextMenu}"/>
                                 </Style>
                             </ListView.ItemContainerStyle>
                             <ListView.View>
                                 <GridView>
-                                    <GridViewColumn Header="{DynamicResource Track}" ctrl:ProportionalColumn.Width="1" extensions:GridViewSort.PropertyName="Title">
+                                    <GridViewColumn Header="{DynamicResource Track}" listViewLayoutManager:ProportionalColumn.Width="1" behaviors:GridViewSort.PropertyName="Title">
                                         <GridViewColumn.CellTemplate>
-                                            <DataTemplate>
+                                            <DataTemplate DataType="{x:Type web:WebTrackResultBase}">
                                                 <Grid>
                                                     <Grid.ColumnDefinitions>
                                                         <ColumnDefinition Width="Auto"/>
@@ -839,9 +832,9 @@
                                             </DataTemplate>
                                         </GridViewColumn.CellTemplate>
                                     </GridViewColumn>
-                                    <GridViewColumn Header="{DynamicResource Duration}" ctrl:FixedColumn.Width="100" Width="100" extensions:GridViewSort.PropertyName="Duration">
+                                    <GridViewColumn Header="{DynamicResource Duration}" listViewLayoutManager:FixedColumn.Width="100" Width="100" behaviors:GridViewSort.PropertyName="Duration">
                                         <GridViewColumn.CellTemplate>
-                                            <DataTemplate>
+                                            <DataTemplate DataType="{x:Type web:WebTrackResultBase}">
                                                 <TextBlock>
                                                     <TextBlock.Style>
                                                         <Style TargetType="TextBlock">
@@ -857,9 +850,9 @@
                                             </DataTemplate>
                                         </GridViewColumn.CellTemplate>
                                     </GridViewColumn>
-                                    <GridViewColumn Header="{DynamicResource Views}" ctrl:FixedColumn.Width="200" Width="200" extensions:GridViewSort.PropertyName="Views">
+                                    <GridViewColumn Header="{DynamicResource Views}" listViewLayoutManager:FixedColumn.Width="200" Width="200" behaviors:GridViewSort.PropertyName="Views">
                                         <GridViewColumn.CellTemplate>
-                                            <DataTemplate>
+                                            <DataTemplate DataType="{x:Type web:WebTrackResultBase}">
                                                 <StackPanel Orientation="Horizontal">
                                                     <TextBlock Margin="0,0,5,0">
                                                         <TextBlock.Style>
@@ -888,9 +881,9 @@
                                             </DataTemplate>
                                         </GridViewColumn.CellTemplate>
                                     </GridViewColumn>
-                                    <GridViewColumn Header="{DynamicResource Year}" ctrl:FixedColumn.Width="60" Width="60" extensions:GridViewSort.PropertyName="ReleaseYear">
+                                    <GridViewColumn Header="{DynamicResource Year}" listViewLayoutManager:FixedColumn.Width="60" Width="60" behaviors:GridViewSort.PropertyName="ReleaseYear">
                                         <GridViewColumn.CellTemplate>
-                                            <DataTemplate>
+                                            <DataTemplate DataType="{x:Type web:WebTrackResultBase}">
                                                 <TextBlock>
                                                     <TextBlock.Style>
                                                         <Style TargetType="TextBlock">
@@ -906,9 +899,9 @@
                                             </DataTemplate>
                                         </GridViewColumn.CellTemplate>
                                     </GridViewColumn>
-                                    <GridViewColumn Header="Website" ctrl:FixedColumn.Width="80" Width="80" extensions:GridViewSort.PropertyName="ProviderName">
+                                    <GridViewColumn Header="Website" listViewLayoutManager:FixedColumn.Width="80" Width="80" behaviors:GridViewSort.PropertyName="ProviderName">
                                         <GridViewColumn.CellTemplate>
-                                            <DataTemplate>
+                                            <DataTemplate DataType="{x:Type web:WebTrackResultBase}">
                                                 <Viewbox Height="20" Width="20">
                                                     <Grid>
                                                         <Path Data="{Binding ProviderVector}">
@@ -940,7 +933,7 @@
                             </ListView.View>
                         </ListView>
                         <ProgressBar VerticalAlignment="Bottom" IsIndeterminate="{Binding TrackSearcher.IsLoading}" Visibility="{Binding TrackSearcher.IsLoading,Converter={StaticResource BooleanToVisibilityConverter}}" Grid.Row="2"/>
-                        <TextBlock Grid.RowSpan="2" Visibility="{Binding TrackSearcher.NothingFound,Converter={StaticResource BooleanToVisibilityConverter}}" Text="{DynamicResource NothingFound}" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="16" FontWeight="Light"/>
+                        <TextBlock Grid.RowSpan="2" Grid.Row="0" Visibility="{Binding TrackSearcher.NothingFound,Converter={StaticResource BooleanToVisibilityConverter}}" Text="{DynamicResource NothingFound}" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="16" FontWeight="Light"/>
                     </Grid>
                 </Grid>
             </TabItem>
@@ -1070,7 +1063,7 @@
                 </DockPanel>
             </Grid>
         </Grid>
-        <Button Background="{StaticResource NormalColorBrush}" Visibility="{Binding Updater.UpdateFound,Converter={StaticResource BooleanToVisibilityConverter}}" Height="30" Command="{Binding OpenUpdater}" Margin="10,40,15,10" Grid.RowSpan="2" VerticalAlignment="Top" HorizontalAlignment="Right">
+        <Button Background="{StaticResource NormalColorBrush}" Visibility="{Binding Updater.UpdateFound,Converter={StaticResource BooleanToVisibilityConverter}}" Height="30" Command="{Binding OpenUpdater}" Margin="10,40,15,10" Grid.RowSpan="2" Grid.Row="0" VerticalAlignment="Top" HorizontalAlignment="Right">
             <Button.Resources>
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/FlatButton.xaml" />
             </Button.Resources>

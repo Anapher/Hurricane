@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Windows.Forms;
 
-namespace Hurricane.Utilities.HookManager.MouseHook
+namespace Hurricane.Utilities.HookManager
 {
     /// <summary>
     /// This class monitors all mouse activities globally (also outside of the application) 
@@ -13,7 +12,7 @@ namespace Hurricane.Utilities.HookManager.MouseHook
         //################################################################
         #region Mouse events
 
-        private static event MouseEventHandler s_MouseMove;
+        private static event MouseEventHandler _mouseMove;
 
         /// <summary>
         /// Occurs when the mouse pointer is moved. 
@@ -23,12 +22,12 @@ namespace Hurricane.Utilities.HookManager.MouseHook
             add
             {
                 EnsureSubscribedToGlobalMouseEvents();
-                s_MouseMove += value;
+                _mouseMove += value;
             }
 
             remove
             {
-                s_MouseMove -= value;
+                _mouseMove -= value;
                 TryUnsubscribeFromGlobalMouseEvents();
             }
         }
@@ -176,7 +175,7 @@ namespace Hurricane.Utilities.HookManager.MouseHook
                 if (s_MouseDoubleClick == null)
                 {
                     //We create a timer to monitor interval between two clicks
-                    s_DoubleClickTimer = new Timer
+                    _doubleClickTimer = new Timer
                     {
                         //This interval will be set to the value we retrive from windows. This is a windows setting from contro planel.
                         Interval = GetDoubleClickTime(),
@@ -184,7 +183,7 @@ namespace Hurricane.Utilities.HookManager.MouseHook
                         Enabled = false
                     };
                     //We define the callback function for the timer
-                    s_DoubleClickTimer.Tick += DoubleClickTimeElapsed;
+                    _doubleClickTimer.Tick += DoubleClickTimeElapsed;
                     //We start to monitor mouse up event.
                     MouseUp += OnMouseUp;
                 }
@@ -200,8 +199,8 @@ namespace Hurricane.Utilities.HookManager.MouseHook
                         //Stop monitoring mouse up
                         MouseUp -= OnMouseUp;
                         //Dispose the timer
-                        s_DoubleClickTimer.Tick -= DoubleClickTimeElapsed;
-                        s_DoubleClickTimer = null;
+                        _doubleClickTimer.Tick -= DoubleClickTimeElapsed;
+                        _doubleClickTimer = null;
                     }
                 }
                 TryUnsubscribeFromGlobalMouseEvents();
@@ -209,15 +208,15 @@ namespace Hurricane.Utilities.HookManager.MouseHook
         }
 
         //This field remembers mouse button pressed because in addition to the short interval it must be also the same button.
-        private static MouseButtons s_PrevClickedButton;
+        private static MouseButtons _prevClickedButton;
         //The timer to monitor time interval between two clicks.
-        private static Timer s_DoubleClickTimer;
+        private static Timer _doubleClickTimer;
 
         private static void DoubleClickTimeElapsed(object sender, EventArgs e)
         {
             //Timer is alapsed and no second click ocuured
-            s_DoubleClickTimer.Enabled = false;
-            s_PrevClickedButton = MouseButtons.None;
+            _doubleClickTimer.Enabled = false;
+            _prevClickedButton = MouseButtons.None;
         }
 
         /// <summary>
@@ -231,7 +230,7 @@ namespace Hurricane.Utilities.HookManager.MouseHook
             //This should not heppen
             if (e.Clicks < 1) { return; }
             //If the secon click heppened on the same button
-            if (e.Button.Equals(s_PrevClickedButton))
+            if (e.Button.Equals(_prevClickedButton))
             {
                 if (s_MouseDoubleClick != null)
                 {
@@ -239,14 +238,14 @@ namespace Hurricane.Utilities.HookManager.MouseHook
                     s_MouseDoubleClick.Invoke(null, e);
                 }
                 //Stop timer
-                s_DoubleClickTimer.Enabled = false;
-                s_PrevClickedButton = MouseButtons.None;
+                _doubleClickTimer.Enabled = false;
+                _prevClickedButton = MouseButtons.None;
             }
             else
             {
                 //If it was the firts click start the timer
-                s_DoubleClickTimer.Enabled = true;
-                s_PrevClickedButton = e.Button;
+                _doubleClickTimer.Enabled = true;
+                _prevClickedButton = e.Button;
             }
         }
         #endregion

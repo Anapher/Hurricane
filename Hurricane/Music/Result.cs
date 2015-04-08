@@ -5,9 +5,7 @@
         public State State { get; set; }
         public object CustomState { get; set; }
 
-        public Result(State state) : this(state, null)
-        {
-        }
+        public Result(State state) : this(state, null) { }
 
         public Result(State state, object customState)
         {

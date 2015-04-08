@@ -4,12 +4,18 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:vm="clr-namespace:Hurricane.ViewModels"
-             xmlns:extensions="clr-namespace:Hurricane.Extensions"
              xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
              xmlns:converter="clr-namespace:Hurricane.Settings.Converter"
              xmlns:appCommunication="clr-namespace:Hurricane.AppCommunication"
-             xmlns:lvm="clr-namespace:Hurricane.Extensions.ListViewLayoutManager"
              xmlns:qrCodeNet="clr-namespace:Gma.QrCodeNet.Encoding.Windows.WPF;assembly=Gma.QrCodeNet.Encoding"
+             xmlns:settings="clr-namespace:Hurricane.Settings"
+             xmlns:audioData="clr-namespace:Hurricane.Music.Data"
+             xmlns:appTheme="clr-namespace:Hurricane.Settings.Themes.Visual.AppThemes"
+             xmlns:accentColors="clr-namespace:Hurricane.Settings.Themes.Visual.AccentColors"
+             xmlns:audioVisualisation="clr-namespace:Hurricane.Settings.Themes.AudioVisualisation"
+             xmlns:extensions="clr-namespace:Hurricane.GUI.Extensions"
+             xmlns:behaviors="clr-namespace:Hurricane.GUI.Behaviors"
+             xmlns:listViewLayoutManager="clr-namespace:Hurricane.GUI.Extensions.ListViewLayoutManager"
              DataContext="{x:Static vm:SettingsViewModel.Instance}"
              mc:Ignorable="d" d:DesignHeight="500" d:DesignWidth="1000">
     <UserControl.Resources>
@@ -52,7 +58,7 @@
                 <ScrollViewer VerticalScrollBarVisibility="Auto">
                     <Grid>
                         <StackPanel Orientation="Vertical" Margin="10">
-                            <TextBlock Style="{StaticResource TextBlockHeader}" extensions:TextBlockHelper.UpperText="{DynamicResource Playback}"/>
+                            <TextBlock Style="{StaticResource TextBlockHeader}" behaviors:TextBlockBehavior.UpperText="{DynamicResource Playback}"/>
                             <Grid Margin="0,15,0,0">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="Auto"/>
@@ -64,7 +70,7 @@
                                         <ComboBox ItemsSource="{Binding SoundOutList}" Width="150" DisplayMemberPath="Name" SelectedItem="{Binding SelectedSoundOut}"/>
                                         <ComboBox ItemsSource="{Binding SelectedSoundOut.AudioDevices}" Margin="10,0,0,0" SelectedItem="{Binding SelectedAudioDevice}" Width="300" HorizontalAlignment="Left" ItemTemplateSelector="{StaticResource ComboBoxItemTemplateChooser}" SelectedIndex="{Binding SelectedAudioDeviceIndex}">
                                             <extensions:ComboBoxItemTemplateChooser.DropDownTemplate>
-                                                <DataTemplate>
+                                                <DataTemplate DataType="{x:Type audioData:AudioDevice}">
                                                     <Grid>
                                                         <TextBlock Text="{Binding}" x:Name="TextBlock"/>
                                                     </Grid>
@@ -79,7 +85,7 @@
                                                 </DataTemplate>
                                             </extensions:ComboBoxItemTemplateChooser.DropDownTemplate>
                                             <extensions:ComboBoxItemTemplateChooser.SelectedTemplate>
-                                                <DataTemplate>
+                                                <DataTemplate DataType="{x:Type audioData:AudioDevice}">
                                                     <Grid>
                                                         <TextBlock Text="{Binding}" x:Name="TextBlock"/>
                                                     </Grid>
@@ -155,12 +161,12 @@
             <TabItem Header="Appearance">
                 <ScrollViewer>
                     <StackPanel Orientation="Vertical" Margin="10">
-                        <TextBlock Style="{StaticResource TextBlockHeader}" extensions:TextBlockHelper.UpperText="{DynamicResource Theme}"/>
+                        <TextBlock Style="{StaticResource TextBlockHeader}" behaviors:TextBlockBehavior.UpperText="{DynamicResource Theme}"/>
                         <StackPanel Orientation="Vertical" Margin="0,10,0,0">
                             <TextBlock Text="{DynamicResource AppTheme}" VerticalAlignment="Center"/>
                             <ComboBox Margin="0,5,0,0" Width="100" HorizontalAlignment="Left" SelectedItem="{Binding SelectedAppTheme}" ItemsSource="{Binding ApplicationThemeManager.AppThemes,Converter={StaticResource GroupConverter}}" DisplayMemberPath="TranslatedName">
                                 <ComboBox.GroupStyle>
-                                    <GroupStyle>
+                                    <GroupStyle d:DataContext="{d:DesignInstance appTheme:AppThemeBase}">
                                         <GroupStyle.HeaderTemplate>
                                             <DataTemplate>
                                                 <TextBlock Text="{Binding Name}" FontWeight="Bold" Margin="2,5,0,2" FontSize="14"/>
@@ -181,7 +187,7 @@
                                 </DataTemplate>
                             </ComboBox.ItemTemplate>
                             <ComboBox.GroupStyle>
-                                <GroupStyle>
+                                <GroupStyle d:DataContext="{d:DesignInstance accentColors:AccentColorBase}">
                                     <GroupStyle.HeaderTemplate>
                                         <DataTemplate>
                                             <TextBlock Text="{Binding Name}" FontWeight="Bold" Margin="2,5,0,2" FontSize="14"/>
@@ -204,7 +210,7 @@
                         <TextBlock Margin="0,15,0,0" Text="{DynamicResource AudioVisualisation}"/>
                         <ComboBox Margin="0,5,0,0" Width="300" HorizontalAlignment="Left" SelectedItem="{Binding Config.ApplicationDesign.AudioVisualisation}" ItemsSource="{Binding ApplicationThemeManager.AudioVisualisations}" ItemTemplateSelector="{StaticResource ComboBoxItemTemplateChooser}">
                             <extensions:ComboBoxItemTemplateChooser.DropDownTemplate>
-                                <DataTemplate>
+                                <DataTemplate DataType="{x:Type audioVisualisation:IAudioVisualisationContainer}">
                                     <Grid Margin="2">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="32"/>
@@ -232,12 +238,12 @@
                                 </DataTemplate>
                             </extensions:ComboBoxItemTemplateChooser.DropDownTemplate>
                             <extensions:ComboBoxItemTemplateChooser.SelectedTemplate>
-                                <DataTemplate>
+                                <DataTemplate DataType="{x:Type audioVisualisation:IAudioVisualisationContainer}">
                                     <TextBlock Text="{Binding Name}"/>
                                 </DataTemplate>
                             </extensions:ComboBoxItemTemplateChooser.SelectedTemplate>
                         </ComboBox>
-                        <TextBlock Style="{StaticResource TextBlockHeader}" extensions:TextBlockHelper.UpperText="{DynamicResource View}" Margin="0,30,0,0"/>
+                        <TextBlock Style="{StaticResource TextBlockHeader}" behaviors:TextBlockBehavior.UpperText="{DynamicResource View}" Margin="0,30,0,0"/>
                         <CheckBox Margin="0,10,0,0" Content="{DynamicResource ShowArtistAndTitle}" IsChecked="{Binding ShowArtistAndTitle}"/>
                         <CheckBox Margin="0,10,0,0" Content="{DynamicResource UseThinHeaders}" IsChecked="{Binding Config.UseThinHeaders}"/>
                         <TextBlock Text="{DynamicResource TabControlTransition}" Margin="0,15,0,0"/>
@@ -250,17 +256,19 @@
                             <Separator />
                             <ComboBoxItem Content="{DynamicResource None}"/>
                         </ComboBox>
+                        <TextBlock Text="{DynamicResource TrackListAnimation}" Margin="0,15,0,0"/>
+                        <ComboBox Width="300" HorizontalAlignment="Left" Margin="0,5,0,0" ItemsSource="{Binding Source={extensions:Enumeration {x:Type settings:TrackListAnimation}}}" DisplayMemberPath="Description" SelectedValue="{Binding Config.TrackListAnimation}" SelectedValuePath="Value"/>
                     </StackPanel>
                 </ScrollViewer>
             </TabItem>
             <TabItem Header="Behaviour">
                 <ScrollViewer>
                     <StackPanel Orientation="Vertical" Margin="10">
-                        <TextBlock extensions:TextBlockHelper.UpperText="{DynamicResource Music}" Style="{StaticResource TextBlockHeader}"/>
+                        <TextBlock behaviors:TextBlockBehavior.UpperText="{DynamicResource Music}" Style="{StaticResource TextBlockHeader}"/>
                         <CheckBox ToolTip="{DynamicResource PreferFavoriteDescription}" Margin="0,10,0,0" Content="{DynamicResource PreferFavoriteTracks}" IsChecked="{Binding Config.ShufflePreferFavoriteTracks}"/>
                         <TextBlock Text="MAGIC ARROW" Style="{StaticResource TextBlockHeader}" Margin="0,30,0,0"/>
                         <CheckBox Content="{DynamicResource ShowMagicArrowBelowCursor}" IsChecked="{Binding Config.ShowMagicArrowBelowCursor}" Margin="0,10,0,0"/>
-                        <TextBlock extensions:TextBlockHelper.UpperText="{DynamicResource Notifications}" Margin="0,30,0,0" Style="{StaticResource TextBlockHeader}"/>
+                        <TextBlock behaviors:TextBlockBehavior.UpperText="{DynamicResource Notifications}" Margin="0,30,0,0" Style="{StaticResource TextBlockHeader}"/>
                         <Grid Margin="0,5,0,0">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="125"/>
@@ -294,15 +302,15 @@
                             <TextBlock Text="{DynamicResource DisableNotificationsInGame}" TextWrapping="Wrap"/>
                         </CheckBox>
                         <CheckBox Margin="0,10,0,0" Content="{DynamicResource ShowProgressInTaskbar}" IsChecked="{Binding ShowProgressInTaskbar}"/>
-                        <TextBlock extensions:TextBlockHelper.UpperText="{DynamicResource Tray}" Margin="0,30,0,0" Style="{StaticResource TextBlockHeader}"/>
+                        <TextBlock behaviors:TextBlockBehavior.UpperText="{DynamicResource Tray}" Margin="0,30,0,0" Style="{StaticResource TextBlockHeader}"/>
                         <CheckBox Content="{DynamicResource MinimizeToTray}" Margin="0,10,0,0" x:Name="MinimizeToTrayCheckBox" IsChecked="{Binding Config.MinimizeToTray}"/>
                         <CheckBox Content="{DynamicResource NotifyIfMinimizeToTray}" Margin="0,10,0,0" IsChecked="{Binding Config.ShowNotificationIfMinimizeToTray}" IsEnabled="{Binding ElementName=MinimizeToTrayCheckBox,Path=IsChecked}"/>
 
-                        <TextBlock extensions:TextBlockHelper.UpperText="{DynamicResource Update}" Margin="0,30,0,0" Style="{StaticResource TextBlockHeader}"/>
+                        <TextBlock behaviors:TextBlockBehavior.UpperText="{DynamicResource Update}" Margin="0,30,0,0" Style="{StaticResource TextBlockHeader}"/>
                         <CheckBox Content="{DynamicResource CheckForHurricaneUpdatesOnStart}" Margin="0,10,0,0" IsChecked="{Binding Config.CheckForHurricaneUpdates}"/>
                         <CheckBox Content="{DynamicResource CheckForYouTubeUpdatesIfNeeded}" Margin="0,10,0,0" IsChecked="{Binding Config.CheckForYoutubeDlUpdates}"/>
                         
-                        <TextBlock extensions:TextBlockHelper.UpperText="{DynamicResource CoverArt}" Margin="0,30,0,0" Style="{StaticResource TextBlockHeader}"/>
+                        <TextBlock behaviors:TextBlockBehavior.UpperText="{DynamicResource CoverArt}" Margin="0,30,0,0" Style="{StaticResource TextBlockHeader}"/>
                         <CheckBox Content="{DynamicResource LoadAlbumCoverFromInternet}" Margin="0,10,0,0" x:Name="DownloadCoverCheckBox" IsChecked="{Binding Config.LoadAlbumCoverFromInternet}"/>
                         <Grid IsEnabled="{Binding ElementName=DownloadCoverCheckBox,Path=IsChecked}" Margin="0,10,0,0">
                             <Grid.ColumnDefinitions>
@@ -372,7 +380,7 @@
                                         <TextBlock Text=":" VerticalAlignment="Center"/>
                                     </StackPanel>
                                     <StackPanel Orientation="Horizontal" Grid.Column="1">
-                                        <TextBox Text="{Binding LocalIPAddress,Mode=OneWay}" Width="300" IsReadOnly="True" Margin="10,0,0,0"/>
+                                        <TextBox Text="{Binding LocalIpAddress,Mode=OneWay}" Width="300" IsReadOnly="True" Margin="10,0,0,0"/>
                                         <TextBox Text="{Binding Config.AppCommunicationSettings.Port}" Margin="5,0,0,0" Width="75" IsReadOnly="True"/>
                                     </StackPanel>
                                 </Grid>
@@ -392,10 +400,10 @@
                             </StackPanel>
                         </Grid>
                         <TextBlock Text="{DynamicResource ConnectedDevices}" FontSize="24" FontWeight="Light" Margin="0,40,0,0"/>
-                        <ListView ItemsSource="{Binding Config.AppCommunicationManager.ConnectedClients}" lvm:ListViewLayoutManager.Enabled="True" Margin="0,10,0,0">
+                        <ListView ItemsSource="{Binding Config.AppCommunicationManager.ConnectedClients}" listViewLayoutManager:ListViewLayoutManager.Enabled="True" Margin="0,10,0,0">
                             <ListView.View>
                                 <GridView>
-                                    <GridViewColumn Header="{DynamicResource Device}" lvm:ProportionalColumn.Width="2">
+                                    <GridViewColumn Header="{DynamicResource Device}" listViewLayoutManager:ProportionalColumn.Width="2">
                                         <GridViewColumn.CellTemplate>
                                             <DataTemplate DataType="{x:Type appCommunication:TCPConnection}">
                                                 <StackPanel Orientation="Horizontal">
@@ -420,9 +428,9 @@
                                             </DataTemplate>
                                         </GridViewColumn.CellTemplate>
                                     </GridViewColumn>
-                                    <GridViewColumn Header="{DynamicResource System}" DisplayMemberBinding="{Binding DeviceInfo.System}" lvm:ProportionalColumn.Width="1"/>
-                                    <GridViewColumn Header="{DynamicResource Version}" DisplayMemberBinding="{Binding DeviceInfo.Version}" lvm:ProportionalColumn.Width="1"/>
-                                    <GridViewColumn Header="{DynamicResource Model}" DisplayMemberBinding="{Binding DeviceInfo.DeviceModel}" lvm:ProportionalColumn.Width="1"/>
+                                    <GridViewColumn Header="{DynamicResource System}" DisplayMemberBinding="{Binding DeviceInfo.System}" listViewLayoutManager:ProportionalColumn.Width="1"/>
+                                    <GridViewColumn Header="{DynamicResource Version}" DisplayMemberBinding="{Binding DeviceInfo.Version}" listViewLayoutManager:ProportionalColumn.Width="1"/>
+                                    <GridViewColumn Header="{DynamicResource Model}" DisplayMemberBinding="{Binding DeviceInfo.DeviceModel}" listViewLayoutManager:ProportionalColumn.Width="1"/>
                                 </GridView>
                             </ListView.View>
                         </ListView>
@@ -431,11 +439,11 @@
             </TabItem>
             <TabItem Header="Reset">
                 <StackPanel Orientation="Vertical" Margin="10">
-                    <TextBlock Style="{StaticResource TextBlockHeader}" extensions:TextBlockHelper.UpperText="{DynamicResource ImportTrack}"/>
+                    <TextBlock Style="{StaticResource TextBlockHeader}" behaviors:TextBlockBehavior.UpperText="{DynamicResource ImportTrack}"/>
                     <Button Margin="0,10,0,0" Content="{DynamicResource Reset}" HorizontalAlignment="Left" Width="200" IsEnabled="{Binding Config.RememberTrackImportPlaylist}" Command="{Binding ResetTrackImport}"/>
                     <TextBlock Text="HURRICANE" Style="{StaticResource TextBlockHeader}" Margin="0,30,0,0"/>
                     <Button Margin="0,10,0,0" Content="{DynamicResource TotalReset}" Foreground="#FFCF0606" Command="{Binding TotalReset}" HorizontalAlignment="Left" Width="200"/>
-                    <TextBlock extensions:TextBlockHelper.UpperText="{DynamicResource MoveSaveLocation}" Style="{StaticResource TextBlockHeader}" Margin="0,30,0,0"/>
+                    <TextBlock behaviors:TextBlockBehavior.UpperText="{DynamicResource MoveSaveLocation}" Style="{StaticResource TextBlockHeader}" Margin="0,30,0,0"/>
                     <Button Margin="0,10,0,0" HorizontalAlignment="Left" Width="250" Command="{Binding SwitchLocation}">
                         <Button.Style>
                             <Style TargetType="Button" BasedOn="{StaticResource MetroButton}">

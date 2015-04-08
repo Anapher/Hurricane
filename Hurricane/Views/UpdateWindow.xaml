@@ -2,9 +2,9 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
-        xmlns:converter="clr-namespace:Hurricane.Extensions.Converter"
-        xmlns:ex="clr-namespace:Hurricane.Extensions"
-        Title="{StaticResource UpdatesAvailable}" Width="670" GlowBrush="{StaticResource AccentColorBrush}" ResizeMode="NoResize" x:Name="BaseWindow" WindowStartupLocation="CenterScreen" Icon="/Resources/GUI/updater.ico" ShowIconOnTitleBar="False" Height="405">
+                      xmlns:behaviors="clr-namespace:Hurricane.GUI.Behaviors"
+                      xmlns:converter="clr-namespace:Hurricane.GUI.Converter"
+                      Title="{StaticResource UpdatesAvailable}" Width="670" GlowBrush="{StaticResource AccentColorBrush}" ResizeMode="NoResize" x:Name="BaseWindow" WindowStartupLocation="CenterScreen" Icon="/Resources/GUI/updater.ico" ShowIconOnTitleBar="False" Height="405">
     <Window.Resources>
         <converter:RoundSizeConverter x:Key="RoundSizeConverter"/>
     </Window.Resources>
@@ -34,7 +34,7 @@
             <Separator Margin="0,5,0,0"/>
         </StackPanel>
         <ScrollViewer Grid.Row="1" Margin="0,10,0,0">
-            <TextBlock ex:TextBlockTextFormat.FormattedText="{Binding ElementName=BaseWindow,Path=UpdateService.Changelog}"/>
+            <TextBlock behaviors:TextBlockBehavior.FormattedText="{Binding ElementName=BaseWindow,Path=UpdateService.Changelog}"/>
         </ScrollViewer>
         <StackPanel Orientation="Vertical" Grid.Row="2">
             <Grid Margin="0,5,0,0">
@@ -45,7 +45,7 @@
                 <TextBlock Text="{StaticResource Size}"/>
                 <TextBlock Grid.Column="1" Text="{Binding ElementName=BaseWindow,Path=UpdateService.UpdateSize,Converter={StaticResource RoundSizeConverter}}"/>
             </Grid>
-            <Grid Margin="0,10,0,0" x:Name="StateGrid" Visibility="Collapsed" ex:VisibilityAnimation.AnimationType="Fade">
+            <Grid Margin="0,10,0,0" x:Name="StateGrid" Visibility="Collapsed" behaviors:VisibilityAnimation.AnimationType="Fade">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="auto"/>

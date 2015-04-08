@@ -246,7 +246,6 @@ namespace Hurricane.Music.AudioEngine
 
         void RemoveDevice(string deviceId)
         {
-            Debug.Print("Remove device: " + deviceId);
             foreach (var soundOutRepresenter in SoundOutList)
             {
                 var audioDevice = soundOutRepresenter.AudioDevices.FirstOrDefault(x => x.ID == deviceId);
