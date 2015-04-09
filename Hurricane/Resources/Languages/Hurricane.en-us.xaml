@@ -368,4 +368,7 @@
     <system:String x:Key="AddCustomStream">Add custom stream</system:String>
     <system:String x:Key="InvalidUrl">Invalid url</system:String>
     <system:String x:Key="TrackListAnimation">Track list animation</system:String>
+    
+    <system:String x:Key="Bars">Bars</system:String>
+    <system:String x:Key="Squares">Squares</system:String>
 </ResourceDictionary>

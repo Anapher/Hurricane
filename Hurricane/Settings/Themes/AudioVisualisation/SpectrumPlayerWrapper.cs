@@ -3,7 +3,7 @@ using System.ComponentModel;
 using Hurricane.PluginAPI.AudioVisualisation;
 using WPFSoundVisualizationLib;
 
-namespace Hurricane.Settings.Themes.AudioVisualisation.DefaultAudioVisualisation
+namespace Hurricane.Settings.Themes.AudioVisualisation
 {
     public class SpectrumPlayerWrapper : ISpectrumPlayer
     {

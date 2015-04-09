@@ -134,7 +134,7 @@ namespace Hurricane.Designer.Data
         #region IAudioVisualisationContainer
 
         private IAudioVisualisationPlugin _audioVisualisationPlugin;
-        IAudioVisualisationPlugin IAudioVisualisationContainer.AudioVisualisationPlugin
+        IAudioVisualisationPlugin IAudioVisualisationContainer.Visualisation
         {
             get { return _audioVisualisationPlugin; }
         }

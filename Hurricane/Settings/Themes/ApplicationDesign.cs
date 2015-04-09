@@ -1,9 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Serialization;
 using Hurricane.Designer.Data;
 using Hurricane.Settings.Themes.AudioVisualisation;
-using Hurricane.Settings.Themes.AudioVisualisation.DefaultAudioVisualisation;
 using Hurricane.Settings.Themes.Background;
 using Hurricane.Settings.Themes.Visual;
 using Hurricane.Settings.Themes.Visual.AccentColors;
@@ -42,8 +42,8 @@ namespace Hurricane.Settings.Themes
                 var oldValue = _audioVisualisation;
                 if (SetProperty(value, ref _audioVisualisation) && oldValue != null)
                 {
-                    oldValue.AudioVisualisationPlugin.AdvancedWindowVisualisation.Dispose();
-                    oldValue.AudioVisualisationPlugin.SmartWindowVisualisation.Dispose();
+                    oldValue.Visualisation.AdvancedWindowVisualisation.Dispose();
+                    oldValue.Visualisation.SmartWindowVisualisation.Dispose();
                 }
             }
         }
@@ -54,8 +54,15 @@ namespace Hurricane.Settings.Themes
             AccentColor = themeManager.AccentColors.First(x => x.Name == "Blue");
             AppTheme = themeManager.AppThemes.First(x => x.Name == "BaseLight");
             ApplicationBackground = null;
-            AudioVisualisation = DefaultAudioVisualisation.GetDefault();
+            AudioVisualisation = DefaultAudioVisualisations[0];
         }
+
+        public static readonly List<AudioVisualisationBase> DefaultAudioVisualisations = new List
+            <AudioVisualisationBase>
+        {
+            new AudioVisualisation.SquareAudioVisualisation.SquareAudioVisualisation(),
+            new AudioVisualisation.BarAudioVisualisation.BarAudioVisualisation()
+        };
 
         #region Workaround for serializing interfaces
 
@@ -118,7 +125,7 @@ namespace Hurricane.Settings.Themes
             }
         }
 
-        [XmlElement("AudioVisualisation", Type = typeof(DefaultAudioVisualisation))]
+        [XmlElement("AudioVisualisation", Type = typeof(AudioVisualisationBase))]
         [XmlElement("AudioVisualisationPack", Type = typeof(ThemePack))]
         [XmlElement("CustomAudioVisualisation", Type = typeof(CustomAudioVisualisation))]
         public object SerializableAudioVisualisation
@@ -126,18 +133,19 @@ namespace Hurricane.Settings.Themes
             get { return AudioVisualisation; }
             set
             {
-                if (value is DefaultAudioVisualisation)
+                if (value is AudioVisualisationBase)
                 {
-                    AudioVisualisation = DefaultAudioVisualisation.GetDefault();
+                    AudioVisualisation = (AudioVisualisationBase) value;
                 }
                 else if (value is CustomAudioVisualisation)
                 {
                     var visualisation = (CustomAudioVisualisation) value;
 
                     AudioVisualisation =
-                        ApplicationThemeManager.Instance.AudioVisualisations.OfType<CustomAudioVisualisation>().FirstOrDefault(
-                            x => x.FileName == visualisation.FileName);
-                    if (AudioVisualisation == null) AudioVisualisation = DefaultAudioVisualisation.GetDefault();
+                        ApplicationThemeManager.Instance.AudioVisualisations.OfType<CustomAudioVisualisation>()
+                            .FirstOrDefault(
+                                x => x.FileName == visualisation.FileName);
+                    if (AudioVisualisation == null) AudioVisualisation = DefaultAudioVisualisations[0];
                 }
                 else if (value is ThemePack)
                 {

@@ -6,7 +6,6 @@ using System.Linq;
 using System.Windows;
 using Hurricane.Designer.Data;
 using Hurricane.Settings.Themes.AudioVisualisation;
-using Hurricane.Settings.Themes.AudioVisualisation.DefaultAudioVisualisation;
 using Hurricane.Settings.Themes.Visual.AccentColors;
 using Hurricane.Settings.Themes.Visual.AppThemes;
 using MahApps.Metro;
@@ -85,7 +84,10 @@ namespace Hurricane.Settings.Themes
                 _appThemes.Add(t);
             }
 
-            _audioVisualisations.Add(DefaultAudioVisualisation.GetDefault());
+            foreach (var defaultAudioVisualisation in ApplicationDesign.DefaultAudioVisualisations)
+            {
+                _audioVisualisations.Add(defaultAudioVisualisation);
+            }
 
             var accentColorsFolder = new DirectoryInfo(HurricaneSettings.Paths.AccentColorsDirectory);
             if (accentColorsFolder.Exists)
@@ -161,7 +163,7 @@ namespace Hurricane.Settings.Themes
             }
 
             if (design.AudioVisualisation != null)
-                design.AudioVisualisation.AudioVisualisationPlugin.Refresh();
+                design.AudioVisualisation.Visualisation.Refresh();
         }
 
         private readonly Dictionary<string, ResourceDictionary> _loadedResources;

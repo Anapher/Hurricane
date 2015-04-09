@@ -33,6 +33,7 @@ namespace Hurricane.GUI.Controls
         private async void ItemsSourceChanged(object sender, EventArgs eventArgs)
         {
             if (!_currentMargin.HasValue) _currentMargin = Margin;
+            if (ItemsSource == null) return;
 
             switch (Transition)
             {
@@ -51,6 +52,7 @@ namespace Hurricane.GUI.Controls
                     break;
 
                 case TrackListAnimation.FadeEveryItem:
+                    break;
                     var opacityAnimation = new DoubleAnimation(0, 1, TimeSpan.FromMilliseconds(255), FillBehavior.Stop);
                     var marginAnimation = new ThicknessAnimation(new Thickness(-20, 0, 20, 0), new Thickness(0), TimeSpan.FromMilliseconds(200), FillBehavior.Stop)
                     {
@@ -59,11 +61,11 @@ namespace Hurricane.GUI.Controls
 
                     if (_dispatcherTimer != null) _dispatcherTimer.Stop();
 
-                                List<ListViewItem> visibleItems;
+                    List<ListBoxItem> visibleItems;
 
                     while (true)
                     {
-                        visibleItems = DependencyObjectExtensions.GetVisibleItemsFromListView(this,
+                        visibleItems = DependencyObjectExtensions.GetVisibleItemsFromItemsControl(this,
                             Window.GetWindow(this));
                         if (visibleItems.Count > 0 || Items.Count == 0)
                             break;

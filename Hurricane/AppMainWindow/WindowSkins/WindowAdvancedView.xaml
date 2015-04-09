@@ -168,7 +168,7 @@
                             <RowDefinition Height="auto"/>
                         </Grid.RowDefinitions>
                         <Grid>
-                            <hurricaneControls:AnimatedListView SelectionMode="Extended" ItemsSource="{Binding MusicManager.SelectedPlaylist.ViewSource}" SelectedItem="{Binding MusicManager.SelectedTrack}" BorderThickness="0" SelectionChanged="ListView_SelectionChanged" Background="Transparent"
+                            <hurricaneControls:AnimatedListView behaviors:ItemsControlAnimationBehavior.IsAnimationEnabled="True" SelectionMode="Extended" ItemsSource="{Binding MusicManager.SelectedPlaylist.ViewSource}" SelectedItem="{Binding MusicManager.SelectedTrack}" BorderThickness="0" SelectionChanged="ListView_SelectionChanged" Background="Transparent"
                                   DragEnter="ListView_DragEnter" Drop="ListView_Drop" x:Name="TracksListView" listViewLayoutManager:ListViewLayoutManager.Enabled="True" Style="{StaticResource VisualizingListView}" dd:DragDrop.IsDragSource="True" dd:DragDrop.IsDropTarget="True"
                                   dd:DragDrop.DragAdornerTemplate="{StaticResource DragAdornerTrack}" dd:DragDrop.DropHandler="{Binding TrackListDropHandler}" Transition="{Binding MySettings.Config.TrackListAnimation}">
                                 <ListView.Resources>
@@ -579,7 +579,7 @@
                                 </TextBlock>
                                 <ToggleButton Foreground="#FFB4B4B4" Background="{StaticResource NormalColorBrush}" Style="{StaticResource FavoriteToggleButton}" Height="18" Width="18" HorizontalAlignment="Left" Margin="0,10,0,10" IsChecked="{Binding MusicManager.CSCoreEngine.CurrentTrack.IsFavorite}"/>
                             </hurricaneControls:AnimatedStackPanel>
-                            <ContentControl Grid.Row="1" Height="100" VerticalAlignment="Bottom" Focusable="False" Margin="0,0,0,10" x:Name="AudioVisualisationContentControl" behaviors:AudioVisualisationBehavior.AudioVisualisationForAdvancedWindow="{Binding MySettings.Config.ApplicationDesign.AudioVisualisation.AudioVisualisationPlugin}">
+                            <ContentControl Grid.Row="1" Height="100" VerticalAlignment="Bottom" Focusable="False" Margin="0,0,0,10" x:Name="AudioVisualisationContentControl" behaviors:AudioVisualisationBehavior.AudioVisualisationForAdvancedWindow="{Binding MySettings.Config.ApplicationDesign.AudioVisualisation.Visualisation}">
                                 <ContentControl.Style>
                                     <Style TargetType="ContentControl">
                                         <Setter Property="Opacity" Value="0"/>

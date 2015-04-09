@@ -2,32 +2,22 @@
 using System.Windows.Media;
 using Hurricane.PluginAPI.AudioVisualisation;
 
-namespace Hurricane.Settings.Themes.AudioVisualisation.DefaultAudioVisualisation
+namespace Hurricane.Settings.Themes.AudioVisualisation.BarAudioVisualisation
 {
-    public class DefaultAudioVisualisation : IAudioVisualisationContainer
+    public class BarAudioVisualisation : AudioVisualisationBase
     {
         private IAudioVisualisationPlugin _loadedPlugin;
-        public IAudioVisualisationPlugin AudioVisualisationPlugin
+        public override IAudioVisualisationPlugin Visualisation
         {
-            get { return _loadedPlugin ?? (_loadedPlugin = new AudioVisualisation()); }
+            get { return _loadedPlugin ?? (_loadedPlugin = new AudioVisualisationPlugin()); }
         }
 
-        public string Name
+        public override string Name
         {
-            get { return Application.Current.Resources["Default"].ToString(); }
+            get { return Application.Current.Resources["Bars"].ToString(); }
         }
 
-        private DefaultAudioVisualisation()
-        {
-        }
-
-        private static DefaultAudioVisualisation _instance;
-        public static DefaultAudioVisualisation GetDefault()
-        {
-            return _instance ?? (_instance = new DefaultAudioVisualisation());
-        }
-
-        public class AudioVisualisation : IAudioVisualisationPlugin
+        public class AudioVisualisationPlugin : IAudioVisualisationPlugin
         {
             private IAudioVisualisation _advancedAudioVisualisation;
             public IAudioVisualisation AdvancedWindowVisualisation

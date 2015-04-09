@@ -4,7 +4,7 @@ namespace Hurricane.Settings.Themes.AudioVisualisation
 {
     public interface IAudioVisualisationContainer
     {
-        IAudioVisualisationPlugin AudioVisualisationPlugin { get; }
+        IAudioVisualisationPlugin Visualisation { get; }
         string Name { get; }
     }
 }

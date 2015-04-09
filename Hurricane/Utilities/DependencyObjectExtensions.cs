@@ -28,19 +28,19 @@ namespace Hurricane.Utilities
             return rect.Contains(bounds.TopLeft) || rect.Contains(bounds.BottomRight);
         }
 
-        public static List<ListViewItem> GetVisibleItemsFromListView(ListView listView, FrameworkElement parentToTestVisibility)
+        public static List<ListBoxItem> GetVisibleItemsFromItemsControl(ItemsControl itemsControl, FrameworkElement parentToTestVisibility)
         {
-            var items = new List<ListViewItem>();
+            var items = new List<ListBoxItem>();
 
-            foreach (var item in listView.ItemsSource)
+            foreach (var item in itemsControl.ItemsSource)
             {
-                var lvItem = (ListViewItem)listView.ItemContainerGenerator.ContainerFromItem(item);
-                if (lvItem == null)
+                var lbItem = (ListBoxItem)itemsControl.ItemContainerGenerator.ContainerFromItem(item);
+                if (lbItem == null)
                     continue;
 
-                if (IsUserVisible(lvItem, parentToTestVisibility))
+                if (IsUserVisible(lbItem, parentToTestVisibility))
                 {
-                    items.Add(lvItem);
+                    items.Add(lbItem);
                 }
                 else if (items.Any())
                 {

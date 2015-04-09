@@ -217,7 +217,7 @@
                                             <ColumnDefinition Width="*"/>
                                         </Grid.ColumnDefinitions>
                                         <Viewbox Height="30" Width="30" Stretch="Uniform">
-                                            <Path Data="{Binding AudioVisualisationPlugin.Thumbnail}">
+                                            <Path Data="{Binding Visualisation.Thumbnail}">
                                                 <Path.Style>
                                                     <Style TargetType="Path">
                                                         <Setter Property="Fill" Value="{StaticResource BlackBrush}"/>
@@ -232,7 +232,7 @@
                                         </Viewbox>
                                         <StackPanel Orientation="Vertical" Grid.Column="1" Margin="10,5,5,5">
                                             <TextBlock Text="{Binding Name}" FontSize="16"/>
-                                            <TextBlock Text="{Binding AudioVisualisationPlugin.Creator}" Margin="0,2,0,0"/>
+                                            <TextBlock Text="{Binding Visualisation.Creator}" Margin="0,2,0,0"/>
                                         </StackPanel>
                                     </Grid>
                                 </DataTemplate>

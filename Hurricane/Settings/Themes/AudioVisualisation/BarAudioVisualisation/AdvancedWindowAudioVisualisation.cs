@@ -4,7 +4,7 @@ using System.Windows.Shapes;
 using Hurricane.PluginAPI.AudioVisualisation;
 using WPFSoundVisualizationLib;
 
-namespace Hurricane.Settings.Themes.AudioVisualisation.DefaultAudioVisualisation
+namespace Hurricane.Settings.Themes.AudioVisualisation.BarAudioVisualisation
 {
     public class AdvancedWindowAudioVisualisation : IAudioVisualisation
     {
