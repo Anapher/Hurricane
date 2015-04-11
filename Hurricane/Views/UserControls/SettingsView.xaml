@@ -256,8 +256,6 @@
                             <Separator />
                             <ComboBoxItem Content="{DynamicResource None}"/>
                         </ComboBox>
-                        <TextBlock Text="{DynamicResource TrackListAnimation}" Margin="0,15,0,0"/>
-                        <ComboBox Width="300" HorizontalAlignment="Left" Margin="0,5,0,0" ItemsSource="{Binding Source={extensions:Enumeration {x:Type settings:TrackListAnimation}}}" DisplayMemberPath="Description" SelectedValue="{Binding Config.TrackListAnimation}" SelectedValuePath="Value"/>
                     </StackPanel>
                 </ScrollViewer>
             </TabItem>

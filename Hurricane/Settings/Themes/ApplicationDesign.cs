@@ -61,7 +61,8 @@ namespace Hurricane.Settings.Themes
             <AudioVisualisationBase>
         {
             new AudioVisualisation.SquareAudioVisualisation.SquareAudioVisualisation(),
-            new AudioVisualisation.BarAudioVisualisation.BarAudioVisualisation()
+            new AudioVisualisation.BarAudioVisualisation.BarAudioVisualisation(),
+            new AudioVisualisation.AwesomeVisualisation.AwesomeAudioVisualisation()
         };
 
         #region Workaround for serializing interfaces
@@ -135,7 +136,8 @@ namespace Hurricane.Settings.Themes
             {
                 if (value is AudioVisualisationBase)
                 {
-                    AudioVisualisation = (AudioVisualisationBase) value;
+                    AudioVisualisation =
+                        DefaultAudioVisualisations.First(x => x.Name == ((AudioVisualisationBase) value).Name);
                 }
                 else if (value is CustomAudioVisualisation)
                 {

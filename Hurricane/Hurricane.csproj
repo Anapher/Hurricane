@@ -60,16 +60,17 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Libraries\CSCore.dll</HintPath>
     </Reference>
-    <Reference Include="Exceptionless.Extras, Version=2.0.1283.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="Exceptionless.Extras, Version=3.0.1318.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Exceptionless.Wpf.2.0.1283\lib\net45\Exceptionless.Extras.dll</HintPath>
+      <HintPath>..\packages\Exceptionless.Wpf.3.0.1318\lib\net45\Exceptionless.Extras.dll</HintPath>
     </Reference>
-    <Reference Include="Exceptionless.Portable">
-      <HintPath>..\packages\Exceptionless.Portable.2.0.1283\lib\portable-net40+sl50+win+wpa81+wp80\Exceptionless.Portable.dll</HintPath>
-    </Reference>
-    <Reference Include="Exceptionless.Wpf, Version=2.0.1283.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="Exceptionless.Portable, Version=3.0.1318.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Exceptionless.Wpf.2.0.1283\lib\net45\Exceptionless.Wpf.dll</HintPath>
+      <HintPath>..\packages\Exceptionless.Portable.3.0.1318\lib\portable-net40+sl50+win+wpa81+wp80\Exceptionless.Portable.dll</HintPath>
+    </Reference>
+    <Reference Include="Exceptionless.Wpf, Version=3.0.1318.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Exceptionless.Wpf.3.0.1318\lib\net45\Exceptionless.Wpf.dll</HintPath>
     </Reference>
     <Reference Include="Gma.QrCodeNet.Encoding, Version=0.4.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -189,7 +190,6 @@
     <Compile Include="DragDrop\TrackListDropHandler.cs" />
     <Compile Include="GUI\Behaviors\FrameworkElementBehavior.cs" />
     <Compile Include="GUI\Behaviors\ItemsControlAnimationBehavior.cs" />
-    <Compile Include="GUI\Controls\AnimatedListView.cs" />
     <Compile Include="GUI\Controls\AnimatedStackPanel.cs" />
     <Compile Include="GUI\Behaviors\AudioVisualisationBehavior.cs" />
     <Compile Include="GUI\Behaviors\TransitioningContentControlBehavior.cs" />
@@ -228,6 +228,9 @@
     <Compile Include="Settings\SaveLocationManager.cs" />
     <Compile Include="Settings\Themes\AudioVisualisation\AudioVisualisationBase.cs" />
     <Compile Include="Settings\Themes\AudioVisualisation\AudioVisualisationPluginHelper.cs" />
+    <Compile Include="Settings\Themes\AudioVisualisation\AwesomeVisualisation\AdvancedWindowAudioVisualisation.cs" />
+    <Compile Include="Settings\Themes\AudioVisualisation\AwesomeVisualisation\AwesomeAudioVisualisation.cs" />
+    <Compile Include="Settings\Themes\AudioVisualisation\AwesomeVisualisation\SmartWindowAudioVisualisation.cs" />
     <Compile Include="Settings\Themes\AudioVisualisation\CustomAudioVisualisation.cs" />
     <Compile Include="Settings\Themes\AudioVisualisation\BarAudioVisualisation\AdvancedWindowAudioVisualisation.cs" />
     <Compile Include="Settings\Themes\AudioVisualisation\BarAudioVisualisation\BarAudioVisualisation.cs" />

@@ -4,14 +4,7 @@
         <name>Exceptionless.Extras</name>
     </assembly>
     <members>
-        <member name="M:Exceptionless.Enrichments.Default.TraceLogEnrichment.Enrich(Exceptionless.Enrichments.EventEnrichmentContext,Exceptionless.Models.Event)">
-            <summary>
-            Enrich the event with additional information.
-            </summary>
-            <param name="context">Context information.</param>
-            <param name="ev">Event to enrich.</param>
-        </member>
-        <member name="M:Exceptionless.Enrichments.Default.TraceLogEnrichment.AddRecentTraceLogEntries(Exceptionless.Models.Event,Exceptionless.Diagnostics.ExceptionlessTraceListener,System.Int32)">
+        <member name="M:Exceptionless.Plugins.Default.TraceLogPlugin.AddRecentTraceLogEntries(Exceptionless.Models.Event,Exceptionless.Diagnostics.ExceptionlessTraceListener,System.Int32)">
             <summary>
             Adds the trace info as extended data to the event.
             </summary>
@@ -27,7 +20,7 @@
             <param name="listener">The listener.</param>
             <param name="maxEntriesToInclude"></param>
         </member>
-        <member name="M:Exceptionless.ExceptionlessExtraConfigurationExtensions.UseErrorEnrichment(Exceptionless.ExceptionlessConfiguration)">
+        <member name="M:Exceptionless.ExceptionlessExtraConfigurationExtensions.UseErrorPlugin(Exceptionless.ExceptionlessConfiguration)">
             <summary>
             Reads the Exceptionless configuration from the app.config or web.config file.
             </summary>

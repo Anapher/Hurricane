@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -57,13 +56,6 @@ namespace Hurricane.Settings
             {
                 SetProperty(value, ref _tabControlTransition);
             }
-        }
-
-        private TrackListAnimation _trackListAnimation;
-        public TrackListAnimation TrackListAnimation
-        {
-            get { return _trackListAnimation; }
-            set { SetProperty(value, ref _trackListAnimation); }
         }
 
         //General
@@ -155,7 +147,6 @@ namespace Hurricane.Settings
             DownloadSettings.SetDefault();
             CheckForHurricaneUpdates = true;
             CheckForYoutubeDlUpdates = true;
-            TrackListAnimation = TrackListAnimation.FadeEveryItem;
         }
 
         public ConfigSettings()
@@ -219,13 +210,5 @@ namespace Hurricane.Settings
     public enum SoundOutMode
     {
         DirectSound, WASAPI
-    }
-
-    public enum TrackListAnimation
-    {
-        [Description("Fade every item")]
-        FadeEveryItem,
-        [Description("Fade list")]
-        FadeList
     }
 }

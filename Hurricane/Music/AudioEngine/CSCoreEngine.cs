@@ -72,36 +72,45 @@ namespace Hurricane.Music.AudioEngine
             }
         }
 
+        private long _position;
         public long Position
         {
             get
             {
                 if (SoundSource == null) return 0;
-                try
-                {
-                    return SoundSource.Position;
-                }
-                catch (Exception)
-                {
-                    return 0;
-                }
+                return _position;
             }
             set
             {
                 if (SoundSource != null)
                 {
-                    try
-                    {
-                        SoundSource.Position = value;
-                    }
-                    catch (Exception)
-                    {
-                        return;
-                    }
+                    SetSoundSourcePosition(value);
+                    _position = value;
                 }
-                OnPropertyChanged("CurrentTrackPosition");
-                if (PositionChanged != null) PositionChanged(this, new PositionChangedEventArgs((int)CurrentTrackPosition.TotalSeconds, (int)CurrentTrackLength.TotalSeconds));
+                OnPositionChanged();
             }
+        }
+
+        private string _positionString;
+        public string PositionString
+        {
+            get { return string.IsNullOrEmpty(_positionString) ? "--:--" : _positionString; }
+            set { SetProperty(value, ref _positionString); }
+        }
+        
+        async void SetSoundSourcePosition(long value)
+        {
+            try
+            {
+                await Task.Run(() => SoundSource.Position = value);
+            }
+            catch (Exception)
+            {
+                return;
+            }
+
+            OnPropertyChanged("CurrentTrackPosition");
+            if (PositionChanged != null) PositionChanged(this, new PositionChangedEventArgs((int)CurrentTrackPosition.TotalSeconds, (int)CurrentTrackLength.TotalSeconds));
         }
 
         private PlayableBase _currenttrack;
@@ -347,6 +356,10 @@ namespace Hurricane.Music.AudioEngine
             }
             catch (Exception ex)
             {
+                if (token.IsCancellationRequested)
+                {
+                    return new Result(State.False);
+                }
                 return new Result(State.Exception, ex);
             }
 
@@ -375,7 +388,7 @@ namespace Hurricane.Music.AudioEngine
             
             OnPropertyChanged("TrackLength");
             OnPropertyChanged("CurrentTrackLength");
-            OnPropertyChanged("Position");
+            OnPositionChanged();
             OnPropertyChanged("CurrentTrackPosition");
             CurrentStateChanged();
         }
@@ -416,12 +429,20 @@ namespace Hurricane.Music.AudioEngine
         #endregion
 
         #region Protected Methods
+        private static readonly GUI.Converter.FormatTimespan formatTimespanConverter = new GUI.Converter.FormatTimespan();
+
+        protected void OnPositionChanged()
+        {
+            PositionString = formatTimespanConverter.Convert(TimeSpan.FromMilliseconds(SoundSource.WaveFormat.BytesToMilliseconds(_position)), null, null, null).ToString();
+            OnPropertyChanged("Position");
+        }
+
         protected void CurrentStateChanged()
         {
             OnPropertyChanged("IsPlaying");
             OnPropertyChanged("CurrentState");
             if (PlayStateChanged != null) PlayStateChanged(this, EventArgs.Empty);
-            if (PlaybackStateChanged != null) PlaybackStateChanged(this, new PlayStateChangedEventArgs(this.CurrentState));
+            if (PlaybackStateChanged != null) PlaybackStateChanged(this, new PlayStateChangedEventArgs(CurrentState));
         }
 
         void notificationSource_SingleBlockRead(object sender, SingleBlockReadEventArgs e)
@@ -432,7 +453,9 @@ namespace Hurricane.Music.AudioEngine
 
         void notifysource_BlockRead(object sender, EventArgs e)
         {
-            OnPropertyChanged("Position");
+            _position = SoundSource.Position;
+            OnPositionChanged();
+            
             OnPropertyChanged("CurrentTrackPosition");
             var seconds = (int)CurrentTrackPosition.TotalSeconds;
             var totalseconds = (int)CurrentTrackLength.TotalSeconds;

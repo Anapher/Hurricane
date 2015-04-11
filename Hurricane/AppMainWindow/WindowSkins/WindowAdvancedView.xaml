@@ -168,9 +168,9 @@
                             <RowDefinition Height="auto"/>
                         </Grid.RowDefinitions>
                         <Grid>
-                            <hurricaneControls:AnimatedListView behaviors:ItemsControlAnimationBehavior.IsAnimationEnabled="True" SelectionMode="Extended" ItemsSource="{Binding MusicManager.SelectedPlaylist.ViewSource}" SelectedItem="{Binding MusicManager.SelectedTrack}" BorderThickness="0" SelectionChanged="ListView_SelectionChanged" Background="Transparent"
+                            <ListView behaviors:ItemsControlAnimationBehavior.IsAnimationEnabled="True" SelectionMode="Extended" ItemsSource="{Binding MusicManager.SelectedPlaylist.ViewSource}" SelectedItem="{Binding MusicManager.SelectedTrack}" BorderThickness="0" SelectionChanged="ListView_SelectionChanged" Background="Transparent"
                                   DragEnter="ListView_DragEnter" Drop="ListView_Drop" x:Name="TracksListView" listViewLayoutManager:ListViewLayoutManager.Enabled="True" Style="{StaticResource VisualizingListView}" dd:DragDrop.IsDragSource="True" dd:DragDrop.IsDropTarget="True"
-                                  dd:DragDrop.DragAdornerTemplate="{StaticResource DragAdornerTrack}" dd:DragDrop.DropHandler="{Binding TrackListDropHandler}" Transition="{Binding MySettings.Config.TrackListAnimation}">
+                                  dd:DragDrop.DragAdornerTemplate="{StaticResource DragAdornerTrack}" dd:DragDrop.DropHandler="{Binding TrackListDropHandler}">
                                 <ListView.Resources>
                                     <ResourceDictionary>
                                         <ResourceDictionary.MergedDictionaries>
@@ -185,7 +185,7 @@
                                             </MenuItem>
                                             <Separator />
                                             <MenuItem Header="{DynamicResource Queue}" IsEnabled="{Binding MusicManager.SelectedTrack.TrackExists}">
-                                                <MenuItem Header="{DynamicResource AddToQueue}" Command="{Binding MusicManager.Commands.AddTracksToQueue}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=hurricaneControls:AnimatedListView},Path=SelectedItems}" InputGestureText="Q"/>
+                                                <MenuItem Header="{DynamicResource AddToQueue}" Command="{Binding MusicManager.Commands.AddTracksToQueue}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=ListView},Path=SelectedItems}" InputGestureText="Q"/>
                                                 <MenuItem Header="{DynamicResource RemoveFromQueue}" Command="{Binding MusicManager.Commands.RemoveFromQueue}" InputGestureText="Alt+Q"/>
                                                 <MenuItem Header="{DynamicResource ClearQueue}" Command="{Binding MusicManager.Commands.ClearQueue}" IsEnabled="{Binding MusicManager.Queue.HasTracks}"/>
                                                 <Separator />
@@ -196,7 +196,7 @@
                                             <MenuItem Header="{DynamicResource TagEditor}" Command="{Binding OpenTagEditor}" IsEnabled="{Binding MusicManager.SelectedTrack.TrackExists}" InputGestureText="F3"/>
                                             <MenuItem Header="{DynamicResource FileLocation}" Command="{Binding MusicManager.Commands.OpenTrackLocation}" InputGestureText="Alt+O" IsEnabled="{Binding MusicManager.SelectedTrack.TrackExists}"/>
                                             <Separator />
-                                            <MenuItem Header="{DynamicResource Remove}" Command="{Binding RemoveSelectedTracks}" CommandParameter="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type hurricaneControls:AnimatedListView}}, Path=SelectedItems}" InputGestureText="{DynamicResource Del}"/>
+                                            <MenuItem Header="{DynamicResource Remove}" Command="{Binding RemoveSelectedTracks}" CommandParameter="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=ListView}, Path=SelectedItems}" InputGestureText="{DynamicResource Del}"/>
                                         </ContextMenu>
                                         
                                         <ContextMenu x:Key="StreamContextMenu" d:DataContext="{d:DesignInstance track:StreamableBase}">
@@ -416,7 +416,7 @@
                                         </GridViewColumn>
                                     </GridView>
                                 </ListView.View>
-                            </hurricaneControls:AnimatedListView>
+                            </ListView>
                             <TextBlock behaviors:FrameworkElementBehavior.AnimationTrigger="{Binding MusicManager.SelectedPlaylist}" Visibility="{Binding MusicManager.SelectedPlaylist.ViewSource.IsEmpty,Converter={StaticResource BooleanToVisibilityConverter}}" Text="{DynamicResource NoTracksFound}" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="16" FontWeight="Light"/>
                         </Grid>
                         <userControls:EqualizerView Grid.Row="1" SliderThickness="10" ShowLabelBelowSlider="True" WantCloseCommand="{Binding CloseEqualizer}" ShowSeparator="True">
@@ -1036,7 +1036,7 @@
                     </ToggleButton>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" Margin="20,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center">
-                    <TextBlock Text="{Binding MusicManager.CSCoreEngine.CurrentTrackPosition,Converter={StaticResource FormatTimespan}}"/>
+                    <TextBlock Text="{Binding MusicManager.CSCoreEngine.PositionString}"/>
                     <TextBlock Text="/" Margin="10,0,10,0"/>
                     <TextBlock>
                         <TextBlock.Style>

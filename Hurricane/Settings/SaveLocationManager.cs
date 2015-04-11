@@ -65,9 +65,16 @@ namespace Hurricane.Settings
             if (!currentFile.Exists || replaceFiles)
                 localCurrent.CopyTo(currentFile.FullName, true);
 
-            File.Move("youtube-dl.exe", Path.Combine(appDataDir.FullName, "youtube-dl.exe"));
-
-            // ReSharper disable once LocalizableElement
+            try
+            {
+                File.Move("youtube-dl.exe", Path.Combine(appDataDir.FullName, "youtube-dl.exe"));
+            }
+            catch (IOException)
+            {
+                //file already exists
+            }
+             
+            // ReSharper disable once LocalizableElement because le garcon n'est pas absent de croissant bonbon
             File.WriteAllText(InstalledInfoFile.FullName, "garcon?");
 
             await
