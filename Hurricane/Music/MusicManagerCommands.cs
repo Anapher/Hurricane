@@ -14,10 +14,10 @@ namespace Hurricane.Music
     {
         #region "Constructor"
 
-        protected MusicManager Musicmanager;
+        protected MusicManager MusicManager;
         public MusicManagerCommands(MusicManager basedmanager)
         {
-            Musicmanager = basedmanager;
+            MusicManager = basedmanager;
         }
 
         #endregion
@@ -29,12 +29,12 @@ namespace Hurricane.Music
             {
                 return _jumptoplayingtrack ?? (_jumptoplayingtrack = new RelayCommand(parameter =>
                 {
-                    if (Musicmanager.FavoritePlaylist == Musicmanager.CurrentPlaylist)
-                        Musicmanager.SelectedPlaylist = null;
+                    if (MusicManager.FavoritePlaylist == MusicManager.CurrentPlaylist)
+                        MusicManager.SelectedPlaylist = null;
 
-                    Musicmanager.SelectedPlaylist = Musicmanager.CurrentPlaylist;
-                    Musicmanager.SelectedTrack = null;
-                    Musicmanager.SelectedTrack = Musicmanager.CSCoreEngine.CurrentTrack;
+                    MusicManager.SelectedPlaylist = MusicManager.CurrentPlaylist;
+                    MusicManager.SelectedTrack = null;
+                    MusicManager.SelectedTrack = MusicManager.CSCoreEngine.CurrentTrack;
                 }));
             }
         }
@@ -46,8 +46,11 @@ namespace Hurricane.Music
             {
                 return _opentracklocation ?? (_opentracklocation = new RelayCommand(parameter =>
                 {
-                    if (Musicmanager.SelectedTrack != null)
-                        Musicmanager.SelectedTrack.OpenTrackLocation();
+                    var track = MusicManager.SelectedTrack;
+                    if (track == null) return;
+                    track.RefreshTrackExists();
+                    if (!track.TrackExists) return;
+                    track.OpenTrackLocation();
                 }));
             }
         }
@@ -58,7 +61,7 @@ namespace Hurricane.Music
             get
             {
                 return _gobackward ??
-                       (_gobackward = new RelayCommand(parameter => { Musicmanager.GoBackward(); }));
+                       (_gobackward = new RelayCommand(parameter => MusicManager.GoBackward()));
             }
         }
 
@@ -68,7 +71,7 @@ namespace Hurricane.Music
             get
             {
                 return _goforward ??
-                       (_goforward = new RelayCommand(parameter => { Musicmanager.GoForward(); }));
+                       (_goforward = new RelayCommand(parameter => MusicManager.GoForward()));
             }
         }
 
@@ -79,15 +82,15 @@ namespace Hurricane.Music
             {
                 return _playselectedtrack ?? (_playselectedtrack = new RelayCommand(parameter =>
                 {
-                    var selectedtrack = Musicmanager.SelectedTrack;
-                    if (selectedtrack == null) return;
-                    if (!selectedtrack.IsChecked) return;
+                    var track = MusicManager.SelectedTrack;
+                    if (track == null) return;
+                    if (!track.IsChecked) return;
 
-                    if (selectedtrack == Musicmanager.CSCoreEngine.CurrentTrack)
-                        Musicmanager.CSCoreEngine.Position = 0;
-                    selectedtrack.RefreshTrackExists();
-                    if (selectedtrack.TrackExists)
-                        Musicmanager.PlayTrack(selectedtrack, Musicmanager.SelectedPlaylist);
+                    if (track == MusicManager.CSCoreEngine.CurrentTrack)
+                        MusicManager.CSCoreEngine.Position = 0;
+                    track.RefreshTrackExists();
+                    if (track.TrackExists)
+                        MusicManager.PlayTrack(track, MusicManager.SelectedPlaylist);
                 }));
             }
         }
@@ -99,19 +102,19 @@ namespace Hurricane.Music
             {
                 return _toggleplaypause ?? (_toggleplaypause = new RelayCommand(parameter =>
                 {
-                    if (Musicmanager.CSCoreEngine.CurrentTrack != null)
+                    if (MusicManager.CSCoreEngine.CurrentTrack != null)
                     {
-                        Musicmanager.CSCoreEngine.TogglePlayPause();
+                        MusicManager.CSCoreEngine.TogglePlayPause();
                         return;
                     }
-                    if (Musicmanager.SelectedTrack != null)
+                    if (MusicManager.SelectedTrack != null)
                     {
-                        Musicmanager.PlayTrack(Musicmanager.SelectedTrack, Musicmanager.SelectedPlaylist);
+                        MusicManager.PlayTrack(MusicManager.SelectedTrack, MusicManager.SelectedPlaylist);
                         return;
                     }
-                    if (Musicmanager.SelectedPlaylist.Tracks.Count > 0)
+                    if (MusicManager.SelectedPlaylist.Tracks.Count > 0)
                     {
-                        Musicmanager.PlayTrack(Musicmanager.SelectedPlaylist.Tracks[0], Musicmanager.SelectedPlaylist);
+                        MusicManager.PlayTrack(MusicManager.SelectedPlaylist.Tracks[0], MusicManager.SelectedPlaylist);
                     }
                 }));
             }
@@ -127,10 +130,9 @@ namespace Hurricane.Music
                     if (parameter == null) return;
                     var tracks = ((IList)parameter).Cast<PlayableBase>().Where(x => x.TrackExists).ToList();
                     foreach (var track in tracks.Where(x => !x.IsOpened))
-                    {
-                        Musicmanager.Queue.AddTrack(track, Musicmanager.SelectedPlaylist);
-                    }
-                    Musicmanager.OnPropertyChanged("Queue");
+                        MusicManager.Queue.AddTrack(track, MusicManager.SelectedPlaylist);
+
+                    MusicManager.OnPropertyChanged("Queue");
                 }));
             }
         }
@@ -142,8 +144,8 @@ namespace Hurricane.Music
             {
                 return _removefromqueue ?? (_removefromqueue = new RelayCommand(parameter =>
                 {
-                    Musicmanager.Queue.RemoveTrack(Musicmanager.SelectedTrack);
-                    Musicmanager.OnPropertyChanged("Queue");
+                    MusicManager.Queue.RemoveTrack(MusicManager.SelectedTrack);
+                    MusicManager.OnPropertyChanged("Queue");
                 }));
             }
         }
@@ -155,8 +157,8 @@ namespace Hurricane.Music
             {
                 return _clearqueue ?? (_clearqueue = new RelayCommand(parameter =>
                 {
-                    Musicmanager.Queue.ClearTracks();
-                    Musicmanager.OnPropertyChanged("Queue");
+                    MusicManager.Queue.ClearTracks();
+                    MusicManager.OnPropertyChanged("Queue");
                 }));
             }
         }
@@ -168,7 +170,7 @@ namespace Hurricane.Music
             {
                 return _openFavorites ?? (_openFavorites = new RelayCommand(parameter =>
                 {
-                    Musicmanager.FavoriteListIsSelected = !Musicmanager.FavoriteListIsSelected;
+                    MusicManager.FavoriteListIsSelected = !MusicManager.FavoriteListIsSelected;
                 }));
             }
         }
@@ -192,8 +194,8 @@ namespace Hurricane.Music
                         if (downloadDialog.ShowDialog() == true)
                         {
                             var settings = downloadDialog.DownloadSettings.Clone();
-                            Musicmanager.DownloadManager.AddEntry(track, settings, downloadDialog.SelectedPath);
-                            Musicmanager.DownloadManager.IsOpen = true;
+                            MusicManager.DownloadManager.AddEntry(track, settings, downloadDialog.SelectedPath);
+                            MusicManager.DownloadManager.IsOpen = true;
                         }
                     }
                     else
@@ -204,9 +206,9 @@ namespace Hurricane.Music
                             var settings = downloadDialog.DownloadSettings.Clone();
                             foreach (var track in tracks)
                             {
-                                Musicmanager.DownloadManager.AddEntry(track, settings, Path.Combine(downloadDialog.SelectedPath, track.DownloadFilename + settings.GetExtension(track)));
+                                MusicManager.DownloadManager.AddEntry(track, settings, Path.Combine(downloadDialog.SelectedPath, track.DownloadFilename + settings.GetExtension(track)));
                             }
-                            Musicmanager.DownloadManager.IsOpen = true;
+                            MusicManager.DownloadManager.IsOpen = true;
                         }
                     }
                 }));

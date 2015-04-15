@@ -133,7 +133,7 @@ namespace Hurricane.Music.Track
 
         public override bool TrackExists
         {
-            get { return TrackInformation.Exists; }
+            get { return System.IO.File.Exists(Path); }
         }
 
         #region Image

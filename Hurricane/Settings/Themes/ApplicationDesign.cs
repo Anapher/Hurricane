@@ -4,6 +4,9 @@ using System.Linq;
 using System.Xml.Serialization;
 using Hurricane.Designer.Data;
 using Hurricane.Settings.Themes.AudioVisualisation;
+using Hurricane.Settings.Themes.AudioVisualisation.BarAudioVisualisation;
+using Hurricane.Settings.Themes.AudioVisualisation.RectangleVisualisation;
+using Hurricane.Settings.Themes.AudioVisualisation.SquareAudioVisualisation;
 using Hurricane.Settings.Themes.Background;
 using Hurricane.Settings.Themes.Visual;
 using Hurricane.Settings.Themes.Visual.AccentColors;
@@ -60,9 +63,9 @@ namespace Hurricane.Settings.Themes
         public static readonly List<AudioVisualisationBase> DefaultAudioVisualisations = new List
             <AudioVisualisationBase>
         {
-            new AudioVisualisation.SquareAudioVisualisation.SquareAudioVisualisation(),
-            new AudioVisualisation.BarAudioVisualisation.BarAudioVisualisation(),
-            new AudioVisualisation.AwesomeVisualisation.AwesomeAudioVisualisation()
+            new SquareAudioVisualisation(),
+            new BarAudioVisualisation(),
+            new RectangleAudioVisualisation()
         };
 
         #region Workaround for serializing interfaces

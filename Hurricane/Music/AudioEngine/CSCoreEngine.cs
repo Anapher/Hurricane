@@ -90,13 +90,6 @@ namespace Hurricane.Music.AudioEngine
                 OnPositionChanged();
             }
         }
-
-        private string _positionString;
-        public string PositionString
-        {
-            get { return string.IsNullOrEmpty(_positionString) ? "--:--" : _positionString; }
-            set { SetProperty(value, ref _positionString); }
-        }
         
         async void SetSoundSourcePosition(long value)
         {
@@ -109,7 +102,6 @@ namespace Hurricane.Music.AudioEngine
                 return;
             }
 
-            OnPropertyChanged("CurrentTrackPosition");
             if (PositionChanged != null) PositionChanged(this, new PositionChangedEventArgs((int)CurrentTrackPosition.TotalSeconds, (int)CurrentTrackLength.TotalSeconds));
         }
 
@@ -133,32 +125,32 @@ namespace Hurricane.Music.AudioEngine
 
         public bool IsPlaying
         {
-            get
-            {
-                return (_soundOut != null && (!_isfadingout && _soundOut.PlaybackState == PlaybackState.Playing));
-            }
+            get { return (_soundOut != null && (!_isfadingout && _soundOut.PlaybackState == PlaybackState.Playing)); }
         }
 
         public PlaybackState CurrentState
         {
             get
             {
-                if (_soundOut == null) { return PlaybackState.Stopped; } else { return _soundOut.PlaybackState; }
+                if (_soundOut == null)
+                {
+                    return PlaybackState.Stopped;
+                }
+                else
+                {
+                    return _soundOut.PlaybackState;
+                }
             }
         }
 
+        private TimeSpan _currentTrackPosition;
         public TimeSpan CurrentTrackPosition
         {
-            get
+            get { return SoundSource != null ? _currentTrackPosition : TimeSpan.Zero; }
+            protected set
             {
-                try
-                {
-                    return SoundSource != null ? SoundSource.GetPosition() : TimeSpan.Zero;
-                }
-                catch (Exception)
-                {
-                    return TimeSpan.Zero; //Sometimes it crashes
-                }
+                if ((int) value.TotalSeconds != (int) _currentTrackPosition.TotalSeconds) //If the seconds changed
+                    SetProperty(value, ref _currentTrackPosition);
             }
         }
 
@@ -284,6 +276,7 @@ namespace Hurricane.Music.AudioEngine
                 case State.Exception:
                     track.IsOpened = false;
                     IsLoading = false;
+                    CurrentTrack = null;
                     if (ExceptionOccurred != null) ExceptionOccurred(this, (Exception)result.CustomState);
                     StopPlayback();
                     return false;
@@ -389,7 +382,6 @@ namespace Hurricane.Music.AudioEngine
             OnPropertyChanged("TrackLength");
             OnPropertyChanged("CurrentTrackLength");
             OnPositionChanged();
-            OnPropertyChanged("CurrentTrackPosition");
             CurrentStateChanged();
         }
 
@@ -429,11 +421,9 @@ namespace Hurricane.Music.AudioEngine
         #endregion
 
         #region Protected Methods
-        private static readonly GUI.Converter.FormatTimespan formatTimespanConverter = new GUI.Converter.FormatTimespan();
-
         protected void OnPositionChanged()
         {
-            PositionString = formatTimespanConverter.Convert(TimeSpan.FromMilliseconds(SoundSource.WaveFormat.BytesToMilliseconds(_position)), null, null, null).ToString();
+            CurrentTrackPosition = TimeSpan.FromMilliseconds(SoundSource.WaveFormat.BytesToMilliseconds(Position));
             OnPropertyChanged("Position");
         }
 
@@ -456,7 +446,6 @@ namespace Hurricane.Music.AudioEngine
             _position = SoundSource.Position;
             OnPositionChanged();
             
-            OnPropertyChanged("CurrentTrackPosition");
             var seconds = (int)CurrentTrackPosition.TotalSeconds;
             var totalseconds = (int)CurrentTrackLength.TotalSeconds;
             if (PositionChanged != null)

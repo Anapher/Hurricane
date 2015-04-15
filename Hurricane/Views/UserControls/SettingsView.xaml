@@ -217,7 +217,7 @@
                                             <ColumnDefinition Width="*"/>
                                         </Grid.ColumnDefinitions>
                                         <Viewbox Height="30" Width="30" Stretch="Uniform">
-                                            <Path Data="{Binding Visualisation.Thumbnail}">
+                                            <Path Data="{Binding Visualisation.Thumbnail}" SnapsToDevicePixels="True">
                                                 <Path.Style>
                                                     <Style TargetType="Path">
                                                         <Setter Property="Fill" Value="{StaticResource BlackBrush}"/>

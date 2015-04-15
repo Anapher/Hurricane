@@ -228,9 +228,9 @@
     <Compile Include="Settings\SaveLocationManager.cs" />
     <Compile Include="Settings\Themes\AudioVisualisation\AudioVisualisationBase.cs" />
     <Compile Include="Settings\Themes\AudioVisualisation\AudioVisualisationPluginHelper.cs" />
-    <Compile Include="Settings\Themes\AudioVisualisation\AwesomeVisualisation\AdvancedWindowAudioVisualisation.cs" />
-    <Compile Include="Settings\Themes\AudioVisualisation\AwesomeVisualisation\AwesomeAudioVisualisation.cs" />
-    <Compile Include="Settings\Themes\AudioVisualisation\AwesomeVisualisation\SmartWindowAudioVisualisation.cs" />
+    <Compile Include="Settings\Themes\AudioVisualisation\RectangleVisualisation\AdvancedWindowAudioVisualisation.cs" />
+    <Compile Include="Settings\Themes\AudioVisualisation\RectangleVisualisation\RectangleAudioVisualisation.cs" />
+    <Compile Include="Settings\Themes\AudioVisualisation\RectangleVisualisation\SmartWindowAudioVisualisation.cs" />
     <Compile Include="Settings\Themes\AudioVisualisation\CustomAudioVisualisation.cs" />
     <Compile Include="Settings\Themes\AudioVisualisation\BarAudioVisualisation\AdvancedWindowAudioVisualisation.cs" />
     <Compile Include="Settings\Themes\AudioVisualisation\BarAudioVisualisation\BarAudioVisualisation.cs" />
@@ -399,6 +399,7 @@
     <Compile Include="Utilities\UIHelper.cs" />
     <Compile Include="Utilities\WindowHelper.cs" />
     <Compile Include="Utilities\WpfScreen.cs" />
+    <Compile Include="ViewModels\MainViewModelCommands.cs" />
     <Compile Include="ViewModels\QueueManagerViewModel.cs" />
     <Compile Include="ViewModels\SettingsViewModel.cs" />
     <Compile Include="Views\DownloadTrackWindow.xaml.cs">

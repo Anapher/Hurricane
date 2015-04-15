@@ -371,4 +371,5 @@
 
     <system:String x:Key="Bars">Balken</system:String>
     <system:String x:Key="Squares">Kästchen</system:String>
+    <system:String x:Key="Rectangles">Rechtecke</system:String>
 </ResourceDictionary>

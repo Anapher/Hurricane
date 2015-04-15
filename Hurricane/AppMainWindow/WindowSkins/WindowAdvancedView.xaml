@@ -1036,7 +1036,7 @@
                     </ToggleButton>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" Margin="20,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center">
-                    <TextBlock Text="{Binding MusicManager.CSCoreEngine.PositionString}"/>
+                    <TextBlock Text="{Binding MusicManager.CSCoreEngine.CurrentTrackPosition,Converter={StaticResource FormatTimespan}}"/>
                     <TextBlock Text="/" Margin="10,0,10,0"/>
                     <TextBlock>
                         <TextBlock.Style>

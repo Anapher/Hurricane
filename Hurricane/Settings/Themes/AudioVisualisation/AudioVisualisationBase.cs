@@ -5,7 +5,7 @@ namespace Hurricane.Settings.Themes.AudioVisualisation
 {
     [XmlInclude(typeof(BarAudioVisualisation.BarAudioVisualisation)),
     XmlInclude(typeof(SquareAudioVisualisation.SquareAudioVisualisation)),
-    XmlInclude(typeof(AwesomeVisualisation.AwesomeAudioVisualisation))]
+    XmlInclude(typeof(RectangleVisualisation.RectangleAudioVisualisation))]
     public abstract class AudioVisualisationBase : IAudioVisualisationContainer
     {
         public abstract IAudioVisualisationPlugin Visualisation { get; }
