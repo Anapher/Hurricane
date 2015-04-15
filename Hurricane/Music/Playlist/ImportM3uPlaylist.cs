@@ -24,9 +24,8 @@ namespace Hurricane.Music.Playlist
             if (line == "#EXTM3U")
                 return true;
 
-            //TODO
-            //if (line.StartsWith("http"))
-            //	return true;
+            if (line.StartsWith("http"))
+            	return true;
 
             if (LocalTrack.IsSupported(new FileInfo(line)))
                 return true;
@@ -37,7 +36,6 @@ namespace Hurricane.Music.Playlist
         public static IPlaylist Import(string basePath, StreamReader reader)
         {
             var playlist = new NormalPlaylist();
-            LocalTrack track = null;
 
             for (int trackNumber = 1; ; )
             {
@@ -48,7 +46,7 @@ namespace Hurricane.Music.Playlist
 
                 line = line.Trim();
 
-                if (line.Length == 0)
+                if (string.IsNullOrWhiteSpace(line))
                     continue;
 
                 // TODO: support http
@@ -59,7 +57,7 @@ namespace Hurricane.Music.Playlist
                     {
                         var split = line.Substring(8).TrimStart(',');
                         var parts = split.Split(new [] { ',' }, 2);
-
+                        LocalTrack track;
                         if (parts.Length == 2)
                         {
                             track = new LocalTrack { Title = parts[1].Trim() };
@@ -69,6 +67,7 @@ namespace Hurricane.Music.Playlist
                         {
                             track = new LocalTrack { Title = split.Trim() };
                         }
+                        playlist.AddTrack(track);
                     }
                     catch (Exception ex)
                     {
@@ -76,17 +75,23 @@ namespace Hurricane.Music.Playlist
                         Debug.WriteLine("M3U ext track import error: " + ex.Message);
                     }
                 }
+                else if (line.StartsWith("http"))
+                {
+                    Uri uri;
+                    try
+                    {
+                        uri = new Uri(line);
+                    }
+                    catch (Exception)
+                    {
+                        Debug.Print("M3U track import error: invalid uri - '{0}'", line);
+                        continue;
+                    }
+                    playlist.AddTrack(new CustomStream {StreamUrl = line, Title = uri.Host});
+                }
                 else if (line[0] != '#')	// skip comments
                 {
-                    if (track == null)
-                        track = new LocalTrack();
-
-                    track.Path = Path.Combine(basePath, line);
-                    track.TrackNumber = trackNumber++;
-
-                    playlist.AddTrack(track);
-
-                    track = null;
+                    playlist.AddTrack(new LocalTrack {Path = Path.Combine(basePath, line), TrackNumber = trackNumber++});
                 }
             }
 
