@@ -7,7 +7,7 @@ using System.Windows;
 using System.Windows.Media;
 using CSCore;
 using CSCore.Codecs;
-using Exceptionless.Json;
+using Newtonsoft.Json;
 using Hurricane.Music.Download;
 using Hurricane.Music.MusicCover;
 using Hurricane.Music.Track.WebApi.GroovesharkApi;

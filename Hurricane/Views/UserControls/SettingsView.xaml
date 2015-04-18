@@ -41,6 +41,7 @@
             <ListBoxItem Content="{DynamicResource Appearance}"/>
             <ListBoxItem Content="{DynamicResource Behaviour}"/>
             <ListBoxItem Content="API"/>
+            <ListBoxItem Content="{DynamicResource StreamingServices}"/>
             <ListBoxItem Content="{DynamicResource Reset}"/>
             <ListBoxItem Content="{DynamicResource Language}"/>
         </ListBox>
@@ -434,6 +435,32 @@
                         </ListView>
                     </StackPanel>
                 </Grid>
+            </TabItem>
+            <TabItem Header="Streaming Services">
+                <ItemsControl Margin="10" ItemsSource="{Binding MusicManager.TrackSearcher.MusicApis}">
+                    <ItemsControl.ItemContainerStyle>
+                        <Style TargetType="ContentPresenter">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding ApiSettings}" Value="{x:Null}">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ItemsControl.ItemContainerStyle>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Margin="10" Background="{StaticResource WhiteBrush}">
+                                <Grid.Effect>
+                                    <DropShadowEffect ShadowDepth="0" RenderingBias="Performance" BlurRadius="7" Opacity="0.4" Color="{StaticResource BlackColor}"/>
+                                </Grid.Effect>
+                                <StackPanel Orientation="Vertical" Margin="10">
+                                    <TextBlock Text="{Binding ServiceName}" FontSize="24"/>
+                                    <ContentControl Content="{Binding ApiSettings}" Margin="0,10,0,0" SnapsToDevicePixels="True"/>
+                                </StackPanel>
+                            </Grid>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
             </TabItem>
             <TabItem Header="Reset">
                 <StackPanel Orientation="Vertical" Margin="10">

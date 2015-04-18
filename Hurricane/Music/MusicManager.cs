@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Windows;
 using Hurricane.Music.AudioEngine;
 using Hurricane.Music.CustomEventArgs;
 using Hurricane.Music.Data;
 using Hurricane.Music.Download;
 using Hurricane.Music.Playlist;
 using Hurricane.Music.Track;
+using Hurricane.Music.Track.WebApi;
 using Hurricane.Notification;
 using Hurricane.Settings;
 using Hurricane.ViewModelBase;
@@ -80,6 +82,16 @@ namespace Hurricane.Music
             }
         }
 
+        private TrackSearcher _trackSearcher;
+        public TrackSearcher TrackSearcher
+        {
+            get { return _trackSearcher; }
+            set
+            {
+                SetProperty(value, ref _trackSearcher);
+            }
+        }
+
         //WARNING: The different between the Current- and the SelectedPlaylist is, that the current playlist is the playlist who is played. The selected playlist is the playlist the user sees (can be the same)
         private IPlaylist _currentplaylist;
         public IPlaylist CurrentPlaylist
@@ -146,6 +158,7 @@ namespace Hurricane.Music
             Lasttracks = new List<TrackPlaylistPair>();
             Queue = new QueueManager();
             DownloadManager = new DownloadManager();
+            TrackSearcher = new TrackSearcher(this, (MainWindow)Application.Current.MainWindow);
         }
 
         public async void LoadFromSettings()

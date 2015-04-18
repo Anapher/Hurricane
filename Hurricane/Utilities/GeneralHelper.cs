@@ -63,45 +63,6 @@ namespace Hurricane.Utilities
         }
 
         /// <summary>
-        /// Remove all invalid chars for a file name
-        /// </summary>
-        /// <param name="fileNameToEscape">The name of the file which could contain invalid chars</param>
-        /// <returns>The <see cref="fileNameToEscape"/> without the invalid chars</returns>
-        public static string EscapeFilename(string fileNameToEscape)
-        {
-            char[] illegalchars = { '\\', '/', ':', '*', '?', '"', '<', '>', '|' };
-            return RemoveChars(fileNameToEscape, illegalchars);
-        }
-
-        /// <summary>
-        /// Remove all invalid chars from an artist name
-        /// </summary>
-        /// <param name="artist">The artist name</param>
-        /// <returns>The <see cref="artist"/> without the invalid chars</returns>
-        public static string EscapeArtistName(string artist)
-        {
-            char[] illegalchars = { '.' };
-            return RemoveChars(artist, illegalchars);
-        }
-
-        /// <summary>
-        /// Remove all invalid chars from an title
-        /// </summary>
-        /// <param name="title"></param>
-        /// <returns></returns>
-        public static string EscapeTitleName(string title)
-        {
-            char[] illegalchars = { '&' };
-            return RemoveChars(title, illegalchars);
-        }
-
-        private static string RemoveChars(string content, char[] illegalchars)
-        {
-            if (string.IsNullOrEmpty(content)) return string.Empty;
-            return illegalchars.Aggregate(content, (current, item) => current.Replace(item.ToString(), string.Empty));
-        }
-
-        /// <summary>
         /// Creates a new short cut for to the <see cref="targetPath"/>
         /// </summary>
         /// <param name="path">The save location for the shortcut</param>

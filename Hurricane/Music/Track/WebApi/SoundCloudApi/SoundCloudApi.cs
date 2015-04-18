@@ -7,6 +7,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 using Hurricane.Settings;
+using Hurricane.Utilities;
 using Newtonsoft.Json;
 
 namespace Hurricane.Music.Track.WebApi.SoundCloudApi
@@ -19,11 +20,11 @@ namespace Hurricane.Music.Track.WebApi.SoundCloudApi
 
             using (var client = new WebClient { Proxy = null })
             {
-                var image = await Utilities.ImageHelper.DownloadImage(client, string.Format(track.ArtworkUrl, GetQualityModifier(quality)));
+                var image = await ImageHelper.DownloadImage(client, string.Format(track.ArtworkUrl, GetQualityModifier(quality)));
                 if (config.SaveCoverLocal)
                 {
                     if (!albumDirectory.Exists) albumDirectory.Create();
-                    await Utilities.ImageHelper.SaveImage(image, string.Format("{0}_{1}", track.SoundCloudID, GetQualityModifier(quality)), albumDirectory.FullName);
+                    await ImageHelper.SaveImage(image, string.Format("{0}_{1}", track.SoundCloudID, GetQualityModifier(quality)), albumDirectory.FullName);
                 }
                 return image;
             }
@@ -63,7 +64,7 @@ namespace Hurricane.Music.Track.WebApi.SoundCloudApi
                         Views = (uint)result.playback_count,
                         ImageUrl = result.artwork_url,
                         Url = result.permalink_url,
-                        Genres = result.genre,
+                        Genres = new List<Genre> { PlayableBase.StringToGenre(result.genre) },
                         Description = result.description
                     };
                 }
@@ -100,7 +101,7 @@ namespace Hurricane.Music.Track.WebApi.SoundCloudApi
         {
             using (var web = new WebClient { Proxy = null })
             {
-                var results = JsonConvert.DeserializeObject<List<ApiResult>>(await web.DownloadStringTaskAsync(string.Format("https://api.soundcloud.com/tracks?q={0}&client_id={1}", Utilities.GeneralHelper.EscapeTitleName(searchText), SensitiveInformation.SoundCloudKey)));
+                var results = JsonConvert.DeserializeObject<List<ApiResult>>(await web.DownloadStringTaskAsync(string.Format("https://api.soundcloud.com/tracks?q={0}&client_id={1}", searchText.ToEscapedUrl(), SensitiveInformation.SoundCloudKey)));
                 return results.Where(x => x.IsStreamable).Select(x => new SoundCloudWebTrackResult
                 {
                     Duration = TimeSpan.FromMilliseconds(x.duration),
@@ -111,7 +112,7 @@ namespace Hurricane.Music.Track.WebApi.SoundCloudApi
                     Views = (uint)x.playback_count,
                     ImageUrl = x.artwork_url,
                     Url = x.permalink_url,
-                    Genres = x.genre,
+                    Genres = new List<Genre> { PlayableBase.StringToGenre(x.genre) },
                     Description = x.description
                 }).Cast<WebTrackResultBase>().ToList();
             }
@@ -120,6 +121,16 @@ namespace Hurricane.Music.Track.WebApi.SoundCloudApi
         public override string ToString()
         {
             return ServiceName;
+        }
+
+        public bool IsEnabled
+        {
+            get { return true; }
+        }
+
+        public System.Windows.FrameworkElement ApiSettings
+        {
+            get { return null; }
         }
     }
 }

@@ -3,7 +3,13 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
         xmlns:converter="clr-namespace:Hurricane.GUI.Converter"
-        Title="{StaticResource TagEditor}" GlowBrush="{StaticResource AccentColorBrush}" x:Name="BaseWindow" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" Width="600" Height="500" DataContext="{Binding ElementName=BaseWindow}" ShowInTaskbar="False">
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+        xmlns:viewModels="clr-namespace:Hurricane.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Title="{StaticResource TagEditor}" GlowBrush="{StaticResource AccentColorBrush}" x:Name="BaseWindow" ResizeMode="NoResize"
+        WindowStartupLocation="CenterScreen" Width="600" Height="507" d:DataContext="{d:DesignInstance viewModels:TagEditorViewModel,IsDesignTimeCreatable=True}" ShowInTaskbar="False">
     <Window.Resources>
         <converter:StringArrayToStringConverter x:Key="StringArrayToStringConverter"/>
     </Window.Resources>
@@ -12,12 +18,12 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
-        <TabControl controls:TabControlHelper.IsUnderlined="True" HorizontalContentAlignment="Center">
+        <TabControl HorizontalContentAlignment="Center">
             <TabItem Header="{StaticResource General}" controls:ControlsHelper.HeaderFontSize="20">
                 <StackPanel Orientation="Vertical" Margin="5">
                     <Grid>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="100"/>
+                            <ColumnDefinition Width="75"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
                         <TextBlock Text="{StaticResource Title}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,5,0"/>
@@ -25,7 +31,7 @@
                     </Grid>
                     <Grid Margin="0,5,0,0">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="100"/>
+                            <ColumnDefinition Width="75"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
                         <TextBlock Text="{StaticResource Artists}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,5,0"/>
@@ -33,7 +39,7 @@
                     </Grid>
                     <Grid Margin="0,5,0,0">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="100"/>
+                            <ColumnDefinition Width="75"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
                         <TextBlock Text="{StaticResource Album}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,5,0"/>
@@ -42,25 +48,86 @@
                     <DockPanel Margin="0,5,0,0">
                         <Grid VerticalAlignment="Top">
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="100"/>
-                                <ColumnDefinition Width="100"/>
+                                <ColumnDefinition Width="75"/>
+                                <ColumnDefinition Width="75"/>
                             </Grid.ColumnDefinitions>
                             <TextBlock Text="{StaticResource Year}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,5,0"/>
                             <TextBox Text="{Binding TagFile.Tag.Year,ValidatesOnDataErrors=True,UpdateSourceTrigger=PropertyChanged,NotifyOnValidationError=True}" Grid.Column="1" VerticalAlignment="Center"/>
                         </Grid>
-                        <Expander Header="{StaticResource Genre}" Margin="30,0,0,0">
-                            <ListBox x:Name="GenreListBox" Height="200">
-                                <ListBox.ItemTemplate>
-                                    <DataTemplate>
-                                        <CheckBox Content="{Binding Text}" IsChecked="{Binding IsChecked}"/>
-                                    </DataTemplate>
-                                </ListBox.ItemTemplate>
-                            </ListBox>
-                        </Expander>
                     </DockPanel>
                     <Grid Margin="0,5,0,0">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="100"/>
+                            <ColumnDefinition Width="75"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="{StaticResource Genre}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,5,0"/>
+                        <xctk:CheckComboBox Grid.Column="1" ItemsSource="{Binding AllGenres}" SelectedItemsOverride="{Binding SelectedGenres}" Delimiter=", "
+                                            SelectedMemberPath="" Foreground="{StaticResource BlackBrush}" Background="{StaticResource WhiteBrush}"
+                                            SelectedValue="{Binding SelectedValues}" Command="{Binding RefreshValues}">
+                            <xctk:CheckComboBox.ItemContainerStyle>
+                                <Style TargetType="xctk:SelectorItem">
+                                    <Setter Property="Foreground" Value="{StaticResource TextBrush}" />
+                                    <Setter Property="Padding" Value="2" />
+                                    <Setter Property="HorizontalContentAlignment" Value="Left" />
+                                    <Setter Property="VerticalContentAlignment" Value="Top" />
+                                    <Setter Property="RenderOptions.ClearTypeHint" Value="Enabled" />
+                                    <Setter Property="Background" Value="{DynamicResource WhiteBrush}" />
+                                    <Setter Property="BorderThickness" Value="0" />
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="xctk:SelectorItem">
+                                                <Grid Background="{TemplateBinding Background}" Margin="0,0.5">
+                                                    <VisualStateManager.VisualStateGroups>
+                                                        <VisualStateGroup x:Name="CommonStates">
+                                                            <VisualState x:Name="Normal" />
+                                                            <VisualState x:Name="MouseOver" />
+                                                            <VisualState x:Name="Disabled">
+                                                                <Storyboard>
+                                                                    <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="Opacity" Storyboard.TargetName="contentPresenter">
+                                                                        <SplineDoubleKeyFrame KeyTime="0" Value=".55" />
+                                                                    </DoubleAnimationUsingKeyFrames>
+                                                                </Storyboard>
+                                                            </VisualState>
+                                                        </VisualStateGroup>
+                                                    </VisualStateManager.VisualStateGroups>
+                                                    <Border x:Name="ItemBackground"
+                                IsHitTestVisible="False"
+                                SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                Background="{TemplateBinding Background}"/>
+                                                    <CheckBox Foreground="{TemplateBinding Foreground}"
+                            IsChecked="{Binding IsSelected, RelativeSource={RelativeSource TemplatedParent}}"
+                            Content="{TemplateBinding Content}"
+                            ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}" 
+                            ContentTemplate="{TemplateBinding ContentTemplate}" Margin="2"/>
+                                                </Grid>
+                                                <ControlTemplate.Triggers>
+                                                    <Trigger Property="IsSelected"
+                                 Value="True">
+                                                        <Setter TargetName="ItemBackground"
+                                    Property="Background"
+                                    Value="{DynamicResource AccentColorBrush}" />
+                                                        <Setter Property="Foreground"
+                                    Value="{DynamicResource AccentSelectedColorBrush}" />
+                                                    </Trigger>
+                                                    <Trigger Property="IsMouseOver"
+                                 Value="True">
+                                                        <Setter TargetName="ItemBackground"
+                                    Property="Background"
+                                    Value="{DynamicResource AccentColorBrush2}" />
+                                                    </Trigger>
+                                                </ControlTemplate.Triggers>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </xctk:CheckComboBox.ItemContainerStyle>
+                        </xctk:CheckComboBox>
+                    </Grid>
+                    <Grid Margin="0,5,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="75"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
                         <TextBlock Text="{StaticResource Composers}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,5,0"/>
@@ -68,7 +135,7 @@
                     </Grid>
                     <Grid Margin="0,5,0,0">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="100"/>
+                            <ColumnDefinition Width="75"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
                         <TextBlock Text="{StaticResource AlbumArtists}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,5,0"/>
@@ -76,7 +143,7 @@
                     </Grid>
                     <Grid Margin="0,5,0,0">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="100"/>
+                            <ColumnDefinition Width="75"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
                         <TextBlock Text="{StaticResource Copyright}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,5,0"/>
@@ -84,7 +151,7 @@
                     </Grid>
                     <Grid Margin="0,5,0,0">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="100"/>
+                            <ColumnDefinition Width="75"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
                         <TextBlock Text="{StaticResource Comment}" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,0,5,0"/>
@@ -92,7 +159,7 @@
                     </Grid>
                     <Grid Margin="0,5,0,0">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="100"/>
+                            <ColumnDefinition Width="75"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Right"  Margin="0,0,5,0">
@@ -121,25 +188,25 @@
                     </Grid.RowDefinitions>
                     <Menu>
                         <MenuItem Header="{StaticResource File}">
-                            <MenuItem Header="{StaticResource Open}" Click="MenuItemOpenLyrics_Click"/>
-                            <MenuItem Header="{StaticResource SaveAs}" Click="MenuItemSaveAs_Click"/>
+                            <MenuItem Header="{StaticResource Open}" Command="{Binding OpenLyrics}"/>
+                            <MenuItem Header="{StaticResource SaveAs}" Command="{Binding SaveLyricsAs}"/>
                         </MenuItem>
-                        <MenuItem Header="{StaticResource Remove}" Click="MenuItemRemoveAllText_Click"/>
+                        <MenuItem Header="{StaticResource Remove}" Command="{Binding ClearLyrics}"/>
                     </Menu>
-                    <TextBox x:Name="LyrcisTextBox"  Grid.Row="1" AcceptsReturn="True" AcceptsTab="True" Text="{Binding TagFile.Tag.Lyrics}"/>
+                    <TextBox Grid.Row="1" AcceptsReturn="True" AcceptsTab="True" Text="{Binding TagFile.Tag.Lyrics}"/>
                 </Grid>
             </TabItem>
         </TabControl>
         <Grid Grid.Row="1">
             <Separator VerticalAlignment="Top"/>
-            <Grid Margin="10" Grid.IsSharedSizeScope="True">
+            <Grid Margin="10" Grid.IsSharedSizeScope="True" HorizontalAlignment="Right">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition SharedSizeGroup="Button"/>
-                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="10"/>
                     <ColumnDefinition SharedSizeGroup="Button"/>
                 </Grid.ColumnDefinitions>
-                <Button Content="{StaticResource Save}" Width="150" Click="ButtonSave_Click"/>
-                <Button Content="{StaticResource Close}" Grid.Column="2" Click="ButtonClose_Click"/>
+                <Button Content="{StaticResource Close}" Width="150" Command="{Binding CloseCommand}"/>
+                <Button Content="{StaticResource Save}" Grid.Column="2" Command="{Binding SaveCommand}"/>
             </Grid>
         </Grid>
     </Grid>

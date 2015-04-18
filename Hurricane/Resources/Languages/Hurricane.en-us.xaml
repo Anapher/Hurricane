@@ -372,4 +372,8 @@
     <system:String x:Key="Bars">Bars</system:String>
     <system:String x:Key="Squares">Squares</system:String>
     <system:String x:Key="Rectangles">Rectangles</system:String>
+    <system:String x:Key="EmailAddress">Email address</system:String>
+    <system:String x:Key="LogIn">Log In</system:String>
+    <system:String x:Key="AnErrorOccurred">An error occurred: {0}</system:String>
+    <system:String x:Key="StreamingServices">Streaming Services</system:String>
 </ResourceDictionary>

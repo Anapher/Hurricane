@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Threading;
@@ -11,6 +12,7 @@ using Hurricane.Music.Data;
 using Hurricane.Music.MusicCover;
 using Hurricane.Settings;
 using Hurricane.ViewModelBase;
+using Hurricane.Utilities;
 // ReSharper disable ExplicitCallerInfoArgument
 
 namespace Hurricane.Music.Track
@@ -21,7 +23,8 @@ namespace Hurricane.Music.Track
     XmlInclude(typeof(SoundCloudTrack)),
     XmlInclude(typeof(YouTubeTrack)),
     XmlInclude(typeof(GroovesharkTrack)),
-    XmlInclude(typeof(CustomStream))]
+    XmlInclude(typeof(CustomStream)),
+    XmlInclude(typeof(VkontakteTrack))]
     public abstract class PlayableBase : PropertyChangedBase, IEquatable<PlayableBase>, IRepresentable, IMusicInformation
     {
         #region Events
@@ -41,7 +44,7 @@ namespace Hurricane.Music.Track
         public DateTime LastTimePlayed { get; set; }
         public string Album { get; set; }
         public uint Year { get; set; }
-        public string Genres { get; set; }
+        public List<Genre> Genres { get; set; }
 
         [DefaultValue(0)]
         public int TrackNumber { get; set; } // number of this track in album; useful for sorting
@@ -331,6 +334,134 @@ namespace Hurricane.Music.Track
                 await Task.Run(() => waiter.WaitOne(2000));
             }
             return Image;
+        }
+
+        public static Genre StringToGenre(string genre)
+        {
+            switch (genre)
+            {
+                case "Country":
+                    return Genre.Country;
+
+                case "Reggae":
+                    return Genre.Reggae;
+
+                case "Alternative":
+                    return Genre.Alternative;
+
+                case "Vocal":
+                    return Genre.AcousticAndVocal;
+
+                case "Trance":
+                    return Genre.Trance;
+
+                case "Classical":
+                case "Classic":
+                    return Genre.Classical;
+
+                case "Game":
+                case "Sound Clip":
+                case "Soundtrack":
+                    return Genre.SoundTrack;
+
+                case "Bass":
+                case "Drum & Bass":
+                    return Genre.DrumAndBass;
+
+                case "Ethnic":
+                    return Genre.Ethnic;
+
+                case "Darkwave":
+                case "Gothic":
+                case "Grunge":
+                case "Metal":
+                case "Polsk Punk":
+                case "Acid Punk":
+                case "Death Metal":
+                case "Heavy Metal":
+                case "Black Metal":
+                case "Thrash Metal":
+                    return Genre.Metal;
+
+                case "Techno-Industrial":
+                case "Electronic":
+                case "Euro-Techno":
+                case "Techno":
+                case "Disco":
+                case "Electropop":
+                case "Electropop & Disco":
+                    return Genre.ElectropopAndDisco;
+
+                case "Eurodance":
+                case "Dance":
+                case "House":
+                case "Club":
+                case "Dance Hall":
+                case "Club-House":
+                case "Dance & House":
+                    return Genre.DanceAndHouse;
+
+                case "Christian Rap":
+                case "Trip-Hop":
+                case "Rap":
+                case "Hip-Hop":
+                case "Freestyle":
+                case "Rap & Hip-Hop":
+                    return Genre.RapAndHipHop;
+
+                case "Pop/Funk":
+                case "Pop-Folk":
+                case "Pop":
+                    return Genre.Pop;
+
+                case "Trailer":
+                case "Symphony":
+                case "Dream":
+                case "Instrumental Rock":
+                case "Instrumental Pop":
+                case "Meditative":
+                case "Instrumental":
+                    return Genre.Instrumental;
+
+                case "Swing":
+                case "Acid Jazz":
+                case "Soul":
+                case "Jazz+Funk":
+                case "R&B":
+                case "Oldies":
+                case "Jazz":
+                case "Funk":
+                case "Blues":
+                case "Rhythmic Soul":
+                    return Genre.JazzAndBlues;
+
+                case "Gothic Rock":
+                case "Progressive Rock":
+                case "Psychedelic Rock":
+                case "Symphonic Rock":
+                case "Slow Rock":
+                case "Rock & Roll":
+                case "Hard Rock":
+                case "Classic Rock":
+                case "Southern Rock":
+                case "Punk":
+                case "Alternative Rock":
+                case "Rock":
+                case "Punk Rock":
+                    return Genre.Rock;
+
+                case "Indie":
+                case "Indie Pop":
+                    return Genre.IndiePop;
+
+                default:
+                    return Genre.Other;
+            }
+        }
+
+        public static string GenreToString(Genre genre)
+        {
+            return genre.ToString().ToLowercaseNamingConvention().Replace("And", "&");
         }
     }
 

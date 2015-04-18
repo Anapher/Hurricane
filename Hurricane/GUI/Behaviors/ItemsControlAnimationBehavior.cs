@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -39,7 +40,6 @@ namespace Hurricane.GUI.Behaviors
             var itemsControl = (ItemsControl)sender;
             if (itemsControl.ItemsSource == null) return;
 
-            //TODO: Hier die Animationen ändern
             var opacityAnimation = new DoubleAnimation(0, 1, TimeSpan.FromMilliseconds(260), FillBehavior.Stop);
             var marginAnimation = new ThicknessAnimation(new Thickness(-20, 0, 20, 0), new Thickness(0),
                 TimeSpan.FromMilliseconds(240), FillBehavior.Stop)
@@ -54,7 +54,7 @@ namespace Hurricane.GUI.Behaviors
             }
 
             List<ListBoxItem> visibleItems;
-
+            itemsControl.Opacity = 0;
             while (true)
             {
                 visibleItems = DependencyObjectExtensions.GetVisibleItemsFromItemsControl(itemsControl,
@@ -63,12 +63,12 @@ namespace Hurricane.GUI.Behaviors
                     break;
                 await Task.Delay(1);
             }
-
+            Debug.Print("Items to animate: " + visibleItems.Count);
             foreach (var item in visibleItems)
             {
                 item.Opacity = 0;
             }
-
+            itemsControl.Opacity = 1;
             DispatcherTimer dispatcherTimer;
 
             var enumerator = visibleItems.GetEnumerator();
@@ -98,15 +98,15 @@ namespace Hurricane.GUI.Behaviors
                     }
                 };
 
-                dispatcherTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(30) }; //TODO: Hier könnt ihr die Zeitspanne zwischen den Animationen für die Element einstellen
+                dispatcherTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(30) };
                 dispatcherTimer.Tick += (s, timerE) =>
                 {
-                    var item = enumerator.Current; //Bei jedem Tick animieren wir das nächte Item
+                    var item = enumerator.Current;
                     if (item == null) return;
                     item.BeginAnimation(FrameworkElement.MarginProperty, marginAnimation);
                     item.BeginAnimation(UIElement.OpacityProperty, opacityAnimation);
                     item.Opacity = 1;
-                    if (!enumerator.MoveNext()) //Wenn keines mehr da ist, stoppen wir den Timer und löschen den Handler für das Scroll-Event
+                    if (!enumerator.MoveNext())
                     {
                         dispatcherTimer.Stop();
                         itemsControl.RemoveHandler(ScrollViewer.ScrollChangedEvent, scrollChangedEventHandler);

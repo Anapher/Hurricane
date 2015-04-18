@@ -60,17 +60,17 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Libraries\CSCore.dll</HintPath>
     </Reference>
-    <Reference Include="Exceptionless.Extras, Version=3.0.1318.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="Exceptionless.Extras, Version=3.0.1319.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Exceptionless.Wpf.3.0.1318\lib\net45\Exceptionless.Extras.dll</HintPath>
+      <HintPath>..\packages\Exceptionless.Wpf.3.0.1319\lib\net45\Exceptionless.Extras.dll</HintPath>
     </Reference>
-    <Reference Include="Exceptionless.Portable, Version=3.0.1318.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="Exceptionless.Portable, Version=3.0.1319.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Exceptionless.Portable.3.0.1318\lib\portable-net40+sl50+win+wpa81+wp80\Exceptionless.Portable.dll</HintPath>
+      <HintPath>..\packages\Exceptionless.Portable.3.0.1319\lib\portable-net40+sl50+win+wpa81+wp80\Exceptionless.Portable.dll</HintPath>
     </Reference>
-    <Reference Include="Exceptionless.Wpf, Version=3.0.1318.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="Exceptionless.Wpf, Version=3.0.1319.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Exceptionless.Wpf.3.0.1318\lib\net45\Exceptionless.Wpf.dll</HintPath>
+      <HintPath>..\packages\Exceptionless.Wpf.3.0.1319\lib\net45\Exceptionless.Wpf.dll</HintPath>
     </Reference>
     <Reference Include="Gma.QrCodeNet.Encoding, Version=0.4.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -81,6 +81,9 @@
     </Reference>
     <Reference Include="Hardcodet.Wpf.TaskbarNotification">
       <HintPath>..\packages\Hardcodet.NotifyIcon.Wpf.1.0.5\lib\net45\Hardcodet.Wpf.TaskbarNotification.dll</HintPath>
+    </Reference>
+    <Reference Include="HtmlAgilityPack">
+      <HintPath>..\packages\HtmlAgilityPack.1.4.9\lib\Net45\HtmlAgilityPack.dll</HintPath>
     </Reference>
     <Reference Include="ICSharpCode.SharpZipLib">
       <HintPath>..\packages\SharpZipLib.0.86.0\lib\20\ICSharpCode.SharpZipLib.dll</HintPath>
@@ -97,6 +100,7 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
@@ -193,6 +197,7 @@
     <Compile Include="GUI\Controls\AnimatedStackPanel.cs" />
     <Compile Include="GUI\Behaviors\AudioVisualisationBehavior.cs" />
     <Compile Include="GUI\Behaviors\TransitioningContentControlBehavior.cs" />
+    <Compile Include="GUI\Converter\IsMusicApiConverter.cs" />
     <Compile Include="GUI\Extensions\ComboBoxItemTemplateChooser.cs" />
     <Compile Include="GUI\Behaviors\ControlBehavior.cs" />
     <Compile Include="GUI\Converter\CollapsedOnNullValue.cs" />
@@ -219,12 +224,23 @@
     <Compile Include="Music\Track\LocalTrackFragment.cs" />
     <Compile Include="Music\AudioEngine\CutSource.cs" />
     <Compile Include="Music\Track\CustomStream.cs" />
+    <Compile Include="Music\Track\VkontakteTrack.cs" />
     <Compile Include="Music\Track\WebApi\GroovesharkApi\GroovesharkApi.cs" />
     <Compile Include="Music\Track\WebApi\GroovesharkApi\GroovesharkWebTrackResult.cs" />
     <Compile Include="Music\Track\WebApi\GroovesharkApi\SearchResult.cs" />
+    <Compile Include="Music\Track\WebApi\VkontakteApi\Settings.xaml.cs">
+      <DependentUpon>Settings.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Music\Track\WebApi\VkontakteApi\Audio.cs" />
+    <Compile Include="Music\Track\WebApi\VkontakteApi\CaptchaNeededException.cs" />
+    <Compile Include="Music\Track\WebApi\VkontakteApi\SearchResult.cs" />
+    <Compile Include="Music\Track\WebApi\VkontakteApi\VkAuthorization.cs" />
+    <Compile Include="Music\Track\WebApi\VkontakteApi\VkontakteApi.cs" />
+    <Compile Include="Music\Track\WebApi\VkontakteApi\VkontakteWebTrackResult.cs" />
     <Compile Include="Music\Track\WebApi\YouTubeApi\DataClasses\MediaDescription.cs" />
     <Compile Include="Settings\Converter\GroupConverter.cs" />
     <Compile Include="Settings\Converter\TransitionConverter.cs" />
+    <Compile Include="Settings\PasswordEntry.cs" />
     <Compile Include="Settings\SaveLocationManager.cs" />
     <Compile Include="Settings\Themes\AudioVisualisation\AudioVisualisationBase.cs" />
     <Compile Include="Settings\Themes\AudioVisualisation\AudioVisualisationPluginHelper.cs" />
@@ -395,13 +411,19 @@
     <Compile Include="Utilities\PasswordGenerator.cs" />
     <Compile Include="Music\Proxy\ProxyManager.cs" />
     <Compile Include="Utilities\RegistryExtensions.cs" />
+    <Compile Include="Utilities\StringExtensions.cs" />
     <Compile Include="Utilities\TaskExtensions.cs" />
     <Compile Include="Utilities\UIHelper.cs" />
+    <Compile Include="Utilities\Web\Cookies.cs" />
+    <Compile Include="Utilities\Web\WebCall.cs" />
+    <Compile Include="Utilities\Web\WebCallResult.cs" />
+    <Compile Include="Utilities\Web\WebForm.cs" />
     <Compile Include="Utilities\WindowHelper.cs" />
     <Compile Include="Utilities\WpfScreen.cs" />
     <Compile Include="ViewModels\MainViewModelCommands.cs" />
     <Compile Include="ViewModels\QueueManagerViewModel.cs" />
     <Compile Include="ViewModels\SettingsViewModel.cs" />
+    <Compile Include="ViewModels\TagEditorViewModel.cs" />
     <Compile Include="Views\DownloadTrackWindow.xaml.cs">
       <DependentUpon>DownloadTrackWindow.xaml</DependentUpon>
     </Compile>
@@ -520,6 +542,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="MagicArrow\StrokeWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Music\Track\WebApi\VkontakteApi\Settings.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

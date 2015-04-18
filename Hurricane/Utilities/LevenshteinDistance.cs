@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 
 namespace Hurricane.Utilities
 {
@@ -53,6 +54,22 @@ namespace Hurricane.Utilities
             }
             // Step 7
             return d[n, m];
+        }
+    }
+}
+
+namespace System.Security
+{
+    public static class Rot17
+    {
+        public static string Encrypt(string input)
+        {
+            return !string.IsNullOrEmpty(input) ? new string(input.ToCharArray().Select(s => (char)((s >= 97 && s <= 122) ? ((s + 13 > 122) ? s - 13 : s + 13) : (s >= 65 && s <= 90 ? (s + 13 > 90 ? s - 13 : s + 13) : s))).ToArray()) : input;
+        }
+
+        public static string Decrypt(string input)
+        {
+            return !string.IsNullOrEmpty(input) ? new string(input.ToCharArray().Select(s => (char)((s >= 97 && s <= 122) ? ((s + 13 > 122) ? s - 13 : s + 13) : (s >= 65 && s <= 90 ? (s + 13 > 90 ? s - 13 : s + 13) : s))).ToArray()) : input;
         }
     }
 }

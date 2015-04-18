@@ -525,6 +525,9 @@
                                                             <DataTemplate DataType="{x:Type track:CustomStream}">
                                                                 <Path Data="{Binding ProviderVector}" Fill="{StaticResource BlackBrush}"/>
                                                             </DataTemplate>
+                                                            <DataTemplate DataType="{x:Type track:VkontakteTrack}">
+                                                                <Path Data="{Binding ProviderVector}" Fill="{StaticResource BlackBrush}"/>
+                                                            </DataTemplate>
                                                         </ContentControl.Resources>
                                                     </ContentControl>
                                                 </Viewbox>
@@ -651,8 +654,18 @@
                         </Grid.ColumnDefinitions>
                         <ComboBox Margin="0,0,5,0" Width="100" SelectedIndex="{Binding MusicManager.DownloadManager.SelectedService}">
                             <ComboBox.Resources>
-                                <CollectionViewSource Source="{Binding TrackSearcher.MusicApis}" x:Key="ApiCollectionView"/>
+                                <CollectionViewSource Source="{Binding MusicManager.TrackSearcher.MusicApis}" x:Key="ApiCollectionView"/>
+                                <converter:IsMusicApiConverter x:Key="IsMusicApiConverter"/>
                             </ComboBox.Resources>
+                            <ComboBox.ItemContainerStyle>
+                                <Style TargetType="ComboBoxItem" BasedOn="{StaticResource MetroComboBoxItem}">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Converter={StaticResource IsMusicApiConverter}}" Value="true">
+                                            <Setter Property="IsEnabled" Value="{Binding IsEnabled}"></Setter>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </ComboBox.ItemContainerStyle>
                             <ComboBox.ItemsSource>
                                 <CompositeCollection>
                                     <ComboBoxItem Content="{DynamicResource All}"/>
@@ -660,9 +673,9 @@
                                 </CompositeCollection>
                             </ComboBox.ItemsSource>
                         </ComboBox>
-                        <ComboBox Text="{Binding TrackSearcher.SearchText,UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding MusicManager.DownloadManager.Searches}" IsEditable="True" controls:TextBoxHelper.ClearTextButton="True" Grid.Column="1" ToolTipService.ShowDuration="12000">
+                        <ComboBox Text="{Binding MusicManager.TrackSearcher.SearchText,UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding MusicManager.DownloadManager.Searches}" IsEditable="True" controls:TextBoxHelper.ClearTextButton="True" Grid.Column="1" ToolTipService.ShowDuration="12000">
                             <ComboBox.InputBindings>
-                                <KeyBinding Key="Enter" Command="{Binding TrackSearcher.SearchCommand}"/>
+                                <KeyBinding Key="Enter" Command="{Binding MusicManager.TrackSearcher.SearchCommand}"/>
                             </ComboBox.InputBindings>
                             <ComboBox.ToolTip>
                                 <ToolTip>
@@ -709,12 +722,12 @@
                                         <MenuItem.ItemContainerStyle>
                                             <Style TargetType="MenuItem" BasedOn="{StaticResource MetroMenuItem}">
                                                 <Setter Property="Header" Value="{Binding Name}"/>
-                                                <Setter Property="Command" Value="{Binding RelativeSource={RelativeSource AncestorType=ContextMenu},Path=DataContext.TrackSearcher.AddPlaylistToExisitingPlaylist}"/>
+                                                <Setter Property="Command" Value="{Binding RelativeSource={RelativeSource AncestorType=ContextMenu},Path=DataContext.MusicManager.TrackSearcher.AddPlaylistToExisitingPlaylist}"/>
                                                 <Setter Property="CommandParameter" Value="{Binding}"/>
                                             </Style>
                                         </MenuItem.ItemContainerStyle>
                                     </MenuItem>
-                                    <MenuItem Header="{DynamicResource CreateNewPlaylist}" Command="{Binding TrackSearcher.AddPlaylistToNewPlaylist}"/>
+                                    <MenuItem Header="{DynamicResource CreateNewPlaylist}" Command="{Binding MusicManager.TrackSearcher.AddPlaylistToNewPlaylist}"/>
                                 </ContextMenu>
                             </Grid.Resources>
                             <Grid.ColumnDefinitions>
@@ -727,7 +740,7 @@
                                     <Setter Property="ContextMenu" Value="{StaticResource NotAddedStreamContextMenu}"/>
                                     <Setter Property="Background" Value="{StaticResource WhiteBrush}"/>
                                     <Style.Triggers>
-                                        <DataTrigger Binding="{Binding TrackSearcher.PlaylistResult}" Value="{x:Null}">
+                                        <DataTrigger Binding="{Binding MusicManager.TrackSearcher.PlaylistResult}" Value="{x:Null}">
                                             <Setter Property="Visibility" Value="Collapsed"/>
                                         </DataTrigger>
                                         <Trigger Property="IsMouseOver" Value="True">
@@ -749,23 +762,23 @@
                                     </Style.Triggers>
                                 </Style>
                             </Grid.Style>
-                            <Image Source="{Binding TrackSearcher.PlaylistResult.Thumbnail}" Height="69" Stretch="UniformToFill" /><!-- The resolution of the image is 120x90 -->
+                            <Image Source="{Binding MusicManager.TrackSearcher.PlaylistResult.Thumbnail}" Height="69" Stretch="UniformToFill" /><!-- The resolution of the image is 120x90 -->
                             <StackPanel Orientation="Vertical" Grid.Column="1" Margin="10,0,0,0">
-                                <TextBlock Text="{Binding TrackSearcher.PlaylistResult.Title}" FontSize="14"/>
-                                <TextBlock Text="{Binding TrackSearcher.PlaylistResult.Uploader}" FontSize="12"/>
+                                <TextBlock Text="{Binding MusicManager.TrackSearcher.PlaylistResult.Title}" FontSize="14"/>
+                                <TextBlock Text="{Binding MusicManager.TrackSearcher.PlaylistResult.Uploader}" FontSize="12"/>
                                 <StackPanel Orientation="Horizontal">
-                                    <TextBlock Text="{Binding TrackSearcher.PlaylistResult.TotalTracks}" FontSize="11"/>
+                                    <TextBlock Text="{Binding MusicManager.TrackSearcher.PlaylistResult.TotalTracks}" FontSize="11"/>
                                     <TextBlock Text=" " FontSize="11"/>
                                     <TextBlock Text="{DynamicResource Tracks}" FontSize="11"/>
                                 </StackPanel>
                             </StackPanel>
                         </Grid>
-                        <ListView ItemsSource="{Binding TrackSearcher.Results}" listViewLayoutManager:ListViewLayoutManager.Enabled="True" Style="{StaticResource VisualizingListView}" SelectedItem="{Binding TrackSearcher.SelectedTrack}"
+                        <ListView ItemsSource="{Binding MusicManager.TrackSearcher.Results}" listViewLayoutManager:ListViewLayoutManager.Enabled="True" Style="{StaticResource VisualizingListView}" SelectedItem="{Binding MusicManager.TrackSearcher.SelectedTrack}"
                                   behaviors:GridViewSort.AutoSort="True" Grid.Row="1" Background="Transparent" BorderThickness="0">
                             <ListView.Resources>
                                 <converter:FormatLargeNumber x:Key="FormatLargeNumber"/>
                                 <ContextMenu x:Key="ContextMenu" DataContext="{Binding RelativeSource={RelativeSource AncestorType=ListView},Path=DataContext}">
-                                    <MenuItem Header="{DynamicResource Play}" Command="{Binding TrackSearcher.PlaySelectedTrack}"/>
+                                    <MenuItem Header="{DynamicResource Play}" Command="{Binding MusicManager.TrackSearcher.PlaySelectedTrack}"/>
                                     <Separator />
                                     <MenuItem Header="{DynamicResource AddToPlaylist}">
                                         <MenuItem.Resources>
@@ -780,7 +793,7 @@
                                         </MenuItem.ItemsSource>
                                         <MenuItem.ItemContainerStyle>
                                             <Style TargetType="MenuItem" BasedOn="{StaticResource MetroMenuItem}">
-                                                <Setter Property="Command" Value="{Binding RelativeSource={RelativeSource AncestorType=ContextMenu},Path=DataContext.TrackSearcher.AddToPlaylist}"/>
+                                                <Setter Property="Command" Value="{Binding RelativeSource={RelativeSource AncestorType=ContextMenu},Path=DataContext.MusicManager.TrackSearcher.AddToPlaylist}"/>
                                                 <Setter Property="CommandParameter" Value="{Binding}"/>
                                                 <Setter Property="HorizontalContentAlignment" Value="Left"/>
                                                 <Setter Property="VerticalContentAlignment" Value="Center"/>
@@ -788,7 +801,7 @@
                                         </MenuItem.ItemContainerStyle>
                                     </MenuItem>
                                     <MenuItem Header="{DynamicResource OpenUrl}" Command="{Binding RelativeSource={RelativeSource AncestorType=ListView},Path=SelectedItem.OpenUrl}"/>
-                                    <MenuItem Header="{DynamicResource Download}" IsEnabled="{Binding RelativeSource={RelativeSource AncestorType=ListView},Path=SelectedItem.CanDownload}" Command="{Binding RelativeSource={RelativeSource AncestorType=ListView},Path=DataContext.TrackSearcher.DownloadTrack}"/>
+                                    <MenuItem Header="{DynamicResource Download}" IsEnabled="{Binding RelativeSource={RelativeSource AncestorType=ListView},Path=SelectedItem.CanDownload}" Command="{Binding RelativeSource={RelativeSource AncestorType=ListView},Path=DataContext.MusicManager.TrackSearcher.DownloadTrack}"/>
                                 </ContextMenu>
                                 <Style TargetType="ToolTip" BasedOn="{StaticResource MetroToolTip}">
                                     <Setter Property="MaxWidth" Value="600" />
@@ -809,7 +822,7 @@
                             </ListView.Resources>
                             <ListView.ItemContainerStyle>
                                 <Style TargetType="ListViewItem" BasedOn="{StaticResource MetroListViewItem}">
-                                    <Setter Property="behaviors:ControlBehavior.Command" Value="{Binding RelativeSource={RelativeSource AncestorType=ListView},Path=DataContext.TrackSearcher.PlaySelectedTrack}"/>
+                                    <Setter Property="behaviors:ControlBehavior.Command" Value="{Binding RelativeSource={RelativeSource AncestorType=ListView},Path=DataContext.MusicManager.TrackSearcher.PlaySelectedTrack}"/>
                                     <Setter Property="ContextMenu" Value="{StaticResource ContextMenu}"/>
                                 </Style>
                             </ListView.ItemContainerStyle>
@@ -823,10 +836,18 @@
                                                         <ColumnDefinition Width="Auto"/>
                                                         <ColumnDefinition Width="*"/>
                                                     </Grid.ColumnDefinitions>
-                                                    <hurricaneControls:TrackImagePreseter Track="{Binding Representer,Mode=OneWay}" Height="55" Width="55" Margin="-4"/>
+                                                    <Grid Background="{StaticResource WhiteBrush}" Margin="5" Width="50" Height="50">
+                                                        <Grid.Effect>
+                                                            <DropShadowEffect Color="{StaticResource BlackColor}" BlurRadius="5" ShadowDepth="0" Opacity="0.5"></DropShadowEffect>
+                                                        </Grid.Effect>
+                                                        <Viewbox Margin="8">
+                                                            <Path Data="{StaticResource VectorMusic}" Fill="{StaticResource BlackBrush}" SnapsToDevicePixels="True" RenderOptions.BitmapScalingMode="HighQuality"/>
+                                                        </Viewbox>
+                                                        <Image Source="{Binding Image}" Width="50" Height="50" Stretch="UniformToFill"/>
+                                                    </Grid>
                                                     <StackPanel Orientation="Vertical" Grid.Column="1" VerticalAlignment="Center">
-                                                        <TextBlock Text="{Binding Title}"/>
-                                                        <TextBlock Text="{Binding Uploader}"/>
+                                                        <TextBlock Text="{Binding Title}" TextTrimming="CharacterEllipsis"/>
+                                                        <TextBlock Text="{Binding Uploader}" TextTrimming="CharacterEllipsis"/>
                                                     </StackPanel>
                                                 </Grid>
                                             </DataTemplate>
@@ -917,6 +938,9 @@
                                                                         <DataTrigger Binding="{Binding ProviderName}" Value="Grooveshark">
                                                                             <Setter Property="Fill" Value="{StaticResource BlackBrush}"/>
                                                                         </DataTrigger>
+                                                                        <DataTrigger Binding="{Binding ProviderName}" Value="Vkontakte">
+                                                                            <Setter Property="Fill" Value="{StaticResource BlackBrush}"/>
+                                                                        </DataTrigger>
                                                                         <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem},Path=IsSelected}" Value="True">
                                                                            <Setter Property="Fill" Value="White"/>
                                                                        </DataTrigger>
@@ -932,8 +956,8 @@
                                 </GridView>
                             </ListView.View>
                         </ListView>
-                        <ProgressBar VerticalAlignment="Bottom" IsIndeterminate="{Binding TrackSearcher.IsLoading}" Visibility="{Binding TrackSearcher.IsLoading,Converter={StaticResource BooleanToVisibilityConverter}}" Grid.Row="2"/>
-                        <TextBlock Grid.RowSpan="2" Grid.Row="0" Visibility="{Binding TrackSearcher.NothingFound,Converter={StaticResource BooleanToVisibilityConverter}}" Text="{DynamicResource NothingFound}" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="16" FontWeight="Light"/>
+                        <ProgressBar VerticalAlignment="Bottom" IsIndeterminate="{Binding MusicManager.TrackSearcher.IsLoading}" Visibility="{Binding MusicManager.TrackSearcher.IsLoading,Converter={StaticResource BooleanToVisibilityConverter}}" Grid.Row="2"/>
+                        <TextBlock Grid.RowSpan="2" Grid.Row="0" Visibility="{Binding MusicManager.TrackSearcher.NothingFound,Converter={StaticResource BooleanToVisibilityConverter}}" Text="{DynamicResource NothingFound}" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="16" FontWeight="Light"/>
                     </Grid>
                 </Grid>
             </TabItem>

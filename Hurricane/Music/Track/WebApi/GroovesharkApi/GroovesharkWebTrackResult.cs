@@ -55,7 +55,7 @@ namespace Hurricane.Music.Track.WebApi.GroovesharkApi
 
         public async override Task DownloadImage()
         {
-            Image = new BitmapImage(new Uri("/Resources/App/bottom.png", UriKind.Relative));
+            
         }
     }
 }

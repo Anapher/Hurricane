@@ -10,12 +10,11 @@ using Hurricane.Music.Playlist;
 using Hurricane.Settings;
 using Hurricane.ViewModelBase;
 using Hurricane.Views;
-using Hurricane.Views.UserControls;
 using MahApps.Metro.Controls.Dialogs;
 
 namespace Hurricane.Music.Track.WebApi
 {
-    class TrackSearcher : PropertyChangedBase
+    public class TrackSearcher : PropertyChangedBase
     {
         public string SearchText { get; set; }
         public ObservableCollection<WebTrackResultBase> Results { get; set; }
@@ -105,7 +104,7 @@ namespace Hurricane.Music.Track.WebApi
 
         private async Task Search()
         {
-            foreach (var musicApi in MusicApis)
+            foreach (var musicApi in MusicApis.Where(x => x.IsEnabled))
             {
                 var result = await musicApi.CheckForSpecialUrl(SearchText);
                 if (result.Item1)
@@ -117,7 +116,7 @@ namespace Hurricane.Music.Track.WebApi
             }
             var list = new List<WebTrackResultBase>();
 
-            var tasks = MusicApis.Where((t, i) => _manager.DownloadManager.SelectedService == 0 || _manager.DownloadManager.SelectedService == i + 1).Select(t => t.Search(SearchText)).ToList();
+            var tasks = MusicApis.Where((t, i) => t.IsEnabled && (_manager.DownloadManager.SelectedService == 0 || _manager.DownloadManager.SelectedService == i + 1)).Select(t => t.Search(SearchText)).ToList();
             foreach (var task in tasks)
             {
                 list.AddRange(await task);
@@ -161,7 +160,7 @@ namespace Hurricane.Music.Track.WebApi
                 {
                     if (parameter == null) return;
                     var playlist = parameter as IPlaylist;
-                    
+
                     IsLoading = true;
                     if (playlist == null)
                     {
@@ -199,7 +198,7 @@ namespace Hurricane.Music.Track.WebApi
                 {
                     var track = SelectedTrack;
                     if (track == null) return;
-                    var downloadDialog = new DownloadTrackWindow(track.DownloadFilename, DownloadManager.GetExtension(track)){Owner = _baseWindow};
+                    var downloadDialog = new DownloadTrackWindow(track.DownloadFilename, DownloadManager.GetExtension(track)) { Owner = _baseWindow };
                     if (downloadDialog.ShowDialog() == true)
                     {
                         _manager.DownloadManager.AddEntry(track, downloadDialog.DownloadSettings.Clone(), downloadDialog.SelectedPath);
@@ -222,7 +221,7 @@ namespace Hurricane.Music.Track.WebApi
                     var playlist = new NormalPlaylist() { Name = result };
                     _manager.Playlists.Add(playlist);
                     _manager.RegisterPlaylist(playlist);
-                    
+
                     if (await AddTracksToPlaylist(playlist, PlaylistResult))
                     {
                         ViewModels.MainViewModel.Instance.MainTabControlIndex = 0;
@@ -308,7 +307,12 @@ namespace Hurricane.Music.Track.WebApi
             _cancelWaiter = new AutoResetEvent(false);
             _manager = manager;
             _baseWindow = baseWindow;
-            MusicApis = new List<IMusicApi> { new YouTubeApi.YouTubeApi(), new SoundCloudApi.SoundCloudApi() }; //new GroovesharkApi.GroovesharkApi()
+            MusicApis = new List<IMusicApi>
+            {
+                new SoundCloudApi.SoundCloudApi(),
+                new VkontakteApi.VkontakteApi(),
+                new YouTubeApi.YouTubeApi()
+            }; //new GroovesharkApi.GroovesharkApi()
         }
     }
 }

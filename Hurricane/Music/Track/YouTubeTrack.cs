@@ -15,6 +15,7 @@ using Hurricane.Music.Download;
 using Hurricane.Music.MusicCover;
 using Hurricane.Music.Track.WebApi.YouTubeApi;
 using Hurricane.Music.Track.WebApi.YouTubeApi.DataClasses;
+using Hurricane.Utilities;
 using Newtonsoft.Json;
 
 namespace Hurricane.Music.Track
@@ -109,7 +110,7 @@ namespace Hurricane.Music.Track
 
         public override string DownloadFilename
         {
-            get { return Utilities.GeneralHelper.EscapeFilename(Title); }
+            get { return Title.ToEscapedFilename(); }
         }
 
         public override DownloadMethod DownloadMethod

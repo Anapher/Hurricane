@@ -1,36 +1,25 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
-using CSCore.Codecs;
 using Hurricane.DragDrop;
-using Hurricane.MagicArrow.DockManager;
 using Hurricane.Music;
 using Hurricane.Music.CustomEventArgs;
-using Hurricane.Music.Download;
 using Hurricane.Music.Playlist;
 using Hurricane.Music.Track;
-using Hurricane.Music.Track.WebApi;
 using Hurricane.Settings;
 using Hurricane.Utilities;
 using Hurricane.ViewModelBase;
 using Hurricane.Views;
-using Hurricane.Views.MetroDialogs;
-using Hurricane.Views.UserControls;
-using MahApps.Metro.Controls.Dialogs;
-using Microsoft.Win32;
 using QueueManager = Hurricane.Views.QueueManagerWindow;
 
 namespace Hurricane.ViewModels
 {
     partial class MainViewModel : PropertyChangedBase
     {
-        #region Singleton & Constructor
         private static MainViewModel _instance;
         public static MainViewModel Instance
         {
@@ -66,15 +55,12 @@ namespace Hurricane.ViewModels
             MusicManager.CSCoreEngine.SoundOutErrorOccurred += CSCoreEngine_SoundOutErrorOccurred;
             MusicManager.LoadFromSettings();
             MainTabControlIndex = MySettings.CurrentState.MainTabControlIndex;
-            TrackSearcher = new TrackSearcher(MusicManager, window);
 
             _keyboardListener = new KeyboardListener();
             _keyboardListener.KeyDown += KListener_KeyDown;
             Updater = new UpdateService(MySettings.Config.Language == "de" ? UpdateService.Language.German : UpdateService.Language.English);
             if (MySettings.Config.CheckForHurricaneUpdates) Updater.CheckForUpdates(_baseWindow);
         }
-
-        #endregion
 
         #region Events
 
@@ -237,11 +223,6 @@ namespace Hurricane.ViewModels
 
         #endregion
 
-        #region Commands
-
-        #endregion
-
-        #region Properties
         private MusicManager _musicmanager;
         public MusicManager MusicManager
         {
@@ -262,16 +243,6 @@ namespace Hurricane.ViewModels
             }
         }
 
-        private TrackSearcher _trackSearcher;
-        public TrackSearcher TrackSearcher
-        {
-            get { return _trackSearcher; }
-            set
-            {
-                SetProperty(value, ref _trackSearcher);
-            }
-        }
-
         private int _mainTabControlIndex;
         public int MainTabControlIndex
         {
@@ -281,8 +252,6 @@ namespace Hurricane.ViewModels
                 SetProperty(value, ref _mainTabControlIndex);
             }
         }
-
-        #endregion
 
         private TrackListDropHandler _trackListDropHandler;
         public TrackListDropHandler TrackListDropHandler

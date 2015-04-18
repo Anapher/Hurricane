@@ -22,7 +22,7 @@ namespace Hurricane.Music.MusicCover.APIs.Lastfm
             string artist = useArtist ? track.Artist : string.Empty;
             if (trimtrackname) title = TrimTrackTitle(track.Title);
 
-            string url = Uri.EscapeUriString(string.Format("http://ws.audioscrobbler.com/2.0/?method=track.search&track={0}{1}&api_key={2}", GeneralHelper.EscapeTitleName(title), !string.IsNullOrEmpty(artist) ? "&artist=" + GeneralHelper.EscapeArtistName(artist) : string.Empty, apikey));
+            string url = Uri.EscapeUriString(string.Format("http://ws.audioscrobbler.com/2.0/?method=track.search&track={0}{1}&api_key={2}", title.ToEscapedUrl(), !string.IsNullOrEmpty(artist) ? "&artist=" + artist.ToEscapedUrl() : string.Empty, apikey));
             using (WebClient web = new WebClient() { Proxy = null })
             {
                 string result = await web.DownloadStringTaskAsync(new Uri(url));
@@ -63,7 +63,7 @@ namespace Hurricane.Music.MusicCover.APIs.Lastfm
                             {
                                 foreach (var file in directory.GetFiles("*.png"))
                                 {
-                                    if (GeneralHelper.EscapeFilename(artist).ToLower() == Path.GetFileNameWithoutExtension(file.FullName).ToLower())
+                                    if (artist.ToEscapedFilename().ToLower() == Path.GetFileNameWithoutExtension(file.FullName).ToLower())
                                     {
                                         var img = new BitmapImage(new Uri(file.FullName));
                                         img.Freeze();

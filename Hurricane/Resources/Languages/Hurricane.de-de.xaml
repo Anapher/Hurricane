@@ -372,4 +372,8 @@
     <system:String x:Key="Bars">Balken</system:String>
     <system:String x:Key="Squares">Kästchen</system:String>
     <system:String x:Key="Rectangles">Rechtecke</system:String>
+    <system:String x:Key="EmailAddress">E-Mail Adresse</system:String>
+    <system:String x:Key="LogIn">Einloggen</system:String>
+    <system:String x:Key="AnErrorOccurred">Ein Fehler ist aufgetreten: {0}</system:String>
+    <system:String x:Key="StreamingServices">Streamingdienste</system:String>
 </ResourceDictionary>

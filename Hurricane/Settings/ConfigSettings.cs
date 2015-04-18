@@ -6,6 +6,7 @@ using System.Threading;
 using System.Windows;
 using System.Xml.Serialization;
 using CSCore.SoundOut;
+using Exceptionless.Json;
 using Hurricane.AppCommunication;
 using Hurricane.Music.AudioEngine;
 using Hurricane.Music.Download;
@@ -67,6 +68,9 @@ namespace Hurricane.Settings
         public bool MinimizeToTray { get; set; }
         public bool ShowNotificationIfMinimizeToTray { get; set; }
         public bool ShowProgressInTaskbar { get; set; }
+
+        [JsonIgnore]
+        public List<PasswordEntry> Passwords { get; set; }
 
         //Notifications
         public NotificationType Notification { get; set; }
@@ -147,6 +151,7 @@ namespace Hurricane.Settings
             DownloadSettings.SetDefault();
             CheckForHurricaneUpdates = true;
             CheckForYoutubeDlUpdates = true;
+            Passwords = new List<PasswordEntry>();
         }
 
         public ConfigSettings()

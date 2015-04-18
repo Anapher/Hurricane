@@ -2,6 +2,7 @@
 using System.Windows.Media;
 using Hurricane.Music.Download;
 using Hurricane.Music.Track.WebApi.YouTubeApi.DataClasses;
+using Hurricane.Utilities;
 
 namespace Hurricane.Music.Track.WebApi.YouTubeApi
 {
@@ -43,7 +44,7 @@ namespace Hurricane.Music.Track.WebApi.YouTubeApi
 
         public override string DownloadFilename
         {
-            get { return Utilities.GeneralHelper.EscapeFilename(Title); }
+            get { return Title.ToEscapedFilename(); }
         }
 
         public override DownloadMethod DownloadMethod

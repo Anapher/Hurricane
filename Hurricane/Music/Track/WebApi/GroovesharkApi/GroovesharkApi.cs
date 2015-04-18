@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using System.Text;
 using System.Threading.Tasks;
 using Hurricane.Settings;
 using Hurricane.Utilities;
@@ -30,7 +29,7 @@ namespace Hurricane.Music.Track.WebApi.GroovesharkApi
                     await
                         wc.DownloadStringTaskAsync(
                             new Uri(string.Format("http://tinysong.com/s/{0}?format=json&limit=32&key={1}",
-                                GeneralHelper.EscapeTitleName(searchText),
+                                searchText.ToEscapedUrl(),
                                 SensitiveInformation.TinySongKey))));
                 if (result == null || result.Count == 0) return new List<WebTrackResultBase>();
 
@@ -49,6 +48,16 @@ namespace Hurricane.Music.Track.WebApi.GroovesharkApi
         public override string ToString()
         {
             return ServiceName;
+        }
+
+        public bool IsEnabled
+        {
+            get { return false; }
+        }
+
+        public System.Windows.FrameworkElement ApiSettings
+        {
+            get { return null; }
         }
     }
 }

@@ -1,0 +1,35 @@
+﻿<UserControl x:Class="Hurricane.Music.Track.WebApi.VkontakteApi.Settings"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="89.796" d:DesignWidth="514.286">
+    <Grid SnapsToDevicePixels="True">
+        <StackPanel Orientation="Vertical">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="100"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                    <TextBlock Text="{DynamicResource EmailAddress}"/>
+                    <TextBlock Text=":"/>
+                </StackPanel>
+                <TextBox Grid.Column="1" x:Name="EmailTextBox" TextChanged="EmailTextBox_OnTextChanged"/>
+            </Grid>
+            <Grid Margin="0,5,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="100"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                    <TextBlock Text="{DynamicResource Password}"/>
+                    <TextBlock Text=":"/>
+                </StackPanel>
+                <PasswordBox Grid.Column="1" x:Name="PasswordBox" PasswordChanged="PasswordBox_OnPasswordChanged" KeyDown="PasswordBox_OnKeyDown"/>
+            </Grid>
+            <Button Margin="0,5,0,0" Content="{DynamicResource LogIn}" HorizontalAlignment="Right" Width="100" Click="LoginIn_Click" x:Name="LogInButton" IsEnabled ="False"/>
+        </StackPanel>
+    </Grid>
+</UserControl>

@@ -130,7 +130,7 @@ namespace Hurricane.Utilities
             await Task.Run(() =>
             {
                 var encoder = new PngBitmapEncoder();
-                string path = Path.Combine(directory, GeneralHelper.EscapeFilename(fileName) + ".png");
+                string path = Path.Combine(directory, fileName.ToEscapedFilename() + ".png");
                 encoder.Frames.Add(BitmapFrame.Create(image));
                 using (var filestream = new FileStream(path, FileMode.Create))
                     encoder.Save(filestream);

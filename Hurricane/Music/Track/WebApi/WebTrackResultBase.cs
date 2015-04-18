@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net;
 using System.Threading.Tasks;
@@ -94,7 +95,7 @@ namespace Hurricane.Music.Track.WebApi
             return Image;
         }
 
-        public string Genres { get; set; }
+        public List<Genre> Genres { get; set; }
 
         public string Album { get; set; }
 
@@ -102,5 +103,5 @@ namespace Hurricane.Music.Track.WebApi
         public event EventHandler ImageLoadedComplete;
     }
 
-    public enum ProviderName { SoundCloud, YouTube, Grooveshark }
+    public enum ProviderName { SoundCloud, YouTube, Grooveshark, Vkontakte }
 }

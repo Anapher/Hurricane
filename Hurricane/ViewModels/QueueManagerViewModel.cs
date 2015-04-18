@@ -13,6 +13,11 @@ namespace Hurricane.ViewModels
             QueueManager = queueManager;
         }
 
+        public QueueManagerViewModel()
+        {
+            
+        }
+
         public QueueManager QueueManager { get; set; }
 
         private RelayCommand _movetracksup;

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -10,7 +11,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using CSCore;
 using CSCore.Codecs;
-using Exceptionless.Json;
+using Newtonsoft.Json;
 using Hurricane.Music.Download;
 using Hurricane.Music.MusicCover;
 using Hurricane.Music.Track.WebApi.SoundCloudApi;
@@ -45,7 +46,7 @@ namespace Hurricane.Music.Track
             Title = result.title;
             ArtworkUrl = result.artwork_url != null ? result.artwork_url.Replace("large.jpg", "{0}.jpg") : string.Empty;
             Artist = result.user.username;
-            Genres = result.genre;
+            Genres = new List<Genre> { StringToGenre(result.genre) };
             SoundCloudID = result.id;
             Uploader = result.user.username;
             Downloadable = result.downloadable;
@@ -142,7 +143,7 @@ namespace Hurricane.Music.Track
 
         public override string DownloadFilename
         {
-            get { return GeneralHelper.EscapeFilename(Title); }
+            get { return Title.ToEscapedFilename(); }
         }
 
         public override DownloadMethod DownloadMethod

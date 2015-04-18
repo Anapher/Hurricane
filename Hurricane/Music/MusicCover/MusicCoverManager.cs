@@ -21,7 +21,7 @@ namespace Hurricane.Music.MusicCover
                 // ReSharper disable once LoopCanBeConvertedToQuery
                 foreach (var item in di.GetFiles("*.png"))
                 {
-                    if (GeneralHelper.EscapeFilename(track.Album).ToLower() == Path.GetFileNameWithoutExtension(item.FullName).ToLower())
+                    if (track.Album.ToEscapedFilename().ToLower() == Path.GetFileNameWithoutExtension(item.FullName).ToLower())
                     {
                         return new BitmapImage(new Uri(item.FullName));
                     }

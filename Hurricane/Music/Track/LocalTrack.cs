@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -59,10 +60,11 @@ namespace Hurricane.Music.Track
                 Artist = RemoveInvalidXmlChars(!string.IsNullOrWhiteSpace(info.Tag.FirstPerformer) ? info.Tag.FirstPerformer : info.Tag.FirstAlbumArtist);
                 Title = !string.IsNullOrWhiteSpace(info.Tag.Title) ? RemoveInvalidXmlChars(info.Tag.Title) : System.IO.Path.GetFileNameWithoutExtension(filename.FullName);
                 Album = RemoveInvalidXmlChars(info.Tag.Album);
-                Genres = string.Join(", ", info.Tag.Genres);
+                Genres = new List<Genre>(info.Tag.Genres.Select(StringToGenre));
+
                 if (info.Properties.AudioBitrate > 56000) //No idea what TagLib# is thinking, but sometimes it shows the bitrate * 1000
                 {
-                    kbps = (int) Math.Round(info.Properties.AudioBitrate/(double) 1000, 0);
+                    kbps = (int)Math.Round(info.Properties.AudioBitrate / (double)1000, 0);
                 }
                 else
                 {

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using CueSharp;
 using Hurricane.Music.Track;
@@ -77,7 +78,7 @@ namespace Hurricane.Music.Playlist
                     Artist = track.Performer ?? cue.Performer,
                     Album = track.Title ?? cue.Title,
                     TrackNumber = track.TrackNumber,
-                    Genres = genre,
+                    Genres = new List<Genre> { PlayableBase.StringToGenre(genre) },
                     Year = year
                 };
 

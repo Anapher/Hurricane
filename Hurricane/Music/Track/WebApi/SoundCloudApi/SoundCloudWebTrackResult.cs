@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows.Media;
 using Hurricane.Music.Download;
+using Hurricane.Utilities;
 
 namespace Hurricane.Music.Track.WebApi.SoundCloudApi
 {
@@ -42,7 +43,7 @@ namespace Hurricane.Music.Track.WebApi.SoundCloudApi
 
         public override string DownloadFilename
         {
-            get { return Utilities.GeneralHelper.EscapeFilename(Title); }
+            get { return Title.ToEscapedFilename(); }
         }
 
         public override DownloadMethod DownloadMethod
