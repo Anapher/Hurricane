@@ -375,5 +375,5 @@
     <system:String x:Key="EmailAddress">E-Mail Adresse</system:String>
     <system:String x:Key="LogIn">Einloggen</system:String>
     <system:String x:Key="AnErrorOccurred">Ein Fehler ist aufgetreten: {0}</system:String>
-    <system:String x:Key="StreamingServices">Streamingdienste</system:String>
+    <system:String x:Key="StreamingServices">Streaming-Dienste</system:String>
 </ResourceDictionary>

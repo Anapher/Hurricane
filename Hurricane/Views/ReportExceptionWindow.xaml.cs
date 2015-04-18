@@ -40,7 +40,12 @@ namespace Hurricane.Views
             {
                 using (var sw = new StringWriter())
                 {
-                    var xmls = new XmlSerializer(typeof(ConfigSettings));
+                    XmlAttributeOverrides overrides = new XmlAttributeOverrides(); //DONT serialize the passwords and send them to me!
+                    XmlAttributes attribs = new XmlAttributes {XmlIgnore = true};
+                    attribs.XmlElements.Add(new XmlElementAttribute("Passwords"));
+                    overrides.Add(typeof(ConfigSettings), "Passwords", attribs);
+
+                    var xmls = new XmlSerializer(typeof(ConfigSettings), overrides);
                     xmls.Serialize(sw, HurricaneSettings.Instance.Config);
 
                     var doc = new XmlDocument();

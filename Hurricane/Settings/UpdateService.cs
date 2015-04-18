@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -46,7 +47,10 @@ namespace Hurricane.Settings
         void updController_downloadUpdatesCompleted(object sender, AsyncCompletedEventArgs e)
         {
             if (!e.Cancelled)
+            {
+                HurricaneSettings.Instance.Save();
                 _updController.applyUpdate();
+            }
         }
 
         #region Public Methods
@@ -69,12 +73,7 @@ namespace Hurricane.Settings
 
         public string CurrentVersion
         {
-            get
-            {
-                Assembly asm = Assembly.GetExecutingAssembly();
-                FileVersionInfo fvi = FileVersionInfo.GetVersionInfo(asm.Location);
-                return String.Format("{0}.{1}.{2}", fvi.ProductMajorPart, fvi.ProductMinorPart,fvi.ProductBuildPart);
-            }
+            get { return GetCurrentAssemblyVersion(); }
         }
 
         public string NewVersion { get; protected set; }
@@ -119,6 +118,26 @@ namespace Hurricane.Settings
             }
             Changelog = sb.ToString();
             UpdateFound = true;
+        }
+
+        public static string GetCurrentAssemblyVersion()
+        {
+            Assembly asm = Assembly.GetExecutingAssembly();
+            FileVersionInfo fvi = FileVersionInfo.GetVersionInfo(asm.Location);
+            return String.Format("{0}.{1}.{2}", fvi.ProductMajorPart, fvi.ProductMinorPart, fvi.ProductBuildPart);
+        }
+
+        public static void UpdateSettings(string baseDirectory)
+        {
+            switch (GetCurrentAssemblyVersion())
+            {
+                case "0.3.8":
+                    var configFile = new FileInfo(Path.Combine(baseDirectory, ConfigSettings.Filename));
+                    if (configFile.Exists)
+                        File.WriteAllText(configFile.FullName, File.ReadAllText(configFile.FullName).Replace("<AudioVisualisation />", ""));
+
+                    break;
+            }
         }
 
         public enum Language { English, German }

@@ -8,7 +8,6 @@
              xmlns:converter="clr-namespace:Hurricane.Settings.Converter"
              xmlns:appCommunication="clr-namespace:Hurricane.AppCommunication"
              xmlns:qrCodeNet="clr-namespace:Gma.QrCodeNet.Encoding.Windows.WPF;assembly=Gma.QrCodeNet.Encoding"
-             xmlns:settings="clr-namespace:Hurricane.Settings"
              xmlns:audioData="clr-namespace:Hurricane.Music.Data"
              xmlns:appTheme="clr-namespace:Hurricane.Settings.Themes.Visual.AppThemes"
              xmlns:accentColors="clr-namespace:Hurricane.Settings.Themes.Visual.AccentColors"
@@ -451,7 +450,7 @@
                         <DataTemplate>
                             <Grid Margin="10" Background="{StaticResource WhiteBrush}">
                                 <Grid.Effect>
-                                    <DropShadowEffect ShadowDepth="0" RenderingBias="Performance" BlurRadius="7" Opacity="0.4" Color="{StaticResource BlackColor}"/>
+                                    <DropShadowEffect ShadowDepth="0" RenderingBias="Quality" BlurRadius="7" Opacity="0.2" Color="{StaticResource BlackColor}"/>
                                 </Grid.Effect>
                                 <StackPanel Orientation="Vertical" Margin="10">
                                     <TextBlock Text="{Binding ServiceName}" FontSize="24"/>

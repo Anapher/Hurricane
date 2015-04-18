@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Web;
@@ -8,14 +7,9 @@ namespace Hurricane.Utilities
 {
     public static class StringExtensions
     {
-        public static string ToLowercaseNamingConvention(this string s)
+        public static string ToSentenceCase(this string s)
         {
-            var r = new Regex(@"
-                (?<=[A-Z])(?=[A-Z][a-z]) |
-                 (?<=[^A-Z])(?=[A-Z]) |
-                 (?<=[A-Za-z])(?=[^A-Za-z])", RegexOptions.IgnorePatternWhitespace);
-
-            return r.Replace(s, "_").ToLower();
+            return Regex.Replace(s, "[a-z][A-Z]", m => m.Value[0] + " " + char.ToUpper(m.Value[1]));
         }
 
         /// <summary>

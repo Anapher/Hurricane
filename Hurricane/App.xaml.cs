@@ -29,12 +29,14 @@ namespace Hurricane
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
+            if (e.Args.Length > 0 && e.Args[0] == "/update")
+                UpdateService.UpdateSettings(HurricaneSettings.Paths.BaseDirectory);
             HurricaneSettings.Instance.Load();
 
             var openfile = false;
-            if (Environment.GetCommandLineArgs().Length > 1)
+            if (e.Args.Length > 0)
             {
-                switch (Environment.GetCommandLineArgs()[1])
+                switch (e.Args[0])
                 {
                     case "/test":
                         var view = new TestWindow();

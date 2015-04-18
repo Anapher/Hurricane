@@ -6,7 +6,7 @@ using System.Threading;
 using System.Windows;
 using System.Xml.Serialization;
 using CSCore.SoundOut;
-using Exceptionless.Json;
+using Newtonsoft.Json;
 using Hurricane.AppCommunication;
 using Hurricane.Music.AudioEngine;
 using Hurricane.Music.Download;
@@ -20,7 +20,7 @@ namespace Hurricane.Settings
     [Serializable, XmlType(TypeName = "Settings")]
     public class ConfigSettings : SettingsBase
     {
-        private const string Filename = "config.xml";
+        public const string Filename = "config.xml";
 
         //CSCore
         public string SoundOutDeviceID { get; set; }
@@ -69,7 +69,6 @@ namespace Hurricane.Settings
         public bool ShowNotificationIfMinimizeToTray { get; set; }
         public bool ShowProgressInTaskbar { get; set; }
 
-        [JsonIgnore]
         public List<PasswordEntry> Passwords { get; set; }
 
         //Notifications

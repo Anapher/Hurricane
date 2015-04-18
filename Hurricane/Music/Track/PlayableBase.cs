@@ -461,7 +461,7 @@ namespace Hurricane.Music.Track
 
         public static string GenreToString(Genre genre)
         {
-            return genre.ToString().ToLowercaseNamingConvention().Replace("And", "&");
+            return genre.ToString().ToSentenceCase().Replace("And", "&");
         }
     }
 
