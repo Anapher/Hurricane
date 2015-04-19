@@ -12,7 +12,7 @@ using Hurricane.Utilities;
 
 namespace Hurricane.Music.MusicCover.APIs.Lastfm
 {
-    class LastfmAPI
+    public class LastfmApi
     {
         public async static Task<BitmapImage> GetImage(ImageQuality imagequality, bool saveimage, DirectoryInfo directory, PlayableBase track, bool trimtrackname, bool useArtist = true)
         {

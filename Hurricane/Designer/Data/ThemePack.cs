@@ -208,7 +208,7 @@ namespace Hurricane.Designer.Data
 
         bool IApplicationBackground.IsAnimated
         {
-            get { return GeneralHelper.IsVideo(BackgroundName); }
+            get { return FileSystemHelper.IsVideo(BackgroundName); }
         }
 
         bool IApplicationBackground.IsAvailable

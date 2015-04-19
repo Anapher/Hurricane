@@ -12,7 +12,7 @@ using Newtonsoft.Json;
 
 namespace Hurricane.Music.Track.WebApi.SoundCloudApi
 {
-    class SoundCloudApi : IMusicApi
+    public class SoundCloudApi : IMusicApi
     {
         public static async Task<BitmapImage> LoadBitmapImage(SoundCloudTrack track, ImageQuality quality, DirectoryInfo albumDirectory)
         {

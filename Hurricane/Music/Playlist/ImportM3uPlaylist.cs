@@ -2,15 +2,16 @@
 using System.Diagnostics;
 using System.IO;
 using Hurricane.Music.Track;
+using Hurricane.Utilities;
 
 namespace Hurricane.Music.Playlist
 {
     [PlaylistFormat]
-    static class ImportM3uPlaylist
+    public static class ImportM3UPlaylist
     {
         public static PlaylistFormat GetFormat()
         {
-            return new PlaylistFormat("WinAmp Playlist", new [] { ".m3u", ".pls" }, IsSupported, Import);
+            return new PlaylistFormat("WinAmp Playlist", new[] { ".m3u", ".pls" }, IsSupported, Import);
         }
 
         public static bool IsSupported(StreamReader reader)
@@ -25,7 +26,7 @@ namespace Hurricane.Music.Playlist
                 return true;
 
             if (line.StartsWith("http"))
-            	return true;
+                return true;
 
             if (LocalTrack.IsSupported(new FileInfo(line)))
                 return true;
@@ -45,29 +46,43 @@ namespace Hurricane.Music.Playlist
                     break;
 
                 line = line.Trim();
-
                 if (string.IsNullOrWhiteSpace(line))
                     continue;
 
-                // TODO: support http
-
-                if (line.StartsWith("#EXTINF:"))
+                if (line.ToUpper().StartsWith("#EXTINF:"))
                 {
                     try
                     {
                         var split = line.Substring(8).TrimStart(',');
-                        var parts = split.Split(new [] { ',' }, 2);
-                        LocalTrack track;
-                        if (parts.Length == 2)
+                        var parts = split.Split(new[] { ',' }, 2);
+
+                        var location = reader.ReadLine();
+                        if (string.IsNullOrEmpty(location))
+                            break; //corrupt file
+
+                        PlayableBase track;
+                        if (location.StartsWith("http:"))
                         {
-                            track = new LocalTrack { Title = parts[1].Trim() };
-                            track.ResetDuration(new TimeSpan(0, 0, int.Parse(parts[0])));
+                            track = new CustomStream {StreamUrl = location};
                         }
                         else
                         {
-                            track = new LocalTrack { Title = split.Trim() };
+                        
+                         var localTrack = new LocalTrack();
+                            var file = new FileInfo(FileSystemHelper.GetAbsolutePath(location, basePath));
+                            if (!file.Exists)
+                                continue;
+                            localTrack.Path = file.FullName;
+                            track = localTrack;
                         }
+
+                        track.Title = parts.Length == 2
+                            ? parts[1].Trim()
+                            : split.Trim();
+                        track.TrackNumber = trackNumber++;
+
                         playlist.AddTrack(track);
+                        continue;
                     }
                     catch (Exception ex)
                     {
@@ -75,7 +90,8 @@ namespace Hurricane.Music.Playlist
                         Debug.WriteLine("M3U ext track import error: " + ex.Message);
                     }
                 }
-                else if (line.StartsWith("http"))
+
+                if (line.StartsWith("http"))
                 {
                     Uri uri;
                     try
@@ -87,11 +103,22 @@ namespace Hurricane.Music.Playlist
                         Debug.Print("M3U track import error: invalid uri - '{0}'", line);
                         continue;
                     }
-                    playlist.AddTrack(new CustomStream {StreamUrl = line, Title = uri.Host});
+                    playlist.AddTrack(new CustomStream { StreamUrl = line, Title = uri.Host, TrackNumber = trackNumber++ });
+                    continue;
                 }
-                else if (line[0] != '#')	// skip comments
+
+                if (line[0] != '#')	// skip comments
                 {
-                    playlist.AddTrack(new LocalTrack {Path = Path.Combine(basePath, line), TrackNumber = trackNumber++});
+                    var file = new FileInfo(FileSystemHelper.GetAbsolutePath(line, basePath));
+                    if (!file.Exists)
+                        continue;
+
+                    playlist.AddTrack(new LocalTrack
+                    {
+                        Path = file.FullName,
+                        TrackNumber = trackNumber++,
+                        Title = Path.GetFileNameWithoutExtension(file.FullName)
+                    });
                 }
             }
 

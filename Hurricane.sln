@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hurricane", "Hurricane\Hurr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hurricane.PluginAPI", "Hurricane.PluginAPI\Hurricane.PluginAPI.csproj", "{6680C804-3260-450F-8D2B-42484BC39FF4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hurricane.Test", "Hurricane.Test\Hurricane.Test.csproj", "{81376826-8F0D-4274-A012-6763FE657583}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{6680C804-3260-450F-8D2B-42484BC39FF4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6680C804-3260-450F-8D2B-42484BC39FF4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6680C804-3260-450F-8D2B-42484BC39FF4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{81376826-8F0D-4274-A012-6763FE657583}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{81376826-8F0D-4274-A012-6763FE657583}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{81376826-8F0D-4274-A012-6763FE657583}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{81376826-8F0D-4274-A012-6763FE657583}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

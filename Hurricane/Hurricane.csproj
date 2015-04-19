@@ -215,7 +215,7 @@
     <Compile Include="Music\Download\GroovesharkApi.cs" />
     <Compile Include="Music\Playlist\CueSharp.cs" />
     <Compile Include="Music\Playlist\ImportCueSheet.cs" />
-    <Compile Include="Music\Playlist\ImportM3uPlaylist.cs" />
+    <Compile Include="Music\Playlist\ImportM3UPlaylist.cs" />
     <Compile Include="Music\Playlist\Playlists.cs" />
     <Compile Include="Music\AudioEngine\SoundOutManager.cs" />
     <Compile Include="Music\Proxy\HttpProxy.cs" />
@@ -399,6 +399,7 @@
     <Compile Include="Settings\UpdateService.cs" />
     <Compile Include="Utilities\ActiveWindowHook.cs" />
     <Compile Include="Utilities\DependencyObjectExtensions.cs" />
+    <Compile Include="Utilities\FileSystemHelper.cs" />
     <Compile Include="Utilities\GeneralHelper.cs" />
     <Compile Include="Utilities\Keyboard.cs" />
     <Compile Include="Utilities\LevenshteinDistance.cs" />
