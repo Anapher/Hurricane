@@ -15,7 +15,7 @@ namespace Hurricane.AppCommunication
             if (string.IsNullOrEmpty(line)) return;
             if (_commands == null)
             {
-                _commands = new List<CommandBase> {new FileTransferCommand(), new PlaylistCommand()};
+                _commands = new List<CommandBase> {new FileTransferCommand(), new PlaylistCommand(), new MediaControlCommand()};
             }
 
             var command = _commands.First(x => Regex.IsMatch(line, x.RegexPattern));

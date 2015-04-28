@@ -64,7 +64,6 @@ namespace Hurricane.AppMainWindow.WindowSkins
 
         #region Titlebar
 
-
         private void Titlebar_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             if (e.ClickCount == 2)
