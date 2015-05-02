@@ -1,0 +1,19 @@
+﻿<Window x:Class="Hurricane.Views.Docking.DockPlaceholderWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Hurricane - DockRangeWindow" Height="300" Width="300" WindowStyle="None" AllowsTransparency="True" Background="{StaticResource AccentColorBrush}" Opacity=".25"
+        ShowInTaskbar="False" ShowActivated="False">
+    <Window.Triggers>
+        <EventTrigger RoutedEvent="Window.Loaded">
+            <BeginStoryboard>
+                <Storyboard>
+                    <DoubleAnimation From="0" To=".1" Duration="0:0:0.1" Storyboard.TargetProperty="Opacity">
+                        <DoubleAnimation.EasingFunction>
+                            <CircleEase EasingMode="EaseIn"/>
+                        </DoubleAnimation.EasingFunction>
+                    </DoubleAnimation>
+                </Storyboard>
+            </BeginStoryboard>
+        </EventTrigger>
+    </Window.Triggers>
+</Window>
