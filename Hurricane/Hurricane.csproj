@@ -34,6 +34,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Hardcodet.Wpf.TaskbarNotification">
+      <HintPath>..\packages\Hardcodet.NotifyIcon.Wpf.1.0.5\lib\net45\Hardcodet.Wpf.TaskbarNotification.dll</HintPath>
+    </Reference>
     <Reference Include="MahApps.Metro">
       <HintPath>..\packages\MahApps.Metro.1.1.2.0\lib\net45\MahApps.Metro.dll</HintPath>
     </Reference>
@@ -59,11 +62,15 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Controls\MagicMetroWindowDragging.cs" />
     <Compile Include="Views\Docking\DockPlaceholderWindow.xaml.cs">
       <DependentUpon>DockPlaceholderWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Docking\MagicArrowWindow.xaml.cs">
       <DependentUpon>MagicArrowWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Docking\MagicTriggerWindow.xaml.cs">
+      <DependentUpon>MagicTriggerWindow.xaml</DependentUpon>
     </Compile>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -75,16 +82,24 @@
     </Compile>
     <Compile Include="Controls\MagicMetroWindow.cs" />
     <Compile Include="MagicArrow\DockManager.cs" />
-    <Compile Include="MagicArrow\MagicArrow.cs" />
+    <Compile Include="MagicArrow\MagicArrowService.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Resources\MagicWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\Docking\DockPlaceholderWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Docking\MagicArrowWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Docking\MagicTriggerWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -130,6 +145,9 @@
       <Project>{83c1ce59-b4a0-4560-9238-35bd997485fc}</Project>
       <Name>Hurricane.ViewModel</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Converter\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

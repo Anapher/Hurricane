@@ -47,3 +47,4 @@ Other
 - All functions in `Hurricane.Utilities.UnsafeNativeMethods` begin with `internal static extern`
 - All converters in `Hurricane.Converter` are `internal`
 - Try to avoid uneccesary 'this' qualifiers
+- Avoid `#region`s

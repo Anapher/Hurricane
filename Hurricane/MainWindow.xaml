@@ -1,8 +1,10 @@
-﻿<Window x:Class="Hurricane.MainWindow"
+﻿<hurricaneControls:MagicMetroWindow x:Class="Hurricane.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="MainWindow" Height="350" Width="525">
+        xmlns:hurricaneControls="clr-namespace:Hurricane.Controls"
+        Title="Hurricane" SizeToContent="Manual" IsWindowDraggable="False" ShowIconOnTitleBar="False" Height="1080" Width="300"
+        GlowBrush="{DynamicResource AccentColorBrush}">
     <Grid>
         
     </Grid>
-</Window>
+</hurricaneControls:MagicMetroWindow>

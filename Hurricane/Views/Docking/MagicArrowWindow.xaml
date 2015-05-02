@@ -4,17 +4,17 @@
         Title="Hurricane - MagicArrow" Height="45" Width="10" x:Name="BaseWindow" ResizeMode="NoResize" AllowsTransparency="True" Background="Transparent" WindowStartupLocation="Manual"
         ShowInTaskbar="False" WindowStyle="None" Topmost="True">
     <Window.Triggers>
-        <EventTrigger RoutedEvent="Window.Loaded">
+        <EventTrigger RoutedEvent="Loaded">
             <BeginStoryboard>
                 <Storyboard>
                     <DoubleAnimation From="{Binding ElementName=BaseWindow,Path=InvisibleLeft}" To="{Binding ElementName=BaseWindow,Path=VisibleLeft}"
-                                     Storyboard.TargetProperty="Left" Duration="0:0:0.5">
+                                     Storyboard.TargetProperty="Left" Duration="0:0:0.1">
                         <DoubleAnimation.EasingFunction>
                             <CircleEase EasingMode="EaseIn"/>
                         </DoubleAnimation.EasingFunction>
                     </DoubleAnimation>
                     <DoubleAnimation From="0" To="1"
-                                     Storyboard.TargetProperty="Opacity" Duration="0:0:0.2">
+                                     Storyboard.TargetProperty="Opacity" Duration="0:0:0.05">
                         <DoubleAnimation.EasingFunction>
                             <CircleEase EasingMode="EaseIn"/>
                         </DoubleAnimation.EasingFunction>

@@ -16,7 +16,7 @@ namespace Hurricane.MagicArrow
     /// <summary>
     /// A class for the arrow that is displayed when the cursor hits the right Windows border.
     /// </summary>
-    internal class MagicArrow : IDisposable
+    internal class MagicArrowService : IDisposable
     {
         private readonly ActiveWindowHook _activeWindowHook;
         private Side _movedOutSide; //The side where the window moved out
@@ -26,11 +26,11 @@ namespace Hurricane.MagicArrow
         private bool _isInZone;
         private readonly DispatcherTimer _magicArrowCheckTimer;
 
-        public MagicArrow(Window window)
+        public MagicArrowService(Window window)
         {
             BaseWindow = window;
             Application.Current.Deactivated += Application_Deactivated;
-            DockManager = new DockManager(window, DockingSide.Right);
+            DockManager = new DockManager(window, DockingSide.Left);
             _activeWindowHook = new ActiveWindowHook();
             _activeWindowHook.ActiveWindowChanged += ActiveWindowHook_ActiveWindowChanged;
             _magicArrowCheckTimer = new DispatcherTimer{Interval = TimeSpan.FromSeconds(1)};
@@ -64,7 +64,7 @@ namespace Hurricane.MagicArrow
             _disposed = true;
         }
 
-        ~MagicArrow()
+        ~MagicArrowService()
         {
             Dispose(false);
         }
@@ -136,6 +136,7 @@ namespace Hurricane.MagicArrow
 
         private void StartMagic()
         {
+            Debug.Print("MagicArrow: Start");
             var screen = GetScreenFromSide(_movedOutSide);
             _magicTrigger = new MagicTriggerWindow(screen.WorkingArea.Height, _movedOutSide == Side.Left ? WpfScreen.MostLeftX : WpfScreen.MostRightX, screen.WorkingArea.Top, _movedOutSide);
             _magicTrigger.Show();
@@ -270,12 +271,11 @@ namespace Hurricane.MagicArrow
             IsMagicArrowVisible = false;
             _isInZone = false;
             _magicArrowCheckTimer.Stop();
-            if (_magicTrigger != null && _magicTrigger.IsLoaded)
+            if (_magicArrow != null && _magicArrow.IsLoaded)
             {
-                _magicTrigger.MouseLeave -= MagicTriggerOnMouseLeave;
-                _magicTrigger.MouseMove -= MagicTriggerOnMouseMove;
-                _magicTrigger.Close();
-                _magicTrigger = null;
+                _magicArrow.MouseLeave -= MagicArrowOnMouseLeave;
+                _magicArrow.Close();
+                _magicArrow = null;
             }
         }
 

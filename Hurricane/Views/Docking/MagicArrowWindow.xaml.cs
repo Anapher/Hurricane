@@ -40,7 +40,7 @@ namespace Hurricane.Views.Docking
             {
                 //We rotate the Magic Arrow
                 MagicArrow.RenderTransformOrigin = new Point(.5, .5);
-                MagicArrow.RenderTransform = new ScaleTransform(-1, 0);
+                MagicArrow.RenderTransform = new ScaleTransform(-1, 1);
             }
         }
 
