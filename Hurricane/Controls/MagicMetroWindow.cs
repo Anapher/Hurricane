@@ -54,7 +54,7 @@ namespace Hurricane.Controls
 
             if (CurrentSkin != null)
             {
-                
+             this.Activate()   
             }
         }
     }

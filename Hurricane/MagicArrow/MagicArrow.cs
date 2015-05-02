@@ -2,10 +2,14 @@
 using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Input;
 using System.Windows.Media.Animation;
+using System.Windows.Threading;
 using Hurricane.Model.Skin;
 using Hurricane.Utilities;
 using Hurricane.Utilities.Hooks;
+using Hurricane.Views.Docking;
+using Cursor = Hurricane.Utilities.Cursor;
 
 namespace Hurricane.MagicArrow
 {
@@ -15,8 +19,12 @@ namespace Hurricane.MagicArrow
     internal class MagicArrow : IDisposable
     {
         private readonly ActiveWindowHook _activeWindowHook;
-        private Side _movedOutSide;
-        private bool _movedOut;
+        private Side _movedOutSide; //The side where the window moved out
+        private bool _movedOut; //If the window is moved out
+        private MagicTriggerWindow _magicTrigger; //The trigger window
+        private MagicArrowWindow _magicArrow;
+        private bool _isInZone;
+        private readonly DispatcherTimer _magicArrowCheckTimer;
 
         public MagicArrow(Window window)
         {
@@ -24,7 +32,9 @@ namespace Hurricane.MagicArrow
             Application.Current.Deactivated += Application_Deactivated;
             DockManager = new DockManager(window, DockingSide.Right);
             _activeWindowHook = new ActiveWindowHook();
-            _activeWindowHook.ActiveWindowChanged += _activeWindowHook_ActiveWindowChanged;
+            _activeWindowHook.ActiveWindowChanged += ActiveWindowHook_ActiveWindowChanged;
+            _magicArrowCheckTimer = new DispatcherTimer{Interval = TimeSpan.FromSeconds(1)};
+            _magicArrowCheckTimer.Tick += MagicArrowCheckTimer_Tick;
         }
 
         public void Dispose()
@@ -44,6 +54,7 @@ namespace Hurricane.MagicArrow
 
             if (disposing)
             {
+                StopMagic();
                 Application.Current.Deactivated -= Application_Deactivated;
                 _activeWindowHook.Dispose();
                 DockManager.DragStop();
@@ -63,23 +74,7 @@ namespace Hurricane.MagicArrow
 
         public Window BaseWindow { get; set; }
         public DockManager DockManager { get; set; }
-
-        void _activeWindowHook_ActiveWindowChanged(object sender, IntPtr hwnd)
-        {
-
-        }
-
-        void Application_Deactivated(object sender, EventArgs e)
-        {
-            var first = DockManager.CurrentSide != DockingSide.None; //We make sure that the window is docked
-            var secound = _movedOutSide == Side.Left
-                ? BaseWindow.Left >= WpfScreen.MostLeftX
-                : BaseWindow.Left <= WpfScreen.MostRightX;
-
-            if (first && secound)
-                //The window is at a good site
-                MoveWindowOutOfScreen(DockManager.DockingSideToSide(DockManager.CurrentSide));
-        }
+        public bool IsMagicArrowVisible { get; private set; }
 
         private async void MoveWindowOutOfScreen(Side side)
         {
@@ -131,13 +126,170 @@ namespace Hurricane.MagicArrow
 
         private void StopMagic()
         {
-            if (Strokewindow != null)
+            if (_magicTrigger != null && _magicTrigger.IsLoaded)
             {
-                Strokewindow.Close();
-                Strokewindow = null;
+                _magicTrigger.Close();
+                _magicTrigger = null;
+            }
+            _activeWindowHook.Disable();
+        }
+
+        private void StartMagic()
+        {
+            var screen = GetScreenFromSide(_movedOutSide);
+            _magicTrigger = new MagicTriggerWindow(screen.WorkingArea.Height, _movedOutSide == Side.Left ? WpfScreen.MostLeftX : WpfScreen.MostRightX, screen.WorkingArea.Top, _movedOutSide);
+            _magicTrigger.Show();
+            _magicTrigger.MouseMove += MagicTriggerOnMouseMove;
+            _magicTrigger.MouseLeave += MagicTriggerOnMouseLeave;
+            _magicTrigger.MouseDown += MagicTriggerOnMouseDown;
+            _activeWindowHook.Enable();
+            OnActiveWindowChanged(WindowHelper.GetForegroundWindow());//If the current window is fullscreen, the event wouldn't be raised (because nothing changed)
+        }
+
+        private void MagicTriggerOnMouseDown(object sender, MouseButtonEventArgs mouseButtonEventArgs)
+        {
+            if (IsMagicArrowVisible)
+            {
+                var cursorposition = Cursor.Position;
+                if (cursorposition.Y > _magicArrow.Top && cursorposition.Y < _magicArrow.Top + _magicArrow.Height && (_movedOutSide == Side.Left ? cursorposition.X < _magicArrow.Width + WpfScreen.MostLeftX : cursorposition.X > WpfScreen.MostRightX - _magicArrow.Width))
+                {
+                    MoveWindowBackInScreen();
+                    _isInZone = false;
+                    HideMagicArrow();
+                }
+            }
+        }
+
+        private void MagicTriggerOnMouseLeave(object sender, MouseEventArgs e)
+        {
+            Trace.WriteLine("MagicTrigger: mouse leave");
+            if (!IsMagicArrowVisible)
+            {
+                HideMagicArrow();
+                _isInZone = false;
+            }
+            else
+            {
+                if (!_magicTrigger.IsMouseOver)
+                {
+                    HideMagicArrow();
+                }
+            }
+        }
+
+        private void MagicTriggerOnMouseMove(object sender, MouseEventArgs e)
+        {
+            Trace.WriteLine("MagicTrigger: mouse move");
+            if (!IsMagicArrowVisible && !_isInZone && PositionIsOk(_movedOutSide, Cursor.Position.X, WpfScreen.MostLeftX - 2, WpfScreen.MostRightX))
+            {
+                _isInZone = true;
+                var p = e.GetPosition(_magicTrigger);
+                var screen = WpfScreen.GetScreenFrom(p);
+                ShowMagicArrow(p.Y + screen.WorkingArea.Top, _movedOutSide);
+            }
+        }
+
+        private void MagicArrowOnMouseLeave(object sender, MouseEventArgs mouseEventArgs)
+        {
+            Trace.WriteLine("MagicArrow: mouse leave");
+            if (PositionIsOk(_movedOutSide, Cursor.Position.X, 2 - WpfScreen.MostLeftX, WpfScreen.MostRightX))
+            {
+                if (_magicTrigger != null)
+                    _magicTrigger.SetLeft(_movedOutSide == Side.Left ? WpfScreen.MostLeftX : WpfScreen.MostRightX - 1, _movedOutSide);
+                HideMagicArrow();
+            }
+            else { _magicTrigger.SetLeft(_movedOutSide == Side.Left ? WpfScreen.MostLeftX : WpfScreen.MostRightX - 1, _movedOutSide); }
+        }
+
+        private void ActiveWindowHook_ActiveWindowChanged(object sender, IntPtr hwnd)
+        {
+            if (!_movedOut) return;
+            OnActiveWindowChanged(hwnd);
+        }
+
+        private void OnActiveWindowChanged(IntPtr handle)
+        {
+            if (WindowHelper.IsWindowFullscreen(handle))
+            {
+                if (_magicTrigger.IsMagicTriggerVisible) _magicTrigger.IsMagicTriggerVisible = false;
+            }
+            else
+            {
+                if (!_magicTrigger.IsMagicTriggerVisible) _magicTrigger.IsMagicTriggerVisible = true;
             }
 
-            _activeWindowHook.Disable();
+            if (_magicTrigger.IsMagicTriggerVisible)
+            {
+                _magicTrigger.Topmost = false;
+                _magicTrigger.Topmost = true;
+            }
+        }
+
+        private void Application_Deactivated(object sender, EventArgs e)
+        {
+            var first = DockManager.CurrentSide != DockingSide.None; //We make sure that the window is docked
+            var secound = _movedOutSide == Side.Left
+                ? BaseWindow.Left >= WpfScreen.MostLeftX
+                : BaseWindow.Left <= WpfScreen.MostRightX;
+
+            if (first && secound)
+                //The window is at a good site
+                MoveWindowOutOfScreen(DockManager.DockingSideToSide(DockManager.CurrentSide));
+        }
+
+        private void MagicArrowCheckTimer_Tick(object sender, EventArgs e)
+        {
+            Trace.WriteLine("MagicArrow: Check");
+            var cursorX = Cursor.Position.X;
+            if (((_movedOutSide == Side.Left && cursorX > 4 - WpfScreen.MostLeftX) ||
+                (_movedOutSide == Side.Right && cursorX < WpfScreen.MostRightX - 4)) && !_magicArrow.IsMouseOver)
+            {
+                Application.Current.Dispatcher.Invoke(HideMagicArrow);
+            }
+        }
+
+        private void ShowMagicArrow(double top, Side side)
+        {
+            Trace.WriteLine("MagicArrow: Show");
+            IsMagicArrowVisible = true;
+            _magicArrow = new MagicArrowWindow(top, side == Side.Left ? WpfScreen.MostLeftX - 10 : WpfScreen.MostRightX, side == Side.Left ? WpfScreen.MostLeftX : WpfScreen.MostRightX - 10, side);
+            _magicArrow.Click += (s, e) =>
+            {
+                MoveWindowBackInScreen();
+                _isInZone = false;
+                HideMagicArrow();
+            };
+            _magicArrow.MouseLeave += MagicArrowOnMouseLeave;
+            _magicArrow.Show();
+            _magicArrowCheckTimer.Start();
+        }
+
+        private void HideMagicArrow()
+        {
+            Trace.WriteLine("MagicArrow: Hide");
+            IsMagicArrowVisible = false;
+            _isInZone = false;
+            _magicArrowCheckTimer.Stop();
+            if (_magicTrigger != null && _magicTrigger.IsLoaded)
+            {
+                _magicTrigger.MouseLeave -= MagicTriggerOnMouseLeave;
+                _magicTrigger.MouseMove -= MagicTriggerOnMouseMove;
+                _magicTrigger.Close();
+                _magicTrigger = null;
+            }
+        }
+
+        private static WpfScreen GetScreenFromSide(Side side)
+        {
+            return
+                WpfScreen.GetScreenFrom(side == Side.Left
+                    ? new Point(WpfScreen.MostLeftX, 0)
+                    : new Point(WpfScreen.MostRightX, 0));
+        }
+
+        private static bool PositionIsOk(Side side, double position, double width, double screenwidth)
+        {
+            return side == Side.Left ? position >= width : position <= screenwidth - width - 1;
         }
     }
 
