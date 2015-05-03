@@ -171,7 +171,7 @@ namespace Hurricane.MagicArrow
             }
             else
             {
-                if (!_magicTrigger.IsMouseOver)
+                if (!_magicArrow.IsMouseOver)
                 {
                     HideMagicArrow();
                 }
@@ -253,7 +253,7 @@ namespace Hurricane.MagicArrow
         {
             Trace.WriteLine("MagicArrow: Show");
             IsMagicArrowVisible = true;
-            _magicArrow = new MagicArrowWindow(top, side == Side.Left ? WpfScreen.MostLeftX - 10 : WpfScreen.MostRightX, side == Side.Left ? WpfScreen.MostLeftX : WpfScreen.MostRightX - 10, side);
+            _magicArrow = new MagicArrowWindow(top, side == Side.Left ? WpfScreen.MostLeftX : WpfScreen.MostRightX - 10, side);
             _magicArrow.Click += (s, e) =>
             {
                 MoveWindowBackInScreen();

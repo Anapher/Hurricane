@@ -3,18 +3,23 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Hurricane - MagicArrow" Height="45" Width="10" x:Name="BaseWindow" ResizeMode="NoResize" AllowsTransparency="True" Background="Transparent" WindowStartupLocation="Manual"
         ShowInTaskbar="False" WindowStyle="None" Topmost="True">
+    <Window.Resources>
+        <!-- ReSharper disable once Xaml.RedundantResource -->
+        <Storyboard x:Key="FadeOutStoryboard" TargetName="MagicArrow">
+            <ThicknessAnimation To="-10,0,10,0" Storyboard.TargetProperty="Margin" Duration="0:0:0.4"/>
+            <DoubleAnimation To=".0" Duration="0:0:0.4" Storyboard.TargetProperty="Opacity"/>
+        </Storyboard>
+    </Window.Resources>
     <Window.Triggers>
         <EventTrigger RoutedEvent="Loaded">
             <BeginStoryboard>
                 <Storyboard>
-                    <DoubleAnimation From="{Binding ElementName=BaseWindow,Path=InvisibleLeft}" To="{Binding ElementName=BaseWindow,Path=VisibleLeft}"
-                                     Storyboard.TargetProperty="Left" Duration="0:0:0.1">
-                        <DoubleAnimation.EasingFunction>
+                    <ThicknessAnimation From="-10,0,10,0" To="0" Storyboard.TargetName="MagicArrow" Storyboard.TargetProperty="Margin" Duration="0:0:0.1">
+                        <ThicknessAnimation.EasingFunction>
                             <CircleEase EasingMode="EaseIn"/>
-                        </DoubleAnimation.EasingFunction>
-                    </DoubleAnimation>
-                    <DoubleAnimation From="0" To="1"
-                                     Storyboard.TargetProperty="Opacity" Duration="0:0:0.05">
+                        </ThicknessAnimation.EasingFunction>
+                    </ThicknessAnimation>
+                    <DoubleAnimation From="0" To="1" Storyboard.TargetName="MagicArrow" Storyboard.TargetProperty="Opacity" Duration="0:0:0.05">
                         <DoubleAnimation.EasingFunction>
                             <CircleEase EasingMode="EaseIn"/>
                         </DoubleAnimation.EasingFunction>
@@ -23,7 +28,7 @@
             </BeginStoryboard>
         </EventTrigger>
     </Window.Triggers>
-    <Grid x:Name="MagicArrow">
+    <Grid x:Name="MagicArrow" Height="45" Width="10">
         <Path Fill="{StaticResource AccentColorBrush}" Data="F1 M 0.000,0.000 L 5.000,0.000 L 10.000,4.802 L 10.000,40.014 L 5.228,45.000 L 0.000,45.000 L 0.000,0.000 Z"/>
         <Path StrokeThickness="3" VerticalAlignment="Center" HorizontalAlignment="Center" Stroke="White" Data="F1 M 0.406,0.567 L 5.591,7.343 L 0.406,14.567"/>
     </Grid>

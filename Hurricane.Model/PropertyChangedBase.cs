@@ -4,7 +4,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 
-namespace Hurricane.ViewModel
+namespace Hurricane.Model
 {
     [Serializable]
     public class PropertyChangedBase : INotifyPropertyChanged

@@ -13,29 +13,20 @@ namespace Hurricane.Views.Docking
     /// </summary>
     public partial class MagicArrowWindow
     {
-        public event MouseButtonEventHandler Click;
-
-        public double InvisibleLeft { get; set; }
-        public double VisibleLeft { get; set; }
-
         private bool _closeAllowed;
 
         /// <summary>
         /// Shows the magic arrow
         /// </summary>
         /// <param name="top">The top position</param>
-        /// <param name="invisibleLeft">The x position where the <b>Magic Arrow</b> wouldn't be visible (for the animation)</param>
-        /// <param name="visibleLeft">The correct left position of the <b>Magic Arrow</b></param>
+        /// <param name="left">The left position of the <b>Magic Arrow</b></param>
         /// <param name="side">The side of the <b>Magic Arrow</b></param>
-        public MagicArrowWindow(double top, double invisibleLeft, double visibleLeft, Side side)
+        public MagicArrowWindow(double top, double left, Side side)
         {
-            InvisibleLeft = invisibleLeft;
-            VisibleLeft = visibleLeft;
-
             InitializeComponent();
 
-            Top = top - Height  / 2;
-            Left = visibleLeft;
+            Top = top - Height / 2;
+            Left = left;
             if (side == Side.Right)
             {
                 //We rotate the Magic Arrow
@@ -43,6 +34,8 @@ namespace Hurricane.Views.Docking
                 MagicArrow.RenderTransform = new ScaleTransform(-1, 1);
             }
         }
+
+        public event MouseButtonEventHandler Click;
 
         protected override void OnMouseDown(MouseButtonEventArgs e)
         {
@@ -59,13 +52,10 @@ namespace Hurricane.Views.Docking
             base.OnClosing(e);
             if (_closeAllowed) return;
 
-            var outAnimation = new DoubleAnimation(InvisibleLeft, TimeSpan.FromMilliseconds(400))
-            {
-                EasingFunction = new CircleEase {EasingMode = EasingMode.EaseOut}
-            };
+            var outStoryboard = (Storyboard)Resources["FadeOutStoryboard"];
+            outStoryboard.Completed += (sender, args) => Close();
+            outStoryboard.Begin(this);
 
-            outAnimation.Completed += (s, args) => Close();
-            BeginAnimation(LeftProperty, outAnimation);
             e.Cancel = true;
             _closeAllowed = true;
         }
