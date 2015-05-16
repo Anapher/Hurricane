@@ -29,10 +29,7 @@ namespace Hurricane.Model
 
         public void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
-            if (PropertyChanged != null)
-            {
-                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-            }
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         public void OnPropertyChanged(Expression<Func<object>> property)
@@ -44,26 +41,19 @@ namespace Hurricane.Model
         {
             var lambda = property as LambdaExpression;
             MemberExpression memberExpression;
-            if (lambda.Body is UnaryExpression)
+
+            var unaryExpression = lambda.Body as UnaryExpression;
+            if (unaryExpression != null)
             {
-                var unaryExpression = (UnaryExpression)lambda.Body;
                 memberExpression = unaryExpression.Operand as MemberExpression;
             }
             else
             {
-                memberExpression = lambda.Body as MemberExpression;
+                memberExpression = (MemberExpression)lambda.Body;
             }
 
-            if (memberExpression != null)
-            {
-                var propertyInfo = memberExpression.Member as PropertyInfo;
-
-                if (propertyInfo != null)
-                {
-                    return propertyInfo.Name;
-                }
-            }
-            return string.Empty;
+            var propertyInfo = memberExpression?.Member as PropertyInfo;
+            return propertyInfo?.Name ?? string.Empty;
         }
     }
 }

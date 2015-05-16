@@ -15,10 +15,7 @@ namespace Hurricane.Model.MusicEqualizer
             set
             {
                 if (SetProperty(value, ref _value))
-                {
-                    if (ValueChanged != null)
-                        ValueChanged(this, EventArgs.Empty);
-                }
+                    ValueChanged?.Invoke(this, EventArgs.Empty);
             }
         }
 

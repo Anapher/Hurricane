@@ -79,7 +79,7 @@ namespace Hurricane.MagicArrow
         private async void MoveWindowOutOfScreen(Side side)
         {
             BaseWindow.Topmost = true;
-            if (MoveOut != null) MoveOut(this, EventArgs.Empty);
+            MoveOut?.Invoke(this, EventArgs.Empty);
             if (side == Side.Left)
             {
                 for (var i = 0; i > -32; i--)
@@ -105,7 +105,7 @@ namespace Hurricane.MagicArrow
 
         private void MoveWindowBackInScreen()
         {
-            if (MoveIn != null) MoveIn(this, EventArgs.Empty);
+            MoveIn?.Invoke(this, EventArgs.Empty);
             double newleft;
             if (_movedOutSide == Side.Left) { newleft = WpfScreen.MostLeftX; } else { newleft = WpfScreen.MostRightX - BaseWindow.Width; }
             BaseWindow.Left = _movedOutSide == Side.Left ? newleft + 10 : newleft - 10;
@@ -195,8 +195,7 @@ namespace Hurricane.MagicArrow
             Trace.WriteLine("MagicArrow: mouse leave");
             if (PositionIsOk(_movedOutSide, Cursor.Position.X, 2 - WpfScreen.MostLeftX, WpfScreen.MostRightX))
             {
-                if (_magicTrigger != null)
-                    _magicTrigger.SetLeft(_movedOutSide == Side.Left ? WpfScreen.MostLeftX : WpfScreen.MostRightX - 1, _movedOutSide);
+                _magicTrigger?.SetLeft(_movedOutSide == Side.Left ? WpfScreen.MostLeftX : WpfScreen.MostRightX - 1, _movedOutSide);
                 HideMagicArrow();
             }
             else { _magicTrigger.SetLeft(_movedOutSide == Side.Left ? WpfScreen.MostLeftX : WpfScreen.MostRightX - 1, _movedOutSide); }

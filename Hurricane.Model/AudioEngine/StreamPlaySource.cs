@@ -4,10 +4,7 @@ namespace Hurricane.Model.AudioEngine
 {
     public class StreamPlaySource : IPlaySource
     {
-        public PlaySourceType Type
-        {
-            get { return PlaySourceType.Stream; }
-        }
+        public PlaySourceType Type => PlaySourceType.Stream;
 
         public Stream Stream { get; set; }
 

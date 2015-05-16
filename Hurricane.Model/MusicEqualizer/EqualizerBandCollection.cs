@@ -56,14 +56,10 @@ namespace Hurricane.Model.MusicEqualizer
             if (band == null)
                 throw new ArgumentException("Invalid sender");
 
-            if (EqualizerBandChanged != null)
-                EqualizerBandChanged(this, new EqualizerBandChangedEventArgs(Bands.IndexOf(band), band.Value, band));
+            EqualizerBandChanged?.Invoke(this, new EqualizerBandChangedEventArgs(Bands.IndexOf(band), band.Value, band));
         }
 
-        public int Count
-        {
-            get { return 10; }
-        }
+        public int Count => 10;
 
         public IEnumerator<EqualizerBand> GetEnumerator()
         {

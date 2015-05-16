@@ -22,7 +22,7 @@ namespace Hurricane.ViewModel
         {
             if (execute == null)
             {
-                throw new ArgumentNullException("execute");
+                throw new ArgumentNullException(nameof(execute));
             }
             _execute = execute;
             _canExecute = canExecute;
@@ -50,12 +50,7 @@ namespace Hurricane.ViewModel
 
         public bool CanExecute(object parameter)
         {
-            if (_canExecute == null)
-            {
-                return true;
-            }
-
-            return _canExecute.Invoke();
+            return _canExecute == null || _canExecute.Invoke();
         }
 
         public void Execute(object parameter)

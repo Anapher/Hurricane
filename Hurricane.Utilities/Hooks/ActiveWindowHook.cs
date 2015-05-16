@@ -44,8 +44,7 @@ namespace Hurricane.Utilities.Hooks
         {
             if (eventType == EVENT_SYSTEM_FOREGROUND)
             {
-                if (ActiveWindowChanged != null)
-                    ActiveWindowChanged(this, hwnd);
+                ActiveWindowChanged?.Invoke(this, hwnd);
             }
         }
     }

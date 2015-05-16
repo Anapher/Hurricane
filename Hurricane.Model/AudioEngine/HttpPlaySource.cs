@@ -4,10 +4,7 @@ namespace Hurricane.Model.AudioEngine
 {
     public class HttpPlaySource : IPlaySource
     {
-        public PlaySourceType Type
-        {
-            get { return PlaySourceType.Http; }
-        }
+        public PlaySourceType Type => PlaySourceType.Http;
 
         public Uri WebUri { get; set; }
 

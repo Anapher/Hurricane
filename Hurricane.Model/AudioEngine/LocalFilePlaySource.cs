@@ -2,10 +2,7 @@
 {
     class LocalFilePlaySource : IPlaySource
     {
-        public PlaySourceType Type
-        {
-            get { return PlaySourceType.LocalFile; }
-        }
+        public PlaySourceType Type => PlaySourceType.LocalFile;
 
         public string Path { get; private set; }
 

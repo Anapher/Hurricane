@@ -89,23 +89,23 @@ namespace Hurricane.MagicArrow
                 case DockingSide.Right:
                     return Side.Right;
                 default:
-                    throw new ArgumentOutOfRangeException("dockingSide");
+                    throw new ArgumentOutOfRangeException(nameof(dockingSide));
             }
         }
 
         private void OnUndocked()
         {
-            if (Undocked != null) Undocked(this, EventArgs.Empty);
+            Undocked?.Invoke(this, EventArgs.Empty);
         }
 
         private void OnDocked()
         {
-            if (Docked != null) Docked(this, EventArgs.Empty);
+            Docked?.Invoke(this, EventArgs.Empty);
         }
 
         private void OnDragStopped()
         {
-            if (DragStopped != null) DragStopped(this, EventArgs.Empty);
+            DragStopped?.Invoke(this, EventArgs.Empty);
         }
 
         private void MouseHookOnMouseMove(object sender, MouseMoveEventArgs e)
@@ -209,7 +209,7 @@ namespace Hurricane.MagicArrow
                 case WindowPositionSide.Top:
                     return;
                 default:
-                    throw new ArgumentOutOfRangeException("side");
+                    throw new ArgumentOutOfRangeException(nameof(side));
             }
 
             _placeholderWindow = new DockPlaceholderWindow(screen.WorkingArea.Top, dockwindowLeft, screen.WorkingArea.Height, 300);

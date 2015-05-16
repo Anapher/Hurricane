@@ -83,7 +83,7 @@ namespace Hurricane.Controls
                 WindowWidth = Width;
             }
 
-            if (CloseCommand != null) CloseCommand.Execute(e);
+            CloseCommand?.Execute(e);
             _magicArrow.Dispose();
         }
 
