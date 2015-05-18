@@ -8,7 +8,7 @@ namespace Hurricane.Model.AudioEngine
     /// <summary>
     /// Defines methods, functions and properties for an andio engine
     /// </summary>
-    interface IAudioEngine : IDisposable, INotifyPropertyChanged
+    public interface IAudioEngine : IDisposable, INotifyPropertyChanged
     {
         /// <summary>
         /// When the track is naturally finished
@@ -47,6 +47,11 @@ namespace Hurricane.Model.AudioEngine
         /// Returns if it is currently loading
         /// </summary>
         bool IsLoading { get; }
+
+        /// <summary>
+        /// If set to true, the audio engine should set the position to 0 and continue playing instead of firing the <see cref="TrackFinished" /> event
+        /// </summary>
+        bool IsLooping { set; }
 
         /// <summary>
         /// The position (as <see cref="TimeSpan"/>) of the current track

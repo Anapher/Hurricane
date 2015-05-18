@@ -15,5 +15,5 @@ namespace Hurricane.Model.Skin
         public WindowState WindowState { get; set; }
     }
 
-    public enum DockingSide { Left, Right, None }
+    public enum DockingSide { None, Left, Right }
 }

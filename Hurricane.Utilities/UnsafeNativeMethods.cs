@@ -13,6 +13,9 @@ namespace Hurricane.Utilities
         [DllImport("user32.dll")]
         internal static extern int SetWindowLong(IntPtr hwnd, int index, int value);
 
+        [DllImport("user32.dll", SetLastError = true)]
+        internal static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, int uFlags);
+
         [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto, CallingConvention = CallingConvention.StdCall)]
         internal static extern IntPtr SetWindowsHookEx(Enums.HookType hookType, NativeDelegates.HookProc lpfn, IntPtr hMod, uint dwThreadId);
 

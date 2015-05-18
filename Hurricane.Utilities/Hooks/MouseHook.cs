@@ -35,6 +35,7 @@ namespace Hurricane.Utilities.Hooks
         public void Enable()
         {
             if (IsEnabled) return;
+            IsEnabled = true;
             _mouseDelegate = MouseHookProc;
             _mouseHookHandle = UnsafeNativeMethods.SetWindowsHookEx(
                 Enums.HookType.WH_MOUSE_LL,
@@ -46,6 +47,7 @@ namespace Hurricane.Utilities.Hooks
         public void Disable()
         {
             if (!IsEnabled) return;
+            IsEnabled = false;
             var result = UnsafeNativeMethods.UnhookWindowsHookEx(_mouseHookHandle);
             _mouseHookHandle = IntPtr.Zero;
             _mouseDelegate = null;
@@ -63,7 +65,7 @@ namespace Hurricane.Utilities.Hooks
             {
                 _oldX = mouseHookStruct.Point.X;
                 _oldY = mouseHookStruct.Point.Y;
-                    MouseMove.Invoke(this,new MouseMoveEventArgs(mouseHookStruct.Point.X, mouseHookStruct.Point.Y));
+                MouseMove.Invoke(this, new MouseMoveEventArgs(mouseHookStruct.Point.X, mouseHookStruct.Point.Y));
             }
 
             return UnsafeNativeMethods.CallNextHookEx(_mouseHookHandle, nCode, wParam, lParam);

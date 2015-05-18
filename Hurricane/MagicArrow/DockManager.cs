@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Input;
 using Hurricane.Model.Skin;
@@ -28,7 +29,7 @@ namespace Hurricane.MagicArrow
         }
 
         public event EventHandler Undocked;
-        public event EventHandler Docked;
+        public event EventHandler<DockedEventArgs> Docked;
         public event EventHandler DragStopped;
 
         public DockingSide CurrentSide { get; set; } //the applied side
@@ -40,6 +41,7 @@ namespace Hurricane.MagicArrow
             IsDragging = true;
             _newSide = null;
             _mouseHook.Enable();
+            _firedUndocked = false;
         }
 
         public void DragStop()
@@ -56,8 +58,7 @@ namespace Hurricane.MagicArrow
                     case WindowPositionSide.Left:
                     case WindowPositionSide.Right:
                         CurrentSide = _newSide == WindowPositionSide.Left ? DockingSide.Left : DockingSide.Right;
-                        ApplyCurrentSide();
-                        OnDocked();
+                        OnDocked(CurrentSide);
                         return;
                     case WindowPositionSide.Top:
                         _basewindow.WindowState = WindowState.Maximized;
@@ -67,17 +68,6 @@ namespace Hurricane.MagicArrow
                 }
             }
             CurrentSide = DockingSide.None;
-        }
-
-        public void ApplyCurrentSide()
-        {
-            if (CurrentSide == DockingSide.Left || CurrentSide == DockingSide.Right)
-            {
-                _basewindow.Left = CurrentSide == DockingSide.Left ? WpfScreen.MostLeftX : WpfScreen.MostRightX - 300;
-                var screen = WpfScreen.GetScreenFrom(new Point(_basewindow.Left, 0));
-                _basewindow.Top = screen.WorkingArea.Top;
-                _basewindow.Height = screen.WorkingArea.Height;
-            }
         }
 
         public static Side DockingSideToSide(DockingSide dockingSide)
@@ -98,9 +88,9 @@ namespace Hurricane.MagicArrow
             Undocked?.Invoke(this, EventArgs.Empty);
         }
 
-        private void OnDocked()
+        private void OnDocked(DockingSide side)
         {
-            Docked?.Invoke(this, EventArgs.Empty);
+            Docked?.Invoke(this, new DockedEventArgs(side));
         }
 
         private void OnDragStopped()
@@ -183,11 +173,11 @@ namespace Hurricane.MagicArrow
             return false;
         }
 
-        private void CloseWindow()
+        private async void CloseWindow()
         {
             if (_placeholderWindow != null && _placeholderWindow.IsLoaded)
             {
-                _placeholderWindow.Close();
+                await Application.Current.Dispatcher.BeginInvoke(new Action(() => _placeholderWindow.Close()));
                 _placeholderWindow = null;
             }
         }

@@ -1,25 +1,24 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Input;
-using System.Windows.Interop;
-using Hurricane.Model.Skin;
-using MahApps.Metro.Controls;
-using WindowSettings = Hurricane.Model.Skin.WindowSettings;
 using Hurricane.MagicArrow;
+using Hurricane.Model.Skin;
 using Hurricane.Utilities;
+using MahApps.Metro.Controls;
 
 namespace Hurricane.Controls
 {
     public partial class MagicMetroWindow : MetroWindow
     {
-        public static readonly DependencyProperty AdvancedViewSkinProperty = DependencyProperty.Register(
-            "AdvancedViewSkin", typeof (IWindowSkin), typeof (MagicMetroWindow), new PropertyMetadata(default(IWindowSkin)));
+        public static readonly DependencyProperty NormalWindowSkinProperty = DependencyProperty.Register(
+            "NormalWindowSkin", typeof (IWindowSkin), typeof (MagicMetroWindow), new PropertyMetadata(default(IWindowSkin)));
 
-        public static readonly DependencyProperty DockViewSkinProperty = DependencyProperty.Register(
-            "DockViewSkin", typeof(IWindowSkin), typeof(MagicMetroWindow), new PropertyMetadata(default(IWindowSkin)));
+        public static readonly DependencyProperty DockWindowSkinProperty = DependencyProperty.Register(
+            "DockWindowSkin", typeof(IWindowSkin), typeof(MagicMetroWindow), new PropertyMetadata(default(IWindowSkin)));
 
-        public static readonly DependencyProperty WindowSettingsProperty = DependencyProperty.Register(
-            "WindowSettings", typeof(WindowSettings), typeof(MagicMetroWindow), new PropertyMetadata(default(WindowSettings)));
+        public static readonly DependencyProperty CurrentSideProperty = DependencyProperty.Register(
+            "CurrentSide", typeof (DockingSide), typeof (MagicMetroWindow), new PropertyMetadata(default(DockingSide), CurrentSidePropertyChangedCallback));
 
         public static readonly DependencyProperty ShowMagicArrowBelowCursorProperty = DependencyProperty.Register(
             "ShowMagicArrowBelowCursor", typeof(bool), typeof(MagicMetroWindow), new PropertyMetadata(default(bool)));
@@ -58,24 +57,42 @@ namespace Hurricane.Controls
                     if (window.Height != newHeight) window.Height = newHeight;
                 }));
 
+        public static readonly DependencyProperty WindowLeftProperty = DependencyProperty.Register(
+            "WindowLeft", typeof (double), typeof (MagicMetroWindow), new PropertyMetadata(default(double),
+                (o, args) =>
+                {
+                    var window = o as Window;
+                    if (window == null) throw new ArgumentException(o.ToString());
+                    var newLeft = (double) args.NewValue;
+                    // ReSharper disable once CompareOfFloatsByEqualityOperator
+                    if (window.Left != newLeft) window.Left = newLeft;
+                }));
+
+        public static readonly DependencyProperty WindowTopProperty = DependencyProperty.Register(
+            "WindowTop", typeof (double), typeof (MagicMetroWindow), new PropertyMetadata(default(double),
+                (o, args) =>
+                {
+                    var window = o as Window;
+                    if (window == null) throw new ArgumentException(o.ToString());
+                    var newTop = (double)args.NewValue;
+                    // ReSharper disable once CompareOfFloatsByEqualityOperator
+                    if (window.Top != newTop) window.Top = newTop;
+                }));
+
         private MagicArrowService _magicArrow;
+        private readonly IWindowSkin _defaultNormalWindowSkin;
+        private readonly IWindowSkin _defaultDockedWindowSkin;
 
         public MagicMetroWindow()
         {
             SourceInitialized += MagicMetroWindow_SourceInitialized;
             Closing += MagicMetroWindow_Closing;
             StateChanged += MagicMetroWindow_StateChanged;
+            _defaultNormalWindowSkin = new WindowSkinNormal.WindowSkinNormal();
+            _defaultDockedWindowSkin = new WindowSkinDocked.WindowSkinDocked();
         }
 
-        void MagicMetroWindow_StateChanged(object sender, EventArgs e)
-        {
-            if (WindowState == WindowState.Minimized && MinimizeToTray)
-            {
-                Hide();
-            }
-        }
-
-        void MagicMetroWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        void MagicMetroWindow_Closing(object sender, CancelEventArgs e)
         {
             if (CurrentWindowState == CurrentWindowState.Normal) //We save the position
             {
@@ -94,33 +111,36 @@ namespace Hurricane.Controls
             {
                 CurrentWindowState = CurrentWindowState.Docked;
                 ApplyWindowSkin();
+                CurrentSide = args.DockingSide;
             };
             _magicArrow.DockManager.Undocked += (o, args) =>
             {
                 CurrentWindowState = CurrentWindowState.Normal;
                 ApplyWindowSkin();
+                CurrentSide = DockingSide.None;
             };
             _magicArrow.DockManager.DragStopped += DockManager_DragStopped;
+            _magicArrow.DockManager.CurrentSide = CurrentSide;
 
-            WindowHelper.DisableAeroSnap(new WindowInteropHelper(this).Handle);
+            ApplyWindowSkin();
         }
 
-        public IWindowSkin AdvancedViewSkin
+        public IWindowSkin NormalWindowSkin
         {
-            get { return (IWindowSkin) GetValue(AdvancedViewSkinProperty); }
-            set { SetValue(AdvancedViewSkinProperty, value); }
+            get { return (IWindowSkin) GetValue(NormalWindowSkinProperty); }
+            set { SetValue(NormalWindowSkinProperty, value); }
         }
 
-        public IWindowSkin DockViewSkin
+        public IWindowSkin DockWindowSkin
         {
-            get { return (IWindowSkin) GetValue(DockViewSkinProperty); }
-            set { SetValue(DockViewSkinProperty, value); }
+            get { return (IWindowSkin) GetValue(DockWindowSkinProperty); }
+            set { SetValue(DockWindowSkinProperty, value); }
         }
 
-        public WindowSettings WindowSettings
+        public DockingSide CurrentSide
         {
-            get { return (WindowSettings)GetValue(WindowSettingsProperty); }
-            set { SetValue(WindowSettingsProperty, value); }
+            get { return (DockingSide)GetValue(CurrentSideProperty); }
+            set { SetValue(CurrentSideProperty, value); }
         }
 
         public bool ShowMagicArrowBelowCursor
@@ -165,12 +185,24 @@ namespace Hurricane.Controls
             set { SetValue(WindowHeightProperty, value); }
         }
 
+        public double WindowLeft
+        {
+            get { return (double)GetValue(WindowLeftProperty); }
+            set { SetValue(WindowLeftProperty, value); }
+        }
+
+        public double WindowTop
+        {
+            get { return (double)GetValue(WindowTopProperty); }
+            set { SetValue(WindowTopProperty, value); }
+        }
+
         public IWindowSkin CurrentView { get; set; }
         public CurrentWindowState CurrentWindowState { get; set; }
 
         protected void ApplyWindowSkin()
         {
-            var newWindowSkin = CurrentWindowState == CurrentWindowState.Normal ? AdvancedViewSkin : DockViewSkin;
+            var newWindowSkin = CurrentWindowState == CurrentWindowState.Normal ? (NormalWindowSkin ?? _defaultNormalWindowSkin) : (DockWindowSkin ?? _defaultDockedWindowSkin);
             if (CurrentView == newWindowSkin)
                 return;
 
@@ -180,9 +212,6 @@ namespace Hurricane.Controls
                 CurrentView.DragMoveStop -= WindowSkin_DragMoveStop;
                 CurrentView.ToggleWindowState -= WindowSkin_ToggleWindowState;
                 CurrentView.TitleBarMouseMove -= WindowSkin_TitleBarMouseMove;
-                CurrentView.DisableSkin();
-
-
             }
 
             //Handle events
@@ -204,6 +233,8 @@ namespace Hurricane.Controls
             {
                 WindowHeight = Height;
                 WindowWidth = Width;
+                WindowTop = Top;
+                WindowLeft = Left;
             }
 
             //Set properties
@@ -213,6 +244,42 @@ namespace Hurricane.Controls
             MinWidth = newWindowSkin.Configuration.MinWidth;
             ShowTitleBar = newWindowSkin.Configuration.ShowTitleBar;
             ShowSystemMenuOnRightClick = newWindowSkin.Configuration.ShowSystemMenuOnRightClick;
+
+            if (CurrentWindowState == CurrentWindowState.Docked)
+            {
+                Width = 300;
+            }
+
+            Content = newWindowSkin;
+            CurrentView = newWindowSkin;
+        }
+
+        private static void CurrentSidePropertyChangedCallback(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs dependencyPropertyChangedEventArgs)
+        {
+            var magicMetroWindow = dependencyObject as MagicMetroWindow;
+            if (magicMetroWindow == null)
+                throw new ArgumentException(nameof(dependencyObject));
+            if (dependencyPropertyChangedEventArgs.NewValue == dependencyPropertyChangedEventArgs.OldValue) return;
+            magicMetroWindow.ApplySide((DockingSide) dependencyPropertyChangedEventArgs.NewValue);
+        }
+
+        private void ApplySide(DockingSide side)
+        {
+            switch (side)
+            {
+                case DockingSide.None:
+
+                    break;
+                case DockingSide.Left:
+                case DockingSide.Right:
+                    Left = side == DockingSide.Left ? WpfScreen.MostLeftX : WpfScreen.MostRightX - 300;
+                    var screen = WpfScreen.GetScreenFrom(new Point(Left, 0));
+                    Top = screen.WorkingArea.Top;
+                    Height = screen.WorkingArea.Height;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
         }
 
         private void WindowSkin_ToggleWindowState(object sender, EventArgs e)
@@ -223,6 +290,12 @@ namespace Hurricane.Controls
         private void WindowSkin_CloseRequest(object sender, EventArgs e)
         {
             Close();
+        }
+
+        void MagicMetroWindow_StateChanged(object sender, EventArgs e)
+        {
+            if (WindowState == WindowState.Minimized && MinimizeToTray)
+                Hide();
         }
     }
 

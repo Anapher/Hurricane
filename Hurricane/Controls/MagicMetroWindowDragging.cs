@@ -15,8 +15,9 @@ namespace Hurricane.Controls
         {
             _isDragging = true;
             _canRestore = WindowState == WindowState.Maximized;
-            ResizeMode = ResizeMode.CanResize;
-            WindowHelper.DisableAeroSnap(new WindowInteropHelper(this).Handle);
+            //ResizeMode = ResizeMode.CanResize;
+            //WindowHelper.DisableAeroSnap(new WindowInteropHelper(this).Handle);
+            ResizeMode = ResizeMode.NoResize;
 
             _magicArrow.DockManager.DragStart();
 
@@ -24,7 +25,8 @@ namespace Hurricane.Controls
             {
                 try
                 {
-                    DragMove();
+                    if (Mouse.LeftButton == MouseButtonState.Pressed)
+                        DragMove();
                 }
                 catch (InvalidOperationException)
                 {
@@ -38,10 +40,11 @@ namespace Hurricane.Controls
             _magicArrow.DockManager.DragStop();
         }
 
-        void DockManager_DragStopped(object sender, EventArgs e)
+        private void DockManager_DragStopped(object sender, EventArgs e)
         {
             _isDragging = false;
-            ResizeMode = CurrentView.Configuration.IsResizable ? ResizeMode.CanResize : ResizeMode.NoResize;
+            if (!CurrentView.Configuration.IsResizable) return; //Cant resize anyway
+            ResizeMode = ResizeMode.CanResize;
         }
 
         private void WindowSkin_TitleBarMouseMove(object sender, MouseEventArgs e)

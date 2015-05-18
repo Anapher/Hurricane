@@ -28,6 +28,8 @@ namespace Hurricane.Model.Music.Playable
             get { throw new NotImplementedException(); }
         }
 
+        public bool IsAvailable { get; }
+
         public Task<IPlaySource> GetSoundSource()
         {
             throw new NotImplementedException();

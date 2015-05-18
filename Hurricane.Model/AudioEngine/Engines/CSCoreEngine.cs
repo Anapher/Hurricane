@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using CSCore.SoundOut;
 using Hurricane.Model.MusicEqualizer;
@@ -13,7 +10,6 @@ namespace Hurricane.Model.AudioEngine.Engines
     {
         private float _volume = 1.0f;
         private ISoundOut _soundOut;
-        private bool _isLoading;
 
         public CSCoreEngine()
         {
@@ -59,11 +55,9 @@ namespace Hurricane.Model.AudioEngine.Engines
             get { return _soundOut != null && _soundOut.PlaybackState == PlaybackState.Playing; }
         }
 
-        public bool IsLoading
-        {
-            get { return _isLoading; }
-            set { SetProperty(value, ref _isLoading); }
-        }
+        public bool IsLoading { get; set; }
+
+        public bool IsLooping { get; set; }
 
         public TimeSpan TrackPositionTime
         {

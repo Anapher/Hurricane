@@ -26,10 +26,11 @@ namespace Hurricane.Utilities
 
         public static void DisableAeroSnap(IntPtr handle)
         {
+            /*
             var currentStyle = UnsafeNativeMethods.GetWindowLong(handle, GWL_STYLE);
             currentStyle |= (int)WS_OVERLAPPEDWINDOW;
             currentStyle ^= (int)WS_THICKFRAME;
-            UnsafeNativeMethods.SetWindowLong(handle, GWL_STYLE, currentStyle);
+            UnsafeNativeMethods.SetWindowLong(handle, GWL_STYLE, currentStyle);*/
         }
 
         public static bool IsWindowFullscreen(IntPtr window)

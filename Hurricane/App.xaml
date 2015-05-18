@@ -10,6 +10,10 @@
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Colors.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/Blue.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/BaseLight.xaml" />
+                <ResourceDictionary Source="/Resources/MagicWindow.xaml"/>
+                <ResourceDictionary Source="/Resources/MagicControls.xaml"/>
+                <ResourceDictionary Source="/Resources/VectorGraphics.xaml"/>
+                <ResourceDictionary Source="/Resources/Languages/Hurricane.de-de.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>

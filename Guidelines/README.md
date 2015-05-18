@@ -49,4 +49,3 @@ Other
 - Try to avoid uneccesary 'this' qualifiers
 - Avoid `#region`s
 - String comparing thought string.Equals() (instead of `s1.ToUpper() == s2.ToUppter()`)
-- Don't use the alias of a native datatypes to access the (static) methods: Use `String.Concat()` instead of `string.Concat()`

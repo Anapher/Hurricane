@@ -2,9 +2,10 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:hurricaneControls="clr-namespace:Hurricane.Controls"
-        Title="Hurricane" SizeToContent="Manual" IsWindowDraggable="False" ShowIconOnTitleBar="False" Height="1080" Width="300"
-        GlowBrush="{DynamicResource AccentColorBrush}">
-    <Grid>
-        
-    </Grid>
+        xmlns:viewModels="clr-namespace:Hurricane.ViewModel;assembly=Hurricane.ViewModel"
+        Title="Hurricane" SizeToContent="Manual" IsWindowDraggable="False" ShowIconOnTitleBar="False" Height="468.06" Width="946.268"
+        GlowBrush="{DynamicResource AccentColorBrush}" Style="{DynamicResource CleanWindowStyleKey}" ResizeMode="CanResize" ShowTitleBar="False">
+    <Window.DataContext>
+        <viewModels:MainViewModel />
+    </Window.DataContext>
 </hurricaneControls:MagicMetroWindow>

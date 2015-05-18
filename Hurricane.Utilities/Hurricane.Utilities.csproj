@@ -53,8 +53,10 @@
     <Compile Include="Native\NativeDelegates.cs" />
     <Compile Include="Native\POINT.cs" />
     <Compile Include="Native\RECT.cs" />
+    <Compile Include="Native\SetWindowPosFlags.cs" />
     <Compile Include="Native\WINDOWPLACEMENT.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TaskExtensions.cs" />
     <Compile Include="WpfScreen.cs" />
     <Compile Include="UnsafeNativeMethods.cs" />
     <Compile Include="WindowHelper.cs" />
