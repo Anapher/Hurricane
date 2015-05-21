@@ -17,7 +17,7 @@ namespace Hurricane.Controls
             _canRestore = WindowState == WindowState.Maximized;
             //ResizeMode = ResizeMode.CanResize;
             //WindowHelper.DisableAeroSnap(new WindowInteropHelper(this).Handle);
-            ResizeMode = ResizeMode.NoResize;
+            //ResizeMode = ResizeMode.NoResize;
 
             _magicArrow.DockManager.DragStart();
 
@@ -43,8 +43,8 @@ namespace Hurricane.Controls
         private void DockManager_DragStopped(object sender, EventArgs e)
         {
             _isDragging = false;
-            if (!CurrentView.Configuration.IsResizable) return; //Cant resize anyway
-            ResizeMode = ResizeMode.CanResize;
+            //if (!CurrentView.Configuration.IsResizable) return; //Cant resize anyway
+            //ResizeMode = ResizeMode.CanResize;
         }
 
         private void WindowSkin_TitleBarMouseMove(object sender, MouseEventArgs e)

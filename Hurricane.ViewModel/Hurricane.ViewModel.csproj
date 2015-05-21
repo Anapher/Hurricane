@@ -51,7 +51,9 @@
     <Compile Include="MainView\CollectionView.cs" />
     <Compile Include="MainView\HomeView.cs" />
     <Compile Include="MainView\IViewItem.cs" />
+    <Compile Include="MainView\PlaylistView.cs" />
     <Compile Include="NormalViewModel.cs" />
+    <Compile Include="Properties\Annotations.cs" />
     <Compile Include="RelayCommand.cs" />
   </ItemGroup>
   <ItemGroup>

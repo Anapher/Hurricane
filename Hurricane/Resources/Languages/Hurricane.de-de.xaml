@@ -3,4 +3,7 @@
                     xmlns:system="clr-namespace:System;assembly=mscorlib">
     <system:String x:Key="Discover">Entdecken</system:String>
     <system:String x:Key="MyMusic">Meine Musik</system:String>
+    <system:String x:Key="Playlists">Wiedergabelisten</system:String>
+    <system:String x:Key="Collection">Sammlung</system:String>
+    <system:String x:Key="Home">Startseite</system:String>
 </ResourceDictionary>

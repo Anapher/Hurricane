@@ -27,42 +27,103 @@
                 <ColumnDefinition Width="2"/>
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
-            <ListBox ItemsSource="{Binding ViewItems}">
+            <ListBox ItemsSource="{Binding ViewItems}" Margin="5,0,0,0">
+                <ListBox.ItemContainerStyle>
+                    <Style TargetType="ListBoxItem" d:DataContext="{d:DesignInstance viewData:IViewItem}">
+                        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="ListBoxItem">
+                                    <Grid Background="Transparent">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <StackPanel Orientation="Horizontal">
+                                            <Viewbox Width="12" VerticalAlignment="Center">
+                                                <Path Data="{Binding Icon}" Fill="{StaticResource GrayBrush3}" x:Name="IconPath"/>
+                                            </Viewbox>
+                                            <TextBlock Text="{Binding Text}" VerticalAlignment="Center" Margin="8,0,0,0" x:Name="TextBlock" FontFamily="Segoe UI Emoji" FontSize="14"/>
+                                        </StackPanel>
+                                        <Viewbox Width="16" Grid.Column="1" Margin="0,0,10,0">
+                                            <Viewbox.Style>
+                                                <Style TargetType="Viewbox">
+                                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding IsPlaying}" Value="true">
+                                                            <Setter Property="Visibility" Value="Visible"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Viewbox.Style>
+                                            <Path StrokeThickness="2.0" Stroke="#ff000000" StrokeStartLineCap="Round" StrokeEndLineCap="Round" StrokeLineJoin="Round">
+                                                <Path.Data>
+                                                    <GeometryGroup>
+                                                        <Geometry>F1 M 23.000,1.000 C 35.150,1.000 45.000,10.850 45.000,23.000 C 45.000,35.150 35.150,45.000 23.000,45.000 C 10.850,45.000 1.000,35.150 1.000,23.000 C 1.000,10.850 10.850,1.000 23.000,1.000 Z</Geometry>
+                                                        <Geometry>F1 M 17.000,31.000 L 17.000,15.000 L 29.000,23.000 L 17.000,31.000 Z</Geometry>
+                                                    </GeometryGroup>
+                                                </Path.Data>
+                                            </Path>
+                                        </Viewbox>
+                                    </Grid>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter TargetName="IconPath" Property="Fill" Value="{StaticResource GrayBrush2}"/>
+                                        </Trigger>
+                                        <Trigger Property="IsSelected" Value="True">
+                                            <Setter TargetName="IconPath" Property="Fill" Value="{StaticResource AccentColorBrush}"/>
+                                            <Setter Property="Foreground" Value="{StaticResource AccentColorBrush}"/>
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </ListBox.ItemContainerStyle>
                 <ListBox.GroupStyle>
                     <GroupStyle>
-                        <GroupStyle.HeaderTemplate>
-                            <DataTemplate>
-                                <TextBlock Margin="5,30,0,2">
-                                    <TextBlock.Style>
-                                        <Style TargetType="TextBlock">
-                                            <Setter Property="FontFamily" Value="Segoe UI Emoji"/>
-                                            <Setter Property="FontSize" Value="11"/>
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding Name}" Value="Discover">
-                                                    <Setter Property="behavior:TextBlockBehavior.UpperText" Value="{StaticResource Discover}"/>
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding Name}" Value="MyMusic">
-                                                    <Setter Property="behavior:TextBlockBehavior.UpperText" Value="{StaticResource MyMusic}"/>
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </TextBlock.Style>
-                                </TextBlock>
-                            </DataTemplate>
-                        </GroupStyle.HeaderTemplate>
+                        <GroupStyle.ContainerStyle>
+                            <Style TargetType="GroupItem">
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="GroupItem">
+                                            <StackPanel Orientation="Vertical" Margin="5,0,0,0">
+                                                <TextBlock Margin="0,30,0,5">
+                                                    <TextBlock.Style>
+                                                        <Style TargetType="TextBlock">
+                                                            <Setter Property="FontFamily" Value="Segoe UI Emoji"/>
+                                                            <Setter Property="FontSize" Value="11"/>
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding Name}" Value="Discover">
+                                                                    <Setter Property="behavior:TextBlockBehavior.UpperText" Value="{StaticResource Discover}"/>
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding Name}" Value="MyMusic">
+                                                                    <Setter Property="behavior:TextBlockBehavior.UpperText" Value="{StaticResource MyMusic}"/>
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding Name}" Value="Playlist">
+                                                                    <Setter Property="behavior:TextBlockBehavior.UpperText" Value="{StaticResource Playlists}"/>
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </TextBlock.Style>
+                                                </TextBlock>
+                                                <ItemsPresenter Margin="1,0,0,0"/>
+                                            </StackPanel>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </GroupStyle.ContainerStyle>
                     </GroupStyle>
                 </ListBox.GroupStyle>
-                <ListBox.ItemTemplate>
-                    <DataTemplate DataType="{x:Type viewData:IViewItem}">
-                        <StackPanel Orientation="Horizontal">
-                            <Viewbox Width="18" Height="18">
-                                <Path Data="{Binding Icon}" Fill="Black"/>
-                            </Viewbox>
-                            <TextBlock Text="{Binding Text}" VerticalAlignment="Center" Margin="5,0,0,0"/>
-                        </StackPanel>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
             </ListBox>
+            <GridSplitter HorizontalAlignment="Stretch" Grid.Column="1">
+                <GridSplitter.Style>
+                    <Style TargetType="GridSplitter">
+                        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+                    </Style>
+                </GridSplitter.Style>
+            </GridSplitter>
         </Grid>
         <Grid Grid.Row="2">
             <Grid.RowDefinitions>

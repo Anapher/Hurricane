@@ -221,7 +221,7 @@ namespace Hurricane.Controls
             newWindowSkin.ToggleWindowState += WindowSkin_ToggleWindowState;
             newWindowSkin.TitleBarMouseMove += WindowSkin_TitleBarMouseMove;
 
-            if (!_isDragging)
+            //if (!_isDragging)
                 ResizeMode = newWindowSkin.Configuration.IsResizable ? ResizeMode.CanResize : ResizeMode.NoResize;
 
             if (CurrentWindowState == CurrentWindowState.Normal)

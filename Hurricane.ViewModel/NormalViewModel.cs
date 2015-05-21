@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Windows.Data;
 using Hurricane.Model;
+using Hurricane.Model.Music.Playlist;
 using Hurricane.Utilities;
 using Hurricane.ViewModel.MainView;
 using CollectionView = Hurricane.ViewModel.MainView.CollectionView;
@@ -15,7 +16,9 @@ namespace Hurricane.ViewModel
          
         public NormalViewModel()
         {
-            _viewItems = new ObservableCollection<IViewItem> {new HomeView(), new CollectionView()};
+            var playlist1 = new UserPlaylist {Name = "Beste Musik eva"};
+            _viewItems = new ObservableCollection<IViewItem> {new HomeView {IsPlaying = true}, new CollectionView(), new PlaylistView(playlist1)};
+            
             ViewItems = CollectionViewSource.GetDefaultView(_viewItems);
             ViewItems.GroupDescriptions.Add(new PropertyGroupDescription("ViewCategorie"));
         }

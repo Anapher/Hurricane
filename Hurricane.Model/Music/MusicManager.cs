@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using Hurricane.Model.AudioEngine;
 using Hurricane.Model.AudioEngine.Engines;
 using Hurricane.Model.Music.Playable;
 using Hurricane.Model.Music.Playlist;
+using Hurricane.Utilities;
 
 namespace Hurricane.Model.Music
 {
@@ -19,6 +21,7 @@ namespace Hurricane.Model.Music
         {
             AudioEngine = new CSCoreEngine();
             AudioEngine.TrackFinished += AudioEngineOnTrackFinished;
+            TrackHistory = new ObservableCollection<IPlayable>();
         }
 
         public void Dispose()
@@ -56,6 +59,7 @@ namespace Hurricane.Model.Music
         }
 
         public IAudioEngine AudioEngine { get; }
+        public ObservableCollection<IPlayable> TrackHistory { get; }
 
         public async Task OpenPlayable(IPlayable playable, IPlaylist playlist, bool openPlaying)
         {
@@ -65,14 +69,21 @@ namespace Hurricane.Model.Music
                 AudioEngine.TogglePlayPause();
         }
 
-        public void GoNext()
+        public void GoForward()
         {
-            
+            if (CurrentPlaylist == null || CurrentPlaylist.Tracks.Count == 0 || CurrentPlaylist.Tracks.All(x => !x.IsAvailable)) return;
+            var track = CurrentPlayMode == PlayMode.Default ? CurrentPlaylist.GetNextTrack(CurrentTrack) : CurrentPlaylist.GetRandomTrack();
+            if(CurrentPlaylist.History.Count(x => CurrentPlaylist.Tracks.Contains(x)) == CurrentPlaylist.Tracks.Count)
+                CurrentPlaylist.History.Clear();
+
+            CurrentPlaylist.History.Add(track);
+            TrackHistory.Add(track);
+            OpenPlayable(track, CurrentPlaylist, true).Forget();
         }
 
         public void GoBack()
         {
-            
+
         }
 
         private void AudioEngineOnTrackFinished(object sender, TrackFinishedEventArgs trackFinishedEventArgs)
@@ -81,10 +92,10 @@ namespace Hurricane.Model.Music
             {
                 case PlayMode.Default:
                 case PlayMode.Shuffle:
-                    GoNext();
+                    GoForward();
                     break;
                 case PlayMode.Loop:
-                    throw new InvalidOperationException("Why the hell fire the trackfinished event if loop is enabled?!");
+                    throw new InvalidOperationException("Why the hell fire the trackfinished event, if loop is enabled?! EPIC FAIL");
                 default:
                     throw new ArgumentOutOfRangeException();
             }

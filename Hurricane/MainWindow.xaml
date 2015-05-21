@@ -3,8 +3,14 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:hurricaneControls="clr-namespace:Hurricane.Controls"
         xmlns:viewModels="clr-namespace:Hurricane.ViewModel;assembly=Hurricane.ViewModel"
+        xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
         Title="Hurricane" SizeToContent="Manual" IsWindowDraggable="False" ShowIconOnTitleBar="False" Height="468.06" Width="946.268"
         GlowBrush="{DynamicResource AccentColorBrush}" Style="{DynamicResource CleanWindowStyleKey}" ResizeMode="CanResize" ShowTitleBar="False">
+    <hurricaneControls:MagicMetroWindow.RightWindowCommands>
+        <controls:WindowCommands>
+            <Button Content="Einstellungen"/>
+        </controls:WindowCommands>
+    </hurricaneControls:MagicMetroWindow.RightWindowCommands>
     <Window.DataContext>
         <viewModels:MainViewModel />
     </Window.DataContext>

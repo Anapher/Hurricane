@@ -62,11 +62,19 @@
     <Compile Include="Music\Playable\Playable.cs" />
     <Compile Include="Music\Playlist\IPlaylist.cs" />
     <Compile Include="Music\Playlist\QueueList.cs" />
+    <Compile Include="Music\Playlist\UserPlaylist.cs" />
+    <Compile Include="PlaylistExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PropertyChangedBase.cs" />
     <Compile Include="Skin\IWindowSkin.cs" />
     <Compile Include="Skin\WindowSettings.cs" />
     <Compile Include="Skin\WindowSkinConfiguration.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Hurricane.Utilities\Hurricane.Utilities.csproj">
+      <Project>{A3109E52-8E1D-4C07-BA81-8925B6E7D217}</Project>
+      <Name>Hurricane.Utilities</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
