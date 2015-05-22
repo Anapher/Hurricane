@@ -1,10 +1,7 @@
-﻿using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using Hurricane.Model;
-using Hurricane.ViewModel.Annotations;
 
 namespace Hurricane.ViewModel.MainView
 {

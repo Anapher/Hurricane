@@ -82,6 +82,15 @@
     <Compile Include="Controls\RoundButton.xaml.cs">
       <DependentUpon>RoundButton.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Converter\TimespanToStringConverter.cs" />
+    <Compile Include="Extensions\GridViewSort.cs" />
+    <Compile Include="Extensions\ListViewLayoutManager\ConverterGridViewColumn.cs" />
+    <Compile Include="Extensions\ListViewLayoutManager\FixedColumn.cs" />
+    <Compile Include="Extensions\ListViewLayoutManager\ImageGridViewColumn.cs" />
+    <Compile Include="Extensions\ListViewLayoutManager\LayoutColumn.cs" />
+    <Compile Include="Extensions\ListViewLayoutManager\ListViewLayoutManager.cs" />
+    <Compile Include="Extensions\ListViewLayoutManager\ProportionalColumn.cs" />
+    <Compile Include="Extensions\ListViewLayoutManager\RangeColumn.cs" />
     <Compile Include="MagicArrow\DockedEventArgs.cs" />
     <Compile Include="Views\Docking\DockPlaceholderWindow.xaml.cs">
       <DependentUpon>DockPlaceholderWindow.xaml</DependentUpon>
@@ -94,6 +103,9 @@
     </Compile>
     <Compile Include="WindowSkinDocked\WindowSkinDocked.xaml.cs">
       <DependentUpon>WindowSkinDocked.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="WindowSkinNormal\Views\PlaylistView.xaml.cs">
+      <DependentUpon>PlaylistView.xaml</DependentUpon>
     </Compile>
     <Compile Include="WindowSkinNormal\WindowSkinNormal.xaml.cs">
       <DependentUpon>WindowSkinNormal.xaml</DependentUpon>
@@ -142,6 +154,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="WindowSkinDocked\WindowSkinDocked.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="WindowSkinNormal\Views\PlaylistView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -197,7 +213,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Converter\" />
+    <Resource Include="Resources\Images\ArrowUp.png" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.5">
@@ -210,6 +226,9 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Images\ArrowDown.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

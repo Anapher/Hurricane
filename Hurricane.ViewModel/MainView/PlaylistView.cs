@@ -1,6 +1,8 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Linq;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media;
 using Hurricane.Model;
@@ -9,7 +11,7 @@ using Hurricane.Model.Music.Playlist;
 
 namespace Hurricane.ViewModel.MainView
 {
-    class PlaylistView : PropertyChangedBase, IViewItem
+    public class PlaylistView : PropertyChangedBase, IViewItem
     {
         private string _searchText;
         private bool _isPlaying;
@@ -19,7 +21,8 @@ namespace Hurricane.ViewModel.MainView
             Playlist = playlist;
             ViewSource = CollectionViewSource.GetDefaultView(playlist.Tracks);
             ViewSource.Filter = FilterViewSource;
-            Icon = new GeometryGroup()
+
+            Icon = new GeometryGroup
             {
                 Children =
                     new GeometryCollection
@@ -51,9 +54,9 @@ namespace Hurricane.ViewModel.MainView
             }
         }
 
-        public Task Load()
+        public async Task Load()
         {
-            throw new NotImplementedException();
+            
         }
 
         private bool FilterViewSource(object o)

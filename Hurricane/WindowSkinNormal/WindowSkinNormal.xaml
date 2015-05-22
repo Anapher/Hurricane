@@ -7,6 +7,8 @@
              xmlns:myControls="clr-namespace:Hurricane.Controls"
              xmlns:viewData="clr-namespace:Hurricane.ViewModel.MainView;assembly=Hurricane.ViewModel"
              xmlns:behavior="clr-namespace:Hurricane.Behavior"
+             xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
+             xmlns:views="clr-namespace:Hurricane.WindowSkinNormal.Views"
              mc:Ignorable="d" 
              d:DesignHeight="500" d:DesignWidth="1000" d:DataContext="{d:DesignInstance viewModels:NormalViewModel, d:IsDesignTimeCreatable=True}">
     <UserControl.DataContext>
@@ -23,11 +25,11 @@
         </Grid>
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="250" MinWidth="150" MaxWidth="500"/>
+                <ColumnDefinition Width="250" MinWidth="150" MaxWidth="400"/>
                 <ColumnDefinition Width="2"/>
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
-            <ListBox ItemsSource="{Binding ViewItems}" Margin="5,0,0,0">
+            <ListBox ItemsSource="{Binding ViewItems}" SelectedItem="{Binding SelectedViewItem}" Margin="5,0,0,0">
                 <ListBox.ItemContainerStyle>
                     <Style TargetType="ListBoxItem" d:DataContext="{d:DesignInstance viewData:IViewItem}">
                         <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
@@ -43,7 +45,7 @@
                                             <Viewbox Width="12" VerticalAlignment="Center">
                                                 <Path Data="{Binding Icon}" Fill="{StaticResource GrayBrush3}" x:Name="IconPath"/>
                                             </Viewbox>
-                                            <TextBlock Text="{Binding Text}" VerticalAlignment="Center" Margin="8,0,0,0" x:Name="TextBlock" FontFamily="Segoe UI Emoji" FontSize="14"/>
+                                            <TextBlock Text="{Binding Text}" Foreground="{StaticResource GrayBrush1}" VerticalAlignment="Center" Margin="8,0,0,0" x:Name="TextBlock" FontFamily="Segoe UI Emoji" FontSize="14"/>
                                         </StackPanel>
                                         <Viewbox Width="16" Grid.Column="1" Margin="0,0,10,0">
                                             <Viewbox.Style>
@@ -60,7 +62,7 @@
                                                 <Path.Data>
                                                     <GeometryGroup>
                                                         <Geometry>F1 M 23.000,1.000 C 35.150,1.000 45.000,10.850 45.000,23.000 C 45.000,35.150 35.150,45.000 23.000,45.000 C 10.850,45.000 1.000,35.150 1.000,23.000 C 1.000,10.850 10.850,1.000 23.000,1.000 Z</Geometry>
-                                                        <Geometry>F1 M 17.000,31.000 L 17.000,15.000 L 29.000,23.000 L 17.000,31.000 Z</Geometry>
+                                                        <Geometry>F1 M 19.000,31.000 L 19.000,15.000 L 31.000,23.000 L 19.000,31.000 Z</Geometry>
                                                     </GeometryGroup>
                                                 </Path.Data>
                                             </Path>
@@ -69,10 +71,11 @@
                                     <ControlTemplate.Triggers>
                                         <Trigger Property="IsMouseOver" Value="True">
                                             <Setter TargetName="IconPath" Property="Fill" Value="{StaticResource GrayBrush2}"/>
+                                            <Setter TargetName="TextBlock" Property="Foreground" Value="{StaticResource BlackBrush}"/>
                                         </Trigger>
                                         <Trigger Property="IsSelected" Value="True">
                                             <Setter TargetName="IconPath" Property="Fill" Value="{StaticResource AccentColorBrush}"/>
-                                            <Setter Property="Foreground" Value="{StaticResource AccentColorBrush}"/>
+                                            <Setter TargetName="TextBlock" Property="Foreground" Value="{StaticResource AccentColorBrush}"/>
                                         </Trigger>
                                     </ControlTemplate.Triggers>
                                 </ControlTemplate>
@@ -124,6 +127,18 @@
                     </Style>
                 </GridSplitter.Style>
             </GridSplitter>
+            <controls:TransitioningContentControl Transition="LeftReplace" Content="{Binding SelectedViewItem}" Grid.Column="2">
+                <controls:TransitioningContentControl.Resources>
+                    <DataTemplate DataType="{x:Type viewData:HomeView}">
+                        <Grid Background="#FFF3F3F3">
+                            <TextBlock Text="Startseite" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="16"/>
+                        </Grid>
+                    </DataTemplate>
+                    <DataTemplate DataType="{x:Type viewData:PlaylistView}">
+                        <views:PlaylistView DataContext="{Binding}"/>
+                    </DataTemplate>
+                </controls:TransitioningContentControl.Resources>
+            </controls:TransitioningContentControl>
         </Grid>
         <Grid Grid.Row="2">
             <Grid.RowDefinitions>

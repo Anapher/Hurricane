@@ -14,7 +14,7 @@ namespace Hurricane.Model.Data
             
         }
 
-        public Dictionary<Guid, Playable> Collection { get; set; }
+        public Dictionary<Guid, PlayableBase> Collection { get; set; }
 
         public static TrackProvider Load(string path)
         {
@@ -22,7 +22,7 @@ namespace Hurricane.Model.Data
             {
                 var serializer = new XmlSerializer(typeof(Track[]));
                 var result = new TrackProvider();
-                var collection = new Dictionary<Guid, Playable>();
+                var collection = new Dictionary<Guid, PlayableBase>();
                 // ReSharper disable once LoopCanBeConvertedToQuery - because of the better performance
                 foreach (var track in (Track[]) serializer.Deserialize(fileStream))
                     collection.Add(track.Id, track.Playable);
@@ -48,7 +48,7 @@ namespace Hurricane.Model.Data
             [XmlAttribute]
             public Guid Id { get; set; }
 
-            public Playable Playable { get; set; }
+            public PlayableBase Playable { get; set; }
         }
     }
 }

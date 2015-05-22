@@ -1,9 +1,10 @@
 ﻿<Application x:Class="Hurricane.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:converter="clr-namespace:Hurricane.Converter"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-         <ResourceDictionary>
+        <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />
@@ -15,6 +16,7 @@
                 <ResourceDictionary Source="/Resources/VectorGraphics.xaml"/>
                 <ResourceDictionary Source="/Resources/Languages/Hurricane.de-de.xaml"/>
             </ResourceDictionary.MergedDictionaries>
+            <converter:TimespanToStringConverter x:Key="TimespanToStringConverter"/>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

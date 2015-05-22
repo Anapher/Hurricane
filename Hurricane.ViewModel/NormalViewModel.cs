@@ -1,7 +1,9 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows.Data;
 using Hurricane.Model;
+using Hurricane.Model.Music.Playable;
 using Hurricane.Model.Music.Playlist;
 using Hurricane.Utilities;
 using Hurricane.ViewModel.MainView;
@@ -16,11 +18,20 @@ namespace Hurricane.ViewModel
          
         public NormalViewModel()
         {
-            var playlist1 = new UserPlaylist {Name = "Beste Musik eva"};
+            var playlist1 = new UserPlaylist {Name = "Beste Musik eva & adam"};
+            playlist1.Tracks.Add(new LocalPlayable
+            {
+                Artist = "Vincent",
+                TrackPath = @"D:\Musik\Best\Moderat - Bad.mp3",
+                Title = "Moderat - Bad",
+                Duration = TimeSpan.FromSeconds(193),
+                Album = "Die Garcons 2"
+            });
             _viewItems = new ObservableCollection<IViewItem> {new HomeView {IsPlaying = true}, new CollectionView(), new PlaylistView(playlist1)};
             
             ViewItems = CollectionViewSource.GetDefaultView(_viewItems);
             ViewItems.GroupDescriptions.Add(new PropertyGroupDescription("ViewCategorie"));
+            SelectedViewItem = _viewItems[0];
         }
 
         public IViewItem SelectedViewItem

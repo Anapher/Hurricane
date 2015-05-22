@@ -6,4 +6,12 @@
     <system:String x:Key="Playlists">Wiedergabelisten</system:String>
     <system:String x:Key="Collection">Sammlung</system:String>
     <system:String x:Key="Home">Startseite</system:String>
+    <system:String x:Key="Search">Suche...</system:String>
+    <system:String x:Key="Artists">Künstler</system:String>
+    <system:String x:Key="Albums">Alben</system:String>
+    <system:String x:Key="Tracks">Tracks</system:String>
+    <system:String x:Key="Artist">Künstler</system:String>
+    <system:String x:Key="Titel">Titel</system:String>
+    <system:String x:Key="Duration">Dauer</system:String>
+    <system:String x:Key="Album">Album</system:String>
 </ResourceDictionary>
