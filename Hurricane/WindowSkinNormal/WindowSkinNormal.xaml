@@ -11,9 +11,6 @@
              xmlns:views="clr-namespace:Hurricane.WindowSkinNormal.Views"
              mc:Ignorable="d" 
              d:DesignHeight="500" d:DesignWidth="1000" d:DataContext="{d:DesignInstance viewModels:NormalViewModel, d:IsDesignTimeCreatable=True}">
-    <UserControl.DataContext>
-        <viewModels:NormalViewModel />
-    </UserControl.DataContext>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="35"/>
@@ -36,7 +33,7 @@
                         <Setter Property="Template">
                             <Setter.Value>
                                 <ControlTemplate TargetType="ListBoxItem">
-                                    <Grid Background="Transparent">
+                                    <Grid Background="Transparent" Margin="0,2,0,0">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="*"/>
                                             <ColumnDefinition Width="Auto"/>
@@ -136,6 +133,9 @@
                     </DataTemplate>
                     <DataTemplate DataType="{x:Type viewData:PlaylistView}">
                         <views:PlaylistView DataContext="{Binding}"/>
+                    </DataTemplate>
+                    <DataTemplate DataType="{x:Type viewData:ChartsView}">
+                        <views:ChartsView DataContext="{Binding}"/>
                     </DataTemplate>
                 </controls:TransitioningContentControl.Resources>
             </controls:TransitioningContentControl>

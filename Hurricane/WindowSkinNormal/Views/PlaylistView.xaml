@@ -60,7 +60,25 @@
         <controls:MetroAnimatedTabControl Grid.Row="1" SelectedIndex="{Binding ElementName=CurrentTrackViewListBox,Path=SelectedIndex}">
             <TabItem>
                 <Grid>
-                    
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="200" MinWidth="150" MaxWidth="300"/>
+                        <ColumnDefinition Width="2"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <ListBox ItemsSource="{Binding Artists}">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="40"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Image Source="{Binding MediumImage.Image}" Width="40" Height="40"/>
+                                    <TextBlock Text="{Binding Name}" Margin="5,0,0,0" Grid.Column="1" VerticalAlignment="Center"/>
+                                </Grid>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
                 </Grid>
             </TabItem>
             <TabItem />

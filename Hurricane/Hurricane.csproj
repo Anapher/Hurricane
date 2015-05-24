@@ -77,11 +77,16 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Behavior\ScrollAnimationBehavior.cs" />
     <Compile Include="Behavior\TextBlockBehavior.cs" />
+    <Compile Include="Controls\ImageProviderViewer.xaml.cs">
+      <DependentUpon>ImageProviderViewer.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\MagicMetroWindowDragging.cs" />
     <Compile Include="Controls\RoundButton.xaml.cs">
       <DependentUpon>RoundButton.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Converter\SizeToColumnsConverter.cs" />
     <Compile Include="Converter\TimespanToStringConverter.cs" />
     <Compile Include="Extensions\GridViewSort.cs" />
     <Compile Include="Extensions\ListViewLayoutManager\ConverterGridViewColumn.cs" />
@@ -91,6 +96,7 @@
     <Compile Include="Extensions\ListViewLayoutManager\ListViewLayoutManager.cs" />
     <Compile Include="Extensions\ListViewLayoutManager\ProportionalColumn.cs" />
     <Compile Include="Extensions\ListViewLayoutManager\RangeColumn.cs" />
+    <Compile Include="Helpers\FindVisualChildHelper.cs" />
     <Compile Include="MagicArrow\DockedEventArgs.cs" />
     <Compile Include="Views\Docking\DockPlaceholderWindow.xaml.cs">
       <DependentUpon>DockPlaceholderWindow.xaml</DependentUpon>
@@ -104,12 +110,22 @@
     <Compile Include="WindowSkinDocked\WindowSkinDocked.xaml.cs">
       <DependentUpon>WindowSkinDocked.xaml</DependentUpon>
     </Compile>
+    <Compile Include="WindowSkinNormal\Views\ChartsView.xaml.cs">
+      <DependentUpon>ChartsView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="WindowSkinNormal\Views\PlaylistView.xaml.cs">
       <DependentUpon>PlaylistView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="WindowSkinNormal\Views\SettingsView.xaml.cs">
+      <DependentUpon>SettingsView.xaml</DependentUpon>
     </Compile>
     <Compile Include="WindowSkinNormal\WindowSkinNormal.xaml.cs">
       <DependentUpon>WindowSkinNormal.xaml</DependentUpon>
     </Compile>
+    <Page Include="Controls\ImageProviderViewer.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Controls\RoundButton.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -157,7 +173,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="WindowSkinNormal\Views\ChartsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="WindowSkinNormal\Views\PlaylistView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="WindowSkinNormal\Views\SettingsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

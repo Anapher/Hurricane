@@ -6,12 +6,12 @@
         xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
         Title="Hurricane" SizeToContent="Manual" IsWindowDraggable="False" ShowIconOnTitleBar="False" Height="468.06" Width="946.268"
         GlowBrush="{DynamicResource AccentColorBrush}" Style="{DynamicResource CleanWindowStyleKey}" ResizeMode="CanResize" ShowTitleBar="False">
+    <Window.DataContext>
+        <viewModels:NormalViewModel />
+    </Window.DataContext>
     <hurricaneControls:MagicMetroWindow.RightWindowCommands>
         <controls:WindowCommands>
-            <Button Content="Einstellungen"/>
+            <Button Content="Einstellungen" Command="{Binding OpenSettingsCommand}"/>
         </controls:WindowCommands>
     </hurricaneControls:MagicMetroWindow.RightWindowCommands>
-    <Window.DataContext>
-        <viewModels:MainViewModel />
-    </Window.DataContext>
 </hurricaneControls:MagicMetroWindow>

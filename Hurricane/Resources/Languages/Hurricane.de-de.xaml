@@ -14,4 +14,6 @@
     <system:String x:Key="Titel">Titel</system:String>
     <system:String x:Key="Duration">Dauer</system:String>
     <system:String x:Key="Album">Album</system:String>
+    <system:String x:Key="Charts">Charts</system:String>
+    <system:String x:Key="Queue">Warteschlange</system:String>
 </ResourceDictionary>
