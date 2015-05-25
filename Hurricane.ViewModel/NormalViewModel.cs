@@ -16,8 +16,9 @@ namespace Hurricane.ViewModel
     {
         private IViewItem _selectedViewItem;
         private ObservableCollection<IViewItem> _viewItems;
-        private readonly MusicDataManager _musicDataManager;
         private bool _isSettingOpen;
+        private RelayCommand _openSettingsCommand;
+        private RelayCommand _playPauseCommand;
 
         public NormalViewModel()
         {
@@ -35,8 +36,10 @@ namespace Hurricane.ViewModel
             ViewItems = CollectionViewSource.GetDefaultView(_viewItems);
             ViewItems.GroupDescriptions.Add(new PropertyGroupDescription("ViewCategorie"));
             SelectedViewItem = _viewItems[0];
-            _musicDataManager = new MusicDataManager();
+            MusicDataManager = new MusicDataManager();
         }
+
+        public MusicDataManager MusicDataManager { get; }
 
         public IViewItem SelectedViewItem
         {
@@ -44,7 +47,7 @@ namespace Hurricane.ViewModel
             set
             {
                 if (SetProperty(value, ref _selectedViewItem))
-                    value.Load(_musicDataManager).Forget();
+                    value.Load(MusicDataManager).Forget();
             }
         }
 
@@ -54,7 +57,6 @@ namespace Hurricane.ViewModel
             set { SetProperty(value, ref _isSettingOpen); }
         }
 
-        private RelayCommand _openSettingsCommand;
         public RelayCommand OpenSettingsCommand
         {
             get
@@ -62,6 +64,17 @@ namespace Hurricane.ViewModel
                 return _openSettingsCommand ?? (_openSettingsCommand = new RelayCommand(parameter =>
                 {
                     IsSettingOpen = !IsSettingOpen;
+                }));
+            }
+        }
+
+        public RelayCommand PlayPauseCommand
+        {
+            get
+            {
+                return _playPauseCommand ?? (_playPauseCommand = new RelayCommand(parameter =>
+                {
+                    MusicDataManager.MusicManager.AudioEngine.TogglePlayPause();
                 }));
             }
         }

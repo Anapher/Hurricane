@@ -51,8 +51,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AudioEngine\Engines\CSCoreEngine.cs" />
+    <Compile Include="AudioEngine\Engines\CSCoreSoundOutProvider.cs" />
+    <Compile Include="AudioEngine\Engines\FadingService.cs" />
+    <Compile Include="AudioEngine\Engines\SoundOutDevice.cs" />
+    <Compile Include="AudioEngine\Engines\SoundOutMode.cs" />
     <Compile Include="AudioEngine\HttpPlaySource.cs" />
     <Compile Include="AudioEngine\IAudioEngine.cs" />
+    <Compile Include="AudioEngine\ISoundOutDevice.cs" />
+    <Compile Include="AudioEngine\ISoundOutMode.cs" />
+    <Compile Include="AudioEngine\ISoundOutProvider.cs" />
     <Compile Include="AudioEngine\LocalFilePlaySource.cs" />
     <Compile Include="AudioEngine\IPlaySource.cs" />
     <Compile Include="AudioEngine\StreamPlaySource.cs" />

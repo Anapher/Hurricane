@@ -32,7 +32,15 @@ namespace Hurricane.Model.Music
         public IPlayable CurrentTrack
         {
             get { return _currentTrack; }
-            set { SetProperty(value, ref _currentTrack); }
+            set
+            {
+                var oldValue = _currentTrack;
+                if (SetProperty(value, ref _currentTrack))
+                {
+                    value.IsPlaying = true;
+                    oldValue.IsPlaying = false;
+                }
+            }
         }
 
         public IPlaylist CurrentPlaylist
@@ -65,8 +73,16 @@ namespace Hurricane.Model.Music
         {
             CurrentTrack = playable;
             CurrentPlaylist = playlist;
-            if (await AudioEngine.OpenTrack(await playable.GetSoundSource(), IsCrossfadeEnabled) && openPlaying)
+            if (await AudioEngine.OpenTrack(await playable.GetSoundSource(), IsCrossfadeEnabled, 0) && openPlaying)
+            {
+                var track = playable as PlayableBase;
+                if (track != null)
+                {
+                    track.LastTimePlayed = DateTime.Now;
+                }
+                TrackHistory.Add(playable);
                 AudioEngine.TogglePlayPause();
+            }
         }
 
         public void GoForward()
@@ -77,7 +93,6 @@ namespace Hurricane.Model.Music
                 CurrentPlaylist.History.Clear();
 
             CurrentPlaylist.History.Add(track);
-            TrackHistory.Add(track);
             OpenPlayable(track, CurrentPlaylist, true).Forget();
         }
 

@@ -10,6 +10,7 @@ namespace Hurricane.Model.Music.Playable
         string Artist { get; }
         BitmapImage Cover { get; }
         bool IsAvailable { get; }
+        bool IsPlaying { get; set; }
 
         Task<IPlaySource> GetSoundSource();
         Task LoadImage();

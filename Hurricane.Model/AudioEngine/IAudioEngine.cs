@@ -20,8 +20,9 @@ namespace Hurricane.Model.AudioEngine
         /// </summary>
         /// <param name="track">The track to open</param>
         /// <param name="openCrossfading">If true, the current track fades out and the new one fades in</param>
+        /// <param name="position">The start position. Is relative to <see cref="TrackLength"/></param>
         /// <returns>Returns if the <see cref="track"/> could be successfully opened</returns>
-        Task<bool> OpenTrack(IPlaySource track, bool openCrossfading);
+        Task<bool> OpenTrack(IPlaySource track, bool openCrossfading, long position);
 
         /// <summary>
         /// The position of current track, wayne in which format
@@ -69,9 +70,14 @@ namespace Hurricane.Model.AudioEngine
         EqualizerBandCollection EqualizerBands { get; set; }
 
         /// <summary>
+        /// The sound out provider
+        /// </summary>
+        ISoundOutProvider SoundOutProvider { get; }
+
+        /// <summary>
         /// Toggles play/pause
         /// </summary>
-        void TogglePlayPause();
+        Task TogglePlayPause();
 
         /// <summary>
         /// Stops the current track and resets everything

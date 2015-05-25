@@ -6,7 +6,7 @@ namespace Hurricane.Model.AudioEngine
     {
         public PlaySourceType Type => PlaySourceType.Http;
 
-        public Uri WebUri { get; set; }
+        public Uri WebUri { get; }
 
         public HttpPlaySource(Uri webUri)
         {

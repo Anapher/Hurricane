@@ -4,7 +4,7 @@
     {
         public PlaySourceType Type => PlaySourceType.LocalFile;
 
-        public string Path { get; private set; }
+        public string Path { get; }
 
         public LocalFilePlaySource(string path)
         {

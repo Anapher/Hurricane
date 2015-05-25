@@ -145,15 +145,60 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,5,0,10">
-                <myControls:RoundButton Width="35" Height="35" Padding="0">
-                    <Viewbox Width="8" RenderOptions.BitmapScalingMode="HighQuality" VerticalAlignment="Center" HorizontalAlignment="Center">
-                        <Path Data="{StaticResource VectorBackward}" Fill="{Binding RelativeSource={RelativeSource AncestorType=myControls:RoundButton},Path=ContentBrush}"/>
-                    </Viewbox>
-                </myControls:RoundButton>
-                <myControls:RoundButton Width="50" Height="50" Margin="10,0,10,0"/>
-                <myControls:RoundButton Width="35" Height="35"/>
-            </StackPanel>
+            <Slider Value="{Binding MusicDataManager.MusicManager.AudioEngine.TrackPosition}" Maximum="{Binding MusicDataManager.MusicManager.AudioEngine.TrackLength}" Minimum="0"/>
+            <Grid Grid.Row="1">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,5,0,10" Grid.Row="1">
+                    <myControls:RoundButton Width="35" Height="35" Padding="0">
+                        <Viewbox Width="8" Margin="0,0,1.6,0" RenderOptions.BitmapScalingMode="HighQuality" VerticalAlignment="Center" HorizontalAlignment="Center">
+                            <Path Data="{StaticResource VectorBackward}" Fill="{Binding RelativeSource={RelativeSource AncestorType=myControls:RoundButton},Path=ContentBrush}"/>
+                        </Viewbox>
+                    </myControls:RoundButton>
+                    <myControls:RoundButton Width="50" Height="50" Margin="10,0,10,0" Command="{Binding PlayPauseCommand}">
+                        <Grid>
+                            <Viewbox VerticalAlignment="Center" HorizontalAlignment="Center" Width="15">
+                                <Viewbox.Style>
+                                    <Style TargetType="Viewbox">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding MusicDataManager.MusicManager.AudioEngine.IsPlaying}" Value="true">
+                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Viewbox.Style>
+                                <Path Data="{StaticResource VectorPlay}" Fill="{StaticResource BlackBrush}"/>
+                            </Viewbox>
+                            <Viewbox VerticalAlignment="Center" HorizontalAlignment="Center" Width="15">
+                                <Viewbox.Style>
+                                    <Style TargetType="Viewbox">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding MusicDataManager.MusicManager.AudioEngine.IsPlaying}" Value="true">
+                                                <Setter Property="Visibility" Value="Visible"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Viewbox.Style>
+                                <Path Data="{StaticResource VectorPause}" Fill="{StaticResource BlackBrush}"/>
+                            </Viewbox>
+                        </Grid>
+                    </myControls:RoundButton>
+                    <myControls:RoundButton Width="35" Height="35">
+                        <Viewbox Width="8" RenderOptions.BitmapScalingMode="HighQuality" VerticalAlignment="Center" HorizontalAlignment="Center">
+                            <Path Data="{StaticResource VectorFastForward}" Fill="{Binding RelativeSource={RelativeSource AncestorType=myControls:RoundButton},Path=ContentBrush}"/>
+                        </Viewbox>
+                    </myControls:RoundButton>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="10">
+                    <Slider Width="200"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="10" HorizontalAlignment="Left">
+                    <TextBlock>
+                        <Run Text="{Binding MusicDataManager.MusicManager.AudioEngine.TrackPositionTime,Mode=OneWay,Converter={StaticResource TimespanToStringConverter}}"/>
+                        <Run Text=" / "/>
+                        <Run Text="{Binding MusicDataManager.MusicManager.AudioEngine.TrackLengthTime,Mode=OneWay,Converter={StaticResource TimespanToStringConverter}}"/>
+                    </TextBlock>
+                </StackPanel>
+            </Grid>
         </Grid>
     </Grid>
 </UserControl>

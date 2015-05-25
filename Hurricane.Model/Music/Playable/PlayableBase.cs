@@ -13,6 +13,8 @@ namespace Hurricane.Model.Music.Playable
         private string _title;
         private string _artist;
         private string _album;
+        private bool _isPlaying;
+        private DateTime _lastTimePlayed;
 
         public string Title
         {
@@ -30,6 +32,18 @@ namespace Hurricane.Model.Music.Playable
         {
             get { return _album; }
             set { SetProperty(value, ref _album); }
+        }
+
+        public bool IsPlaying
+        {
+            get { return _isPlaying; }
+            set { SetProperty(value, ref _isPlaying); }
+        }
+
+        public DateTime LastTimePlayed
+        {
+            get { return _lastTimePlayed; }
+            set { SetProperty(value, ref _lastTimePlayed); }
         }
 
         [XmlIgnore]

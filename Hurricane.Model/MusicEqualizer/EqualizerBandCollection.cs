@@ -24,7 +24,6 @@ namespace Hurricane.Model.MusicEqualizer
             get
             {
                 return _bands;
-                
             }
             set
             {
@@ -34,18 +33,14 @@ namespace Hurricane.Model.MusicEqualizer
                 if (_bands != null)
                 {
                     foreach (var equalizerBand in _bands)
-                    {
                         equalizerBand.ValueChanged -= NewBandValueChanged;
-                    }
                 }
 
                 _bands = value;
                 if (value != null && value.Count > 0)
                 {
                     foreach (var equalizerBand in value)
-                    {
                         equalizerBand.ValueChanged += NewBandValueChanged;
-                    }
                 }
             }
         }
