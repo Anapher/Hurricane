@@ -6,6 +6,7 @@ using Hurricane.Model.AudioEngine;
 using Hurricane.Model.AudioEngine.Engines;
 using Hurricane.Model.Music.Playable;
 using Hurricane.Model.Music.Playlist;
+using Hurricane.Model.MusicEqualizer;
 using Hurricane.Utilities;
 
 namespace Hurricane.Model.Music
@@ -21,6 +22,7 @@ namespace Hurricane.Model.Music
         {
             AudioEngine = new CSCoreEngine();
             AudioEngine.TrackFinished += AudioEngineOnTrackFinished;
+            AudioEngine.EqualizerBands = new EqualizerBandCollection();
             TrackHistory = new ObservableCollection<IPlayable>();
         }
 
@@ -38,7 +40,8 @@ namespace Hurricane.Model.Music
                 if (SetProperty(value, ref _currentTrack))
                 {
                     value.IsPlaying = true;
-                    oldValue.IsPlaying = false;
+                    if (oldValue != null)
+                        oldValue.IsPlaying = false;
                 }
             }
         }
@@ -81,7 +84,7 @@ namespace Hurricane.Model.Music
                     track.LastTimePlayed = DateTime.Now;
                 }
                 TrackHistory.Add(playable);
-                AudioEngine.TogglePlayPause();
+                await AudioEngine.TogglePlayPause();
             }
         }
 

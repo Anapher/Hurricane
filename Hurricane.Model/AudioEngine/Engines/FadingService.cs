@@ -45,10 +45,10 @@ namespace Hurricane.Model.AudioEngine.Engines
 
             var different = Math.Abs(volumeTo - volumeFrom);
             var durationInt = (int)duration.TotalMilliseconds;
-            var step = different / durationInt / WaitLength;
+            var stepCount = durationInt/WaitLength;
+            var step = different / stepCount;
             var currentVolume = volumeFrom;
-
-            for (int i = 0; i < durationInt / 20; i++)
+            for (int i = 0; i < durationInt / WaitLength; i++)
             {
                 try
                 {
@@ -62,7 +62,7 @@ namespace Hurricane.Model.AudioEngine.Engines
                 currentVolume += volumeTo > volumeFrom ? step : -step;
                 if (currentVolume < 0 || currentVolume > 1)
                 {
-                    Trace.WriteLine($"Volume fail: {currentVolume}");
+                    //It's not exact with the float values. if we would use decimal, this code would never reach. This prevents errors
                     break;
                 }
 
@@ -75,6 +75,8 @@ namespace Hurricane.Model.AudioEngine.Engines
                     break;
                 }
             }
+
+            soundOut.Volume = volumeTo; //Because it won't be exact (because of the float)
             IsFading = false;
         }
     }

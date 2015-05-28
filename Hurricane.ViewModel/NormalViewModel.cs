@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
+using System.Windows;
 using System.Windows.Data;
 using Hurricane.Model;
 using Hurricane.Model.Music;
@@ -37,6 +39,8 @@ namespace Hurricane.ViewModel
             ViewItems.GroupDescriptions.Add(new PropertyGroupDescription("ViewCategorie"));
             SelectedViewItem = _viewItems[0];
             MusicDataManager = new MusicDataManager();
+            Application.Current.MainWindow.Closing += MainWindow_Closing;
+            MusicDataManager.MusicManager.OpenPlayable(playlist1.Tracks.First(), playlist1, true);
         }
 
         public MusicDataManager MusicDataManager { get; }
@@ -80,5 +84,10 @@ namespace Hurricane.ViewModel
         }
 
         public ICollectionView ViewItems { get; set; }
+
+        private void MainWindow_Closing(object sender, CancelEventArgs e)
+        {
+            MusicDataManager.Dispose();
+        }
     }
 }

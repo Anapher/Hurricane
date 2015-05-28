@@ -189,7 +189,7 @@
                     </myControls:RoundButton>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="10">
-                    <Slider Width="200"/>
+                    <Slider Width="200" Value="{Binding MusicDataManager.MusicManager.AudioEngine.Volume}" Maximum="1"/>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="10" HorizontalAlignment="Left">
                     <TextBlock>

@@ -18,7 +18,7 @@ namespace Hurricane.Model.Music
 
         public void Dispose()
         {
-
+            MusicManager.Dispose();
         }
 
         public ObservableCollection<PlayableBase> Tracks { get; set; }

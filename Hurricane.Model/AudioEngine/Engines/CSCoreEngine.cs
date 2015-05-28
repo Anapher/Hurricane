@@ -30,10 +30,12 @@ namespace Hurricane.Model.AudioEngine.Engines
         private TimeSpan _trackPositionTime;
         private readonly FadingService _fadingService;
         private bool _isPausing; //If its fading out
+        private readonly CSCoreSoundOutProvider _soundOutProvider;
 
         public CSCoreEngine()
         {
             _fadingService = new FadingService();
+            _soundOutProvider = new CSCoreSoundOutProvider();
         }
 
         public void Dispose()
@@ -50,9 +52,10 @@ namespace Hurricane.Model.AudioEngine.Engines
                 if (_fadingService.IsFading)
                     _fadingService.Cancel();
                 StopPlayback();
-                _soundOut.Dispose();
+                _soundOut?.Dispose();
                 _soundOut = null;
                 _soundSource?.Dispose();
+                SoundOutProvider.Dispose();
             }
             // free native resources if there are any.
         }
@@ -119,7 +122,7 @@ namespace Hurricane.Model.AudioEngine.Engines
             }
         }
 
-        public ISoundOutProvider SoundOutProvider { get; }
+        public ISoundOutProvider SoundOutProvider => _soundOutProvider;
 
         public async Task TogglePlayPause()
         {
@@ -169,7 +172,7 @@ namespace Hurricane.Model.AudioEngine.Engines
 
             _soundSource = _soundSource
                 .AppendSource(Equalizer.Create10BandEqualizer, out _equalizer)
-                .AppendSource(x => new SimpleNotificationSource(x) { Interval = 100 }, out _simpleNotificationSource)
+                .AppendSource(x => new SimpleNotificationSource(x) {Interval = 100}, out _simpleNotificationSource)
                 .ToWaveSource();
 
             _simpleNotificationSource.BlockRead += SimpleNotificationSource_BlockRead;
@@ -177,6 +180,10 @@ namespace Hurricane.Model.AudioEngine.Engines
             for (var i = 0; i < EqualizerBands.Count; i++)
                 SetEqualizerBandValue(EqualizerBands.Bands[i].Value, i);
 
+            if (_soundOut == null)
+            {
+                _soundOut = _soundOutProvider.GetSoundOut();
+            }
             _soundOut.Initialize(_soundSource);
             _soundOut.Volume = Volume;
 
@@ -184,12 +191,14 @@ namespace Hurricane.Model.AudioEngine.Engines
             OnPropertyChanged(nameof(TrackLengthTime));
 
             CurrentStateChanged();
+            IsLoading = false;
             return true;
         }
 
         private void SimpleNotificationSource_BlockRead(object sender, EventArgs e)
         {
-            
+            _trackPosition = _soundSource.Position;
+            OnPositionChanged();
         }
 
         private void EqualizerBandChanged(object sender, EqualizerBandChangedEventArgs e)

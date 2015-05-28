@@ -7,7 +7,6 @@ namespace Hurricane.Model.AudioEngine
     {
         ObservableCollection<ISoundOutMode> SoundOutModes { get; }
         bool IsAvailable { get; }
-        void Load();
-        void SetSoundOut(string id);
+        ISoundOutDevice CurrentSoundOutDevice { get; set; }
     }
 }

@@ -53,6 +53,7 @@
     <Compile Include="AudioEngine\Engines\CSCoreEngine.cs" />
     <Compile Include="AudioEngine\Engines\CSCoreSoundOutProvider.cs" />
     <Compile Include="AudioEngine\Engines\FadingService.cs" />
+    <Compile Include="AudioEngine\Engines\NoDeviceFoundException.cs" />
     <Compile Include="AudioEngine\Engines\SoundOutDevice.cs" />
     <Compile Include="AudioEngine\Engines\SoundOutMode.cs" />
     <Compile Include="AudioEngine\HttpPlaySource.cs" />

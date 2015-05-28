@@ -4,6 +4,6 @@
     {
         string Name { get; }
         string Id { get; }
-        bool IsDefault { get; }
+        bool IsDefault { get; set; }
     }
 }

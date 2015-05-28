@@ -6,10 +6,12 @@ namespace Hurricane.Converter
 {
     class SizeToColumnsConverter : IValueConverter
     {
+        public double MaxSize { get; set; }
+
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             var size = (double) value;
-            return (int)(size/200);
+            return (int) (size/MaxSize);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
