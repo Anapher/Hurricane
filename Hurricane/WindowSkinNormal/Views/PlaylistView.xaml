@@ -5,8 +5,10 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:viewData="clr-namespace:Hurricane.ViewModel.MainView;assembly=Hurricane.ViewModel"
              xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
+             xmlns:myControls="clr-namespace:Hurricane.Controls"
              xmlns:ctrl="clr-namespace:Hurricane.Extensions.ListViewLayoutManager"
              xmlns:data="clr-namespace:Hurricane.Model.Music.Playable;assembly=Hurricane.Model"
+             xmlns:trackProperties="clr-namespace:Hurricane.Model.Music.TrackProperties;assembly=Hurricane.Model"
              xmlns:extensions="clr-namespace:Hurricane.Extensions"
              mc:Ignorable="d" 
              d:DesignHeight="400" d:DesignWidth="800" d:DataContext="{d:DesignInstance viewData:PlaylistView}">
@@ -61,23 +63,58 @@
             <TabItem>
                 <Grid>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="200" MinWidth="150" MaxWidth="300"/>
+                        <ColumnDefinition Width="300" MinWidth="200" MaxWidth="350"/>
                         <ColumnDefinition Width="2"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
-                    <ListBox ItemsSource="{Binding Artists}">
+                    <Grid.Resources>
+                        <CollectionViewSource x:Key="AlbumGrouping" Source="{Binding ElementName=ArtistListBox,Path=SelectedItem.Items}">
+                            <CollectionViewSource.GroupDescriptions>
+                                <PropertyGroupDescription PropertyName="Album"/>
+                            </CollectionViewSource.GroupDescriptions>
+                        </CollectionViewSource>
+                    </Grid.Resources>
+                    <ListBox ItemsSource="{Binding ArtistViewSource.Groups}" x:Name="ArtistListBox">
                         <ListBox.ItemTemplate>
                             <DataTemplate>
-                                <Grid>
+                                <Grid Margin="0,2" DataContext="{Binding Name}" d:DataContext="{d:DesignInstance trackProperties:Artist}">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="40"/>
                                         <ColumnDefinition Width="*"/>
                                     </Grid.ColumnDefinitions>
-                                    <Image Source="{Binding MediumImage.Image}" Width="40" Height="40"/>
+                                    <Border BorderThickness="1" BorderBrush="{StaticResource WhiteBrush}">
+                                        <myControls:ImageProviderViewer ImageProvider="{Binding MediumImage}" Width="40" Height="40"/>
+                                    </Border>
                                     <TextBlock Text="{Binding Name}" Margin="5,0,0,0" Grid.Column="1" VerticalAlignment="Center"/>
                                 </Grid>
                             </DataTemplate>
                         </ListBox.ItemTemplate>
+                        <ListBox.ItemContainerStyle>
+                            <Style TargetType="ListBoxItem" BasedOn="{StaticResource MetroListBoxItem}">
+                                <Setter Property="Padding" Value="0"/>
+                            </Style>
+                        </ListBox.ItemContainerStyle>
+                    </ListBox>
+                    <GridSplitter HorizontalAlignment="Stretch" Grid.Column="1">
+                        <GridSplitter.Style>
+                            <Style TargetType="GridSplitter">
+                                <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+                            </Style>
+                        </GridSplitter.Style>
+                    </GridSplitter>
+                    <ListBox Grid.Column="2" ItemsSource="{Binding Source={StaticResource AlbumGrouping}}">
+                        <ListBox.GroupStyle>
+                            <GroupStyle>
+                                <GroupStyle.HeaderTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Vertical">
+                                            <TextBlock Text="{Binding Name}" Margin="0,5,0,0"/>
+                                            <Separator />
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </GroupStyle.HeaderTemplate>
+                            </GroupStyle>
+                        </ListBox.GroupStyle>
                     </ListBox>
                 </Grid>
             </TabItem>

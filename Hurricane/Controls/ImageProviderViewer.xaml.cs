@@ -11,6 +11,9 @@ namespace Hurricane.Controls
         public static readonly DependencyProperty ImageProviderProperty = DependencyProperty.Register(
             "ImageProvider", typeof (ImageProvider), typeof (ImageProviderViewer), new PropertyMetadata(default(ImageProvider)));
 
+        public static readonly DependencyProperty PlaceholderProperty = DependencyProperty.Register(
+            "Placeholder", typeof (FrameworkElement), typeof (ImageProviderViewer), new PropertyMetadata(default(FrameworkElement)));
+
         public ImageProviderViewer()
         {
             InitializeComponent();
@@ -20,6 +23,12 @@ namespace Hurricane.Controls
         {
             get { return (ImageProvider)GetValue(ImageProviderProperty); }
             set { SetValue(ImageProviderProperty, value); }
+        }
+
+        public FrameworkElement Placeholder
+        {
+            get { return (FrameworkElement)GetValue(PlaceholderProperty); }
+            set { SetValue(PlaceholderProperty, value); }
         }
     }
 }

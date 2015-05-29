@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Hurricane.Model.Music.TrackProperties
 {
@@ -77,5 +78,10 @@ namespace Hurricane.Model.Music.TrackProperties
         /// The really large image of the artist (~500x500px)
         /// </summary>
         public ImageProvider LargeImage { get; set; }
+
+        /// <summary>
+        /// The id of the artist (set by the program)
+        /// </summary>
+        public Guid Guid { get; set; }
     }
 }

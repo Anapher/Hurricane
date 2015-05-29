@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
 using System.Windows;
 using System.Windows.Data;
 using Hurricane.Model;
 using Hurricane.Model.Music;
-using Hurricane.Model.Music.Playable;
 using Hurricane.Model.Music.Playlist;
 using Hurricane.Utilities;
 using Hurricane.ViewModel.MainView;
@@ -24,15 +21,7 @@ namespace Hurricane.ViewModel
 
         public NormalViewModel()
         {
-            var playlist1 = new UserPlaylist {Name = "Beste Musik eva & adam"};
-            playlist1.Tracks.Add(new LocalPlayable
-            {
-                Artist = "eminem",
-                TrackPath = @"D:\Musik\Best\Moderat - Bad.mp3",
-                Title = "Moderat - Bad",
-                Duration = TimeSpan.FromSeconds(193),
-                Album = "Die Garcons 2"
-            });
+            var playlist1 = new UserPlaylist {Name = "Beste Musik"};
             _viewItems = new ObservableCollection<IViewItem> {new HomeView {IsPlaying = true}, new CollectionView(), new ChartsView(), new  QueueView(), new PlaylistView(playlist1)};
             
             ViewItems = CollectionViewSource.GetDefaultView(_viewItems);
@@ -40,7 +29,7 @@ namespace Hurricane.ViewModel
             SelectedViewItem = _viewItems[0];
             MusicDataManager = new MusicDataManager();
             Application.Current.MainWindow.Closing += MainWindow_Closing;
-            MusicDataManager.MusicManager.OpenPlayable(playlist1.Tracks.First(), playlist1, true);
+            //MusicDataManager.MusicManager.OpenPlayable(playlist1.Tracks.First(), playlist1, false).Forget();
         }
 
         public MusicDataManager MusicDataManager { get; }

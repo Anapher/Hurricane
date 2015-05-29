@@ -4,6 +4,7 @@ using System.Windows.Data;
 
 namespace Hurricane.Converter
 {
+    [ValueConversion(typeof(double), typeof(int))]
     class SizeToColumnsConverter : IValueConverter
     {
         public double MaxSize { get; set; }

@@ -7,6 +7,17 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300" x:Name="Root">
     <Grid>
+        <ContentControl>
+            <ContentControl.Style>
+                <Style TargetType="ContentControl">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding ElementName=Root,Path=ImageProvider.Image}" Value="{x:Null}">
+                            <Setter Property="Content" Value="{Binding ElementName=Root,Path=Placeholder}"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </ContentControl.Style>
+        </ContentControl>
         <Image Source="{Binding ElementName=Root,Path=ImageProvider.Image}" Stretch="UniformToFill" RenderOptions.EdgeMode="Aliased" RenderOptions.BitmapScalingMode="HighQuality"/>
         <controls:ProgressRing IsActive="{Binding ElementName=Root,Path=ImageProvider.IsLoadingImage}"/>
     </Grid>

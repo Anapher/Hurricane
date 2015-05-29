@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Globalization;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using Hurricane.Model;
 using Hurricane.Model.DataApi;
-using Hurricane.Model.DataApi.SerializeClasses;
 using Hurricane.Model.Music;
 using Hurricane.Model.Music.TrackProperties;
 

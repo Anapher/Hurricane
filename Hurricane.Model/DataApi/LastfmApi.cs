@@ -22,7 +22,7 @@ namespace Hurricane.Model.DataApi
             ArtistKeywords = new Dictionary<List<string>, Artist>();
         }
 
-        public List<Artist> Artists { get; set; }
+        public List<Artist> Artists { get; }
         public Dictionary<List<string>, Artist> ArtistKeywords { get; set; }
 
         public async Task<Artist> SearchArtist(string name)

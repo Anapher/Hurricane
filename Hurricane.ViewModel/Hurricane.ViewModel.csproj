@@ -47,7 +47,6 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MainViewModel.cs" />
     <Compile Include="MainView\ChartsView.cs" />
     <Compile Include="MainView\CollectionView.cs" />
     <Compile Include="MainView\HomeView.cs" />

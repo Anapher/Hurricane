@@ -5,47 +5,81 @@ using System.Windows.Media.Imaging;
 using System.Xml;
 using System.Xml.Serialization;
 using Hurricane.Model.AudioEngine;
+using Hurricane.Model.Music.TrackProperties;
 
 namespace Hurricane.Model.Music.Playable
 {
+    /// <summary>
+    /// The base class for a track which becomes saved
+    /// </summary>
+    [Serializable]
     public abstract class PlayableBase : PropertyChangedBase, IPlayable
     {
         private string _title;
-        private string _artist;
         private string _album;
         private bool _isPlaying;
         private DateTime _lastTimePlayed;
+        private Artist _artist;
 
+        /// <summary>
+        /// The title of the track
+        /// </summary>
         public string Title
         {
             get { return _title; }
             set { SetProperty(value, ref _title); }
         }
 
-        public string Artist
+        /// <summary>
+        /// The <see cref="Artist"/> of the track
+        /// </summary>
+        [XmlIgnore]
+        public Artist Artist
         {
             get { return _artist; }
-            set { SetProperty(value, ref _artist); }
+            set
+            {
+                if (SetProperty(value, ref _artist))
+                    ArtistGuid = value.Guid;
+            }
         }
 
+        /// <summary>
+        /// The album of the track. Empty if unkown
+        /// </summary>
         public string Album
         {
             get { return _album; }
             set { SetProperty(value, ref _album); }
         }
 
+        /// <summary>
+        /// If the track is currently playing
+        /// </summary>
+        [XmlIgnore]
         public bool IsPlaying
         {
             get { return _isPlaying; }
             set { SetProperty(value, ref _isPlaying); }
         }
 
+        /// <summary>
+        /// The last time this track was played
+        /// </summary>
         public DateTime LastTimePlayed
         {
             get { return _lastTimePlayed; }
             set { SetProperty(value, ref _lastTimePlayed); }
         }
 
+        [Browsable(false)]
+        public Guid ArtistGuid { get; set; }
+
+        string IPlayable.Artist => _artist?.Name;
+
+        /// <summary>
+        /// The duration of the track
+        /// </summary>
         [XmlIgnore]
         public TimeSpan Duration { get; set; }
 

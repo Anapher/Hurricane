@@ -83,6 +83,9 @@
       <DependentUpon>ImageProviderViewer.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\MagicMetroWindowDragging.cs" />
+    <Compile Include="Controls\PlayPauseButton.xaml.cs">
+      <DependentUpon>PlayPauseButton.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\RoundButton.xaml.cs">
       <DependentUpon>RoundButton.xaml</DependentUpon>
     </Compile>
@@ -123,6 +126,10 @@
       <DependentUpon>WindowSkinNormal.xaml</DependentUpon>
     </Compile>
     <Page Include="Controls\ImageProviderViewer.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\PlayPauseButton.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

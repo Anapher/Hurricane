@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Hurricane.Model.DataApi;
 using Hurricane.Model.Music.Playable;
 using Hurricane.Model.Music.Playlist;
+using Hurricane.Model.Music.TrackProperties;
+using Hurricane.Utilities;
 
 namespace Hurricane.Model.Music
 {
@@ -10,10 +13,11 @@ namespace Hurricane.Model.Music
     {
         public MusicDataManager()
         {
-            Tracks = new ObservableCollection<PlayableBase>();
+            Tracks = new ObservableDictionary<Guid, PlayableBase>();
             Playlists = new ObservableCollection<UserPlaylist>();
             LastfmApi = new LastfmApi();
             MusicManager = new MusicManager();
+            Artists = new Dictionary<Guid, Artist>();
         }
 
         public void Dispose()
@@ -21,9 +25,10 @@ namespace Hurricane.Model.Music
             MusicManager.Dispose();
         }
 
-        public ObservableCollection<PlayableBase> Tracks { get; set; }
-        public ObservableCollection<UserPlaylist> Playlists { get; set; }
-        public MusicManager MusicManager { get; set; }
-        public LastfmApi LastfmApi { get; set; }
+        public ObservableDictionary<Guid, PlayableBase> Tracks { get; }
+        public ObservableCollection<UserPlaylist> Playlists { get; }
+        public MusicManager MusicManager { get; }
+        public LastfmApi LastfmApi { get; }
+        public Dictionary<Guid, Artist> Artists { get; }
     }
 }

@@ -4,6 +4,7 @@ using System.Windows.Data;
 
 namespace Hurricane.Converter
 {
+    [ValueConversion(typeof(TimeSpan), typeof(string))]
     class TimespanToStringConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
