@@ -3,6 +3,7 @@ using System.Windows;
 using System.Windows.Media;
 using Hurricane.Model;
 using Hurricane.Model.Music;
+using Hurricane.Model.Notifications;
 
 namespace Hurricane.ViewModel.MainView
 {
@@ -20,7 +21,7 @@ namespace Hurricane.ViewModel.MainView
             set { SetProperty(value, ref _isPlaying); }
         }
 
-        public async Task Load(MusicDataManager musicDataManager)
+        public async Task Load(MusicDataManager musicDataManager, NotificationManager notificationManager)
         {
 
         }

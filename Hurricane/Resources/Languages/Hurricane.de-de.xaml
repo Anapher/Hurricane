@@ -16,4 +16,11 @@
     <system:String x:Key="Album">Album</system:String>
     <system:String x:Key="Charts">Charts</system:String>
     <system:String x:Key="Queue">Warteschlange</system:String>
+    
+    <system:String x:Key="AddFiles">Dateien hinzufügen</system:String>
+    <system:String x:Key="AddDirectory">Ordner hinzufügen</system:String>
+    <system:String x:Key="AddFilesOpenFileDialogTitle">Bitte wählen Sie die zu importierenden Dateien aus</system:String>
+    <system:String x:Key="AllFiles">Alle Dateien</system:String>
+    <system:String x:Key="AudioFiles">Audio Dateien</system:String>
+    <system:String x:Key="ImportingTracks">Tracks werden importiert</system:String>
 </ResourceDictionary>

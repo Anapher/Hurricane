@@ -77,18 +77,23 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Behavior\ContentControlBehavior.cs" />
     <Compile Include="Behavior\ScrollAnimationBehavior.cs" />
     <Compile Include="Behavior\TextBlockBehavior.cs" />
     <Compile Include="Controls\ImageProviderViewer.xaml.cs">
       <DependentUpon>ImageProviderViewer.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\MagicMetroWindowDragging.cs" />
+    <Compile Include="Controls\PieProgress.xaml.cs">
+      <DependentUpon>PieProgress.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\PlayPauseButton.xaml.cs">
       <DependentUpon>PlayPauseButton.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\RoundButton.xaml.cs">
       <DependentUpon>RoundButton.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\VectorMenuItem.cs" />
     <Compile Include="Converter\SizeToColumnsConverter.cs" />
     <Compile Include="Converter\TimespanToStringConverter.cs" />
     <Compile Include="Extensions\GridViewSort.cs" />
@@ -129,6 +134,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Controls\PieProgress.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Controls\PlayPauseButton.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -157,6 +166,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Resources\MagicWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Resources\Styles\Controls.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

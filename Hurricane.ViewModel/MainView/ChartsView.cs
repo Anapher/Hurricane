@@ -7,6 +7,7 @@ using Hurricane.Model;
 using Hurricane.Model.DataApi;
 using Hurricane.Model.Music;
 using Hurricane.Model.Music.TrackProperties;
+using Hurricane.Model.Notifications;
 
 namespace Hurricane.ViewModel.MainView
 {
@@ -32,7 +33,7 @@ namespace Hurricane.ViewModel.MainView
             set { SetProperty(value, ref _isLoading); }
         }
 
-        public async Task Load(MusicDataManager musicDataManager)
+        public async Task Load(MusicDataManager musicDataManager, NotificationManager notificationManager)
         {
             if (ChartList != null || IsLoading) return;
             IsLoading = true;

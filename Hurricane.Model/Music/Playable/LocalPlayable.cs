@@ -22,6 +22,8 @@ namespace Hurricane.Model.Music.Playable
 
         public string Extension { get; set; }
         public override bool IsAvailable => File.Exists(TrackPath);
+        public double SampleRate { get; set; }
+        public int Bitrate { get; set; }
 
         public override Task<IPlaySource> GetSoundSource()
         {

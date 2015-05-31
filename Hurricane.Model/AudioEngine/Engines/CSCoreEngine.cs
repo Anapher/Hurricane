@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using CSCore;
@@ -29,7 +31,7 @@ namespace Hurricane.Model.AudioEngine.Engines
         private CancellationTokenSource _soundSourcePositionToken;
         private TimeSpan _trackPositionTime;
         private readonly FadingService _fadingService;
-        private bool _isPausing; //If its fading out
+        private bool _isPausing;
         private readonly CSCoreSoundOutProvider _soundOutProvider;
 
         public CSCoreEngine()
@@ -124,6 +126,8 @@ namespace Hurricane.Model.AudioEngine.Engines
 
         public ISoundOutProvider SoundOutProvider => _soundOutProvider;
 
+        public List<string> SupportedExtensions => CodecFactory.Instance.GetSupportedFileExtensions().ToList();
+
         public async Task TogglePlayPause()
         {
             if (IsLoading || _soundSource == null)
@@ -152,6 +156,27 @@ namespace Hurricane.Model.AudioEngine.Engines
         public void StopAndReset()
         {
             
+        }
+
+        public bool TestAudioFile(string path, out AudioInformation audioInformation)
+        {
+            audioInformation = null;
+            try
+            {
+                using (var source = CodecFactory.Instance.GetCodec(path))
+                {
+                    audioInformation = new AudioInformation
+                    {
+                        Duration = source.GetLength(),
+                        SampleRate = source.WaveFormat.SampleRate
+                    };
+                    return true;
+                }
+            }
+            catch (NotSupportedException)
+            {
+                return false;
+            }
         }
 
         public async Task<bool> OpenTrack(IPlaySource track, bool openCrossfading, long position)

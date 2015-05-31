@@ -57,6 +57,12 @@
                     <ListBoxItem Content="{StaticResource Tracks}"/>
                 </ListBox>
                 <TextBox Width="200" Margin="20,0,0,0" controls:TextBoxHelper.Watermark="{StaticResource Search}" Text="{Binding SearchText,UpdateSourceTrigger=PropertyChanged}"/>
+                <Menu Padding="0" Margin="10,0,0,0" Height="20" Width="20">
+                    <myControls:VectorMenuItem VectorGraphic="{StaticResource VectorMore}" Background="{StaticResource WhiteBrush}" HorizontalAlignment="Left" Style="{StaticResource VectorMenuStyle}">
+                        <MenuItem Header="{StaticResource AddFiles}" Command="{Binding AddFilesCommand}"/>
+                        <MenuItem Header="{StaticResource AddDirectory}"/>
+                    </myControls:VectorMenuItem>
+                </Menu>
             </StackPanel>
         </Grid>
         <controls:MetroAnimatedTabControl Grid.Row="1" SelectedIndex="{Binding ElementName=CurrentTrackViewListBox,Path=SelectedIndex}">
@@ -124,9 +130,9 @@
                           extensions:GridViewSort.SortGlyphAscending="/Resources/Images/ArrowUp.png" extensions:GridViewSort.SortGlyphDescending="/Resources/Images/ArrowDown.png">
                     <ListView.View>
                         <GridView d:DataContext="{d:DesignInstance data:IPlayable}">
-                            <GridViewColumn Header="{StaticResource Artist}" DisplayMemberBinding="{Binding Artist}" ctrl:ProportionalColumn.Width="1" extensions:GridViewSort.PropertyName="Artist"/>
+                            <GridViewColumn Header="{StaticResource Artist}" DisplayMemberBinding="{Binding Artist.Name}" ctrl:ProportionalColumn.Width="1" extensions:GridViewSort.PropertyName="Artist.Name"/>
                             <GridViewColumn Header="{StaticResource Titel}" DisplayMemberBinding="{Binding Title}" ctrl:ProportionalColumn.Width="2" extensions:GridViewSort.PropertyName="Title"/>
-                            <GridViewColumn Header="{StaticResource Titel}" DisplayMemberBinding="{Binding Album}" ctrl:ProportionalColumn.Width="1" extensions:GridViewSort.PropertyName="Album"/>
+                            <GridViewColumn Header="{StaticResource Album}" DisplayMemberBinding="{Binding Album}" ctrl:ProportionalColumn.Width="1" extensions:GridViewSort.PropertyName="Album"/>
                             <GridViewColumn Header="{StaticResource Duration}" DisplayMemberBinding="{Binding Duration,Converter={StaticResource TimespanToStringConverter}}" Width="100" extensions:GridViewSort.PropertyName="Duration"/>
                         </GridView>
                     </ListView.View>

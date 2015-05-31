@@ -37,6 +37,10 @@
       <HintPath>..\packages\Newtonsoft.Json.6.0.8\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="policy.2.0.taglib-sharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=db62eba44689b5b0, processorArchitecture=MSIL">
+      <HintPath>..\packages\taglib.2.1.0.0\lib\policy.2.0.taglib-sharp.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
@@ -47,9 +51,14 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="taglib-sharp, Version=2.1.0.0, Culture=neutral, PublicKeyToken=db62eba44689b5b0, processorArchitecture=MSIL">
+      <HintPath>..\packages\taglib.2.1.0.0\lib\taglib-sharp.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AudioEngine\AudioInformation.cs" />
     <Compile Include="AudioEngine\Engines\CSCoreEngine.cs" />
     <Compile Include="AudioEngine\Engines\CSCoreSoundOutProvider.cs" />
     <Compile Include="AudioEngine\Engines\FadingService.cs" />
@@ -66,6 +75,8 @@
     <Compile Include="AudioEngine\StreamPlaySource.cs" />
     <Compile Include="AudioEngine\TrackFinishedEventArgs.cs" />
     <Compile Include="DataApi\BillboardApi.cs" />
+    <Compile Include="Data\ArtistManager.cs" />
+    <Compile Include="Data\TrackImporter.cs" />
     <Compile Include="Music\TrackProperties\PreviewTrack.cs" />
     <Compile Include="DataApi\SensitiveInformation.cs" />
     <Compile Include="DataApi\SerializeClasses\Billboard\rss.cs" />
@@ -111,6 +122,11 @@
     <Compile Include="Music\TrackProperties\Artist.cs" />
     <Compile Include="Music\TrackProperties\ImageProvider.cs" />
     <Compile Include="Music\TrackProperties\TopTrack.cs" />
+    <Compile Include="Notifications\INotificationItem.cs" />
+    <Compile Include="Notifications\IProgressReporter.cs" />
+    <Compile Include="Notifications\MessageNotification.cs" />
+    <Compile Include="Notifications\NotificationManager.cs" />
+    <Compile Include="Notifications\ProgressNotification.cs" />
     <Compile Include="PlaylistExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PropertyChangedBase.cs" />

@@ -5,21 +5,23 @@ using System.Windows.Data;
 using Hurricane.Model;
 using Hurricane.Model.Music;
 using Hurricane.Model.Music.Playlist;
+using Hurricane.Model.Notifications;
 using Hurricane.Utilities;
 using Hurricane.ViewModel.MainView;
 using CollectionView = Hurricane.ViewModel.MainView.CollectionView;
 
 namespace Hurricane.ViewModel
 {
-    public class NormalViewModel : PropertyChangedBase
+    public class MainViewModel : PropertyChangedBase
     {
         private IViewItem _selectedViewItem;
         private ObservableCollection<IViewItem> _viewItems;
         private bool _isSettingOpen;
         private RelayCommand _openSettingsCommand;
         private RelayCommand _playPauseCommand;
+        private RelayCommand _cancelProgressNotificationCommand;
 
-        public NormalViewModel()
+        public MainViewModel()
         {
             var playlist1 = new UserPlaylist {Name = "Beste Musik"};
             _viewItems = new ObservableCollection<IViewItem> {new HomeView {IsPlaying = true}, new CollectionView(), new ChartsView(), new  QueueView(), new PlaylistView(playlist1)};
@@ -29,10 +31,14 @@ namespace Hurricane.ViewModel
             SelectedViewItem = _viewItems[0];
             MusicDataManager = new MusicDataManager();
             Application.Current.MainWindow.Closing += MainWindow_Closing;
+            NotificationManager = new NotificationManager();
+            NotificationManager.ShowInformation("HalloWelt", "Es ist ein Fehler aufgetreten.", MessageNotificationIcon.Error);
             //MusicDataManager.MusicManager.OpenPlayable(playlist1.Tracks.First(), playlist1, false).Forget();
         }
 
         public MusicDataManager MusicDataManager { get; }
+        public NotificationManager NotificationManager { get; }
+        public ICollectionView ViewItems { get; }
 
         public IViewItem SelectedViewItem
         {
@@ -40,7 +46,7 @@ namespace Hurricane.ViewModel
             set
             {
                 if (SetProperty(value, ref _selectedViewItem))
-                    value.Load(MusicDataManager).Forget();
+                    value.Load(MusicDataManager, NotificationManager).Forget();
             }
         }
 
@@ -72,7 +78,17 @@ namespace Hurricane.ViewModel
             }
         }
 
-        public ICollectionView ViewItems { get; set; }
+        public RelayCommand CancelProgressNotificationCommand
+        {
+            get
+            {
+                return _cancelProgressNotificationCommand ??
+                       (_cancelProgressNotificationCommand = new RelayCommand(parameter =>
+                       {
+                           ((ProgressNotification)parameter).Cancel();
+                       }));
+            }
+        }
 
         private void MainWindow_Closing(object sender, CancelEventArgs e)
         {

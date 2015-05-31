@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Xml.Serialization;
 
 namespace Hurricane.Model.Music.TrackProperties
 {
@@ -16,53 +17,26 @@ namespace Hurricane.Model.Music.TrackProperties
         /// <summary>
         /// The name of the artist
         /// </summary>
+        [XmlAttribute]
         public string Name { get; set; }
 
         /// <summary>
         /// The <see href="https://musicbrainz.org/doc/MusicBrainz_Identifier">MusicBrainz Identifier</see>
         /// </summary>
-        public string MusicbrainzId { get; set; }
+        [XmlAttribute]
+        public string MusicBrainzId { get; set; }
 
         /// <summary>
         /// The <see href="http://wwww.last.fm/">Last.fm</see> url
         /// </summary>
+        [XmlAttribute]
         public string Url { get; set; }
 
         /// <summary>
-        /// Similar artists
+        /// The id of the artist (set by the program)
         /// </summary>
-        public List<Artist> SimilarArtists
-        {
-            get { return _similarArtists; }
-            set { SetProperty(value, ref _similarArtists); }
-        }
-
-        /// <summary>
-        /// A short biography (max. 300 chars)
-        /// </summary>
-        public string Biography
-        {
-            get { return _biography; }
-            set { SetProperty(value, ref _biography); }
-        }
-
-        /// <summary>
-        /// Returns if the properties <see cref="Biography"/>, <see cref="TopTracks"/> and <see cref="SimilarArtists"/> are set
-        /// </summary>
-        public bool ProvidesAdvancedInfo
-        {
-            get { return _providesAdvancedInfo; }
-            set { SetProperty(value, ref _providesAdvancedInfo); }
-        }
-
-        /// <summary>
-        /// Top tracks of the artist
-        /// </summary>
-        public List<TopTrack> TopTracks
-        {
-            get { return _topTracks; }
-            set { SetProperty(value, ref _topTracks); }
-        }
+        [XmlIgnore]
+        public Guid Guid { get; set; }
 
         /// <summary>
         /// The small sized image of the artist (34x34px)
@@ -80,8 +54,43 @@ namespace Hurricane.Model.Music.TrackProperties
         public ImageProvider LargeImage { get; set; }
 
         /// <summary>
-        /// The id of the artist (set by the program)
+        /// Similar artists
         /// </summary>
-        public Guid Guid { get; set; }
+        [XmlIgnore]
+        public List<Artist> SimilarArtists
+        {
+            get { return _similarArtists; }
+            set { SetProperty(value, ref _similarArtists); }
+        }
+
+        /// <summary>
+        /// A short biography (max. 300 chars)
+        /// </summary>
+        [XmlIgnore]
+        public string Biography
+        {
+            get { return _biography; }
+            set { SetProperty(value, ref _biography); }
+        }
+
+        /// <summary>
+        /// Returns if the properties <see cref="Biography"/>, <see cref="TopTracks"/> and <see cref="SimilarArtists"/> are set
+        /// </summary>
+        [XmlIgnore]
+        public bool ProvidesAdvancedInfo
+        {
+            get { return _providesAdvancedInfo; }
+            set { SetProperty(value, ref _providesAdvancedInfo); }
+        }
+
+        /// <summary>
+        /// Top tracks of the artist
+        /// </summary>
+        [XmlIgnore]
+        public List<TopTrack> TopTracks
+        {
+            get { return _topTracks; }
+            set { SetProperty(value, ref _topTracks); }
+        }
     }
 }

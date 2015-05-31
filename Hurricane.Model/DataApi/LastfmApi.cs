@@ -22,8 +22,8 @@ namespace Hurricane.Model.DataApi
             ArtistKeywords = new Dictionary<List<string>, Artist>();
         }
 
-        public List<Artist> Artists { get; }
-        public Dictionary<List<string>, Artist> ArtistKeywords { get; set; }
+        private List<Artist> Artists { get; }
+        private Dictionary<List<string>, Artist> ArtistKeywords { get; set; }
 
         public async Task<Artist> SearchArtist(string name)
         {
@@ -50,7 +50,7 @@ namespace Hurricane.Model.DataApi
                 var artist = new Artist
                 {
                     Name = match.name,
-                    MusicbrainzId = match.mbid,
+                    MusicBrainzId = match.mbid,
                     Url = match.url
                 };
                 SetImages(artist, match.image);
@@ -69,17 +69,17 @@ namespace Hurricane.Model.DataApi
             using (var wc = new WebClient {Proxy = null})
             {
                 var artistInfo = JsonConvert.DeserializeObject<GetArtistInfoResult>(await
-                    wc.DownloadStringTaskAsync(string.IsNullOrEmpty(artist.MusicbrainzId)
+                    wc.DownloadStringTaskAsync(string.IsNullOrEmpty(artist.MusicBrainzId)
                         ? $"http://ws.audioscrobbler.com/2.0/?method=artist.getinfo&artist={Uri.EscapeDataString(artist.Name)}&autocorrect=1&api_key={SensitiveInformation.LastfmKey}&format=json&lang={culture.TwoLetterISOLanguageName}"
-                        : $"http://ws.audioscrobbler.com/2.0/?method=artist.getinfo&mbid={artist.MusicbrainzId}&api_key={SensitiveInformation.LastfmKey}&format=json&lang={culture.TwoLetterISOLanguageName}"));
+                        : $"http://ws.audioscrobbler.com/2.0/?method=artist.getinfo&mbid={artist.MusicBrainzId}&api_key={SensitiveInformation.LastfmKey}&format=json&lang={culture.TwoLetterISOLanguageName}"));
 
-                if (string.IsNullOrEmpty(artist.MusicbrainzId))
-                    artist.MusicbrainzId = artistInfo.artist.mbid;
+                if (string.IsNullOrEmpty(artist.MusicBrainzId))
+                    artist.MusicBrainzId = artistInfo.artist.mbid;
 
                 var topTracksTask =
-                    wc.DownloadStringTaskAsync(string.IsNullOrEmpty(artist.MusicbrainzId)
+                    wc.DownloadStringTaskAsync(string.IsNullOrEmpty(artist.MusicBrainzId)
                         ? $"http://ws.audioscrobbler.com/2.0/?method=artist.gettoptracks&artist={artist.Name}&api_key={SensitiveInformation.LastfmKey}&format=json"
-                        : $"http://ws.audioscrobbler.com/2.0/?method=artist.gettoptracks&mbid={artist.MusicbrainzId}&api_key={SensitiveInformation.LastfmKey}&format=json");
+                        : $"http://ws.audioscrobbler.com/2.0/?method=artist.gettoptracks&mbid={artist.MusicBrainzId}&api_key={SensitiveInformation.LastfmKey}&format=json");
 
                 artist.Biography = artistInfo.artist.bio.content;
                 foreach (var similarArtist in artistInfo.artist.similar.artist)
@@ -119,6 +119,26 @@ namespace Hurricane.Model.DataApi
 
             artist.ProvidesAdvancedInfo = true;
             return artist;
+        }
+
+        public async Task<Artist> GetArtistByMusicbrainzId(string musicbrainzId, CultureInfo culture)
+        {
+            using (var wc = new WebClient {Proxy = null})
+            {
+                var artistInfo =
+                    JsonConvert.DeserializeObject<GetArtistInfoResult>(
+                        await
+                            wc.DownloadStringTaskAsync(
+                                $"http://ws.audioscrobbler.com/2.0/?method=artist.getinfo&mbid={musicbrainzId}&api_key={SensitiveInformation.LastfmKey}&format=json&lang={culture.TwoLetterISOLanguageName}"));
+                var artist = new Artist
+                {
+                    Name = artistInfo.artist.name,
+                    MusicBrainzId = artistInfo.artist.mbid,
+                    Url = artistInfo.artist.url
+                };
+                SetImages(artist, artistInfo.artist.image);
+                return artist;
+            }
         }
 
         private static void SetImages(Artist artist, List<Image> images)

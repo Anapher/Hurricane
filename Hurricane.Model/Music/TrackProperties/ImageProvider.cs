@@ -48,11 +48,13 @@ namespace Hurricane.Model.Music.TrackProperties
         /// <summary>
         /// The url to the image
         /// </summary>
+        [XmlAttribute]
         public string Url { get; set; }
 
         /// <summary>
         /// The guid of the image
         /// </summary>
+        [XmlAttribute]
         public Guid Guid { get; set; }
 
         /// <summary>
@@ -84,6 +86,7 @@ namespace Hurricane.Model.Music.TrackProperties
         /// <summary>
         /// The current download progress (0 - 1)
         /// </summary>
+        [XmlIgnore]
         public double DownloadProgress
         {
             get { return _downloadProgress; }

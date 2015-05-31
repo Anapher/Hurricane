@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using System.Windows.Media;
 using Hurricane.Model.Music;
+using Hurricane.Model.Notifications;
 
 namespace Hurricane.ViewModel.MainView
 {
@@ -11,7 +12,7 @@ namespace Hurricane.ViewModel.MainView
         Geometry Icon { get; }
         string Text { get; }
         bool IsPlaying { get; set; }
-        Task Load(MusicDataManager musicDataManager);
+        Task Load(MusicDataManager musicDataManager, NotificationManager notificationManager);
     }
 
     public enum ViewCategorie

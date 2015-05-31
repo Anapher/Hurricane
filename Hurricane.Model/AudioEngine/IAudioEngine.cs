@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Threading.Tasks;
 using Hurricane.Model.MusicEqualizer;
@@ -75,6 +76,11 @@ namespace Hurricane.Model.AudioEngine
         ISoundOutProvider SoundOutProvider { get; }
 
         /// <summary>
+        /// A list of the supported file extensions. Every entry without a dot. Example: ["mp3", "ogg", "m4a"]
+        /// </summary>
+        List<string> SupportedExtensions { get; }
+
+        /// <summary>
         /// Toggles play/pause
         /// </summary>
         Task TogglePlayPause();
@@ -83,5 +89,12 @@ namespace Hurricane.Model.AudioEngine
         /// Stops the current track and resets everything
         /// </summary>
         void StopAndReset();
+
+        /// <summary>
+        /// Test an audio file
+        /// </summary>
+        /// <param name="path">Returns if the file could be opened successfully</param>
+        /// <param name="audioInformation">Some information about the audio file</param>
+        bool TestAudioFile(string path, out AudioInformation audioInformation);
     }
 }

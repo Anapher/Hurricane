@@ -5,9 +5,9 @@
         xmlns:viewModels="clr-namespace:Hurricane.ViewModel;assembly=Hurricane.ViewModel"
         xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
         Title="Hurricane" SizeToContent="Manual" IsWindowDraggable="False" ShowIconOnTitleBar="False" Height="468.06" Width="946.268"
-        GlowBrush="{DynamicResource AccentColorBrush}" Style="{DynamicResource CleanWindowStyleKey}" ResizeMode="CanResize" ShowTitleBar="False">
+        GlowBrush="{DynamicResource AccentColorBrush}" Style="{DynamicResource CleanWindowStyleKey}" ResizeMode="CanResize" ShowTitleBar="False" x:Name="Root">
     <Window.DataContext>
-        <viewModels:NormalViewModel />
+        <viewModels:MainViewModel />
     </Window.DataContext>
     <hurricaneControls:MagicMetroWindow.RightWindowCommands>
         <controls:WindowCommands>

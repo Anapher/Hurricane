@@ -1,12 +1,19 @@
 ﻿using System;
 using System.ComponentModel;
+using System.IO;
+using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media;
 using Hurricane.Model;
+using Hurricane.Model.Data;
 using Hurricane.Model.Music;
 using Hurricane.Model.Music.Playable;
 using Hurricane.Model.Music.Playlist;
+using Hurricane.Model.Notifications;
+using Ookii.Dialogs.Wpf;
 using TaskExtensions = Hurricane.Utilities.TaskExtensions;
 
 namespace Hurricane.ViewModel.MainView
@@ -16,6 +23,11 @@ namespace Hurricane.ViewModel.MainView
         private string _searchText;
         private bool _isPlaying;
         private bool _isLoaded;
+        private NotificationManager _notificationManager;
+        private MusicDataManager _musicDataManager;
+
+        private RelayCommand _addFilesCommand;
+        private RelayCommand _addDirectoryCommand;
 
         public PlaylistView(UserPlaylist playlist)
         {
@@ -53,8 +65,52 @@ namespace Hurricane.ViewModel.MainView
                     ViewSource.Refresh();
             }
         }
+        
+        public RelayCommand AddFilesCommand
+        {
+            get
+            {
+                return _addFilesCommand ?? (_addFilesCommand = new RelayCommand(async parameter =>
+                {
 
-        public Task Load(MusicDataManager musicDataManager)
+                    var stringBuilder = new StringBuilder();
+                    stringBuilder.Append($"{Application.Current.Resources["AudioFiles"]}|");
+                    stringBuilder.Append(string.Concat(_musicDataManager.MusicManager.AudioEngine.SupportedExtensions.Select(x => "*." + x + ";").ToArray()));
+                    stringBuilder.Remove(stringBuilder.Length - 1, 1);
+                    stringBuilder.Append($"|{Application.Current.Resources["AllFiles"]}|*.*");
+
+                    var ofd = new VistaOpenFileDialog
+                    {
+                        Multiselect = true,
+                        Title = Application.Current.Resources["AddFilesOpenFileDialogTitle"].ToString(),
+                        CheckFileExists = true,
+                        Filter = stringBuilder.ToString(),
+                        CheckPathExists = true,
+                        InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyMusic)
+                    };
+
+                    if (ofd.ShowDialog() == true)
+                    {
+                        var importer = new TrackImporter(_musicDataManager);
+                        _notificationManager.ShowProgress(Application.Current.Resources["ImportingTracks"].ToString(), importer);
+                        await importer.ImportTracks(ofd.FileNames.Select(x => new FileInfo(x)), Playlist);
+                    }
+                }));
+            }
+        }
+
+        public RelayCommand AddDirectoryCommand
+        {
+            get
+            {
+                return _addDirectoryCommand ?? (_addDirectoryCommand = new RelayCommand(parameter =>
+                {
+
+                }));
+            }
+        }
+
+        public Task Load(MusicDataManager musicDataManager, NotificationManager notificationManager)
         {
             if (!_isLoaded)
             {
@@ -63,6 +119,9 @@ namespace Hurricane.ViewModel.MainView
 
                 ArtistViewSource = CollectionViewSource.GetDefaultView(Playlist.Tracks);
                 ArtistViewSource.GroupDescriptions.Add(new PropertyGroupDescription("Artist"));
+
+                _notificationManager = notificationManager;
+                _musicDataManager = musicDataManager;
                 _isLoaded = true;
             }
 
