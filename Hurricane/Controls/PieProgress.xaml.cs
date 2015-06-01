@@ -1,14 +1,17 @@
 ﻿using System;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
+using Hurricane.ViewModel.Annotations;
 
 namespace Hurricane.Controls
 {
     /// <summary>
     /// Interaktionslogik für PieProgress.xaml
     /// </summary>
-    public partial class PieProgress
+    public partial class PieProgress : INotifyPropertyChanged
     {
         public static readonly DependencyProperty ValueProperty = DependencyProperty.Register(
             "Value", typeof(double), typeof(PieProgress), new PropertyMetadata(default(double), ValuePropertyChangedCallback));
@@ -25,6 +28,8 @@ namespace Hurricane.Controls
         public static readonly DependencyProperty CommandParameterProperty = DependencyProperty.Register(
             "CommandParameter", typeof (object), typeof (PieProgress), new PropertyMetadata(default(object)));
 
+        private bool _showCancel;
+
         public PieProgress()
         {
             InitializeComponent();
@@ -39,29 +44,7 @@ namespace Hurricane.Controls
             MouseUp += PieProgress_MouseUp;
         }
 
-        private void PieProgress_MouseUp(object sender, MouseButtonEventArgs e)
-        {
-            if (CanCancel)
-                Command?.Execute(CommandParameter);
-        }
-
-        private void PieProgress_MouseLeave(object sender, MouseEventArgs e)
-        {
-            if (CancelIcon.Visibility == Visibility.Visible)
-            {
-                CancelIcon.Visibility = Visibility.Hidden;
-                ProgressTextBlock.Visibility = Visibility.Visible;
-            }
-        }
-
-        private void PieProgress_MouseEnter(object sender, MouseEventArgs e)
-        {
-            if (CanCancel)
-            {
-                ProgressTextBlock.Visibility = Visibility.Hidden;
-                CancelIcon.Visibility = Visibility.Visible;
-            }
-        }
+        public event PropertyChangedEventHandler PropertyChanged;
 
         public double Value
         {
@@ -93,6 +76,19 @@ namespace Hurricane.Controls
             set { SetValue(CanCancelProperty, value); }
         }
 
+        public bool ShowCancel
+        {
+            get { return _showCancel; }
+            set
+            {
+                if (_showCancel != value)
+                {
+                    _showCancel = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
         private static void ValuePropertyChangedCallback(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs dependencyPropertyChangedEventArgs)
         {
             var pieProgress = dependencyObject as PieProgress;
@@ -106,6 +102,25 @@ namespace Hurricane.Controls
         private void PieProgress_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             Resize();
+        }
+
+        private void PieProgress_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            if (CanCancel)
+                Command?.Execute(CommandParameter);
+        }
+
+        private void PieProgress_MouseLeave(object sender, MouseEventArgs e)
+        {
+            ShowCancel = false;
+        }
+
+        private void PieProgress_MouseEnter(object sender, MouseEventArgs e)
+        {
+            if (CanCancel)
+            {
+                ShowCancel = true;
+            }
         }
 
         public void DrawSector()
@@ -192,6 +207,12 @@ namespace Hurricane.Controls
         {
             Height = ActualWidth;
             ProgressTextBlock.FontSize = ActualHeight * 0.23;
+        }
+
+        [NotifyPropertyChangedInvocator]
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

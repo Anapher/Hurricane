@@ -78,6 +78,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Behavior\ContentControlBehavior.cs" />
+    <Compile Include="Behavior\ControlBehavior.cs" />
     <Compile Include="Behavior\ScrollAnimationBehavior.cs" />
     <Compile Include="Behavior\TextBlockBehavior.cs" />
     <Compile Include="Controls\ImageProviderViewer.xaml.cs">

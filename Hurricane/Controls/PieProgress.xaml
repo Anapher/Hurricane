@@ -13,15 +13,49 @@
                 <ScaleTransform ScaleX="0.7" ScaleY="0.7"/>
             </Ellipse.RenderTransform>
         </Ellipse>
-        <TextBlock Text="0 %" VerticalAlignment="Center" HorizontalAlignment="Center" FontFamily="Segoe UI Light" x:Name="ProgressTextBlock" Foreground="{Binding ElementName=Root,Path=Foreground}"/>
-        <Viewbox x:Name="CancelIcon" Visibility="Collapsed">
+        <TextBlock Text="0 %" VerticalAlignment="Center" HorizontalAlignment="Center" FontFamily="Segoe UI Light" x:Name="ProgressTextBlock" Foreground="{Binding ElementName=Root,Path=Foreground}">
+            <TextBlock.Style>
+                <Style TargetType="TextBlock">
+                    <Setter Property="Visibility" Value="Visible"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding ElementName=Root,Path=ShowCancel}" Value="true">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </TextBlock.Style>
+        </TextBlock>
+        <Viewbox x:Name="CancelIcon">
             <Viewbox.RenderTransformOrigin>
                 <Point X=".5" Y=".5"/>
             </Viewbox.RenderTransformOrigin>
             <Viewbox.RenderTransform>
                 <ScaleTransform ScaleX=".3" ScaleY=".3"/>
             </Viewbox.RenderTransform>
-            <Path Data="{StaticResource VectorCancel}" Fill="Black" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+            <Path Data="{StaticResource VectorCancel}" Fill="Black" VerticalAlignment="Center" HorizontalAlignment="Center">
+                <Path.Style>
+                    <Style TargetType="Path">
+                        <Setter Property="Visibility" Value="Collapsed"/>
+                        <Setter Property="LayoutTransform">
+                            <Setter.Value>
+                                <RotateTransform Angle="0" CenterX="0.5" CenterY="0.5" x:Name="RotateTransform"/>
+                            </Setter.Value>
+                        </Setter>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding ElementName=Root,Path=ShowCancel}" Value="true">
+                                <Setter Property="Visibility" Value="Visible"/>
+                                <DataTrigger.EnterActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation From="45" To="0" Duration="0:0:0.2" Storyboard.TargetProperty="(LayoutTransform).(RotateTransform.Angle)"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </DataTrigger.EnterActions>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Path.Style>
+            </Path>
         </Viewbox>
     </Grid>
 </UserControl>

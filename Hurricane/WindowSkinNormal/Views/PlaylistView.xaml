@@ -10,6 +10,7 @@
              xmlns:data="clr-namespace:Hurricane.Model.Music.Playable;assembly=Hurricane.Model"
              xmlns:trackProperties="clr-namespace:Hurricane.Model.Music.TrackProperties;assembly=Hurricane.Model"
              xmlns:extensions="clr-namespace:Hurricane.Extensions"
+             xmlns:behavior="clr-namespace:Hurricane.Behavior"
              mc:Ignorable="d" 
              d:DesignHeight="400" d:DesignWidth="800" d:DataContext="{d:DesignInstance viewData:PlaylistView}">
     <Grid>
@@ -60,7 +61,7 @@
                 <Menu Padding="0" Margin="10,0,0,0" Height="20" Width="20">
                     <myControls:VectorMenuItem VectorGraphic="{StaticResource VectorMore}" Background="{StaticResource WhiteBrush}" HorizontalAlignment="Left" Style="{StaticResource VectorMenuStyle}">
                         <MenuItem Header="{StaticResource AddFiles}" Command="{Binding AddFilesCommand}"/>
-                        <MenuItem Header="{StaticResource AddDirectory}"/>
+                        <MenuItem Header="{StaticResource AddDirectory}" Command="{Binding AddDirectoryCommand}"/>
                     </myControls:VectorMenuItem>
                 </Menu>
             </StackPanel>
@@ -121,6 +122,14 @@
                                 </GroupStyle.HeaderTemplate>
                             </GroupStyle>
                         </ListBox.GroupStyle>
+                        <ListBox.ItemTemplate>
+                            <DataTemplate DataType="{x:Type data:PlayableBase}">
+                                <DockPanel HorizontalAlignment="Stretch" Margin="0,0,5,0">
+                                    <TextBlock Text="{Binding Title}" TextTrimming="CharacterEllipsis" DockPanel.Dock="Left"/>
+                                    <TextBlock Text="{Binding Duration,Converter={StaticResource TimespanToStringConverter}}" DockPanel.Dock="Right" HorizontalAlignment="Right"/>
+                                </DockPanel>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
                     </ListBox>
                 </Grid>
             </TabItem>
@@ -136,6 +145,12 @@
                             <GridViewColumn Header="{StaticResource Duration}" DisplayMemberBinding="{Binding Duration,Converter={StaticResource TimespanToStringConverter}}" Width="100" extensions:GridViewSort.PropertyName="Duration"/>
                         </GridView>
                     </ListView.View>
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="ListViewItem" BasedOn="{StaticResource MetroListViewItem}">
+                            <Setter Property="behavior:ControlBehavior.DoubleClickCommand" Value="{Binding RelativeSource={RelativeSource AncestorType=ListView},Path=DataContext.PlayAudioCommand}"/>
+                            <Setter Property="behavior:ControlBehavior.DoubleClickCommandParameter" Value="{Binding}"/>
+                        </Style>
+                    </ListView.ItemContainerStyle>
                 </ListView>
             </TabItem>
         </controls:MetroAnimatedTabControl>

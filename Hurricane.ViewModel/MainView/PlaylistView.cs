@@ -13,6 +13,7 @@ using Hurricane.Model.Music;
 using Hurricane.Model.Music.Playable;
 using Hurricane.Model.Music.Playlist;
 using Hurricane.Model.Notifications;
+using Hurricane.Utilities;
 using Ookii.Dialogs.Wpf;
 using TaskExtensions = Hurricane.Utilities.TaskExtensions;
 
@@ -28,6 +29,7 @@ namespace Hurricane.ViewModel.MainView
 
         private RelayCommand _addFilesCommand;
         private RelayCommand _addDirectoryCommand;
+        private RelayCommand _playAudioCommand;
 
         public PlaylistView(UserPlaylist playlist)
         {
@@ -89,7 +91,7 @@ namespace Hurricane.ViewModel.MainView
                         InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyMusic)
                     };
 
-                    if (ofd.ShowDialog() == true)
+                    if (ofd.ShowDialog(Application.Current.MainWindow) == true)
                     {
                         var importer = new TrackImporter(_musicDataManager);
                         _notificationManager.ShowProgress(Application.Current.Resources["ImportingTracks"].ToString(), importer);
@@ -103,9 +105,34 @@ namespace Hurricane.ViewModel.MainView
         {
             get
             {
-                return _addDirectoryCommand ?? (_addDirectoryCommand = new RelayCommand(parameter =>
+                return _addDirectoryCommand ?? (_addDirectoryCommand = new RelayCommand(async parameter =>
                 {
+                    var fbd = new VistaFolderBrowserDialog
+                    {
+                        ShowNewFolderButton = false,
+                        RootFolder = Environment.SpecialFolder.MyMusic
+                    };
+                    if (fbd.ShowDialog(Application.Current.MainWindow) == true)
+                    {
+                        var importer = new TrackImporter(_musicDataManager);
+                        _notificationManager.ShowProgress(Application.Current.Resources["ImportingTracks"].ToString(), importer);
+                        await importer.ImportDirectory(new DirectoryInfo(fbd.SelectedPath), true, Playlist);
+                    }
+                }));
+            }
+        }
 
+        public RelayCommand PlayAudioCommand
+        {
+            get
+            {
+                return _playAudioCommand ?? (_playAudioCommand = new RelayCommand(parameter =>
+                {
+                    var playable = parameter as PlayableBase;
+                    if (playable == null)
+                        return;
+
+                    _musicDataManager.MusicManager.OpenPlayable(playable, Playlist, true).Forget();
                 }));
             }
         }
