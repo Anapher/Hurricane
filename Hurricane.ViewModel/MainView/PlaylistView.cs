@@ -146,6 +146,7 @@ namespace Hurricane.ViewModel.MainView
 
                 ArtistViewSource = CollectionViewSource.GetDefaultView(Playlist.Tracks);
                 ArtistViewSource.GroupDescriptions.Add(new PropertyGroupDescription("Artist"));
+                ArtistViewSource.SortDescriptions.Add(new SortDescription("Artist.Name", ListSortDirection.Ascending));
 
                 _notificationManager = notificationManager;
                 _musicDataManager = musicDataManager;
@@ -160,7 +161,7 @@ namespace Hurricane.ViewModel.MainView
             var track = (IPlayable)o;
             return string.IsNullOrWhiteSpace(_searchText) ||
                    track.Title.IndexOf(_searchText, StringComparison.OrdinalIgnoreCase) > -1 ||
-                   track.Artist.IndexOf(_searchText, StringComparison.OrdinalIgnoreCase) > -1;
+                   track.Artist?.IndexOf(_searchText, StringComparison.OrdinalIgnoreCase) > -1;
         }
     }
 }

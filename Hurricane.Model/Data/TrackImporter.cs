@@ -96,15 +96,14 @@ namespace Hurricane.Model.Data
                             artistName = match.Groups["artist"].Value;
                     }
 
-                    if (string.IsNullOrEmpty(artistName)) //Perhaps regex didn't match
-                    {
-                        artist = _musicDataManager.ArtistManager.UnkownArtist;
-                    }
-                    else
+                    if (!string.IsNullOrEmpty(artistName)) //Perhaps regex didn't match
                     {
                         artist = await _musicDataManager.LastfmApi.SearchArtist(artistName);
                     }
                 }
+
+                if (artist == null)
+                    artist = _musicDataManager.ArtistManager.UnkownArtist;
 
                 if (!_musicDataManager.ArtistManager.ArtistDictionary.ContainsKey(artist.Guid))
                     _musicDataManager.ArtistManager.ArtistDictionary.Add(artist.Guid, artist);

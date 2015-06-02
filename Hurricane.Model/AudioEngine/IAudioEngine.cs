@@ -14,7 +14,7 @@ namespace Hurricane.Model.AudioEngine
         /// <summary>
         /// When the track is naturally finished
         /// </summary>
-        event EventHandler<TrackFinishedEventArgs> TrackFinished;
+        event EventHandler TrackFinished;
 
         /// <summary>
         /// Opens a track (but don't play it)
@@ -54,6 +54,11 @@ namespace Hurricane.Model.AudioEngine
         /// If set to true, the audio engine should set the position to 0 and continue playing instead of firing the <see cref="TrackFinished" /> event
         /// </summary>
         bool IsLooping { set; }
+
+        /// <summary>
+        /// The duration of the crossfade
+        /// </summary>
+        TimeSpan CrossfadeDuration { get; set; }
 
         /// <summary>
         /// The position (as <see cref="TimeSpan"/>) of the current track

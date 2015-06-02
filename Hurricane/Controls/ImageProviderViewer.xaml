@@ -18,7 +18,23 @@
                 </Style>
             </ContentControl.Style>
         </ContentControl>
+        <ProgressBar Value="{Binding ElementName=Root,Path=ImageProvider.DownloadProgress}">
+            <ProgressBar.Style>
+                <Style TargetType="{x:Type ProgressBar}">
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="ProgressBar">
+                                <Border BorderBrush="#D9DCE1" BorderThickness="1" Background="{StaticResource GrayBrush10}" CornerRadius="0" Padding="0">
+                                    <Grid x:Name="PART_Track">
+                                        <Rectangle x:Name="PART_Indicator" HorizontalAlignment="Left" Fill="{StaticResource AccentColorBrush4}" />
+                                    </Grid>
+                                </Border>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </ProgressBar.Style>
+        </ProgressBar>
         <Image Source="{Binding ElementName=Root,Path=ImageProvider.Image}" Stretch="UniformToFill" RenderOptions.EdgeMode="Aliased" RenderOptions.BitmapScalingMode="HighQuality"/>
-        <controls:ProgressRing IsActive="{Binding ElementName=Root,Path=ImageProvider.IsLoadingImage}"/>
     </Grid>
 </UserControl>

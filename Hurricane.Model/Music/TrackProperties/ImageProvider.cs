@@ -6,7 +6,6 @@ using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 using System.Xml.Serialization;
-using Hurricane.Utilities;
 
 namespace Hurricane.Model.Music.TrackProperties
 {
@@ -18,7 +17,6 @@ namespace Hurricane.Model.Music.TrackProperties
     {
         private static readonly string ImageDirectory =
             Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Hurricane", "Images");
-        private static readonly object LockObject = new object();
 
         private BitmapImage _image;
         private bool _isLoadingImage;
@@ -71,6 +69,12 @@ namespace Hurricane.Model.Music.TrackProperties
         {
             get
             {
+                if (_image == null)
+                {
+                    if(!LoadImageFromLocalFile())
+                        ImageLoader.AddImage(this);
+                }
+
                 return _image;
             }
             set
@@ -121,40 +125,48 @@ namespace Hurricane.Model.Music.TrackProperties
         /// Download the image
         /// </summary>
         /// <returns></returns>
-        public async Task LoadImageAsync()
+        public async Task DownloadImageAsync()
         {
             if (IsLoadingImage || Image != null) return;
             IsLoadingImage = true;
             var image = new BitmapImage();
             image.BeginInit();
             var imageFile = new FileInfo(Path.Combine(ImageDirectory, $"{Guid.ToString("D")}.png"));
-            if (imageFile.Exists)
+            using (var wc = new WebClient { Proxy = null })
             {
-                image.UriSource = new Uri(imageFile.FullName, UriKind.Absolute);
-            }
-            else
-            {
-                using (var wc = new WebClient { Proxy = null })
+                wc.DownloadProgressChanged += (sender, args) => DownloadProgress = args.ProgressPercentage / 100d;
+                if (DownloadImage)
                 {
-                    wc.DownloadProgressChanged += (sender, args) => DownloadProgress = args.ProgressPercentage/100d;
-                    if (DownloadImage)
-                    {
-                        if(imageFile.Directory?.Exists == false)
-                            imageFile.Directory.Create();
+                    if (imageFile.Directory?.Exists == false)
+                        imageFile.Directory.Create();
 
-                        await wc.DownloadFileTaskAsync(Url, imageFile.FullName);
-                        image.UriSource = new Uri(imageFile.FullName, UriKind.Absolute);
-                    }
-                    else
-                    {
-                        image.StreamSource = new MemoryStream(await wc.DownloadDataTaskAsync(Url));
-                    }
+                    await wc.DownloadFileTaskAsync(Url, imageFile.FullName);
+                    image.UriSource = new Uri(imageFile.FullName, UriKind.Absolute);
                 }
+                else
+                {
+                    image.StreamSource = new MemoryStream(await wc.DownloadDataTaskAsync(Url));
+                }
+
             }
 
             image.EndInit();
             Image = image;
             IsLoadingImage = false;
+        }
+
+        private bool LoadImageFromLocalFile()
+        {
+            var imageFile = new FileInfo(Path.Combine(ImageDirectory, $"{Guid.ToString("D")}.png"));
+            if (!imageFile.Exists)
+                return false;
+            var bitmapImage = new BitmapImage();
+            bitmapImage.BeginInit();
+            bitmapImage.UriSource = new Uri(imageFile.FullName);
+            bitmapImage.EndInit();
+
+            Image = bitmapImage;
+            return true;
         }
 
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)

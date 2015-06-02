@@ -77,6 +77,7 @@
     <Compile Include="DataApi\BillboardApi.cs" />
     <Compile Include="Data\ArtistManager.cs" />
     <Compile Include="Data\TrackImporter.cs" />
+    <Compile Include="Music\TrackProperties\ImageLoader.cs" />
     <Compile Include="Music\TrackProperties\PreviewTrack.cs" />
     <Compile Include="DataApi\SensitiveInformation.cs" />
     <Compile Include="DataApi\SerializeClasses\Billboard\rss.cs" />

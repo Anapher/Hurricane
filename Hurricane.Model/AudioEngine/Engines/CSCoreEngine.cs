@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using CSCore;
@@ -33,6 +34,8 @@ namespace Hurricane.Model.AudioEngine.Engines
         private readonly FadingService _fadingService;
         private bool _isPausing;
         private readonly CSCoreSoundOutProvider _soundOutProvider;
+        private LoopStream _loopStream;
+        private bool _isLooping;
 
         public CSCoreEngine()
         {
@@ -58,11 +61,15 @@ namespace Hurricane.Model.AudioEngine.Engines
                 _soundOut = null;
                 _soundSource?.Dispose();
                 SoundOutProvider.Dispose();
+                _loopStream?.Dispose();
+                _equalizer?.Dispose();
+                _simpleNotificationSource?.Dispose();
+                _soundSourceLoadingToken?.Dispose();
             }
             // free native resources if there are any.
         }
 
-        public event EventHandler<TrackFinishedEventArgs> TrackFinished;
+        public event EventHandler TrackFinished;
 
         public long TrackPosition
         {
@@ -100,7 +107,18 @@ namespace Hurricane.Model.AudioEngine.Engines
             set { SetProperty(value, ref _isLoading); }
         }
 
-        public bool IsLooping { get; set; }
+        public bool IsLooping
+        {
+            get { return _isLooping; }
+            set
+            {
+                _isLooping = value;
+                if (_loopStream != null)
+                    _loopStream.EnableLoop = value;
+            }
+        }
+
+        public TimeSpan CrossfadeDuration { get; set; }
 
         public TimeSpan TrackPositionTime
         {
@@ -155,7 +173,8 @@ namespace Hurricane.Model.AudioEngine.Engines
 
         public void StopAndReset()
         {
-            
+            StopPlayback();
+
         }
 
         public bool TestAudioFile(string path, out AudioInformation audioInformation)
@@ -187,19 +206,28 @@ namespace Hurricane.Model.AudioEngine.Engines
             if (_soundSource != null && !openCrossfading)
                 _soundSource.Dispose();
 
+            if (openCrossfading && _soundSource != null)
+            {
+                _fadingService.CrossfadeOut(_soundOut, CrossfadeDuration).Forget();
+                _soundOut = null;
+            }
+
             var tempSource = await GetSoundSource(track, position);
             if (tempSource == null)
                 return false;
             _soundSource = tempSource;
 
             if (_soundSource.WaveFormat.SampleRate < 44100) //Correct sample rate
-                _soundSource.ChangeSampleRate(44100);
+                _soundSource = _soundSource.ChangeSampleRate(44100);
 
             _soundSource = _soundSource
+                .AppendSource(x => new LoopStream(x), out _loopStream)
                 .AppendSource(Equalizer.Create10BandEqualizer, out _equalizer)
                 .AppendSource(x => new SimpleNotificationSource(x) {Interval = 100}, out _simpleNotificationSource)
                 .ToWaveSource();
 
+            _loopStream.EnableLoop = IsLooping;
+            _loopStream.StreamFinished += LoopStream_StreamFinished;
             _simpleNotificationSource.BlockRead += SimpleNotificationSource_BlockRead;
 
             for (var i = 0; i < EqualizerBands.Count; i++)
@@ -208,6 +236,7 @@ namespace Hurricane.Model.AudioEngine.Engines
             if (_soundOut == null)
             {
                 _soundOut = _soundOutProvider.GetSoundOut();
+                _soundOut.Stopped += SoundOut_Stopped;
             }
             _soundOut.Initialize(_soundSource);
             _soundOut.Volume = Volume;
@@ -215,9 +244,27 @@ namespace Hurricane.Model.AudioEngine.Engines
             OnPropertyChanged(nameof(TrackLength));
             OnPropertyChanged(nameof(TrackLengthTime));
 
+            if (openCrossfading)
+                _fadingService.FadeIn(_soundOut, Volume).Forget();
+
             CurrentStateChanged();
             IsLoading = false;
             return true;
+        }
+
+        private void LoopStream_StreamFinished(object sender, EventArgs e)
+        {
+            TrackFinished?.Invoke(this, EventArgs.Empty);
+        }
+
+        private void SoundOut_Stopped(object sender, PlaybackStoppedEventArgs e)
+        {
+            CurrentStateChanged();
+            if (e.HasError)
+            {
+                _soundOut.Dispose();
+                _soundOut = null;
+            }
         }
 
         private void SimpleNotificationSource_BlockRead(object sender, EventArgs e)

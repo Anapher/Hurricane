@@ -24,6 +24,8 @@ namespace Hurricane.Model.Music
             AudioEngine.TrackFinished += AudioEngineOnTrackFinished;
             AudioEngine.EqualizerBands = new EqualizerBandCollection();
             TrackHistory = new ObservableCollection<IPlayable>();
+
+            AudioEngine.CrossfadeDuration = TimeSpan.FromSeconds(4);
         }
 
         public void Dispose()
@@ -76,7 +78,7 @@ namespace Hurricane.Model.Music
         {
             CurrentTrack = playable;
             CurrentPlaylist = playlist;
-            if (await AudioEngine.OpenTrack(await playable.GetSoundSource(), IsCrossfadeEnabled, 0) && openPlaying)
+            if (await AudioEngine.OpenTrack(await playable.GetSoundSource(), true, 0) && openPlaying)
             {
                 var track = playable as PlayableBase;
                 if (track != null)
@@ -104,7 +106,7 @@ namespace Hurricane.Model.Music
 
         }
 
-        private void AudioEngineOnTrackFinished(object sender, TrackFinishedEventArgs trackFinishedEventArgs)
+        private void AudioEngineOnTrackFinished(object sender, EventArgs e)
         {
             switch (CurrentPlayMode)
             {

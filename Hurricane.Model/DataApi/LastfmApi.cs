@@ -37,7 +37,7 @@ namespace Hurricane.Model.DataApi
                     wc.DownloadStringTaskAsync(
                         $"http://ws.audioscrobbler.com/2.0/?method=artist.search&artist={Uri.EscapeDataString(name)}&api_key={SensitiveInformation.LastfmKey}&format=json&limit=1"));
 
-                var match = searchedArtists.results?.ArtistMatches.artist;
+                var match = searchedArtists?.results?.ArtistMatches.artist;
                 if (match == null) return null;
 
                 var alreadyExistingArtist = Artists.FirstOrDefault(x => x.Name == match.name);
@@ -144,6 +144,9 @@ namespace Hurricane.Model.DataApi
         private static void SetImages(Artist artist, List<Image> images)
         {
             if (images == null || images.Count == 0) return;
+            images = images.Where(x => !string.IsNullOrEmpty(x.text)).ToList();
+            if (images.Count == 0)
+                return;
             images = images.OrderBy(x => x.size).ToList();
             artist.SmallImage = new ImageProvider(images.First().text);
             artist.MediumImage =

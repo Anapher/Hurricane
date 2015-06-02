@@ -86,11 +86,20 @@
                             <DataTemplate>
                                 <Grid Margin="0,2" DataContext="{Binding Name}" d:DataContext="{d:DesignInstance trackProperties:Artist}">
                                     <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="40"/>
+                                        <ColumnDefinition Width="Auto"/>
                                         <ColumnDefinition Width="*"/>
                                     </Grid.ColumnDefinitions>
-                                    <Border BorderThickness="1" BorderBrush="{StaticResource WhiteBrush}">
-                                        <myControls:ImageProviderViewer ImageProvider="{Binding MediumImage}" Width="40" Height="40"/>
+                                    <Border BorderThickness="2" BorderBrush="{StaticResource WhiteBrush}">
+                                        <Border.Effect>
+                                            <DropShadowEffect BlurRadius="1" ShadowDepth="0"/>
+                                        </Border.Effect>
+                                        <myControls:ImageProviderViewer ImageProvider="{Binding MediumImage}" Width="40" Height="40">
+                                            <myControls:ImageProviderViewer.Placeholder>
+                                                <Viewbox>
+                                                    <Path Data="{StaticResource VectorMicrophone}" Fill="{StaticResource GrayBrush3}"/>
+                                                </Viewbox>
+                                            </myControls:ImageProviderViewer.Placeholder>
+                                        </myControls:ImageProviderViewer>
                                     </Border>
                                     <TextBlock Text="{Binding Name}" Margin="5,0,0,0" Grid.Column="1" VerticalAlignment="Center"/>
                                 </Grid>
@@ -115,7 +124,16 @@
                                 <GroupStyle.HeaderTemplate>
                                     <DataTemplate>
                                         <StackPanel Orientation="Vertical">
-                                            <TextBlock Text="{Binding Name}" Margin="0,5,0,0"/>
+                                            <StackPanel.Style>
+                                                <Style TargetType="StackPanel">
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding Name,Converter={StaticResource FalseIfStringIsEmpty}}" Value="false">
+                                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </StackPanel.Style>
+                                            <TextBlock Text="{Binding Name}" Margin="5,5,0,0"/>
                                             <Separator />
                                         </StackPanel>
                                     </DataTemplate>
@@ -135,23 +153,26 @@
             </TabItem>
             <TabItem />
             <TabItem>
-                <ListView ctrl:ListViewLayoutManager.Enabled="True" ItemsSource="{Binding ViewSource}" IsSynchronizedWithCurrentItem="True" extensions:GridViewSort.AutoSort="True"
-                          extensions:GridViewSort.SortGlyphAscending="/Resources/Images/ArrowUp.png" extensions:GridViewSort.SortGlyphDescending="/Resources/Images/ArrowDown.png">
-                    <ListView.View>
-                        <GridView d:DataContext="{d:DesignInstance data:IPlayable}">
-                            <GridViewColumn Header="{StaticResource Artist}" DisplayMemberBinding="{Binding Artist.Name}" ctrl:ProportionalColumn.Width="1" extensions:GridViewSort.PropertyName="Artist.Name"/>
-                            <GridViewColumn Header="{StaticResource Titel}" DisplayMemberBinding="{Binding Title}" ctrl:ProportionalColumn.Width="2" extensions:GridViewSort.PropertyName="Title"/>
-                            <GridViewColumn Header="{StaticResource Album}" DisplayMemberBinding="{Binding Album}" ctrl:ProportionalColumn.Width="1" extensions:GridViewSort.PropertyName="Album"/>
-                            <GridViewColumn Header="{StaticResource Duration}" DisplayMemberBinding="{Binding Duration,Converter={StaticResource TimespanToStringConverter}}" Width="100" extensions:GridViewSort.PropertyName="Duration"/>
-                        </GridView>
-                    </ListView.View>
-                    <ListView.ItemContainerStyle>
-                        <Style TargetType="ListViewItem" BasedOn="{StaticResource MetroListViewItem}">
-                            <Setter Property="behavior:ControlBehavior.DoubleClickCommand" Value="{Binding RelativeSource={RelativeSource AncestorType=ListView},Path=DataContext.PlayAudioCommand}"/>
-                            <Setter Property="behavior:ControlBehavior.DoubleClickCommandParameter" Value="{Binding}"/>
-                        </Style>
-                    </ListView.ItemContainerStyle>
-                </ListView>
+                <Border BorderThickness="0,1" BorderBrush="{StaticResource BlackBrush}">
+                    <ListView ctrl:ListViewLayoutManager.Enabled="True" ItemsSource="{Binding ViewSource}" IsSynchronizedWithCurrentItem="True" extensions:GridViewSort.AutoSort="True"
+                          extensions:GridViewSort.SortGlyphAscending="/Resources/Images/ArrowUp.png" extensions:GridViewSort.SortGlyphDescending="/Resources/Images/ArrowDown.png"
+                          Style="{StaticResource VisualizingListView}" BorderThickness="0">
+                        <ListView.View>
+                            <GridView d:DataContext="{d:DesignInstance data:IPlayable}">
+                                <GridViewColumn Header="{StaticResource Artist}" DisplayMemberBinding="{Binding Artist.Name}" ctrl:ProportionalColumn.Width="1" extensions:GridViewSort.PropertyName="Artist.Name"/>
+                                <GridViewColumn Header="{StaticResource Titel}" DisplayMemberBinding="{Binding Title}" ctrl:ProportionalColumn.Width="2" extensions:GridViewSort.PropertyName="Title"/>
+                                <GridViewColumn Header="{StaticResource Album}" DisplayMemberBinding="{Binding Album}" ctrl:ProportionalColumn.Width="1" extensions:GridViewSort.PropertyName="Album"/>
+                                <GridViewColumn Header="{StaticResource Duration}" DisplayMemberBinding="{Binding Duration,Converter={StaticResource TimespanToStringConverter}}" Width="100" extensions:GridViewSort.PropertyName="Duration"/>
+                            </GridView>
+                        </ListView.View>
+                        <ListView.ItemContainerStyle>
+                            <Style TargetType="ListViewItem" BasedOn="{StaticResource MetroListViewItem}">
+                                <Setter Property="behavior:ControlBehavior.DoubleClickCommand" Value="{Binding RelativeSource={RelativeSource AncestorType=ListView},Path=DataContext.PlayAudioCommand}"/>
+                                <Setter Property="behavior:ControlBehavior.DoubleClickCommandParameter" Value="{Binding}"/>
+                            </Style>
+                        </ListView.ItemContainerStyle>
+                    </ListView>
+                </Border>
             </TabItem>
         </controls:MetroAnimatedTabControl>
     </Grid>
