@@ -20,6 +20,8 @@ namespace Hurricane.ViewModel
         private RelayCommand _openSettingsCommand;
         private RelayCommand _playPauseCommand;
         private RelayCommand _cancelProgressNotificationCommand;
+        private RelayCommand _forwardCommand;
+        private RelayCommand _backCommand;
 
         public MainViewModel()
         {
@@ -33,7 +35,6 @@ namespace Hurricane.ViewModel
             Application.Current.MainWindow.Closing += MainWindow_Closing;
             NotificationManager = new NotificationManager();
             NotificationManager.ShowInformation("HalloWelt", "Es ist ein Fehler aufgetreten.", MessageNotificationIcon.Error);
-            //MusicDataManager.MusicManager.OpenPlayable(playlist1.Tracks.First(), playlist1, false).Forget();
         }
 
         public MusicDataManager MusicDataManager { get; }
@@ -88,6 +89,16 @@ namespace Hurricane.ViewModel
                            ((ProgressNotification)parameter).Cancel();
                        }));
             }
+        }
+
+        public RelayCommand ForwardCommand
+        {
+            get { return _forwardCommand ?? (_forwardCommand = new RelayCommand(parameter => { MusicDataManager.MusicManager.GoForward(); })); }
+        }
+
+        public RelayCommand BackCommand
+        {
+            get { return _backCommand ?? (_backCommand = new RelayCommand(parameter => { MusicDataManager.MusicManager.GoBack(); })); }
         }
 
         private void MainWindow_Closing(object sender, CancelEventArgs e)

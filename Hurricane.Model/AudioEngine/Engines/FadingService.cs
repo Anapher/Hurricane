@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using CSCore.SoundOut;
@@ -19,6 +20,12 @@ namespace Hurricane.Model.AudioEngine.Engines
 
         public bool IsFading { get; set; }
 
+        /// <summary>
+        /// Fade the soundOut slowly in
+        /// </summary>
+        /// <param name="soundOut">The sound out from CSCore</param>
+        /// <param name="toVolume">The final volume</param>
+        /// <returns></returns>
         public async Task FadeIn(ISoundOut soundOut, float toVolume)
         {
             if (IsFading && !_cancellationToken.IsCancellationRequested)
@@ -29,6 +36,12 @@ namespace Hurricane.Model.AudioEngine.Engines
             IsFading = false;
         }
 
+        /// <summary>
+        /// Fade the soundOut slowly out
+        /// </summary>
+        /// <param name="soundOut">The sound out from CSCore</param>
+        /// <param name="fromVolume">The final volume</param>
+        /// <returns></returns>
         public async Task FadeOut(ISoundOut soundOut, float fromVolume)
         {
             if (IsFading && !_cancellationToken.IsCancellationRequested)
@@ -39,19 +52,30 @@ namespace Hurricane.Model.AudioEngine.Engines
             IsFading = false;
         }
 
+        /// <summary>
+        /// Fade the soundOut slowly out and disposes it after that
+        /// </summary>
+        /// <param name="soundOut">The sound out from CSCore</param>
+        /// <param name="duration">The duration</param>
+        /// <returns></returns>
+        public async Task CrossfadeOut(ISoundOut soundOut, TimeSpan duration)
+        {
+            if (IsFading && !_cancellationToken.IsCancellationRequested)
+                return;
+
+            IsFading = true;
+            await Fade(soundOut.Volume, 0, duration, soundOut, _cancellationToken.Token);
+            IsFading = false;
+            if (soundOut.PlaybackState != PlaybackState.Stopped)
+                soundOut.Stop();
+            using (soundOut) 
+                soundOut.WaveSource.Dispose();
+        }
+
         public void Cancel()
         {
             _cancellationToken?.Cancel();
             _cancellationToken = new CancellationTokenSource();
-        }
-
-        public async Task CrossfadeOut(ISoundOut soundOut, TimeSpan duration)
-        {
-            await Fade(soundOut.Volume, 0, duration, soundOut, _cancellationToken.Token);
-            if(soundOut.PlaybackState != PlaybackState.Stopped)
-                soundOut.Stop();
-            using (soundOut)
-                soundOut.WaveSource.Dispose();
         }
 
         private async static Task Fade(float volumeFrom, float volumeTo, TimeSpan duration, ISoundOut soundOut, CancellationToken token)

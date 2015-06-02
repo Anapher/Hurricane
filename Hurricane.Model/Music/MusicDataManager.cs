@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Threading.Tasks;
@@ -7,7 +6,6 @@ using Hurricane.Model.Data;
 using Hurricane.Model.DataApi;
 using Hurricane.Model.Music.Playable;
 using Hurricane.Model.Music.Playlist;
-using Hurricane.Model.Music.TrackProperties;
 using Hurricane.Utilities;
 
 namespace Hurricane.Model.Music

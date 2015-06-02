@@ -6,6 +6,5 @@ namespace Hurricane.Model.Music.Playlist
     public interface IPlaylist
     {
         IList<IPlayable> Tracks { get; }
-        IList<IPlayable> History { get; } 
     }
 }

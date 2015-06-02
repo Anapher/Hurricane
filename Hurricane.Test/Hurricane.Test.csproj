@@ -53,6 +53,12 @@
     <Compile Include="UnitTest1.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Hurricane.ViewModel\Hurricane.ViewModel.csproj">
+      <Project>{83C1CE59-B4A0-4560-9238-35BD997485FC}</Project>
+      <Name>Hurricane.ViewModel</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>

@@ -20,8 +20,6 @@ namespace Hurricane.Model.Music.Playlist
 
         IList<IPlayable> IPlaylist.Tracks => Tracks.Cast<IPlayable>().ToList();
 
-        IList<IPlayable> IPlaylist.History => History;
-
         public void AddTrack(PlayableBase playable)
         {
             Tracks.Add(playable);

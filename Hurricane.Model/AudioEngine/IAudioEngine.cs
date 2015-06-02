@@ -17,6 +17,11 @@ namespace Hurricane.Model.AudioEngine
         event EventHandler TrackFinished;
 
         /// <summary>
+        /// When the position of the track changes
+        /// </summary>
+        event EventHandler TrackPositionChanged;
+
+        /// <summary>
         /// Opens a track (but don't play it)
         /// </summary>
         /// <param name="track">The track to open</param>

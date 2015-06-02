@@ -132,7 +132,7 @@ namespace Hurricane.ViewModel.MainView
                     if (playable == null)
                         return;
 
-                    _musicDataManager.MusicManager.OpenPlayable(playable, Playlist, true).Forget();
+                    _musicDataManager.MusicManager.OpenPlayable(playable, Playlist).Forget();
                 }));
             }
         }

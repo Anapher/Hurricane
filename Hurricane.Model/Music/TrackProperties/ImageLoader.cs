@@ -16,7 +16,7 @@ namespace Hurricane.Model.Music.TrackProperties
 
         public static void AddImage(ImageProvider imageProvider)
         {
-            Images.Insert(0, imageProvider); //We always add to the top, perhaps we don't need the images at the top any more
+            Images.Add(imageProvider);
             if (_serviceIsRunning)
                 return;
 

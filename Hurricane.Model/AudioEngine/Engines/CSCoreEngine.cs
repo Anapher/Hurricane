@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using CSCore;
@@ -11,8 +10,8 @@ using CSCore.SoundOut;
 using CSCore.Streams;
 using Hurricane.Model.MusicEqualizer;
 using Hurricane.Utilities;
-// ReSharper disable ExplicitCallerInfoArgument
 
+// ReSharper disable ExplicitCallerInfoArgument
 namespace Hurricane.Model.AudioEngine.Engines
 {
     // ReSharper disable once InconsistentNaming
@@ -32,6 +31,7 @@ namespace Hurricane.Model.AudioEngine.Engines
         private CancellationTokenSource _soundSourcePositionToken;
         private TimeSpan _trackPositionTime;
         private readonly FadingService _fadingService;
+        private readonly FadingService _crossfadeService;
         private bool _isPausing;
         private readonly CSCoreSoundOutProvider _soundOutProvider;
         private LoopStream _loopStream;
@@ -41,6 +41,7 @@ namespace Hurricane.Model.AudioEngine.Engines
         {
             _fadingService = new FadingService();
             _soundOutProvider = new CSCoreSoundOutProvider();
+            _crossfadeService = new FadingService();
         }
 
         public void Dispose()
@@ -70,6 +71,7 @@ namespace Hurricane.Model.AudioEngine.Engines
         }
 
         public event EventHandler TrackFinished;
+        public event EventHandler TrackPositionChanged;
 
         public long TrackPosition
         {
@@ -201,14 +203,21 @@ namespace Hurricane.Model.AudioEngine.Engines
         public async Task<bool> OpenTrack(IPlaySource track, bool openCrossfading, long position)
         {
             IsLoading = true;
-            StopPlayback();
+            if (!openCrossfading)
+                StopPlayback();
+
+            if (_crossfadeService.IsFading)
+                _crossfadeService.Cancel();
 
             if (_soundSource != null && !openCrossfading)
                 _soundSource.Dispose();
 
             if (openCrossfading && _soundSource != null)
             {
-                _fadingService.CrossfadeOut(_soundOut, CrossfadeDuration).Forget();
+                _soundOut.Stopped -= SoundOut_Stopped;
+                _loopStream.StreamFinished -= LoopStream_StreamFinished;
+                _simpleNotificationSource.BlockRead -= SimpleNotificationSource_BlockRead;
+                _crossfadeService.CrossfadeOut(_soundOut, CrossfadeDuration).Forget();
                 _soundOut = null;
             }
 
@@ -240,15 +249,19 @@ namespace Hurricane.Model.AudioEngine.Engines
             }
             _soundOut.Initialize(_soundSource);
             _soundOut.Volume = Volume;
+            IsLoading = false;
 
             OnPropertyChanged(nameof(TrackLength));
             OnPropertyChanged(nameof(TrackLengthTime));
 
             if (openCrossfading)
+            {
+                await TogglePlayPause();
                 _fadingService.FadeIn(_soundOut, Volume).Forget();
+            }
 
             CurrentStateChanged();
-            IsLoading = false;
+            OnPositionChanged();
             return true;
         }
 
@@ -356,6 +369,8 @@ namespace Hurricane.Model.AudioEngine.Engines
                 return;
             TrackPositionTime = TimeSpan.FromMilliseconds(_soundSource.WaveFormat.BytesToMilliseconds(TrackPosition));
             OnPropertyChanged(nameof(TrackPosition));
+
+            TrackPositionChanged?.Invoke(this, EventArgs.Empty);
         }
 
         protected void CurrentStateChanged()

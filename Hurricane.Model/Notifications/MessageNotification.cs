@@ -31,6 +31,6 @@ namespace Hurricane.Model.Notifications
     public enum MessageNotificationIcon
     {
         Information,
-        Error,
+        Error
     }
 }
