@@ -1,0 +1,55 @@
+﻿using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using System.Windows.Data;
+using Hurricane.Model.Data;
+using Hurricane.Model.Music.Playlist;
+using Hurricane.ViewModel.Annotations;
+
+namespace Hurricane.ViewModel.MainView
+{
+    public class ViewManager
+    {
+        public ViewManager(PlaylistProvider playlistProvider)
+        {
+            ViewItems = new ObservableCollection<IViewItem>
+            {
+                new HomeView {IsPlaying = true},
+                new CollectionView(),
+                new ChartsView(),
+                new QueueView(),
+            };
+
+            playlistProvider.PlaylistAdded += PlaylistProvider_PlaylistAdded;
+            playlistProvider.PlaylistRemoved += PlaylistProvider_PlaylistRemoved;
+            foreach (var userPlaylist in playlistProvider.Playlists)
+                ViewItems.Add(new PlaylistView(userPlaylist));
+
+            ViewSource = CollectionViewSource.GetDefaultView(ViewItems);
+            ViewSource.GroupDescriptions.Add(new PropertyGroupDescription("ViewCategorie"));
+        }
+
+        private void PlaylistProvider_PlaylistAdded(object sender, UserPlaylist e)
+        {
+            ViewItems.Insert(ViewItems.Count -1, new PlaylistView(e));
+        }
+
+        private void PlaylistProvider_PlaylistRemoved(object sender, UserPlaylist e)
+        {
+            foreach (var viewItem in ViewItems)
+            {
+                var playlistView = viewItem as PlaylistView;
+                if (playlistView == null)
+                    continue;
+                if (playlistView.Playlist == e)
+                {
+                    ViewItems.Remove(viewItem);
+                    break;
+                }
+            }
+        }
+
+        public ObservableCollection<IViewItem> ViewItems { get; }
+        public ICollectionView ViewSource { get; }
+    }
+}

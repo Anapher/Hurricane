@@ -52,7 +52,7 @@ namespace Hurricane.Model.Data
                 ProgressChanged?.Invoke(this, i / allFilesCount);
 
                 extension = fileInfo.Extension.Remove(0, 1);
-                if (!extensions.Any(x => string.Equals(x, extension))) continue; //If the audio engine doesn't know the extension, skip
+                if (!extensions.Any(x => string.Equals(x, extension, StringComparison.OrdinalIgnoreCase))) continue; //If the audio engine doesn't know the extension, skip
                 if (!(await Task.Run(() => _musicDataManager.MusicManager.AudioEngine.TestAudioFile(fileInfo.FullName, out audioInformation)))) //If the audio engine can't open the track, skip
                     continue;
 
@@ -98,20 +98,23 @@ namespace Hurricane.Model.Data
 
                     if (!string.IsNullOrEmpty(artistName)) //Perhaps regex didn't match
                     {
-                        artist = await _musicDataManager.LastfmApi.SearchArtist(artistName);
+                        artist =
+                            _musicDataManager.Artists.ArtistDictionary.FirstOrDefault(
+                                x => string.Equals(x.Value.Name, artistName, StringComparison.OrdinalIgnoreCase)).Value ??
+                            await _musicDataManager.LastfmApi.SearchArtist(artistName);
                     }
                 }
 
                 if (artist == null)
-                    artist = _musicDataManager.ArtistManager.UnkownArtist;
+                    artist = _musicDataManager.Artists.UnkownArtist;
 
-                if (!_musicDataManager.ArtistManager.ArtistDictionary.ContainsKey(artist.Guid))
-                    _musicDataManager.ArtistManager.ArtistDictionary.Add(artist.Guid, artist);
+                if (!_musicDataManager.Artists.ArtistDictionary.ContainsKey(artist.Guid))
+                    _musicDataManager.Artists.ArtistDictionary.Add(artist.Guid, artist);
 
                 track.Artist = artist;
 
                 var trackId = Guid.NewGuid();
-                _musicDataManager.Tracks.Add(trackId, track);
+                _musicDataManager.Tracks.Collection.Add(trackId, track);
                 playlist?.AddTrack(track);
 
                 if (_cancel)
@@ -147,7 +150,7 @@ namespace Hurricane.Model.Data
         private async Task<Artist> GetArtistByMusicBrainzId(string musicBrainzId)
         {
             var temp =
-                _musicDataManager.ArtistManager.ArtistDictionary.Where(
+                _musicDataManager.Artists.ArtistDictionary.Where(
                     x =>
                         string.Equals(x.Value.MusicBrainzId, musicBrainzId,
                             StringComparison.OrdinalIgnoreCase)).ToList();

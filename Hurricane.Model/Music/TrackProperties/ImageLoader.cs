@@ -1,5 +1,7 @@
 ﻿ using System.Collections.Generic;
+ using System.Linq;
  using System.Threading.Tasks;
+ using System.Windows.Navigation;
  using Hurricane.Utilities;
 
 namespace Hurricane.Model.Music.TrackProperties
@@ -16,6 +18,9 @@ namespace Hurricane.Model.Music.TrackProperties
 
         public static void AddImage(ImageProvider imageProvider)
         {
+            if (Images.Any(x => x.Guid == imageProvider.Guid))
+                return;
+
             Images.Add(imageProvider);
             if (_serviceIsRunning)
                 return;

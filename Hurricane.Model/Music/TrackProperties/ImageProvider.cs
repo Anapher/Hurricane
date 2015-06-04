@@ -22,9 +22,9 @@ namespace Hurricane.Model.Music.TrackProperties
         private bool _isLoadingImage;
         private double _downloadProgress;
 
-        public ImageProvider()
+        private ImageProvider()
         {
-            Guid = Guid.NewGuid();
+            
         }
 
         /// <summary>
@@ -34,6 +34,7 @@ namespace Hurricane.Model.Music.TrackProperties
         public ImageProvider(string url)
         {
             Url = url;
+            Guid = Guid.NewGuid();
         }
 
         public void Dispose()

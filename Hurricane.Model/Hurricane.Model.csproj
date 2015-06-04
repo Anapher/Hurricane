@@ -75,7 +75,8 @@
     <Compile Include="AudioEngine\StreamPlaySource.cs" />
     <Compile Include="AudioEngine\TrackFinishedEventArgs.cs" />
     <Compile Include="DataApi\BillboardApi.cs" />
-    <Compile Include="Data\ArtistManager.cs" />
+    <Compile Include="Data\ArtistProvider.cs" />
+    <Compile Include="Data\PlaylistProvider.cs" />
     <Compile Include="Data\TrackImporter.cs" />
     <Compile Include="Music\TrackProperties\ImageLoader.cs" />
     <Compile Include="Music\TrackProperties\PreviewTrack.cs" />

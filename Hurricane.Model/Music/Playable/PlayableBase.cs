@@ -24,6 +24,7 @@ namespace Hurricane.Model.Music.Playable
         /// <summary>
         /// The title of the track
         /// </summary>
+        [XmlAttribute]
         public string Title
         {
             get { return _title; }
@@ -47,6 +48,7 @@ namespace Hurricane.Model.Music.Playable
         /// <summary>
         /// The album of the track. Empty if unkown
         /// </summary>
+        [XmlAttribute]
         public string Album
         {
             get { return _album; }
@@ -66,6 +68,7 @@ namespace Hurricane.Model.Music.Playable
         /// <summary>
         /// The last time this track was played
         /// </summary>
+        [XmlAttribute]
         public DateTime LastTimePlayed
         {
             get { return _lastTimePlayed; }
@@ -73,6 +76,7 @@ namespace Hurricane.Model.Music.Playable
         }
 
         [Browsable(false)]
+        [XmlAttribute]
         public Guid ArtistGuid { get; set; }
 
         string IPlayable.Artist => _artist?.Name;
@@ -100,6 +104,7 @@ namespace Hurricane.Model.Music.Playable
             }
         }
 
+        [XmlIgnore]
         public BitmapImage Cover { get; protected set; }
         public abstract bool IsAvailable { get; }
 

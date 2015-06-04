@@ -51,7 +51,8 @@ namespace Hurricane.Model.DataApi
                 {
                     Name = match.name,
                     MusicBrainzId = match.mbid,
-                    Url = match.url
+                    Url = match.url,
+                    Guid = Guid.NewGuid()
                 };
                 SetImages(artist, match.image);
 
@@ -91,7 +92,13 @@ namespace Hurricane.Model.DataApi
                         break;
                     }
 
-                    var newArtist = new Artist {Name = similarArtist.name, Url = similarArtist.url};
+                    var newArtist = new Artist
+                    {
+                        Name = similarArtist.name,
+                        Url = similarArtist.url,
+                        Guid = Guid.NewGuid()
+                    };
+
                     SetImages(newArtist, similarArtist.image);
                     Artists.Add(newArtist);
                     artist.SimilarArtists.Add(newArtist);
@@ -134,7 +141,8 @@ namespace Hurricane.Model.DataApi
                 {
                     Name = artistInfo.artist.name,
                     MusicBrainzId = artistInfo.artist.mbid,
-                    Url = artistInfo.artist.url
+                    Url = artistInfo.artist.url,
+                    Guid = Guid.NewGuid()
                 };
                 SetImages(artist, artistInfo.artist.image);
                 return artist;

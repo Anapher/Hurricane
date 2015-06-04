@@ -81,7 +81,7 @@
                             </CollectionViewSource.GroupDescriptions>
                         </CollectionViewSource>
                     </Grid.Resources>
-                    <ListBox ItemsSource="{Binding ArtistViewSource.Groups}" x:Name="ArtistListBox">
+                    <ListBox ItemsSource="{Binding ArtistViewSource.Groups}" x:Name="ArtistListBox" SelectedIndex="0" Style="{StaticResource VirtualisedMetroListBox}">
                         <ListBox.ItemTemplate>
                             <DataTemplate>
                                 <Grid Margin="0,2" DataContext="{Binding Name}" d:DataContext="{d:DesignInstance trackProperties:Artist}">
@@ -127,7 +127,7 @@
                                             <StackPanel.Style>
                                                 <Style TargetType="StackPanel">
                                                     <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding Name,Converter={StaticResource FalseIfStringIsEmpty}}" Value="false">
+                                                        <DataTrigger Binding="{Binding Name,Converter={StaticResource IsEmptyStringConverter}}" Value="true">
                                                             <Setter Property="Visibility" Value="Collapsed"/>
                                                         </DataTrigger>
                                                     </Style.Triggers>
@@ -143,140 +143,186 @@
                         <ListBox.ItemTemplate>
                             <DataTemplate DataType="{x:Type data:PlayableBase}">
                                 <DockPanel HorizontalAlignment="Stretch" Margin="0,0,5,0">
-                                    <TextBlock Text="{Binding Title}" TextTrimming="CharacterEllipsis" DockPanel.Dock="Left"/>
-                                    <TextBlock Text="{Binding Duration,Converter={StaticResource TimespanToStringConverter}}" DockPanel.Dock="Right" HorizontalAlignment="Right"/>
+                                    <Viewbox Width="12" Height="12">
+                                        <Path Data="{StaticResource VectorPlay}">
+                                            <Path.Style>
+                                                <Style TargetType="Path">
+                                                    <Setter Property="Fill" Value="{StaticResource AccentColorBrush}"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}}, Path=IsSelected}" Value="True">
+                                                            <Setter Property="Fill" Value="White"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Path.Style>
+                                        </Path>
+                                        <Viewbox.Style>
+                                            <Style TargetType="Viewbox">
+                                                <Setter Property="Opacity" Value="0"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding IsPlaying}" Value="true">
+                                                        <DataTrigger.EnterActions>
+                                                            <BeginStoryboard>
+                                                                <Storyboard>
+                                                                    <ThicknessAnimation From="-5,0,5,0" To="0" Duration="0:0:0.4" Storyboard.TargetProperty="Margin"/>
+                                                                    <DoubleAnimation From="0.5" To="1" Duration="0:0:0.2" Storyboard.TargetProperty="Opacity"/>
+                                                                </Storyboard>
+                                                            </BeginStoryboard>
+                                                        </DataTrigger.EnterActions>
+                                                        <DataTrigger.ExitActions>
+                                                            <BeginStoryboard>
+                                                                <Storyboard>
+                                                                    <DoubleAnimation From="1" To="0" Duration="0:0:0.2" Storyboard.TargetProperty="Opacity"/>
+                                                                </Storyboard>
+                                                            </BeginStoryboard>
+                                                        </DataTrigger.ExitActions>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Viewbox.Style>
+                                    </Viewbox>
+                                    <TextBlock Text="{Binding Title}" TextTrimming="CharacterEllipsis" VerticalAlignment="Center" Margin="10,0,0,0"/>
+                                    <TextBlock Text="{Binding Duration,Converter={StaticResource TimespanToStringConverter}}" DockPanel.Dock="Right" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,5,0"/>
                                 </DockPanel>
                             </DataTemplate>
                         </ListBox.ItemTemplate>
+                        <ListBox.ItemContainerStyle>
+                            <Style TargetType="ListBoxItem" BasedOn="{StaticResource MetroListBoxItem}">
+                                <Setter Property="behavior:ControlBehavior.DoubleClickCommand" Value="{Binding RelativeSource={RelativeSource AncestorType=ListBox},Path=DataContext.PlayAudioCommand}"/>
+                                <Setter Property="behavior:ControlBehavior.DoubleClickCommandParameter" Value="{Binding}"/>
+                            </Style>
+                        </ListBox.ItemContainerStyle>
                     </ListBox>
                 </Grid>
             </TabItem>
             <TabItem />
             <TabItem>
-                <Border BorderThickness="0,1" BorderBrush="{StaticResource BlackBrush}">
-                    <ListView ctrl:ListViewLayoutManager.Enabled="True" ItemsSource="{Binding ViewSource}" IsSynchronizedWithCurrentItem="True" extensions:GridViewSort.AutoSort="True"
-                          extensions:GridViewSort.SortGlyphAscending="/Resources/Images/ArrowUp.png" extensions:GridViewSort.SortGlyphDescending="/Resources/Images/ArrowDown.png"
-                          Style="{StaticResource VisualizingListView}" BorderThickness="0">
-                        <ListView.View>
-                            <GridView d:DataContext="{d:DesignInstance data:IPlayable}">
-                                <GridViewColumn Header="{StaticResource Artist}" DisplayMemberBinding="{Binding Artist.Name}" ctrl:ProportionalColumn.Width="1" extensions:GridViewSort.PropertyName="Artist.Name"/>
-                                <GridViewColumn Header="{StaticResource Titel}" DisplayMemberBinding="{Binding Title}" ctrl:ProportionalColumn.Width="2" extensions:GridViewSort.PropertyName="Title"/>
-                                <GridViewColumn Header="{StaticResource Album}" DisplayMemberBinding="{Binding Album}" ctrl:ProportionalColumn.Width="1" extensions:GridViewSort.PropertyName="Album"/>
-                                <GridViewColumn Header="{StaticResource Duration}" DisplayMemberBinding="{Binding Duration,Converter={StaticResource TimespanToStringConverter}}" Width="100" extensions:GridViewSort.PropertyName="Duration"/>
-                            </GridView>
-                        </ListView.View>
-                        <ListView.ItemContainerStyle>
-                            <Style TargetType="ListViewItem" BasedOn="{StaticResource MetroListViewItem}">
-                                <Setter Property="behavior:ControlBehavior.DoubleClickCommand" Value="{Binding RelativeSource={RelativeSource AncestorType=ListView},Path=DataContext.PlayAudioCommand}"/>
-                                <Setter Property="behavior:ControlBehavior.DoubleClickCommandParameter" Value="{Binding}"/>
-                                <Setter Property="Margin" Value="0,0,1,0"/>
-                                <Setter Property="Template">
-                                    <Setter.Value>
-                                        <ControlTemplate TargetType="{x:Type ListViewItem}">
-                                            <Border x:Name="Bd"
+                <ListView ctrl:ListViewLayoutManager.Enabled="True" ItemsSource="{Binding ViewSource}" IsSynchronizedWithCurrentItem="True" extensions:GridViewSort.AutoSort="True"
+                          extensions:GridViewSort.SortGlyphAscending="/Resources/Images/ArrowUp.png" extensions:GridViewSort.SortGlyphDescending="/Resources/Images/ArrowDown.png">
+                    <ListView.Style>
+                        <Style TargetType="ListView" BasedOn="{StaticResource VirtualisedMetroListView}">
+                            <Setter Property="ScrollViewer.IsDeferredScrollingEnabled" Value="False" />
+                        </Style>
+                    </ListView.Style>
+                    <ListView.View>
+                        <GridView d:DataContext="{d:DesignInstance data:IPlayable}">
+                            <GridViewColumn Header="{StaticResource Artist}" DisplayMemberBinding="{Binding Artist.Name}" ctrl:ProportionalColumn.Width="1" extensions:GridViewSort.PropertyName="Artist.Name"/>
+                            <GridViewColumn Header="{StaticResource Titel}" DisplayMemberBinding="{Binding Title}" ctrl:ProportionalColumn.Width="2" extensions:GridViewSort.PropertyName="Title"/>
+                            <GridViewColumn Header="{StaticResource Album}" DisplayMemberBinding="{Binding Album}" ctrl:ProportionalColumn.Width="1" extensions:GridViewSort.PropertyName="Album"/>
+                            <GridViewColumn Header="{StaticResource Duration}" DisplayMemberBinding="{Binding Duration,Converter={StaticResource TimespanToStringConverter}}" Width="100" extensions:GridViewSort.PropertyName="Duration"/>
+                        </GridView>
+                    </ListView.View>
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="ListViewItem" BasedOn="{StaticResource MetroListViewItem}">
+                            <Setter Property="behavior:ControlBehavior.DoubleClickCommand" Value="{Binding RelativeSource={RelativeSource AncestorType=ListView},Path=DataContext.PlayAudioCommand}"/>
+                            <Setter Property="behavior:ControlBehavior.DoubleClickCommandParameter" Value="{Binding}"/>
+                            <Setter Property="Margin" Value="0,0,1,0"/>
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="{x:Type ListViewItem}">
+                                        <Border x:Name="Bd"
                             Background="{TemplateBinding Background}"
                             SnapsToDevicePixels="true" BorderThickness="0" BorderBrush="{StaticResource AccentColorBrush3}">
-                                                <Grid>
-                                                    <GridViewRowPresenter VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
-                                                        <GridViewRowPresenter.Resources>
-                                                            <Style TargetType="{x:Type TextBlock}">
-                                                                <Setter Property="Foreground"
+                                            <Grid>
+                                                <GridViewRowPresenter VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
+                                                    <GridViewRowPresenter.Resources>
+                                                        <Style TargetType="{x:Type TextBlock}">
+                                                            <Setter Property="Foreground"
                                                 Value="{Binding RelativeSource={RelativeSource AncestorType={x:Type ListViewItem}}, Path=Foreground}" />
-                                                                <Style.Triggers>
-                                                                    <DataTrigger Binding="{Binding Path=IsSelected, RelativeSource={RelativeSource AncestorType={x:Type ListViewItem}}}"
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding Path=IsSelected, RelativeSource={RelativeSource AncestorType={x:Type ListViewItem}}}"
                                                          Value="True">
-                                                                        <Setter Property="Foreground"
+                                                                    <Setter Property="Foreground"
                                                         Value="{DynamicResource AccentSelectedColorBrush}" />
-                                                                    </DataTrigger>
-                                                                    <DataTrigger Binding="{Binding Path=IsEnabled, RelativeSource={RelativeSource AncestorType={x:Type ListView}}}"
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding Path=IsEnabled, RelativeSource={RelativeSource AncestorType={x:Type ListView}}}"
                                                          Value="False">
-                                                                        <Setter Property="Foreground"
+                                                                    <Setter Property="Foreground"
                                                         Value="{DynamicResource GrayNormalBrush}" />
-                                                                    </DataTrigger>
-                                                                    <MultiDataTrigger>
-                                                                        <MultiDataTrigger.Conditions>
-                                                                            <Condition Binding="{Binding Path=IsEnabled, RelativeSource={RelativeSource AncestorType={x:Type ListView}}}"
+                                                                </DataTrigger>
+                                                                <MultiDataTrigger>
+                                                                    <MultiDataTrigger.Conditions>
+                                                                        <Condition Binding="{Binding Path=IsEnabled, RelativeSource={RelativeSource AncestorType={x:Type ListView}}}"
                                                                Value="False" />
-                                                                            <Condition Binding="{Binding Path=IsSelected, RelativeSource={RelativeSource AncestorType={x:Type ListViewItem}}}"
+                                                                        <Condition Binding="{Binding Path=IsSelected, RelativeSource={RelativeSource AncestorType={x:Type ListViewItem}}}"
                                                                Value="True" />
-                                                                        </MultiDataTrigger.Conditions>
-                                                                        <MultiDataTrigger.Setters>
-                                                                            <Setter Property="Foreground"
+                                                                    </MultiDataTrigger.Conditions>
+                                                                    <MultiDataTrigger.Setters>
+                                                                        <Setter Property="Foreground"
                                                             Value="{DynamicResource AccentSelectedColorBrush}" />
-                                                                        </MultiDataTrigger.Setters>
-                                                                    </MultiDataTrigger>
-                                                                </Style.Triggers>
-                                                            </Style>
-                                                        </GridViewRowPresenter.Resources>
-                                                    </GridViewRowPresenter>
-                                                    <ContentPresenter x:Name="contentPresenter"
+                                                                    </MultiDataTrigger.Setters>
+                                                                </MultiDataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </GridViewRowPresenter.Resources>
+                                                </GridViewRowPresenter>
+                                                <ContentPresenter x:Name="contentPresenter"
                                               Visibility="Collapsed" />
-                                                </Grid>
-                                            </Border>
-                                            <ControlTemplate.Triggers>
-                                                <Trigger Property="GridView.ColumnCollection"
+                                            </Grid>
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="GridView.ColumnCollection"
                                  Value="{x:Null}">
-                                                    <Setter TargetName="contentPresenter"
+                                                <Setter TargetName="contentPresenter"
                                     Property="Visibility"
                                     Value="Visible" />
-                                                </Trigger>
-                                                <Trigger Property="IsSelected"
+                                            </Trigger>
+                                            <Trigger Property="IsSelected"
                                  Value="true">
-                                                    <Setter TargetName="Bd"
+                                                <Setter TargetName="Bd"
                                     Property="BorderBrush"
                                     Value="#FF143c65" />
-                                                    <Setter Property="Background"
+                                                <Setter Property="Background"
                                     TargetName="Bd"
                                     Value="{DynamicResource AccentColorBrush}"></Setter>
-                                                    <Setter Property="Foreground"
+                                                <Setter Property="Foreground"
                                     Value="{DynamicResource AccentSelectedColorBrush}" />
-                                                </Trigger>
-                                                <Trigger Property="IsMouseOver"
+                                            </Trigger>
+                                            <Trigger Property="IsMouseOver"
                                  Value="True">
-                                                    <Setter TargetName="Bd"
+                                                <Setter TargetName="Bd"
                                     Property="Background"
                                     Value="{DynamicResource AccentColorBrush3}" />
-                                                </Trigger>
-                                                <MultiTrigger>
-                                                    <MultiTrigger.Conditions>
-                                                        <Condition Property="IsSelected"
+                                            </Trigger>
+                                            <MultiTrigger>
+                                                <MultiTrigger.Conditions>
+                                                    <Condition Property="IsSelected"
                                            Value="true" />
-                                                        <Condition Property="Selector.IsSelectionActive"
+                                                    <Condition Property="Selector.IsSelectionActive"
                                            Value="True" />
-                                                    </MultiTrigger.Conditions>
-                                                    <Setter Property="Background"
+                                                </MultiTrigger.Conditions>
+                                                <Setter Property="Background"
                                     TargetName="Bd"
                                     Value="{DynamicResource AccentColorBrush2}" />
-                                                    <Setter Property="BorderBrush"
+                                                <Setter Property="BorderBrush"
                                     TargetName="Bd"
                                     Value="#FF143c65" />
-                                                    <Setter Property="Foreground"
+                                                <Setter Property="Foreground"
                                     Value="{DynamicResource AccentSelectedColorBrush}" />
-                                                </MultiTrigger>
-                                                <MultiTrigger>
-                                                    <MultiTrigger.Conditions>
-                                                        <Condition Property="IsEnabled"
+                                            </MultiTrigger>
+                                            <MultiTrigger>
+                                                <MultiTrigger.Conditions>
+                                                    <Condition Property="IsEnabled"
                                            Value="False" />
-                                                        <Condition Property="IsSelected"
+                                                    <Condition Property="IsSelected"
                                            Value="True" />
-                                                    </MultiTrigger.Conditions>
-                                                    <MultiTrigger.Setters>
-                                                        <Setter TargetName="Bd"
+                                                </MultiTrigger.Conditions>
+                                                <MultiTrigger.Setters>
+                                                    <Setter TargetName="Bd"
                                         Property="Background"
                                         Value="{DynamicResource GrayBrush7}" />
-                                                    </MultiTrigger.Setters>
-                                                </MultiTrigger>
-                                                <DataTrigger Binding="{Binding IsPlaying}" Value="true">
-                                                    <Setter TargetName="Bd" Property="BorderThickness" Value="1"/>
-                                                </DataTrigger>
-                                            </ControlTemplate.Triggers>
-                                        </ControlTemplate>
-                                    </Setter.Value>
-                                </Setter>
-                            </Style>
-                        </ListView.ItemContainerStyle>
-                    </ListView>
-                </Border>
+                                                </MultiTrigger.Setters>
+                                            </MultiTrigger>
+                                            <DataTrigger Binding="{Binding IsPlaying}" Value="true">
+                                                <Setter TargetName="Bd" Property="BorderThickness" Value="1"/>
+                                            </DataTrigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </ListView.ItemContainerStyle>
+                </ListView>
             </TabItem>
         </controls:MetroAnimatedTabControl>
     </Grid>

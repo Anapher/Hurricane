@@ -8,11 +8,11 @@ using Hurricane.Model.Music.TrackProperties;
 
 namespace Hurricane.Model.Data
 {
-    public class ArtistManager
+    public class ArtistProvider
     {
         private static readonly Guid UnkownArtistGuid = Guid.Parse("E9F17A4B-B220-498A-A4D3-B0F712715555");
 
-        public ArtistManager()
+        public ArtistProvider()
         {
             ArtistDictionary = new Dictionary<Guid, Artist>();
             UnkownArtist = new Artist {Guid = UnkownArtistGuid};
@@ -27,11 +27,12 @@ namespace Hurricane.Model.Data
 
             using (var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read))
             {
-                var serializer = new XmlSerializer(typeof(List<ArtistInfo>));
+                var serializer = new XmlSerializer(typeof (ArtistInfo[]));
                 // ReSharper disable once AccessToDisposedClosure
-                var collection = await Task.Run(() => (List<ArtistInfo>)serializer.Deserialize(fs));
+                var collection = await Task.Run(() => (ArtistInfo[]) serializer.Deserialize(fs));
                 foreach (var item in collection)
                 {
+                    item.Artist.Guid = item.Id;
                     ArtistDictionary.Add(item.Id, item.Artist);
                     if (item.Id == UnkownArtistGuid)
                         UnkownArtist = item.Artist;
@@ -39,22 +40,19 @@ namespace Hurricane.Model.Data
             }
         }
 
-        public async Task SaveToFile(string path)
+        public void SaveToFile(string path)
         {
             var tempFile = Path.GetTempFileName(); //We serialize to a temp file
             try
             {
-                using (var fs = new FileStream(tempFile, FileMode.Create, FileAccess.ReadWrite, FileShare.Read))
+                using (var fs = new FileStream(tempFile, FileMode.Create, FileAccess.ReadWrite, FileShare.None))
                 {
-                    var serializer = new XmlSerializer(typeof (List<ArtistInfo>));
+                    var serializer = new XmlSerializer(typeof (ArtistInfo[]));
                     // ReSharper disable once AccessToDisposedClosure
-                    await
-                        Task.Run(
-                            () =>
-                                serializer.Serialize(fs,
-                                    ArtistDictionary.Select(x => new ArtistInfo {Id = x.Key, Artist = x.Value})));
-                    File.Copy(tempFile, path);
+                    serializer.Serialize(fs,
+                        ArtistDictionary.Select(x => new ArtistInfo {Id = x.Key, Artist = x.Value}).ToArray());
                 }
+                File.Copy(tempFile, path, true);
             }
             finally
             {

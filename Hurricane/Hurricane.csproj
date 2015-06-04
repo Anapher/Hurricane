@@ -95,7 +95,8 @@
       <DependentUpon>RoundButton.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\VectorMenuItem.cs" />
-    <Compile Include="Converter\FalseIfStringIsEmpty.cs" />
+    <Compile Include="Converter\IsEmptyStringConverter.cs" />
+    <Compile Include="Converter\IsNullConverter.cs" />
     <Compile Include="Converter\SizeToColumnsConverter.cs" />
     <Compile Include="Converter\TimespanToStringConverter.cs" />
     <Compile Include="Extensions\GridViewSort.cs" />
@@ -172,10 +173,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Resources\Styles\Controls.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Resources\Styles\ListView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

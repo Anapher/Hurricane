@@ -23,4 +23,7 @@
     <system:String x:Key="AllFiles">Alle Dateien</system:String>
     <system:String x:Key="AudioFiles">Audio Dateien</system:String>
     <system:String x:Key="ImportingTracks">Tracks werden importiert</system:String>
+    
+    <system:String x:Key="Error">Fehler</system:String>
+    <system:String x:Key="ErrorWhileLoadingData">Es ist ein Fehler bei dem Laden der Daten aufgetreten.</system:String>
 </ResourceDictionary>

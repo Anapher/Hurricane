@@ -3,38 +3,38 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300" x:Name="Root">
-    <Grid>
-        <ContentControl>
-            <ContentControl.Style>
-                <Style TargetType="ContentControl">
+             d:DesignHeight="300" d:DesignWidth="300" x:Name="Root" Background="{DynamicResource WhiteBrush}">
+    <Grid DataContext="{Binding ElementName=Root}">
+        <ContentControl Content="{Binding Placeholder}" RenderTransformOrigin=".5,.5">
+            <ContentControl.RenderTransform>
+                <ScaleTransform ScaleX=".7" ScaleY=".7"/>
+            </ContentControl.RenderTransform>
+        </ContentControl>
+        <Image Source="{Binding ImageProvider.Image}" Stretch="UniformToFill" RenderOptions.EdgeMode="Aliased" RenderOptions.BitmapScalingMode="HighQuality">
+            <Image.Style>
+                <Style TargetType="Image">
+                    <Setter Property="Opacity" Value="1"/>
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding ElementName=Root,Path=ImageProvider.Image}" Value="{x:Null}">
-                            <Setter Property="Content" Value="{Binding ElementName=Root,Path=Placeholder}"/>
+                        <DataTrigger Binding="{Binding ImageProvider.Image,Converter={StaticResource IsNullConverter}}" Value="false">
+                            <DataTrigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation To="1" Duration="0:0:0.3" Storyboard.TargetProperty="Opacity"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </DataTrigger.EnterActions>
+                            <DataTrigger.ExitActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation To="0" Duration="0:0:0.1" Storyboard.TargetProperty="Opacity"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </DataTrigger.ExitActions>
                         </DataTrigger>
                     </Style.Triggers>
                 </Style>
-            </ContentControl.Style>
-        </ContentControl>
-        <ProgressBar Value="{Binding ElementName=Root,Path=ImageProvider.DownloadProgress}">
-            <ProgressBar.Style>
-                <Style TargetType="{x:Type ProgressBar}">
-                    <Setter Property="Template">
-                        <Setter.Value>
-                            <ControlTemplate TargetType="ProgressBar">
-                                <Border BorderBrush="#D9DCE1" BorderThickness="1" Background="{StaticResource GrayBrush10}" CornerRadius="0" Padding="0">
-                                    <Grid x:Name="PART_Track">
-                                        <Rectangle x:Name="PART_Indicator" HorizontalAlignment="Left" Fill="{StaticResource AccentColorBrush4}" />
-                                    </Grid>
-                                </Border>
-                            </ControlTemplate>
-                        </Setter.Value>
-                    </Setter>
-                </Style>
-            </ProgressBar.Style>
-        </ProgressBar>
-        <Image Source="{Binding ElementName=Root,Path=ImageProvider.Image}" Stretch="UniformToFill" RenderOptions.EdgeMode="Aliased" RenderOptions.BitmapScalingMode="HighQuality"/>
+            </Image.Style>
+        </Image>
     </Grid>
 </UserControl>

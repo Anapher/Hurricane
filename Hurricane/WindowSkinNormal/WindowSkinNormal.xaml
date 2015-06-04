@@ -31,7 +31,7 @@
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
-                <ListBox ItemsSource="{Binding ViewItems}" SelectedItem="{Binding SelectedViewItem}">
+                <ListBox ItemsSource="{Binding ViewManager.ViewSource}" SelectedItem="{Binding SelectedViewItem}">
                     <ListBox.ItemContainerStyle>
                         <Style TargetType="ListBoxItem" d:DataContext="{d:DesignInstance viewData:IViewItem}">
                             <Setter Property="FocusVisualStyle" Value="{x:Null}"/>

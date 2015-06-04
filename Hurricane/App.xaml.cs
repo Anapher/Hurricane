@@ -1,17 +1,22 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Diagnostics;
 using System.Windows;
+using Hurricane.Model.Music;
+using Hurricane.ViewModel;
 
 namespace Hurricane
 {
     /// <summary>
     /// Interaktionslogik für "App.xaml"
     /// </summary>
-    public partial class App : Application
+    public partial class App
     {
+        protected async override void OnStartup(StartupEventArgs e)
+        {
+            base.OnStartup(e);
+            var mainWindow = new MainWindow();
+            await ((MainViewModel) mainWindow.DataContext).LoadData();
+            mainWindow.Show();
+        }
     }
 }

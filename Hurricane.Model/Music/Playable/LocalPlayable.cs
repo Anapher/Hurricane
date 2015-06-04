@@ -1,28 +1,24 @@
 ﻿using System;
+using System.ComponentModel;
 using System.IO;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 using Hurricane.Model.AudioEngine;
 
 namespace Hurricane.Model.Music.Playable
 {
     public class LocalPlayable : PlayableBase
     {
-        private string _trackPath;
-
-        public string TrackPath
-        {
-            get { return _trackPath; }
-            set
-            {
-                _trackPath = value;
-                if (value != null)
-                    Extension = Path.GetFileNameWithoutExtension(value).ToUpper();
-            }
-        }
-
-        public string Extension { get; set; }
+        public string TrackPath { get; set; }
         public override bool IsAvailable => File.Exists(TrackPath);
+
+        [XmlAttribute]
+        public string Extension { get; set; }
+
+        [XmlAttribute]
         public double SampleRate { get; set; }
+
+        [XmlAttribute, DefaultValue(0)]
         public int Bitrate { get; set; }
 
         public override Task<IPlaySource> GetSoundSource()

@@ -4,12 +4,12 @@ using System.Windows.Data;
 
 namespace Hurricane.Converter
 {
-    [ValueConversion(typeof(string), typeof(bool))]
-    class FalseIfStringIsEmpty : IValueConverter
+    [ValueConversion(typeof(object), typeof(bool))]
+    class IsNullConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return !string.IsNullOrWhiteSpace(value?.ToString());
+            return value == null;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
