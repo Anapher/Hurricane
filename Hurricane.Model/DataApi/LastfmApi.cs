@@ -8,6 +8,8 @@ using Hurricane.Model.DataApi.SerializeClasses.Lastfm;
 using Hurricane.Model.DataApi.SerializeClasses.Lastfm.GetArtistInfo;
 using Hurricane.Model.DataApi.SerializeClasses.Lastfm.GetTopTracks;
 using Hurricane.Model.DataApi.SerializeClasses.Lastfm.SearchArtist;
+using Hurricane.Model.DataApi.SerializeClasses.Lastfm.SearchTrack;
+using Hurricane.Model.Music.Imagment;
 using Hurricane.Model.Music.TrackProperties;
 using Newtonsoft.Json;
 using Artist = Hurricane.Model.Music.TrackProperties.Artist;
@@ -114,7 +116,7 @@ namespace Hurricane.Model.DataApi
                     Url = x.url,
                     Thumbnail =
                         x.image.Count > 0
-                            ? new ImageProvider(
+                            ? new OnlineImage(
                                 (x.image.OrderBy(y => y.size)
                                     .FirstOrDefault(
                                         y =>
@@ -149,6 +151,33 @@ namespace Hurricane.Model.DataApi
             }
         }
 
+        public async Task<TrackInformation> GetTrackInformation(string title, string artist)
+        {
+            using (var wc = new WebClient {Proxy = null})
+            {
+                var result =
+                    JsonConvert.DeserializeObject<SearchTrackResult>(
+                        await
+                            wc.DownloadStringTaskAsync(artist == null
+                                ? $"http://ws.audioscrobbler.com/2.0/?method=track.search&track={title}&api_key={SensitiveInformation.LastfmKey}&format=json&limit=1"
+                                : $"http://ws.audioscrobbler.com/2.0/?method=track.search&track={title}&artist={artist}&api_key={SensitiveInformation.LastfmKey}&format=json&limit=1"));
+
+                var trackResult = result?.results?.Trackmatches?.track;
+                if (trackResult != null)
+                {
+                    return new TrackInformation
+                    {
+                        Artist = trackResult.artist,
+                        Name = trackResult.name,
+                        Url = trackResult.url,
+                        MusicBrainzId = trackResult.mbid,
+                        CoverImage = trackResult.image?.Count > 0 ? new OnlineImage(trackResult.image.Last().text) : null
+                    };
+                }
+                return null;
+            }
+        }
+
         private static void SetImages(Artist artist, List<Image> images)
         {
             if (images == null || images.Count == 0) return;
@@ -156,12 +185,21 @@ namespace Hurricane.Model.DataApi
             if (images.Count == 0)
                 return;
             images = images.OrderBy(x => x.size).ToList();
-            artist.SmallImage = new ImageProvider(images.First().text);
+            artist.SmallImage = new OnlineImage(images.First().text);
             artist.MediumImage =
-                new ImageProvider((images.FirstOrDefault(x => x.size == ImageSize.medium) ??
+                new OnlineImage((images.FirstOrDefault(x => x.size == ImageSize.medium) ??
                                    images.FirstOrDefault(x => x.size == ImageSize.large) ??
                                    images.First())?.text);
-            artist.LargeImage = new ImageProvider(images.Last().text);
+            artist.LargeImage = new OnlineImage(images.Last().text);
         }
+    }
+
+    public class TrackInformation
+    {
+        public string Name { get; set; }
+        public string Artist { get; set; }
+        public string Url { get; set; }
+        public string MusicBrainzId { get; set; }
+        public ImageProvider CoverImage { get; set; }
     }
 }

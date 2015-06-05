@@ -14,6 +14,7 @@
                 <ResourceDictionary Source="/Resources/MagicControls.xaml"/>
                 <ResourceDictionary Source="/Resources/VectorGraphics.xaml"/>
                 <ResourceDictionary Source="/Resources/Styles/Controls.xaml"/>
+                <ResourceDictionary Source="/Resources/Styles/AnimatedSlider.xaml"/>
                 <ResourceDictionary Source="/Resources/Languages/Hurricane.de-de.xaml"/>
             </ResourceDictionary.MergedDictionaries>
             <converter:TimespanToStringConverter x:Key="TimespanToStringConverter"/>

@@ -26,4 +26,5 @@
     
     <system:String x:Key="Error">Fehler</system:String>
     <system:String x:Key="ErrorWhileLoadingData">Es ist ein Fehler bei dem Laden der Daten aufgetreten.</system:String>
+    <system:String x:Key="PlaybackError">Fehler bei der Wiedergabe</system:String>
 </ResourceDictionary>

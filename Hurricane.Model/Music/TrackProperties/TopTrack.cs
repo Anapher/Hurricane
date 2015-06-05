@@ -1,4 +1,5 @@
 ﻿using System;
+using Hurricane.Model.Music.Imagment;
 
 namespace Hurricane.Model.Music.TrackProperties
 {

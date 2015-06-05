@@ -11,6 +11,7 @@ namespace Hurricane.Model.Music
         private const string ArtistFilename = "Artists.xml";
         private const string TracksFilename = "Tracks.xml";
         private const string PlaylistsFilename = "Playlists.xml";
+        private const string AlbumsFilename = "Albums.xml";
 
         public MusicDataManager()
         {
@@ -19,6 +20,7 @@ namespace Hurricane.Model.Music
             MusicManager = new MusicManager();
             Artists = new ArtistProvider();
             Tracks = new TrackProvider();
+            Albums = new AlbumsProvider();
         }
 
         public void Dispose()
@@ -31,20 +33,25 @@ namespace Hurricane.Model.Music
         public MusicManager MusicManager { get; }
         public LastfmApi LastfmApi { get; }
         public ArtistProvider Artists { get; }
+        public AlbumsProvider Albums { get; set; }
 
         public async Task Load(string rootFolder)
         {
             var artistFileInfo = new FileInfo(Path.Combine(rootFolder, ArtistFilename));
             var tracksFileInfo = new FileInfo(Path.Combine(rootFolder, TracksFilename));
             var playlistsFileInfo = new FileInfo(Path.Combine(rootFolder, PlaylistsFilename));
+            var albumsFileInfo = new FileInfo(Path.Combine(rootFolder, AlbumsFilename));
 
             if (artistFileInfo.Exists)
                 await Artists.LoadFromFile(artistFileInfo.FullName);
 
+            if (albumsFileInfo.Exists)
+                await Albums.LoadFromFile(albumsFileInfo.FullName);
+
             if (tracksFileInfo.Exists)
             {
                 await Tracks.LoadFromFile(tracksFileInfo.FullName);
-                Tracks.LoadData(Artists);
+                Tracks.LoadData(Artists, Albums);
             }
 
             if (playlistsFileInfo.Exists)
@@ -56,6 +63,7 @@ namespace Hurricane.Model.Music
             Playlists.SaveToFile(Path.Combine(rootFolder, PlaylistsFilename), Tracks.Collection);
             Artists.SaveToFile(Path.Combine(rootFolder, ArtistFilename));
             Tracks.SaveToFile(Path.Combine(rootFolder, TracksFilename));
+            Albums.SaveToFile(Path.Combine(rootFolder, AlbumsFilename));
         }
     }
 }

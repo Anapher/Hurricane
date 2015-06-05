@@ -1,14 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 using Hurricane.Model.Music.Playable;
+using Hurricane.Model.Music.Playlist;
 
 namespace Hurricane.Model.Data
 {
-    public class TrackProvider
+    public class TrackProvider : IPlaylist
     {
         private readonly XmlSerializer _serializer;
         public TrackProvider()
@@ -20,6 +22,8 @@ namespace Hurricane.Model.Data
         }
 
         public Dictionary<Guid, PlayableBase> Collection { get; set; }
+        public ObservableCollection<PlayableBase> Tracks { get; set; }
+        IList<IPlayable> IPlaylist.Tracks => Tracks.Cast<IPlayable>().ToList();
 
         public async Task LoadFromFile(string path)
         {
@@ -32,6 +36,7 @@ namespace Hurricane.Model.Data
                     collection.Add(track.Id, track.Playable);
 
                 Collection = collection;
+                Tracks = new ObservableCollection<PlayableBase>(Collection.Select(x => x.Value));
             }
         }
 
@@ -54,12 +59,26 @@ namespace Hurricane.Model.Data
             }
         }
 
-        public void LoadData(ArtistProvider artistProvider)
+        public void LoadData(ArtistProvider artistProvider, AlbumsProvider albumsProvider)
         {
             foreach (var playableBase in Collection)
             {
                 playableBase.Value.Artist = artistProvider.ArtistDictionary[playableBase.Value.ArtistGuid];
+                if (playableBase.Value.AlbumGuid != Guid.Empty)
+                    playableBase.Value.Album = albumsProvider.AlbumDicitionary[playableBase.Value.AlbumGuid];
             }
+        }
+
+        public void AddTrack(PlayableBase track)
+        {
+            Collection.Add(Guid.NewGuid(), track);
+            Tracks.Add(track);
+        }
+
+        public void RemoveTrack(PlayableBase track)
+        {
+            Collection.Remove(Collection.First(x => x.Value == track).Key);
+            Tracks.Remove(track);
         }
 
         [Serializable, XmlType(TypeName = "Playable")]

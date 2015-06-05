@@ -5,6 +5,7 @@ using System.Windows.Media.Imaging;
 using System.Xml;
 using System.Xml.Serialization;
 using Hurricane.Model.AudioEngine;
+using Hurricane.Model.Music.Imagment;
 using Hurricane.Model.Music.TrackProperties;
 
 namespace Hurricane.Model.Music.Playable
@@ -16,7 +17,7 @@ namespace Hurricane.Model.Music.Playable
     public abstract class PlayableBase : PropertyChangedBase, IPlayable
     {
         private string _title;
-        private string _album;
+        private Album _album;
         private bool _isPlaying;
         private DateTime _lastTimePlayed;
         private Artist _artist;
@@ -46,13 +47,17 @@ namespace Hurricane.Model.Music.Playable
         }
 
         /// <summary>
-        /// The album of the track. Empty if unkown
+        /// The album of the track. Null if unkown
         /// </summary>
-        [XmlAttribute]
-        public string Album
+        [XmlIgnore]
+        public Album Album
         {
             get { return _album; }
-            set { SetProperty(value, ref _album); }
+            set
+            {
+                if (SetProperty(value, ref _album) && value != null)
+                    AlbumGuid = value.Guid;
+            }
         }
 
         /// <summary>
@@ -79,6 +84,13 @@ namespace Hurricane.Model.Music.Playable
         [XmlAttribute]
         public Guid ArtistGuid { get; set; }
 
+        [Browsable(false)]
+        [XmlAttribute]
+        public Guid AlbumGuid { get; set; }
+
+        [XmlAttribute]
+        public string MusicBrainzId { get; set; }
+
         string IPlayable.Artist => _artist?.Name;
 
         /// <summary>
@@ -104,8 +116,7 @@ namespace Hurricane.Model.Music.Playable
             }
         }
 
-        [XmlIgnore]
-        public BitmapImage Cover { get; protected set; }
+        public ImageProvider Cover { get; set; }
         public abstract bool IsAvailable { get; }
 
         public abstract Task<IPlaySource> GetSoundSource();

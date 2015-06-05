@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using Hurricane.Model.Music.Imagment;
 
 namespace Hurricane.Model.Music.TrackProperties
 {

@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 // ReSharper disable InconsistentNaming
 
-namespace Hurricane.Model.DataApi.SerializeClasses.Lastfm.SearchArtist
+namespace Hurricane.Model.DataApi.SerializeClasses.Lastfm
 {
     class OpensearchQuery
     {

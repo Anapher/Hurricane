@@ -6,7 +6,9 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Hurricane.Model.AudioEngine;
+using Hurricane.Model.DataApi;
 using Hurricane.Model.Music;
+using Hurricane.Model.Music.Imagment;
 using Hurricane.Model.Music.Playable;
 using Hurricane.Model.Music.Playlist;
 using Hurricane.Model.Music.TrackProperties;
@@ -43,7 +45,7 @@ namespace Hurricane.Model.Data
 
             var filesToImport = files.Where(fileInfo => fileInfo.Exists && !string.IsNullOrEmpty(fileInfo.Extension)).ToList();
             var allFilesCount = (double) filesToImport.Count;
-            var artistRegex = new Regex("(?<artist>([a-zA-Z].+?)) -");
+            var filenameRegex = new Regex("(?<artist>([a-zA-Z].+?)) - (?<title>(.*?))[[(]");
 
             for (int i = 0; i < filesToImport.Count; i++)
             {
@@ -63,58 +65,112 @@ namespace Hurricane.Model.Data
                     Duration = audioInformation.Duration,
                     SampleRate = Math.Round(audioInformation.SampleRate/1000d, 1)
                 };
+
                 string artistName;
+                string title;
                 Artist artist = null;
+                ImageProvider cover = null;
 
                 try
                 {
                     using (var tagLibInfo = File.Create(fileInfo.FullName)) //We look into the tags. Perhaps we'll find something interesting
                     {
-                        track.Title = tagLibInfo.Tag.Title;
-
+                        title = tagLibInfo.Tag.Title;
                         if (!string.IsNullOrEmpty(tagLibInfo.Tag.MusicBrainzArtistId))
                             artist = await GetArtistByMusicBrainzId(tagLibInfo.Tag.MusicBrainzArtistId); //Ui, that's awesome
-                        track.Album = tagLibInfo.Tag.Album;
                         artistName = tagLibInfo.Tag.FirstPerformer ?? tagLibInfo.Tag.FirstAlbumArtist; //Both is okay
+                        if (tagLibInfo.Tag.Pictures.Any())
+                        {
+                            //Debug.Assert(tagLibInfo.Tag.Pictures.Length > 1, "tagLibInfo.Tag.Pictures.Length > 1");
+                            cover = new TagImage(fileInfo.FullName);
+                        }
+                        track.Bitrate = tagLibInfo.Properties.AudioBitrate;
+                        if (!string.IsNullOrEmpty(tagLibInfo.Tag.Album))
+                        {
+                            track.Album =
+                                _musicDataManager.Albums.AlbumDicitionary.FirstOrDefault(
+                                    x =>
+                                        string.Equals(x.Value.Name, tagLibInfo.Tag.Album,
+                                            StringComparison.OrdinalIgnoreCase)).Value;
+
+                            if (track.Album == null)
+                            {
+                                var album = new Album {Name = tagLibInfo.Tag.Album, Guid = Guid.NewGuid()};
+                                track.Album = album;
+                                _musicDataManager.Albums.AlbumDicitionary.Add(album.Guid, album);
+                            }
+                        }
                     }
                 }
                 catch (Exception)
                 {
                     //Do nothing
                     artistName = null;
+                    title = null;
                 }
 
-                if (string.IsNullOrEmpty(track.Title)) //If the title wasn't found in the tags or if we couldn't open the tags
-                    track.Title = Path.GetFileNameWithoutExtension(fileInfo.FullName);
-
-                if (artist == null) //Perhaps we found the artist thought the music brainz id
+                if (title == null || (artistName == null && artist == null))
                 {
-                    if (string.IsNullOrEmpty(artistName)) //If we haven't the artist name
+                    var match = filenameRegex.Match(Path.GetFileNameWithoutExtension(fileInfo.FullName));
+                    if (match.Success)
                     {
-                        var match = artistRegex.Match(Path.GetFileNameWithoutExtension(fileInfo.FullName));
-                        if (match.Success)
+                        if (title == null)
+                            title = match.Groups["title"].Value;
+                        if (artistName == null)
                             artistName = match.Groups["artist"].Value;
                     }
-
-                    if (!string.IsNullOrEmpty(artistName)) //Perhaps regex didn't match
+                    else
                     {
-                        artist =
-                            _musicDataManager.Artists.ArtistDictionary.FirstOrDefault(
-                                x => string.Equals(x.Value.Name, artistName, StringComparison.OrdinalIgnoreCase)).Value ??
-                            await _musicDataManager.LastfmApi.SearchArtist(artistName);
+                        title = Path.GetFileNameWithoutExtension(fileInfo.FullName);
+                        artistName = string.Empty;
                     }
+                }
+
+                var trackInfo = await _musicDataManager.LastfmApi.GetTrackInformation(title, artistName);
+                if (trackInfo != null)
+                {
+                    track.Title = trackInfo.Name;
+                    track.MusicBrainzId = trackInfo.MusicBrainzId;
+                    track.Cover = cover ?? trackInfo.CoverImage;
+                    if (!string.IsNullOrEmpty(trackInfo.MusicBrainzId))
+                    {
+                        var artistId = await MusicBrainzApi.GetArtistIdByTrackId(trackInfo.MusicBrainzId);
+                        if (!string.IsNullOrEmpty(artistId))
+                        {
+                            artist =
+                                await
+                                    _musicDataManager.LastfmApi.GetArtistByMusicbrainzId(artistId,
+                                        CultureInfo.CurrentCulture);
+                        }
+                    }
+                    artistName = trackInfo.Artist;
+                }
+                else
+                {
+                    track.Title = title;
                 }
 
                 if (artist == null)
-                    artist = _musicDataManager.Artists.UnkownArtist;
+                {
+                    track.Artist =
+                        _musicDataManager.Artists.ArtistDictionary.FirstOrDefault(
+                            x => string.Equals(x.Value.Name, artistName, StringComparison.OrdinalIgnoreCase)).Value ??
+                        await _musicDataManager.LastfmApi.SearchArtist(artistName);
+                }
+                else
+                {
+                    track.Artist = _musicDataManager.Artists.ArtistDictionary.FirstOrDefault(
+                        x => string.Equals(x.Value.Name, artist.Name, StringComparison.OrdinalIgnoreCase)).Value ??
+                                   artist;
+                }
 
-                if (!_musicDataManager.Artists.ArtistDictionary.ContainsKey(artist.Guid))
-                    _musicDataManager.Artists.ArtistDictionary.Add(artist.Guid, artist);
+                if (track.Artist == null)
+                    track.Artist = _musicDataManager.Artists.UnkownArtist;
 
-                track.Artist = artist;
+                if (!_musicDataManager.Artists.ArtistDictionary.ContainsKey(track.Artist.Guid))
+                    _musicDataManager.Artists.ArtistDictionary.Add(track.Artist.Guid, track.Artist);
 
-                var trackId = Guid.NewGuid();
-                _musicDataManager.Tracks.Collection.Add(trackId, track);
+                _musicDataManager.Tracks.AddTrack(track);
                 playlist?.AddTrack(track);
 
                 if (_cancel)

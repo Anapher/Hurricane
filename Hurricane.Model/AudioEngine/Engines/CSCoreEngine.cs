@@ -72,6 +72,7 @@ namespace Hurricane.Model.AudioEngine.Engines
 
         public event EventHandler TrackFinished;
         public event EventHandler TrackPositionChanged;
+        public event EventHandler<ErrorOccurredEventArgs> ErrorOccurred;
 
         public long TrackPosition
         {
@@ -150,7 +151,7 @@ namespace Hurricane.Model.AudioEngine.Engines
 
         public async Task TogglePlayPause()
         {
-            if (IsLoading || _soundSource == null)
+            if (IsLoading || _soundSource == null || _soundOut == null)
                 return;
 
             if(_fadingService.IsFading)
@@ -176,7 +177,10 @@ namespace Hurricane.Model.AudioEngine.Engines
         public void StopAndReset()
         {
             StopPlayback();
-
+            TrackPosition = 0;
+            OnTrackLengthChanged();
+            OnPropertyChanged(nameof(TrackPosition));
+            OnPropertyChanged(nameof(TrackPositionTime));
         }
 
         public bool TestAudioFile(string path, out AudioInformation audioInformation)
@@ -231,7 +235,7 @@ namespace Hurricane.Model.AudioEngine.Engines
 
             _soundSource = _soundSource
                 .AppendSource(x => new LoopStream(x), out _loopStream)
-                .AppendSource(Equalizer.Create10BandEqualizer, out _equalizer)
+                .AppendSource(x => Equalizer.Create10BandEqualizer(x.ToSampleSource()), out _equalizer)
                 .AppendSource(x => new SimpleNotificationSource(x) {Interval = 100}, out _simpleNotificationSource)
                 .ToWaveSource();
 
@@ -251,8 +255,7 @@ namespace Hurricane.Model.AudioEngine.Engines
             _soundOut.Volume = Volume;
             IsLoading = false;
 
-            OnPropertyChanged(nameof(TrackLength));
-            OnPropertyChanged(nameof(TrackLengthTime));
+            OnTrackLengthChanged();
 
             if (openCrossfading)
             {
@@ -275,6 +278,9 @@ namespace Hurricane.Model.AudioEngine.Engines
             CurrentStateChanged();
             if (e.HasError)
             {
+                ErrorOccurred?.Invoke(this, new ErrorOccurredEventArgs(e.Exception.Message));
+                _fadingService.Cancel();
+                StopAndReset();
                 _soundOut.Dispose();
                 _soundOut = null;
             }
@@ -371,6 +377,12 @@ namespace Hurricane.Model.AudioEngine.Engines
             OnPropertyChanged(nameof(TrackPosition));
 
             TrackPositionChanged?.Invoke(this, EventArgs.Empty);
+        }
+
+        protected void OnTrackLengthChanged()
+        {
+            OnPropertyChanged(nameof(TrackLength));
+            OnPropertyChanged(nameof(TrackLengthTime));
         }
 
         protected void CurrentStateChanged()

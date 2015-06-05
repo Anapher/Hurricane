@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Xml.Serialization;
+using Hurricane.Model.Music.Imagment;
 
 namespace Hurricane.Model.Music.TrackProperties
 {
     /// <summary>
     /// Provides information about an artist
     /// </summary>
+    [Serializable]
     public class Artist : PropertyChangedBase
     {
         private string _biography;

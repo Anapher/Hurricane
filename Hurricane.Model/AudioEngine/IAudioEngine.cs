@@ -22,6 +22,11 @@ namespace Hurricane.Model.AudioEngine
         event EventHandler TrackPositionChanged;
 
         /// <summary>
+        /// An error occurred
+        /// </summary>
+        event EventHandler<ErrorOccurredEventArgs> ErrorOccurred;
+
+        /// <summary>
         /// Opens a track (but don't play it)
         /// </summary>
         /// <param name="track">The track to open</param>

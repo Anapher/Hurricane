@@ -1,5 +1,5 @@
 ﻿using System.Windows;
-using Hurricane.Model.Music.TrackProperties;
+using Hurricane.Model.Music.Imagment;
 
 namespace Hurricane.Controls
 {

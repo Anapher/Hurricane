@@ -40,7 +40,7 @@ namespace Hurricane.ViewModel.MainView
             ChartList = await iTunesApi.GetTop100(CultureInfo.CurrentCulture);
             IsLoading = false;
             foreach (var previewTrack in ChartList)
-                await previewTrack.Image.DownloadImageAsync();
+                await previewTrack.Image.LoadImageAsync();
         }
     }
 }

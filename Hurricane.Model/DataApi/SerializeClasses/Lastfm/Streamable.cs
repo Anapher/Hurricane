@@ -2,7 +2,7 @@
 
 // ReSharper disable InconsistentNaming
 
-namespace Hurricane.Model.DataApi.SerializeClasses.Lastfm.GetTopTracks
+namespace Hurricane.Model.DataApi.SerializeClasses.Lastfm
 {
     class Streamable
     {

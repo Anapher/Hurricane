@@ -1,13 +1,11 @@
 ﻿using System;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Data;
 using Hurricane.Model;
+using Hurricane.Model.AudioEngine;
 using Hurricane.Model.Music;
-using Hurricane.Model.Music.Playlist;
 using Hurricane.Model.Notifications;
 using Hurricane.Utilities;
 using Hurricane.ViewModel.MainView;
@@ -29,6 +27,7 @@ namespace Hurricane.ViewModel
         public MainViewModel()
         {
             MusicDataManager = new MusicDataManager();
+            MusicDataManager.MusicManager.AudioEngine.ErrorOccurred += AudioEngine_ErrorOccurred;
             Application.Current.MainWindow.Closing += MainWindow_Closing;
             NotificationManager = new NotificationManager();
         }
@@ -123,7 +122,11 @@ namespace Hurricane.ViewModel
             }
 
             ViewManager = new ViewManager(MusicDataManager.Playlists);
-           // MusicDataManager.Playlists.AddPlaylist(new UserPlaylist {Name ="Test"});
+        }
+
+        private void AudioEngine_ErrorOccurred(object sender, ErrorOccurredEventArgs e)
+        {
+            NotificationManager.ShowInformation(Application.Current.Resources["PlaybackError"].ToString(), e.ErrorMessage, MessageNotificationIcon.Error);
         }
     }
 }

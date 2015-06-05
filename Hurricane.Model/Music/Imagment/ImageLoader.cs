@@ -1,10 +1,9 @@
-﻿ using System.Collections.Generic;
- using System.Linq;
- using System.Threading.Tasks;
- using System.Windows.Navigation;
- using Hurricane.Utilities;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Hurricane.Utilities;
 
-namespace Hurricane.Model.Music.TrackProperties
+namespace Hurricane.Model.Music.Imagment
 {
     static class ImageLoader
     {
@@ -34,7 +33,7 @@ namespace Hurricane.Model.Music.TrackProperties
             while (Images.Count > 0)
             {
                 var currentImage = Images[0];
-                await currentImage.DownloadImageAsync();
+                await currentImage.LoadImageAsync();
                 Images.Remove(currentImage);
             }
             _serviceIsRunning = false;

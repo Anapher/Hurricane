@@ -1,11 +1,11 @@
 ﻿namespace Hurricane.WindowSkinNormal.Views
 {
     /// <summary>
-    /// Interaktionslogik für PlaylistView.xaml
+    /// Interaktionslogik für CollectionView.xaml
     /// </summary>
-    public partial class PlaylistView
+    public partial class CollectionView
     {
-        public PlaylistView()
+        public CollectionView()
         {
             InitializeComponent();
         }

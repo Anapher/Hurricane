@@ -3,8 +3,8 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using CSCore.CoreAudioAPI;
+using CSCore.DirectSound;
 using CSCore.SoundOut;
-using CSCore.SoundOut.DirectSound;
 using Microsoft.Win32;
 
 namespace Hurricane.Model.AudioEngine.Engines
@@ -135,7 +135,7 @@ namespace Hurricane.Model.AudioEngine.Engines
                 }
 
                 var directSoundMode = new SoundOutMode("DirectSound", SoundOutType.DirectSound, GetDirectSoundOutDeviceById, GetDirectSoundOut, new SoundOutDevice("Windows Default", WindowsDefaultId, SoundOutType.DirectSound));
-                foreach (var device in new DirectSoundDeviceEnumerator().Devices.Select(x => new SoundOutDevice(x.Description, x.Guid.ToString(), SoundOutType.DirectSound, defaultDevice != null && x.Description == defaultDevice.FriendlyName)))
+                foreach (var device in DirectSoundDeviceEnumerator.EnumerateDevices().Select(x => new SoundOutDevice(x.Description, x.Guid.ToString(), SoundOutType.DirectSound, defaultDevice != null && x.Description == defaultDevice.FriendlyName)))
                     directSoundMode.Devices.Add(device);
 
                 UpdateWindowsDefault(directSoundMode);
@@ -188,7 +188,7 @@ namespace Hurricane.Model.AudioEngine.Engines
         private static ISoundOutDevice GetDirectSoundOutDeviceById(string id)
         {
             var device =
-                new DirectSoundDeviceEnumerator().Devices
+                DirectSoundDeviceEnumerator.EnumerateDevices()
                     .FirstOrDefault(x => x.Guid.ToString() == id);
             return device == null
                 ? null
@@ -198,8 +198,8 @@ namespace Hurricane.Model.AudioEngine.Engines
 
         private static ISoundOut GetDirectSoundOut(ISoundOutDevice device)
         {
-            var enumerator = new DirectSoundDeviceEnumerator();
-            if (enumerator.Devices.Count == 0)
+            var devices = DirectSoundDeviceEnumerator.EnumerateDevices();
+            if (devices.Count == 0)
                 throw new NoDeviceFoundException();
 
             DirectSoundDevice directSoundDevice = null;
@@ -207,12 +207,12 @@ namespace Hurricane.Model.AudioEngine.Engines
             if (device.Id == WindowsDefaultId)
             {
                 var defaultAudioId = GetDefaultDevice().FriendlyName;
-                directSoundDevice = enumerator.Devices.FirstOrDefault(x => x.Description == defaultAudioId);
+                directSoundDevice = devices.FirstOrDefault(x => x.Description == defaultAudioId);
             }
 
             if (directSoundDevice == null)
             {
-                directSoundDevice = enumerator.Devices.FirstOrDefault(x => x.Guid.ToString() == device.Id) ?? enumerator.Devices.First();
+                directSoundDevice = devices.FirstOrDefault(x => x.Guid.ToString() == device.Id) ?? devices.First();
             }
 
             return new DirectSoundOut { Device = directSoundDevice.Guid };
@@ -220,12 +220,12 @@ namespace Hurricane.Model.AudioEngine.Engines
 
         private void MMNotificationClient_DeviceAdded(object sender, DeviceNotificationEventArgs e)
         {
-            Application.Current.Dispatcher.BeginInvoke(new Action(() => AddDevice(e.DeviceID)));
+            Application.Current.Dispatcher.BeginInvoke(new Action(() => AddDevice(e.DeviceId)));
         }
 
         private void MMNotificationClient_DeviceRemoved(object sender, DeviceNotificationEventArgs e)
         {
-            Application.Current.Dispatcher.BeginInvoke(new Action(() => RemoveDevice(e.DeviceID)));
+            Application.Current.Dispatcher.BeginInvoke(new Action(() => RemoveDevice(e.DeviceId)));
         }
 
         // ReSharper disable InconsistentNaming
@@ -234,20 +234,20 @@ namespace Hurricane.Model.AudioEngine.Engines
         {
             if (e.DeviceState == DeviceState.Active)
             {
-                Application.Current.Dispatcher.BeginInvoke(new Action(() => AddDevice(e.DeviceID)));
+                Application.Current.Dispatcher.BeginInvoke(new Action(() => AddDevice(e.DeviceId)));
             }
             else if (e.DeviceState != DeviceState.Active)
             {
-                Application.Current.Dispatcher.BeginInvoke(new Action(() => RemoveDevice(e.DeviceID)));
+                Application.Current.Dispatcher.BeginInvoke(new Action(() => RemoveDevice(e.DeviceId)));
             }
         }
 
         private void MMNotificationClient_DefaultDeviceChanged(object sender, DefaultDeviceChangedEventArgs e)
         {
-            if (e.DeviceID == _lastDefaultDeviceChanged)
+            if (e.DeviceId == _lastDefaultDeviceChanged)
                 return;
 
-            _lastDefaultDeviceChanged = e.DeviceID;
+            _lastDefaultDeviceChanged = e.DeviceId;
             if (CurrentSoundOutDevice.Id == WindowsDefaultId)
                 Application.Current.Dispatcher.BeginInvoke(new Action(OnInvalidateSoundOut));
 

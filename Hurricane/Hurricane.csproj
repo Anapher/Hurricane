@@ -81,6 +81,7 @@
     <Compile Include="Behavior\ControlBehavior.cs" />
     <Compile Include="Behavior\ScrollAnimationBehavior.cs" />
     <Compile Include="Behavior\TextBlockBehavior.cs" />
+    <Compile Include="Controls\AnimatedSlider.cs" />
     <Compile Include="Controls\ImageProviderViewer.xaml.cs">
       <DependentUpon>ImageProviderViewer.xaml</DependentUpon>
     </Compile>
@@ -124,8 +125,8 @@
     <Compile Include="WindowSkinNormal\Views\ChartsView.xaml.cs">
       <DependentUpon>ChartsView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="WindowSkinNormal\Views\PlaylistView.xaml.cs">
-      <DependentUpon>PlaylistView.xaml</DependentUpon>
+    <Compile Include="WindowSkinNormal\Views\CollectionView.xaml.cs">
+      <DependentUpon>CollectionView.xaml</DependentUpon>
     </Compile>
     <Compile Include="WindowSkinNormal\Views\SettingsView.xaml.cs">
       <DependentUpon>SettingsView.xaml</DependentUpon>
@@ -172,6 +173,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Resources\Styles\AnimatedSlider.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Resources\Styles\Controls.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -200,7 +205,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="WindowSkinNormal\Views\PlaylistView.xaml">
+    <Page Include="WindowSkinNormal\Views\CollectionView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

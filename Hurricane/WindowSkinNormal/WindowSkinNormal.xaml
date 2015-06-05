@@ -175,12 +175,17 @@
                                         </Viewbox>
                                         <StackPanel Orientation="Vertical" Grid.Column="1" VerticalAlignment="Center">
                                             <TextBlock Text="{Binding Title}" FontSize="12"/>
-                                            <TextBlock Text="{Binding Message}"/>
+                                            <TextBlock Text="{Binding Message}" TextTrimming="CharacterEllipsis"/>
                                         </StackPanel>
                                     </Grid>
                                 </Border>
                             </DataTemplate>
                         </ItemsControl.Resources>
+                        <ItemsControl.ItemContainerStyle>
+                            <Style TargetType="ContentPresenter">
+                                <Setter Property="Margin" Value="0,2,0,2"/>
+                            </Style>
+                        </ItemsControl.ItemContainerStyle>
                     </ItemsControl>
                 </StackPanel>
             </Grid>
@@ -207,8 +212,8 @@
                             <TextBlock Text="Startseite" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="16"/>
                         </Grid>
                     </DataTemplate>
-                    <DataTemplate DataType="{x:Type viewData:PlaylistView}">
-                        <views:PlaylistView DataContext="{Binding}"/>
+                    <DataTemplate DataType="{x:Type viewData:CollectionView}">
+                        <views:CollectionView DataContext="{Binding}"/>
                     </DataTemplate>
                     <DataTemplate DataType="{x:Type viewData:ChartsView}">
                         <views:ChartsView DataContext="{Binding}"/>
@@ -221,7 +226,7 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-            <Slider Value="{Binding MusicDataManager.MusicManager.AudioEngine.TrackPosition}" Maximum="{Binding MusicDataManager.MusicManager.AudioEngine.TrackLength}" Minimum="0"/>
+            <myControls:AnimatedSlider Value="{Binding MusicDataManager.MusicManager.AudioEngine.TrackPosition}" Maximum="{Binding MusicDataManager.MusicManager.AudioEngine.TrackLength}" Minimum="0" IsMoveToPointEnabled="True" Height="30" Background="Transparent"/>
             <Grid Grid.Row="1">
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,5,0,10">
                     <myControls:RoundButton Width="35" Height="35" Padding="0" Command="{Binding BackCommand}">
