@@ -6,36 +6,48 @@
              xmlns:mainView="clr-namespace:Hurricane.ViewModel.MainView;assembly=Hurricane.ViewModel"
              xmlns:behavior="clr-namespace:Hurricane.Behavior"
              xmlns:converter="clr-namespace:Hurricane.Converter"
+             xmlns:myControls="clr-namespace:Hurricane.Controls"
+             xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
              mc:Ignorable="d" 
              d:DesignHeight="400" d:DesignWidth="800" d:DataContext="{d:DesignInstance mainView:ChartsView}" x:Name="Root">
     <UserControl.Resources>
         <converter:SizeToColumnsConverter x:Key="SizeToColumnsConverter" MaxSize="150"/>
     </UserControl.Resources>
-    <ScrollViewer behavior:ScrollAnimationBehavior.IsEnabled="True" behavior:ScrollAnimationBehavior.PointsToScroll="100" behavior:ScrollAnimationBehavior.TimeDuration="0:0:0.2" behavior:ScrollAnimationBehavior.VerticalOffset="50">
-        <ItemsControl ItemsSource="{Binding ChartList}">
-            <ItemsControl.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <UniformGrid Columns="{Binding ElementName=Root,Path=ActualWidth,Converter={StaticResource SizeToColumnsConverter}}"/>
-                </ItemsPanelTemplate>
-            </ItemsControl.ItemsPanel>
-            <ItemsControl.ItemTemplate>
-                <DataTemplate>
-                    <Grid Margin="5">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                        </Grid.RowDefinitions>
-                        <Image Source="{Binding Image.Image}"/>
-                        <DockPanel Grid.Row="1" >
-                            <TextBlock Text="{Binding Number}" FontSize="32" VerticalAlignment="Center"/>
-                            <StackPanel Orientation="Vertical" Margin="8,5,0,0">
-                                <TextBlock Text="{Binding Name}" FontWeight="Bold" TextTrimming="CharacterEllipsis" FontSize="14" FontFamily="Segoe UI Emoji"/>
-                                <TextBlock Text="{Binding Artist}" Margin="0,3,0,0"/>
-                            </StackPanel>
-                        </DockPanel>
-                    </Grid>
-                </DataTemplate>
-            </ItemsControl.ItemTemplate>
-        </ItemsControl>
-    </ScrollViewer>
+    <Grid>
+        <ScrollViewer behavior:ScrollAnimationBehavior.IsEnabled="True" behavior:ScrollAnimationBehavior.PointsToScroll="100" behavior:ScrollAnimationBehavior.TimeDuration="0:0:0.2" behavior:ScrollAnimationBehavior.VerticalOffset="50">
+            <Grid>
+                <ItemsControl ItemsSource="{Binding ChartList}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <UniformGrid Columns="{Binding ElementName=Root,Path=ActualWidth,Converter={StaticResource SizeToColumnsConverter}}"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Margin="7">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                <myControls:PlayableImage Image="{Binding Image.Image}"/>
+                                <DockPanel Grid.Row="1" >
+                                    <TextBlock Text="{Binding Number}" FontSize="32" VerticalAlignment="Center"/>
+                                    <StackPanel Orientation="Vertical" Margin="8,5,0,0">
+                                        <TextBlock Text="{Binding Name}" FontWeight="Bold" TextTrimming="CharacterEllipsis" FontSize="14" FontFamily="Segoe UI Emoji"/>
+                                        <TextBlock Text="{Binding Artist}" Margin="0,3,0,0"/>
+                                    </StackPanel>
+                                </DockPanel>
+                            </Grid>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </Grid>
+        </ScrollViewer>
+        <Grid Background="{StaticResource WhiteBrush}" Visibility="{Binding IsLoading,Converter={StaticResource BooleanToVisibilityConverter}}">
+            <StackPanel Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center">
+                <TextBlock Text="{StaticResource LoadingCharts}" FontSize="20" FontFamily="Segoe UI Light"/>
+                <controls:MetroProgressBar IsIndeterminate="{Binding IsLoading}" Maximum="1" MinWidth="300"/>
+            </StackPanel>
+        </Grid>
+    </Grid>
 </UserControl>

@@ -15,8 +15,8 @@ namespace Hurricane.ViewModel
     public class MainViewModel : PropertyChangedBase
     {
         private IViewItem _selectedViewItem;
-        private bool _isSettingOpen;
         private ViewManager _viewManager;
+        private int _currentMainView = 1;
 
         private RelayCommand _openSettingsCommand;
         private RelayCommand _playPauseCommand;
@@ -44,17 +44,17 @@ namespace Hurricane.ViewModel
         public IViewItem SelectedViewItem
         {
             get { return _selectedViewItem; }
-            private set
+            protected set
             {
                 if (SetProperty(value, ref _selectedViewItem))
                     value.Load(MusicDataManager, NotificationManager).Forget();
             }
         }
 
-        public bool IsSettingOpen
+        public int CurrentMainView
         {
-            get { return _isSettingOpen; }
-            set { SetProperty(value, ref _isSettingOpen); }
+            get { return _currentMainView; }
+            set { SetProperty(value, ref _currentMainView); }
         }
 
         public RelayCommand OpenSettingsCommand
@@ -63,7 +63,7 @@ namespace Hurricane.ViewModel
             {
                 return _openSettingsCommand ?? (_openSettingsCommand = new RelayCommand(parameter =>
                 {
-                    IsSettingOpen = !IsSettingOpen;
+                    CurrentMainView = CurrentMainView == 0 ? 1 : 0;
                 }));
             }
         }
@@ -86,7 +86,7 @@ namespace Hurricane.ViewModel
                 return _cancelProgressNotificationCommand ??
                        (_cancelProgressNotificationCommand = new RelayCommand(parameter =>
                        {
-                           ((ProgressNotification)parameter).Cancel();
+                           ((ProgressNotification) parameter).Cancel();
                        }));
             }
         }

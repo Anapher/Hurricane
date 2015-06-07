@@ -71,4 +71,17 @@
             </Setter.Value>
         </Setter>
     </Style>
+
+    <Style TargetType="controls:AnimationUpDown">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="controls:AnimationUpDown">
+                    <Grid>
+                        <ContentPresenter x:Name="PART_MainContent" Content="{TemplateBinding CurrentContent}"/>
+                        <Rectangle x:Name="PART_PaintArea" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
 </ResourceDictionary>

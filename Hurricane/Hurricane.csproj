@@ -82,12 +82,16 @@
     <Compile Include="Behavior\ScrollAnimationBehavior.cs" />
     <Compile Include="Behavior\TextBlockBehavior.cs" />
     <Compile Include="Controls\AnimatedSlider.cs" />
+    <Compile Include="Controls\AnimationUpDownControl.cs" />
     <Compile Include="Controls\ImageProviderViewer.xaml.cs">
       <DependentUpon>ImageProviderViewer.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\MagicMetroWindowDragging.cs" />
     <Compile Include="Controls\PieProgress.xaml.cs">
       <DependentUpon>PieProgress.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\PlayableImage.xaml.cs">
+      <DependentUpon>PlayableImage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\PlayPauseButton.xaml.cs">
       <DependentUpon>PlayPauseButton.xaml</DependentUpon>
@@ -139,6 +143,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\PieProgress.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\PlayableImage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

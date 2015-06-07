@@ -23,6 +23,14 @@
     <system:String x:Key="AllFiles">Alle Dateien</system:String>
     <system:String x:Key="AudioFiles">Audio Dateien</system:String>
     <system:String x:Key="ImportingTracks">Tracks werden importiert</system:String>
+    <system:String x:Key="LoadingCharts">Die Charts werden geladen...</system:String>
+    <system:String x:Key="General">Allgemein</system:String>
+    <system:String x:Key="Playback">Wiedergabe</system:String>
+    <system:String x:Key="Behavior">Verhalten</system:String>
+    <system:String x:Key="Appearance">Aussehen</system:String>
+    <system:String x:Key="Theme">Theme</system:String>
+    <system:String x:Key="AccentColor">Akzentfarbe</system:String>
+    <system:String x:Key="Language">Sprache</system:String>
     
     <system:String x:Key="Error">Fehler</system:String>
     <system:String x:Key="ErrorWhileLoadingData">Es ist ein Fehler bei dem Laden der Daten aufgetreten.</system:String>

@@ -42,6 +42,8 @@ namespace Hurricane.Model.AudioEngine.Engines
             _fadingService = new FadingService();
             _soundOutProvider = new CSCoreSoundOutProvider();
             _crossfadeService = new FadingService();
+
+            _soundOutProvider.InvalidateSoundOut += SoundOutProvider_InvalidateSoundOut;
         }
 
         public void Dispose()
@@ -367,6 +369,18 @@ namespace Hurricane.Model.AudioEngine.Engines
             }
 
             return token.IsCancellationRequested ? null : result;
+        }
+
+        private async void SoundOutProvider_InvalidateSoundOut(object sender, EventArgs e)
+        {
+            var isPlaying = IsPlaying;
+            StopPlayback();
+            _soundOut.Dispose();
+            _soundOut = ((CSCoreSoundOutProvider) SoundOutProvider).GetSoundOut();
+            _soundOut.Initialize(_soundSource);
+            _soundOut.Volume = Volume;
+            if (isPlaying)
+                await TogglePlayPause();
         }
 
         protected void OnPositionChanged()

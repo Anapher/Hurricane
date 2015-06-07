@@ -4,9 +4,30 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Hurricane.WindowSkinNormal.Views"
+             xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
-    <Grid Background="LightGray">
-        
-    </Grid>
+             d:DesignHeight="400" d:DesignWidth="1000">
+    <UserControl.Resources>
+        <Style TargetType="TextBlock" x:Key="HeaderText">
+            <Setter Property="FontSize" Value="14"/>
+        </Style>
+    </UserControl.Resources>
+    <controls:MetroAnimatedTabControl>
+        <controls:MetroAnimatedTabControl.Resources>
+            <Style TargetType="TabItem" BasedOn="{StaticResource MetroTabItem}">
+                <Setter Property="controls:ControlsHelper.HeaderFontWeight" Value="Light"/>
+            </Style>
+        </controls:MetroAnimatedTabControl.Resources>
+        <TabItem Header="{StaticResource General}">
+            <StackPanel Margin="10">
+                <TextBlock Text="{StaticResource Appearance}"/>
+            </StackPanel>
+        </TabItem>
+        <TabItem Header="{StaticResource Playback}">
+            
+        </TabItem>
+        <TabItem Header="{StaticResource Behavior}">
+            
+        </TabItem>
+    </controls:MetroAnimatedTabControl>
 </UserControl>

@@ -212,7 +212,11 @@
             </TabItem>
             <TabItem>
                 <ListView ItemsSource="{Binding AlbumViewSource.Groups}">
-                    
+                    <ListView.View>
+                        <GridView>
+                            
+                        </GridView>
+                    </ListView.View>
                 </ListView>
             </TabItem>
             <TabItem>
@@ -227,7 +231,7 @@
                         <GridView d:DataContext="{d:DesignInstance data:IPlayable}">
                             <GridViewColumn Header="{StaticResource Artist}" DisplayMemberBinding="{Binding Artist.Name}" ctrl:ProportionalColumn.Width="1" extensions:GridViewSort.PropertyName="Artist.Name"/>
                             <GridViewColumn Header="{StaticResource Titel}" DisplayMemberBinding="{Binding Title}" ctrl:ProportionalColumn.Width="2" extensions:GridViewSort.PropertyName="Title"/>
-                            <GridViewColumn Header="{StaticResource Album}" DisplayMemberBinding="{Binding Album.Name}" ctrl:ProportionalColumn.Width="1" extensions:GridViewSort.PropertyName="Album"/>
+                            <GridViewColumn Header="{StaticResource Album}" DisplayMemberBinding="{Binding Album.Name}" ctrl:ProportionalColumn.Width="1" extensions:GridViewSort.PropertyName="Album.Name"/>
                             <GridViewColumn Header="{StaticResource Duration}" DisplayMemberBinding="{Binding Duration,Converter={StaticResource TimespanToStringConverter}}" Width="100" extensions:GridViewSort.PropertyName="Duration"/>
                         </GridView>
                     </ListView.View>

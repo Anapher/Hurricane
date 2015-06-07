@@ -25,7 +25,7 @@
                     <Border Background="{DynamicResource GrayBrush10}" x:Name="Border"/>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="Border" Property="Background" Value="{DynamicResource GrayBrush8}"/>
+                            <Setter TargetName="Border" Property="Background" Value="{DynamicResource GrayBrush9}"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>

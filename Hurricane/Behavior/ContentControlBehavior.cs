@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
@@ -21,6 +22,8 @@ namespace Hurricane.Behavior
             return (Storyboard)element.GetValue(ContentChangedAnimationProperty);
         }
 
+        private static readonly Dictionary<FrameworkElement, object> LastContentDictionary = new Dictionary<FrameworkElement, object>(); 
+
         private static void ContentChangedAnimationPropertyChangedCallback(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs dependencyPropertyChangedEventArgs)
         {
             var contentControl = dependencyObject as ContentControl;
@@ -36,7 +39,15 @@ namespace Hurricane.Behavior
 
         private static void ContentChangedHandler(object sender, EventArgs eventArgs)
         {
-            var animateObject = (FrameworkElement) sender;
+            var animateObject = (ContentControl) sender;
+            if (LastContentDictionary.ContainsKey(animateObject) && LastContentDictionary[animateObject] == animateObject.Content)
+                return;
+
+            if (!LastContentDictionary.ContainsKey(animateObject))
+                LastContentDictionary.Add(animateObject, animateObject.Content);
+            else if (animateObject.Content != null)
+                LastContentDictionary[animateObject] = animateObject.Content;
+
             var storyboard = GetContentChangedAnimation(animateObject);
             storyboard.Begin(animateObject);
         }

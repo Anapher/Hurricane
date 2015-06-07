@@ -182,7 +182,7 @@ namespace Hurricane.Model.AudioEngine.Engines
                 }
             }
 
-            return new WasapiOut { Device = mmDevice };
+            return new WasapiOut { Device = mmDevice,UseChannelMixingMatrices = false };
         }
 
         private static ISoundOutDevice GetDirectSoundOutDeviceById(string id)
