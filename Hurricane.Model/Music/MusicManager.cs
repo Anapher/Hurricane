@@ -18,7 +18,7 @@ namespace Hurricane.Model.Music
         private IPlaylist _currentPlaylist;
         private PlayMode _currentPlayMode;
         private bool _isCrossfadeEnabled;
-        private readonly List<Tuple<IPlaylist, IPlayable>> _tempHistory; 
+        private readonly List<Tuple<IPlaylist, IPlayable>> _tempHistory;
 
         public MusicManager()
         {

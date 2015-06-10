@@ -3,16 +3,20 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:Hurricane.WindowSkinNormal.Views"
+             xmlns:settingData="clr-namespace:Hurricane.ViewModel.Settings;assembly=Hurricane.ViewModel"
+             xmlns:viewModel="clr-namespace:Hurricane.ViewModel;assembly=Hurricane.ViewModel"
              xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
+             xmlns:extensions="clr-namespace:Hurricane.Extensions"
+             xmlns:audioEngineData="clr-namespace:Hurricane.Model.AudioEngine;assembly=Hurricane.Model"
              mc:Ignorable="d" 
-             d:DesignHeight="400" d:DesignWidth="1000">
+             d:DesignHeight="400" d:DesignWidth="1000" d:DataContext="{d:DesignInstance viewModel:SettingsViewModel}">
     <UserControl.Resources>
         <Style TargetType="TextBlock" x:Key="HeaderText">
             <Setter Property="FontSize" Value="14"/>
         </Style>
+        <extensions:ComboBoxItemTemplateChooser x:Key="ComboBoxItemTemplateChooser"/>
     </UserControl.Resources>
-    <controls:MetroAnimatedTabControl>
+    <controls:MetroAnimatedTabControl DataContext="{Binding SettingsViewModel}">
         <controls:MetroAnimatedTabControl.Resources>
             <Style TargetType="TabItem" BasedOn="{StaticResource MetroTabItem}">
                 <Setter Property="controls:ControlsHelper.HeaderFontWeight" Value="Light"/>
@@ -20,11 +24,69 @@
         </controls:MetroAnimatedTabControl.Resources>
         <TabItem Header="{StaticResource General}">
             <StackPanel Margin="10">
-                <TextBlock Text="{StaticResource Appearance}"/>
+                <TextBlock Text="{StaticResource Appearance}" Style="{StaticResource HeaderText}"/>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition MaxWidth="150"/>
+                        <ColumnDefinition Width="10"/>
+                        <ColumnDefinition MaxWidth="300"/>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Orientation="Vertical">
+                        <TextBlock Text="{StaticResource Theme}" Margin="0,10,0,0"/>
+                        <ComboBox Margin="0,2,0,0" ItemsSource="{Binding Themes}" DisplayMemberPath="Name"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Vertical" Grid.Column="2">
+                        <TextBlock Text="{StaticResource AccentColorString}" Margin="0,10,0,0"/>
+                        <ComboBox ItemsSource="{Binding AccentColors}" Margin="0,2,0,0" SelectedItem="{Binding SelectedAccentColor}">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate DataType="{x:Type settingData:AccentColorData}">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Ellipse Fill="{Binding ColorBrush}" Height="16" Width="16" Margin="2,0,5,0"/>
+                                        <TextBlock Text="{Binding Name}"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
+                    </StackPanel>
+                </Grid>
+                
             </StackPanel>
         </TabItem>
         <TabItem Header="{StaticResource Playback}">
-            
+            <StackPanel Orientation="Vertical" Margin="10">
+                <TextBlock Text="{StaticResource PlaybackDevice}" Style="{StaticResource HeaderText}"/>
+                <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
+                    <ComboBox ItemsSource="{Binding MusicDataManager.MusicManager.AudioEngine.SoundOutProvider.SoundOutModes}" DisplayMemberPath="Name"
+                              x:Name="SoundOutProviderComboBox" Width="130" SelectedIndex="0"/>
+                    <ComboBox ItemsSource="{Binding ElementName=SoundOutProviderComboBox,Path=SelectedItem.Devices}" Margin="10,0,0,0" Width="300"
+                              ItemTemplateSelector="{StaticResource ComboBoxItemTemplateChooser}" SelectedItem="{Binding SelectedSoundOutDevice}">
+                        <extensions:ComboBoxItemTemplateChooser.DropDownTemplate>
+                            <DataTemplate DataType="{x:Type audioEngineData:ISoundOutDevice}">
+                                <TextBlock Text="{Binding Name}" x:Name="NameTextBlock"/>
+                                <DataTemplate.Triggers>
+                                    <DataTrigger Binding="{Binding IsDefault}" Value="true">
+                                        <Setter TargetName="NameTextBlock" Property="Foreground" Value="{StaticResource AccentColorBrush}"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=ComboBoxItem},Path=IsSelected}" Value="True">
+                                        <Setter TargetName="NameTextBlock" Property="Foreground" Value="White"/>
+                                    </DataTrigger>
+                                </DataTemplate.Triggers>
+                            </DataTemplate>
+                        </extensions:ComboBoxItemTemplateChooser.DropDownTemplate>
+                        <extensions:ComboBoxItemTemplateChooser.SelectedTemplate>
+                            <DataTemplate DataType="{x:Type audioEngineData:ISoundOutDevice}">
+                                <TextBlock Text="{Binding Name}" x:Name="NameTextBlock"/>
+                                <DataTemplate.Triggers>
+                                    <DataTrigger Binding="{Binding IsDefault}" Value="true">
+                                        <Setter TargetName="NameTextBlock" Property="Foreground" Value="{StaticResource AccentColorBrush}"/>
+                                    </DataTrigger>
+                                </DataTemplate.Triggers>
+                            </DataTemplate>
+                        </extensions:ComboBoxItemTemplateChooser.SelectedTemplate>
+                    </ComboBox>
+                    <Button Content="{StaticResource Apply}" Margin="10,0,0,0" Command="{Binding ApplySoundOutDeviceCommand}"/>
+                </StackPanel>
+            </StackPanel>
         </TabItem>
         <TabItem Header="{StaticResource Behavior}">
             

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
 namespace Hurricane.Model.AudioEngine.Engines
@@ -36,6 +37,8 @@ namespace Hurricane.Model.AudioEngine.Engines
                 }
             }
         }
+
+        string ISoundOutDevice.SoundOutMode => Type.ToString();
 
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {

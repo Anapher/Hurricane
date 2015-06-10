@@ -29,10 +29,39 @@
     <system:String x:Key="Behavior">Verhalten</system:String>
     <system:String x:Key="Appearance">Aussehen</system:String>
     <system:String x:Key="Theme">Theme</system:String>
-    <system:String x:Key="AccentColor">Akzentfarbe</system:String>
+    <system:String x:Key="AccentColorString">Akzentfarbe</system:String>
     <system:String x:Key="Language">Sprache</system:String>
+    <system:String x:Key="PlaybackDevice">Wiedergabegerät</system:String>
+    <system:String x:Key="Apply">Übernehmen</system:String>
     
     <system:String x:Key="Error">Fehler</system:String>
     <system:String x:Key="ErrorWhileLoadingData">Es ist ein Fehler bei dem Laden der Daten aufgetreten.</system:String>
     <system:String x:Key="PlaybackError">Fehler bei der Wiedergabe</system:String>
+
+    <!-- MahApps.Metro Translation -->
+    <system:String x:Key="Amber">Bernstein</system:String>
+    <system:String x:Key="Blue">Blau</system:String>
+    <system:String x:Key="Brown">Braun</system:String>
+    <system:String x:Key="Cobalt">Kobalt</system:String>
+    <system:String x:Key="Crimson">Purpur</system:String>
+    <system:String x:Key="Cyan">Cyan</system:String>
+    <system:String x:Key="Emerald">Smaragd</system:String>
+    <system:String x:Key="Green">Grün</system:String>
+    <system:String x:Key="Indigo">Indigo</system:String>
+    <system:String x:Key="Lime">Kalk</system:String>
+    <system:String x:Key="Magenta">Magenta</system:String>
+    <system:String x:Key="Mauve">Mauve</system:String>
+    <system:String x:Key="Olive">Olive</system:String>
+    <system:String x:Key="Orange">Orange</system:String>
+    <system:String x:Key="Pink">Rosa</system:String>
+    <system:String x:Key="Purple">Lila</system:String>
+    <system:String x:Key="Red">Rot</system:String>
+    <system:String x:Key="Sienna">Siena</system:String>
+    <system:String x:Key="Steel">Stahl</system:String>
+    <system:String x:Key="Taupe">Taupe</system:String>
+    <system:String x:Key="Teal">Teal</system:String>
+    <system:String x:Key="Violet">Violett</system:String>
+    <system:String x:Key="Yellow">Gelb</system:String>
+    <system:String x:Key="BaseLight">Hell</system:String>
+    <system:String x:Key="BaseDark">Dunkel</system:String>
 </ResourceDictionary>

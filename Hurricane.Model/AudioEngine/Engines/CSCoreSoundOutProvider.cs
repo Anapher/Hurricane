@@ -105,6 +105,22 @@ namespace Hurricane.Model.AudioEngine.Engines
             return null;
         }
 
+        public void SetSoundOut(string soundOutMode, string id)
+        {
+            SoundOutType soundOutType;
+            if (Enum.TryParse(soundOutMode, out soundOutType))
+                return;
+
+            foreach (var device in SoundOutModes.SelectMany(x => x.Devices))
+            {
+                if (((SoundOutDevice) device).Type == soundOutType && device.Id == id)
+                {
+                    CurrentSoundOutDevice = device;
+                    return;
+                }
+            }
+        }
+
         private void LoadSoundOutModes()
         {
             SoundOutModes.Clear();
@@ -135,7 +151,7 @@ namespace Hurricane.Model.AudioEngine.Engines
                 }
 
                 var directSoundMode = new SoundOutMode("DirectSound", SoundOutType.DirectSound, GetDirectSoundOutDeviceById, GetDirectSoundOut, new SoundOutDevice("Windows Default", WindowsDefaultId, SoundOutType.DirectSound));
-                foreach (var device in DirectSoundDeviceEnumerator.EnumerateDevices().Select(x => new SoundOutDevice(x.Description, x.Guid.ToString(), SoundOutType.DirectSound, defaultDevice != null && x.Description == defaultDevice.FriendlyName)))
+                foreach (var device in DirectSoundDeviceEnumerator.EnumerateDevices().Select(x => new SoundOutDevice(x.Description, x.Module, SoundOutType.DirectSound, defaultDevice != null && x.Description == defaultDevice.FriendlyName)))
                     directSoundMode.Devices.Add(device);
 
                 UpdateWindowsDefault(directSoundMode);
@@ -189,10 +205,10 @@ namespace Hurricane.Model.AudioEngine.Engines
         {
             var device =
                 DirectSoundDeviceEnumerator.EnumerateDevices()
-                    .FirstOrDefault(x => x.Guid.ToString() == id);
+                    .FirstOrDefault(x => x.Module == id);
             return device == null
                 ? null
-                : new SoundOutDevice(device.Description, device.Guid.ToString(),
+                : new SoundOutDevice(device.Description, device.Module,
                     SoundOutType.DirectSound);
         }
 
@@ -211,10 +227,8 @@ namespace Hurricane.Model.AudioEngine.Engines
             }
 
             if (directSoundDevice == null)
-            {
-                directSoundDevice = devices.FirstOrDefault(x => x.Guid.ToString() == device.Id) ?? devices.First();
-            }
-
+                directSoundDevice = devices.FirstOrDefault(x => x.Module == device.Id) ?? devices.First();
+            
             return new DirectSoundOut { Device = directSoundDevice.Guid };
         }
 
@@ -248,7 +262,7 @@ namespace Hurricane.Model.AudioEngine.Engines
                 return;
 
             _lastDefaultDeviceChanged = e.DeviceId;
-            if (CurrentSoundOutDevice.Id == WindowsDefaultId)
+            if (CurrentSoundOutDevice?.Id == WindowsDefaultId)
                 Application.Current.Dispatcher.BeginInvoke(new Action(OnInvalidateSoundOut));
 
             Application.Current.Dispatcher.BeginInvoke(new Action(UpdateDefaultAudioDevice));

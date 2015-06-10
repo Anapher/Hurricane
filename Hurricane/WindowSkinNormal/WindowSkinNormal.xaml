@@ -20,7 +20,7 @@
         <Grid MouseLeftButtonDown="Titlebar_OnMouseLeftButtonDown" MouseLeftButtonUp="Titlebar_OnMouseLeftButtonUp" MouseMove="Titlebar_OnMouseMove" Background="Transparent">
             <TextBlock Text="HURRICANE" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="{DynamicResource WindowTitleFontSize}" FontFamily="{DynamicResource HeaderFontFamily}" Foreground="#FFAAAAAA"/>
         </Grid>
-        <myControls:AnimationUpDown Grid.Row="1" SelectedIndex="{Binding CurrentMainView}">
+        <myControls:AnimationUpDown Grid.Row="1" SelectedIndex="{Binding CurrentMainView}" DistanceTop="150" DistanceBottom="150">
             <views:SettingsView />
             <Grid>
                 <Grid.ColumnDefinitions>

@@ -104,6 +104,7 @@
     <Compile Include="Converter\IsNullConverter.cs" />
     <Compile Include="Converter\SizeToColumnsConverter.cs" />
     <Compile Include="Converter\TimespanToStringConverter.cs" />
+    <Compile Include="Extensions\ComboBoxItemTemplateChooser.cs" />
     <Compile Include="Extensions\GridViewSort.cs" />
     <Compile Include="Extensions\ListViewLayoutManager\ConverterGridViewColumn.cs" />
     <Compile Include="Extensions\ListViewLayoutManager\FixedColumn.cs" />

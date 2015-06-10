@@ -4,6 +4,7 @@
     {
         string Name { get; }
         string Id { get; }
+        string SoundOutMode { get; }
         bool IsDefault { get; set; }
     }
 }

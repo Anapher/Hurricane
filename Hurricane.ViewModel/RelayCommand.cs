@@ -38,7 +38,6 @@ namespace Hurricane.ViewModel
                     CommandManager.RequerySuggested += value;
                 }
             }
-
             remove
             {
                 if (_canExecute != null)

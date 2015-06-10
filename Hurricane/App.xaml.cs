@@ -1,7 +1,4 @@
-﻿using System;
-using System.Diagnostics;
-using System.Windows;
-using Hurricane.Model.Music;
+﻿using System.Windows;
 using Hurricane.ViewModel;
 
 namespace Hurricane

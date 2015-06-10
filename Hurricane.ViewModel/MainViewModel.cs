@@ -30,10 +30,12 @@ namespace Hurricane.ViewModel
             MusicDataManager.MusicManager.AudioEngine.ErrorOccurred += AudioEngine_ErrorOccurred;
             Application.Current.MainWindow.Closing += MainWindow_Closing;
             NotificationManager = new NotificationManager();
+            SettingsViewModel = new SettingsViewModel(MusicDataManager);
         }
 
         public MusicDataManager MusicDataManager { get; }
         public NotificationManager NotificationManager { get; }
+        public SettingsViewModel SettingsViewModel { get; }
 
         public ViewManager ViewManager
         {

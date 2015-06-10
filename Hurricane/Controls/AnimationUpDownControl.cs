@@ -25,6 +25,12 @@ namespace Hurricane.Controls
         public static readonly DependencyProperty CurrentContentProperty = DependencyProperty.Register(
             "CurrentContent", typeof(FrameworkElement), typeof(AnimationUpDown), new PropertyMetadata(default(FrameworkElement)));
 
+        public static readonly DependencyProperty DistanceTopProperty = DependencyProperty.Register(
+            "DistanceTop", typeof (double), typeof (AnimationUpDown), new PropertyMetadata(default(double)));
+
+        public static readonly DependencyProperty DistanceBottomProperty = DependencyProperty.Register(
+            "DistanceBottom", typeof (double), typeof (AnimationUpDown), new PropertyMetadata(default(double)));
+
         private Shape _paintAera;
         private ContentPresenter _mainContent;
 
@@ -59,6 +65,18 @@ namespace Hurricane.Controls
         {
             get { return (FrameworkElement)GetValue(CurrentContentProperty); }
             set { SetValue(CurrentContentProperty, value); }
+        }
+
+        public double DistanceBottom
+        {
+            get { return (double)GetValue(DistanceBottomProperty); }
+            set { SetValue(DistanceBottomProperty, value); }
+        }
+
+        public double DistanceTop
+        {
+            get { return (double)GetValue(DistanceTopProperty); }
+            set { SetValue(DistanceTopProperty, value); }
         }
 
         public override void OnApplyTemplate()
@@ -104,11 +122,10 @@ namespace Hurricane.Controls
 
             var moveDown = newIndex > oldIndex;
             newContentTransform.BeginAnimation(TranslateTransform.YProperty,
-                CreateAnimation(moveDown ? -ActualHeight : ActualHeight, 0));
+                CreateAnimation(moveDown ? -ActualHeight - DistanceBottom : ActualHeight + DistanceTop, 0));
             oldContentTransform.BeginAnimation(TranslateTransform.YProperty,
-                CreateAnimation(0, moveDown ? ActualHeight : -ActualHeight,
+                CreateAnimation(0, moveDown ? ActualHeight + DistanceTop : -ActualHeight - DistanceBottom,
                     (s, e) => _paintAera.Visibility = Visibility.Hidden));
-
         }
 
         private AnimationTimeline CreateAnimation(double from, double to, EventHandler whenDone = null)
