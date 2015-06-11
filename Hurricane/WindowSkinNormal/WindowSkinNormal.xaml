@@ -220,6 +220,9 @@
                         <DataTemplate DataType="{x:Type viewData:ChartsView}">
                             <views:ChartsView DataContext="{Binding}"/>
                         </DataTemplate>
+                        <DataTemplate DataType="{x:Type viewData:PlaylistView}">
+                            <views:PlaylistView DataContext="{Binding}"/>
+                        </DataTemplate>
                     </ContentControl.Resources>
                 </ContentControl>
             </Grid>

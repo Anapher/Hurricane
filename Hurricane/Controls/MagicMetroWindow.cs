@@ -80,8 +80,8 @@ namespace Hurricane.Controls
                 }));
 
         private MagicArrowService _magicArrow;
-        private readonly IWindowSkin _defaultNormalWindowSkin;
-        private readonly IWindowSkin _defaultDockedWindowSkin;
+        private IWindowSkin _defaultNormalWindowSkin;
+        private IWindowSkin _defaultDockedWindowSkin;
 
         public MagicMetroWindow()
         {
@@ -98,6 +98,8 @@ namespace Hurricane.Controls
             {
                 WindowHeight = Height;
                 WindowWidth = Width;
+                WindowLeft = Left;
+                WindowTop = Top;
             }
 
             CloseCommand?.Execute(e);
@@ -199,6 +201,18 @@ namespace Hurricane.Controls
 
         public IWindowSkin CurrentView { get; set; }
         public CurrentWindowState CurrentWindowState { get; set; }
+
+        public void RefreshView()
+        {
+            WindowHeight = Height;
+            WindowWidth = Width;
+            WindowLeft = Left;
+            WindowTop = Top;
+
+            _defaultNormalWindowSkin = new WindowSkinNormal.WindowSkinNormal();
+            _defaultDockedWindowSkin = new WindowSkinDocked.WindowSkinDocked();
+            ApplyWindowSkin();
+        }
 
         protected void ApplyWindowSkin()
         {

@@ -48,7 +48,6 @@ namespace Hurricane.Model.Data
                 using (var fs = new FileStream(tempFile, FileMode.Create, FileAccess.ReadWrite, FileShare.None))
                 {
                     var serializer = new XmlSerializer(typeof (ArtistInfo[]));
-                    // ReSharper disable once AccessToDisposedClosure
                     serializer.Serialize(fs,
                         ArtistDictionary.Select(x => new ArtistInfo {Id = x.Key, Artist = x.Value}).ToArray());
                 }

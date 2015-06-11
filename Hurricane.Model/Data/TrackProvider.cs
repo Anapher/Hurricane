@@ -12,6 +12,7 @@ namespace Hurricane.Model.Data
 {
     public class TrackProvider : IPlaylist
     {
+        public static readonly Guid Id = new Guid("D6209B00-17F6-40EB-8634-B96BE432740D");
         private readonly XmlSerializer _serializer;
         public TrackProvider()
         {
@@ -47,7 +48,6 @@ namespace Hurricane.Model.Data
             {
                 using (var fileStream = new FileStream(tempFile, FileMode.Create, FileAccess.Write, FileShare.None))
                 {
-                    // ReSharper disable once AccessToDisposedClosure
                     _serializer.Serialize(fileStream,
                         Collection.Select(x => new Track {Id = x.Key, Playable = x.Value}).ToArray());
                 }

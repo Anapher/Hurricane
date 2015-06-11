@@ -1,4 +1,6 @@
-﻿namespace Hurricane
+﻿using Hurricane.ViewModel;
+
+namespace Hurricane
 {
     /// <summary>
     /// Interaktionslogik für MainWindow.xaml
@@ -8,6 +10,7 @@
         public MainWindow()
         {
             InitializeComponent();
+            ((MainViewModel) DataContext).RefreshView += (s, e) => RefreshView();
         }
     }
 }

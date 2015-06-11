@@ -9,14 +9,14 @@
              xmlns:extensions="clr-namespace:Hurricane.Extensions"
              xmlns:audioEngineData="clr-namespace:Hurricane.Model.AudioEngine;assembly=Hurricane.Model"
              mc:Ignorable="d" 
-             d:DesignHeight="400" d:DesignWidth="1000" d:DataContext="{d:DesignInstance viewModel:SettingsViewModel}">
+             d:DesignHeight="400" d:DesignWidth="1000">
     <UserControl.Resources>
         <Style TargetType="TextBlock" x:Key="HeaderText">
             <Setter Property="FontSize" Value="14"/>
         </Style>
         <extensions:ComboBoxItemTemplateChooser x:Key="ComboBoxItemTemplateChooser"/>
     </UserControl.Resources>
-    <controls:MetroAnimatedTabControl DataContext="{Binding SettingsViewModel}">
+    <controls:MetroAnimatedTabControl DataContext="{Binding SettingsViewModel}" d:DataContext="{d:DesignInstance viewModel:SettingsViewModel}">
         <controls:MetroAnimatedTabControl.Resources>
             <Style TargetType="TabItem" BasedOn="{StaticResource MetroTabItem}">
                 <Setter Property="controls:ControlsHelper.HeaderFontWeight" Value="Light"/>
@@ -33,7 +33,7 @@
                     </Grid.ColumnDefinitions>
                     <StackPanel Orientation="Vertical">
                         <TextBlock Text="{StaticResource Theme}" Margin="0,10,0,0"/>
-                        <ComboBox Margin="0,2,0,0" ItemsSource="{Binding Themes}" DisplayMemberPath="Name"/>
+                        <ComboBox Margin="0,2,0,0" ItemsSource="{Binding Themes}" DisplayMemberPath="Name" SelectedItem="{Binding SelectedTheme}"/>
                     </StackPanel>
                     <StackPanel Orientation="Vertical" Grid.Column="2">
                         <TextBlock Text="{StaticResource AccentColorString}" Margin="0,10,0,0"/>

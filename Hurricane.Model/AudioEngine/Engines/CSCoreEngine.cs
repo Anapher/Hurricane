@@ -375,12 +375,16 @@ namespace Hurricane.Model.AudioEngine.Engines
         {
             var isPlaying = IsPlaying;
             StopPlayback();
-            _soundOut.Dispose();
+            _soundOut?.Dispose();
             _soundOut = ((CSCoreSoundOutProvider) SoundOutProvider).GetSoundOut();
-            _soundOut.Initialize(_soundSource);
-            _soundOut.Volume = Volume;
-            if (isPlaying)
-                await TogglePlayPause();
+
+            if (_soundSource != null)
+            {
+                _soundOut.Initialize(_soundSource);
+                _soundOut.Volume = Volume;
+                if (isPlaying)
+                    await TogglePlayPause();
+            }
         }
 
         protected void OnPositionChanged()

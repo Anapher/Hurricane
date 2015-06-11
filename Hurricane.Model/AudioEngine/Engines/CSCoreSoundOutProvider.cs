@@ -108,14 +108,14 @@ namespace Hurricane.Model.AudioEngine.Engines
         public void SetSoundOut(string soundOutMode, string id)
         {
             SoundOutType soundOutType;
-            if (Enum.TryParse(soundOutMode, out soundOutType))
+            if (!Enum.TryParse(soundOutMode, out soundOutType))
                 return;
 
             foreach (var device in SoundOutModes.SelectMany(x => x.Devices))
             {
                 if (((SoundOutDevice) device).Type == soundOutType && device.Id == id)
                 {
-                    CurrentSoundOutDevice = device;
+                    _currentSoundOutDevice = device;
                     return;
                 }
             }

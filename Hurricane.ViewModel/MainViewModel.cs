@@ -1,12 +1,14 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.IO;
 using System.Threading.Tasks;
 using System.Windows;
 using Hurricane.Model;
 using Hurricane.Model.AudioEngine;
 using Hurricane.Model.Music;
 using Hurricane.Model.Notifications;
+using Hurricane.Model.Settings;
 using Hurricane.Utilities;
 using Hurricane.ViewModel.MainView;
 
@@ -30,12 +32,14 @@ namespace Hurricane.ViewModel
             MusicDataManager.MusicManager.AudioEngine.ErrorOccurred += AudioEngine_ErrorOccurred;
             Application.Current.MainWindow.Closing += MainWindow_Closing;
             NotificationManager = new NotificationManager();
-            SettingsViewModel = new SettingsViewModel(MusicDataManager);
         }
+
+        public event EventHandler RefreshView;
 
         public MusicDataManager MusicDataManager { get; }
         public NotificationManager NotificationManager { get; }
-        public SettingsViewModel SettingsViewModel { get; }
+        public SettingsViewModel SettingsViewModel { get; private set; }
+        public SettingsData Settings { get; } = SettingsManager.Current;
 
         public ViewManager ViewManager
         {
@@ -106,6 +110,7 @@ namespace Hurricane.ViewModel
         private void MainWindow_Closing(object sender, CancelEventArgs e)
         {
             MusicDataManager.Save(AppDomain.CurrentDomain.BaseDirectory);
+            SettingsManager.Save("settings.xml");
             MusicDataManager.Dispose();
         }
 
@@ -114,10 +119,16 @@ namespace Hurricane.ViewModel
             try
             {
                 var sw = Stopwatch.StartNew();
+                var settingsFile = new FileInfo("settings.xml");
+                if (settingsFile.Exists)
+                    SettingsManager.Load(settingsFile.FullName);
+                else SettingsManager.InitalizeNew();
+                
                 await MusicDataManager.Load(AppDomain.CurrentDomain.BaseDirectory);
                 Debug.Print($"Dataloading time: {sw.ElapsedMilliseconds}");
+                SettingsViewModel = new SettingsViewModel(MusicDataManager, () => RefreshView?.Invoke(this, EventArgs.Empty));
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 NotificationManager.ShowInformation(Application.Current.Resources["Error"].ToString(),
                     Application.Current.Resources["ErrorWhileLoadingData"].ToString(), MessageNotificationIcon.Error);

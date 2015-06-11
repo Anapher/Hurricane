@@ -103,6 +103,9 @@ namespace Hurricane.Controls
                 (int) dependencyPropertyChangedEventArgs.NewValue > animationControl.Content.Count - 1)
                 throw new ArgumentException();
 
+            if ((int) dependencyPropertyChangedEventArgs.NewValue == -1)
+                return;
+
             animationControl.BeginAnimation((int)dependencyPropertyChangedEventArgs.NewValue);
         }
 

@@ -59,8 +59,6 @@ namespace Hurricane.Model.Data
                 using (var fs = new FileStream(tempFile, FileMode.Create, FileAccess.ReadWrite, FileShare.None))
                 {
                     var serializer = new XmlSerializer(typeof (PlaylistInfo[]));
-                    // ReSharper disable once AccessToDisposedClosure
-
                     serializer.Serialize(fs,
                         Playlists.Select(userPlaylist => new PlaylistInfo
                         {

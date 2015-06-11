@@ -1,0 +1,84 @@
+﻿<UserControl x:Class="Hurricane.WindowSkinNormal.Views.PlaylistView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Hurricane.WindowSkinNormal.Views"
+             xmlns:viewData="clr-namespace:Hurricane.ViewModel.MainView;assembly=Hurricane.ViewModel"
+             xmlns:musicData="clr-namespace:Hurricane.Model.Music.Playable;assembly=Hurricane.Model"
+             xmlns:controls="clr-namespace:Hurricane.Controls"
+             xmlns:controls1="http://metro.mahapps.com/winfx/xaml/controls"
+             xmlns:behavior="clr-namespace:Hurricane.Behavior"
+             mc:Ignorable="d" 
+             d:DesignHeight="400" d:DesignWidth="800" d:DataContext="{d:DesignInstance viewData:PlaylistView}">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="75"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <StackPanel Orientation="Horizontal" Margin="10">
+                <Viewbox Height="20">
+                    <Path Data="{StaticResource VectorPlaylist}" Fill="{StaticResource GrayBrush2}"/>
+                </Viewbox>
+                <TextBlock Text="{Binding Text}" VerticalAlignment="Center" FontSize="24" TextTrimming="CharacterEllipsis" Margin="10,0,0,0"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Grid.Column="1" VerticalAlignment="Center" Margin="10">
+                <TextBox Width="200" controls1:TextBoxHelper.Watermark="{StaticResource Search}" Text="{Binding SearchText,UpdateSourceTrigger=PropertyChanged}"/>
+                <Menu Padding="0" Margin="10,0,0,0" Height="20" Width="20">
+                    <controls:VectorMenuItem VectorGraphic="{StaticResource VectorMore}" Background="{StaticResource WhiteBrush}" HorizontalAlignment="Left" Style="{StaticResource VectorMenuStyle}">
+
+                    </controls:VectorMenuItem>
+                </Menu>
+            </StackPanel>
+        </Grid>
+        <ListBox Grid.Row="1" ItemsSource="{Binding ViewSource}" Style="{StaticResource VirtualisedMetroListBox}">
+            <ListBox.ItemContainerStyle>
+                <Style TargetType="ListBoxItem" BasedOn="{StaticResource MetroListBoxItem}">
+                    <Setter Property="behavior:ControlBehavior.DoubleClickCommand" Value="{Binding RelativeSource={RelativeSource AncestorType=ListBox},Path=DataContext.PlayAudioCommand}"/>
+                    <Setter Property="behavior:ControlBehavior.DoubleClickCommandParameter" Value="{Binding}"/>
+                </Style>
+            </ListBox.ItemContainerStyle>
+            <ListBox.ItemTemplate>
+                <DataTemplate DataType="{x:Type musicData:PlayableBase}">
+                    <Grid Margin="3">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Orientation="Vertical">
+                            <TextBlock Text="{Binding Title}" FontSize="13"/>
+                            <Button Margin="0,2,0,0" Content="{Binding Artist.Name}" HorizontalAlignment="Left"
+                                    Command="{Binding RelativeSource={RelativeSource AncestorType=ListBox},Path=DataContext.OpenArtistCommand}" CommandParameter="{Binding Artist}">
+                                <Button.Style>
+                                    <Style TargetType="Button">
+                                        <Setter Property="Cursor" Value="Hand"/>
+                                        <Setter Property="OverridesDefaultStyle" Value="True"/>
+                                        <Setter Property="Foreground" Value="{StaticResource BlackBrush}"/>
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="Button">
+                                                    <TextBlock><ContentPresenter /></TextBlock>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=ListBoxItem},Path=IsSelected}" Value="true">
+                                                <Setter Property="Foreground" Value="White"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
+                            </Button>
+                        </StackPanel>
+                        <TextBlock Text="{Binding Duration,Converter={StaticResource TimespanToStringConverter}}" Grid.Column="1" VerticalAlignment="Center" Margin="5,0,0,0"/>
+                    </Grid>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+    </Grid>
+</UserControl>

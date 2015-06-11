@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using Hurricane.Model.Music.Playable;
@@ -16,6 +17,7 @@ namespace Hurricane.Model.Music.Playlist
         public ObservableCollection<PlayableBase> Tracks { get; }
         public List<IPlayable> History { get; }
         public string Name { get; set; }
+        public Guid Id { get; set; }
 
         IList<IPlayable> IPlaylist.Tracks => Tracks.Cast<IPlayable>().ToList();
 
