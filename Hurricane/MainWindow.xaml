@@ -4,6 +4,8 @@
         xmlns:hurricaneControls="clr-namespace:Hurricane.Controls"
         xmlns:viewModels="clr-namespace:Hurricane.ViewModel;assembly=Hurricane.ViewModel"
         xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
+        xmlns:data="clr-namespace:Hurricane.Model.Music.TrackProperties;assembly=Hurricane.Model"
+        xmlns:views="clr-namespace:Hurricane.WindowSkinNormal.Views"
         Title="Hurricane" SizeToContent="Manual" IsWindowDraggable="False" ShowIconOnTitleBar="False" Height="468.06" Width="946.268"
         GlowBrush="{DynamicResource AccentColorBrush}" Style="{DynamicResource CleanWindowStyleKey}" ResizeMode="CanResize" ShowTitleBar="False" x:Name="Root"
                                     WindowHeight="{Binding Settings.WindowHeight}" WindowWidth="{Binding Settings.WindowWidth}"

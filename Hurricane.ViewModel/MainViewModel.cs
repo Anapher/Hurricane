@@ -7,6 +7,7 @@ using System.Windows;
 using Hurricane.Model;
 using Hurricane.Model.AudioEngine;
 using Hurricane.Model.Music;
+using Hurricane.Model.Music.TrackProperties;
 using Hurricane.Model.Notifications;
 using Hurricane.Model.Settings;
 using Hurricane.Utilities;
@@ -19,6 +20,8 @@ namespace Hurricane.ViewModel
         private IViewItem _selectedViewItem;
         private ViewManager _viewManager;
         private int _currentMainView = 1;
+        private readonly ViewController _viewController;
+        private object _specialView;
 
         private RelayCommand _openSettingsCommand;
         private RelayCommand _playPauseCommand;
@@ -32,6 +35,7 @@ namespace Hurricane.ViewModel
             MusicDataManager.MusicManager.AudioEngine.ErrorOccurred += AudioEngine_ErrorOccurred;
             Application.Current.MainWindow.Closing += MainWindow_Closing;
             NotificationManager = new NotificationManager();
+            _viewController = new ViewController(OpenArtist);
         }
 
         public event EventHandler RefreshView;
@@ -39,7 +43,7 @@ namespace Hurricane.ViewModel
         public MusicDataManager MusicDataManager { get; }
         public NotificationManager NotificationManager { get; }
         public SettingsViewModel SettingsViewModel { get; private set; }
-        public SettingsData Settings { get; } = SettingsManager.Current;
+        public SettingsData Settings { get; private set; }
 
         public ViewManager ViewManager
         {
@@ -53,7 +57,7 @@ namespace Hurricane.ViewModel
             protected set
             {
                 if (SetProperty(value, ref _selectedViewItem))
-                    value.Load(MusicDataManager, NotificationManager).Forget();
+                    value.Load(MusicDataManager, _viewController, NotificationManager).Forget();
             }
         }
 
@@ -61,6 +65,12 @@ namespace Hurricane.ViewModel
         {
             get { return _currentMainView; }
             set { SetProperty(value, ref _currentMainView); }
+        }
+
+        public object SpecialView
+        {
+            get { return _specialView; }
+            set { SetProperty(value, ref _specialView); }
         }
 
         public RelayCommand OpenSettingsCommand
@@ -123,12 +133,13 @@ namespace Hurricane.ViewModel
                 if (settingsFile.Exists)
                     SettingsManager.Load(settingsFile.FullName);
                 else SettingsManager.InitalizeNew();
+                Settings = SettingsManager.Current;
                 
                 await MusicDataManager.Load(AppDomain.CurrentDomain.BaseDirectory);
                 Debug.Print($"Dataloading time: {sw.ElapsedMilliseconds}");
                 SettingsViewModel = new SettingsViewModel(MusicDataManager, () => RefreshView?.Invoke(this, EventArgs.Empty));
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 NotificationManager.ShowInformation(Application.Current.Resources["Error"].ToString(),
                     Application.Current.Resources["ErrorWhileLoadingData"].ToString(), MessageNotificationIcon.Error);
@@ -140,6 +151,11 @@ namespace Hurricane.ViewModel
         private void AudioEngine_ErrorOccurred(object sender, ErrorOccurredEventArgs e)
         {
             NotificationManager.ShowInformation(Application.Current.Resources["PlaybackError"].ToString(), e.ErrorMessage, MessageNotificationIcon.Error);
+        }
+
+        private void OpenArtist(Artist artist)
+        {
+            SpecialView = new ArtistView(artist, MusicDataManager, () => SpecialView = null);
         }
     }
 }

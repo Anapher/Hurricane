@@ -26,6 +26,7 @@ namespace Hurricane.ViewModel.MainView
         private bool _isLoaded;
         private MusicDataManager _musicDataManager;
         private NotificationManager _notificationManager;
+        private ViewController _viewController;
 
         private RelayCommand _addFilesCommand;
         private RelayCommand _addDirectoryCommand;
@@ -126,18 +127,19 @@ namespace Hurricane.ViewModel.MainView
         {
             get { return _openArtistCommand ?? (_openArtistCommand = new RelayCommand(parameter =>
             {
-                MessageBox.Show(((Artist) parameter).Name);
+                _viewController.OpenArtist((Artist) parameter);
             })); }
         }
 
         public ICollectionView ViewSource { get; private set; }
 
-        public Task Load(MusicDataManager musicDataManager, NotificationManager notificationManager)
+        public Task Load(MusicDataManager musicDataManager, ViewController viewController, NotificationManager notificationManager)
         {
             if (!_isLoaded)
             {
                 _musicDataManager = musicDataManager;
                 _notificationManager = notificationManager;
+                _viewController = viewController;
                 ViewSource = CollectionViewSource.GetDefaultView(Playlist.Tracks);
                 ViewSource.Filter = FilterViewSource;
                 _isLoaded = true;

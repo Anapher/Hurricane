@@ -33,7 +33,7 @@ namespace Hurricane.ViewModel.MainView
             set { SetProperty(value, ref _isLoading); }
         }
 
-        public async Task Load(MusicDataManager musicDataManager, NotificationManager notificationManager)
+        public async Task Load(MusicDataManager musicDataManager, ViewController viewController, NotificationManager notificationManager)
         {
             if (ChartList != null || IsLoading) return;
             IsLoading = true;

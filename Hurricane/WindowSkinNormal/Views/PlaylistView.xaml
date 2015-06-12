@@ -25,13 +25,14 @@
                 <Viewbox Height="20">
                     <Path Data="{StaticResource VectorPlaylist}" Fill="{StaticResource GrayBrush2}"/>
                 </Viewbox>
-                <TextBlock Text="{Binding Text}" VerticalAlignment="Center" FontSize="24" TextTrimming="CharacterEllipsis" Margin="10,0,0,0"/>
+                <TextBlock Text="{Binding Text}" VerticalAlignment="Center" FontSize="20" TextTrimming="CharacterEllipsis" Margin="10,0,0,0"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal" Grid.Column="1" VerticalAlignment="Center" Margin="10">
                 <TextBox Width="200" controls1:TextBoxHelper.Watermark="{StaticResource Search}" Text="{Binding SearchText,UpdateSourceTrigger=PropertyChanged}"/>
                 <Menu Padding="0" Margin="10,0,0,0" Height="20" Width="20">
                     <controls:VectorMenuItem VectorGraphic="{StaticResource VectorMore}" Background="{StaticResource WhiteBrush}" HorizontalAlignment="Left" Style="{StaticResource VectorMenuStyle}">
-
+                        <MenuItem Header="{StaticResource AddFiles}" Command="{Binding AddFilesCommand}"/>
+                        <MenuItem Header="{StaticResource AddDirectory}" Command="{Binding AddDirectoryCommand}"/>
                     </controls:VectorMenuItem>
                 </Menu>
             </StackPanel>
@@ -45,38 +46,50 @@
             </ListBox.ItemContainerStyle>
             <ListBox.ItemTemplate>
                 <DataTemplate DataType="{x:Type musicData:PlayableBase}">
-                    <Grid Margin="3">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="Auto"/>
-                        </Grid.ColumnDefinitions>
-                        <StackPanel Orientation="Vertical">
-                            <TextBlock Text="{Binding Title}" FontSize="13"/>
-                            <Button Margin="0,2,0,0" Content="{Binding Artist.Name}" HorizontalAlignment="Left"
+                    <Border BorderBrush="{StaticResource AccentColorBrush}">
+                        <Border.Style>
+                            <Style TargetType="Border">
+                                <Setter Property="BorderThickness" Value="0"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsPlaying}" Value="true">
+                                        <Setter Property="BorderThickness" Value="1"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Border.Style>
+                        <Grid Margin="3">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Orientation="Vertical">
+                                <TextBlock Text="{Binding Title}" FontSize="13"/>
+                                <Button Margin="0,2,0,0" Content="{Binding Artist.Name}" HorizontalAlignment="Left"
                                     Command="{Binding RelativeSource={RelativeSource AncestorType=ListBox},Path=DataContext.OpenArtistCommand}" CommandParameter="{Binding Artist}">
-                                <Button.Style>
-                                    <Style TargetType="Button">
-                                        <Setter Property="Cursor" Value="Hand"/>
-                                        <Setter Property="OverridesDefaultStyle" Value="True"/>
-                                        <Setter Property="Foreground" Value="{StaticResource BlackBrush}"/>
-                                        <Setter Property="Template">
-                                            <Setter.Value>
-                                                <ControlTemplate TargetType="Button">
-                                                    <TextBlock><ContentPresenter /></TextBlock>
-                                                </ControlTemplate>
-                                            </Setter.Value>
-                                        </Setter>
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=ListBoxItem},Path=IsSelected}" Value="true">
-                                                <Setter Property="Foreground" Value="White"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </Button.Style>
-                            </Button>
-                        </StackPanel>
-                        <TextBlock Text="{Binding Duration,Converter={StaticResource TimespanToStringConverter}}" Grid.Column="1" VerticalAlignment="Center" Margin="5,0,0,0"/>
-                    </Grid>
+                                    <Button.Style>
+                                        <Style TargetType="Button">
+                                            <Setter Property="Cursor" Value="Hand"/>
+                                            <Setter Property="OverridesDefaultStyle" Value="True"/>
+                                            <Setter Property="Foreground" Value="{StaticResource BlackBrush}"/>
+                                            <Setter Property="Template">
+                                                <Setter.Value>
+                                                    <ControlTemplate TargetType="Button">
+                                                        <TextBlock><ContentPresenter /></TextBlock>
+                                                    </ControlTemplate>
+                                                </Setter.Value>
+                                            </Setter>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=ListBoxItem},Path=IsSelected}" Value="true">
+                                                    <Setter Property="Foreground" Value="White"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Button.Style>
+                                </Button>
+                            </StackPanel>
+                            <TextBlock Text="{Binding Duration,Converter={StaticResource TimespanToStringConverter}}" Grid.Column="1" VerticalAlignment="Center" Margin="5,0,0,0"/>
+                        </Grid>
+                    </Border>
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>

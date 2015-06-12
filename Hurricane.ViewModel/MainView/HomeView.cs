@@ -21,7 +21,7 @@ namespace Hurricane.ViewModel.MainView
             set { SetProperty(value, ref _isPlaying); }
         }
 
-        public async Task Load(MusicDataManager musicDataManager, NotificationManager notificationManager)
+        public async Task Load(MusicDataManager musicDataManager, ViewController viewController, NotificationManager notificationManager)
         {
 
         }

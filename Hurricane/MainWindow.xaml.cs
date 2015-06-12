@@ -1,4 +1,5 @@
 ﻿using Hurricane.ViewModel;
+using MahApps.Metro.Controls;
 
 namespace Hurricane
 {
@@ -10,7 +11,9 @@ namespace Hurricane
         public MainWindow()
         {
             InitializeComponent();
-            ((MainViewModel) DataContext).RefreshView += (s, e) => RefreshView();
+
+            var viewModel = (MainViewModel) DataContext;
+            viewModel.RefreshView += (s, e) => RefreshView();
         }
     }
 }

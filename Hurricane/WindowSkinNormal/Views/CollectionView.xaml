@@ -244,35 +244,35 @@
                                 <Setter.Value>
                                     <ControlTemplate TargetType="{x:Type ListViewItem}">
                                         <Border x:Name="Bd"
-                            Background="{TemplateBinding Background}"
-                            SnapsToDevicePixels="true" BorderThickness="0" BorderBrush="{StaticResource AccentColorBrush3}">
+                                                Background="{TemplateBinding Background}"
+                                                SnapsToDevicePixels="true" BorderThickness="0" BorderBrush="{StaticResource AccentColorBrush3}">
                                             <Grid>
                                                 <GridViewRowPresenter VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
                                                     <GridViewRowPresenter.Resources>
                                                         <Style TargetType="{x:Type TextBlock}">
                                                             <Setter Property="Foreground"
-                                                Value="{Binding RelativeSource={RelativeSource AncestorType={x:Type ListViewItem}}, Path=Foreground}" />
+                                                                    Value="{Binding RelativeSource={RelativeSource AncestorType={x:Type ListViewItem}}, Path=Foreground}" />
                                                             <Style.Triggers>
                                                                 <DataTrigger Binding="{Binding Path=IsSelected, RelativeSource={RelativeSource AncestorType={x:Type ListViewItem}}}"
-                                                         Value="True">
+                                                                             Value="True">
                                                                     <Setter Property="Foreground"
-                                                        Value="{DynamicResource AccentSelectedColorBrush}" />
+                                                                            Value="{DynamicResource AccentSelectedColorBrush}" />
                                                                 </DataTrigger>
                                                                 <DataTrigger Binding="{Binding Path=IsEnabled, RelativeSource={RelativeSource AncestorType={x:Type ListView}}}"
-                                                         Value="False">
+                                                                             Value="False">
                                                                     <Setter Property="Foreground"
-                                                        Value="{DynamicResource GrayNormalBrush}" />
+                                                                            Value="{DynamicResource GrayNormalBrush}" />
                                                                 </DataTrigger>
                                                                 <MultiDataTrigger>
                                                                     <MultiDataTrigger.Conditions>
                                                                         <Condition Binding="{Binding Path=IsEnabled, RelativeSource={RelativeSource AncestorType={x:Type ListView}}}"
-                                                               Value="False" />
+                                                                                   Value="False" />
                                                                         <Condition Binding="{Binding Path=IsSelected, RelativeSource={RelativeSource AncestorType={x:Type ListViewItem}}}"
-                                                               Value="True" />
+                                                                                   Value="True" />
                                                                     </MultiDataTrigger.Conditions>
                                                                     <MultiDataTrigger.Setters>
                                                                         <Setter Property="Foreground"
-                                                            Value="{DynamicResource AccentSelectedColorBrush}" />
+                                                                                Value="{DynamicResource AccentSelectedColorBrush}" />
                                                                     </MultiDataTrigger.Setters>
                                                                 </MultiDataTrigger>
                                                             </Style.Triggers>
@@ -280,60 +280,60 @@
                                                     </GridViewRowPresenter.Resources>
                                                 </GridViewRowPresenter>
                                                 <ContentPresenter x:Name="contentPresenter"
-                                              Visibility="Collapsed" />
+                                                                  Visibility="Collapsed" />
                                             </Grid>
                                         </Border>
                                         <ControlTemplate.Triggers>
                                             <Trigger Property="GridView.ColumnCollection"
-                                 Value="{x:Null}">
+                                                     Value="{x:Null}">
                                                 <Setter TargetName="contentPresenter"
-                                    Property="Visibility"
-                                    Value="Visible" />
+                                                        Property="Visibility"
+                                                        Value="Visible" />
                                             </Trigger>
                                             <Trigger Property="IsSelected"
-                                 Value="true">
+                                                     Value="true">
                                                 <Setter TargetName="Bd"
-                                    Property="BorderBrush"
-                                    Value="#FF143c65" />
+                                                        Property="BorderBrush"
+                                                        Value="#FF143c65" />
                                                 <Setter Property="Background"
-                                    TargetName="Bd"
-                                    Value="{DynamicResource AccentColorBrush}"></Setter>
+                                                        TargetName="Bd"
+                                                        Value="{DynamicResource AccentColorBrush}"></Setter>
                                                 <Setter Property="Foreground"
-                                    Value="{DynamicResource AccentSelectedColorBrush}" />
+                                                        Value="{DynamicResource AccentSelectedColorBrush}" />
                                             </Trigger>
                                             <Trigger Property="IsMouseOver"
-                                 Value="True">
+                                                     Value="True">
                                                 <Setter TargetName="Bd"
-                                    Property="Background"
-                                    Value="{DynamicResource AccentColorBrush3}" />
+                                                        Property="Background"
+                                                        Value="{DynamicResource AccentColorBrush3}" />
                                             </Trigger>
                                             <MultiTrigger>
                                                 <MultiTrigger.Conditions>
                                                     <Condition Property="IsSelected"
-                                           Value="true" />
+                                                               Value="true" />
                                                     <Condition Property="Selector.IsSelectionActive"
-                                           Value="True" />
+                                                               Value="True" />
                                                 </MultiTrigger.Conditions>
                                                 <Setter Property="Background"
-                                    TargetName="Bd"
-                                    Value="{DynamicResource AccentColorBrush2}" />
+                                                        TargetName="Bd"
+                                                        Value="{DynamicResource AccentColorBrush2}" />
                                                 <Setter Property="BorderBrush"
-                                    TargetName="Bd"
-                                    Value="#FF143c65" />
+                                                        TargetName="Bd"
+                                                        Value="#FF143c65" />
                                                 <Setter Property="Foreground"
-                                    Value="{DynamicResource AccentSelectedColorBrush}" />
+                                                        Value="{DynamicResource AccentSelectedColorBrush}" />
                                             </MultiTrigger>
                                             <MultiTrigger>
                                                 <MultiTrigger.Conditions>
                                                     <Condition Property="IsEnabled"
-                                           Value="False" />
+                                                               Value="False" />
                                                     <Condition Property="IsSelected"
-                                           Value="True" />
+                                                               Value="True" />
                                                 </MultiTrigger.Conditions>
                                                 <MultiTrigger.Setters>
                                                     <Setter TargetName="Bd"
-                                        Property="Background"
-                                        Value="{DynamicResource GrayBrush7}" />
+                                                            Property="Background"
+                                                            Value="{DynamicResource GrayBrush7}" />
                                                 </MultiTrigger.Setters>
                                             </MultiTrigger>
                                             <DataTrigger Binding="{Binding IsPlaying}" Value="true">

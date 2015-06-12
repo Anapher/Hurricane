@@ -15,7 +15,7 @@ namespace Hurricane.ViewModel.MainView
         public string Text => Application.Current.Resources["Queue"].ToString();
         public bool IsPlaying { get; set; }
 
-        public async Task Load(MusicDataManager musicDataManager, NotificationManager notificationManager)
+        public async Task Load(MusicDataManager musicDataManager, ViewController viewController, NotificationManager notificationManager)
         {
             
         }

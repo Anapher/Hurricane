@@ -36,7 +36,7 @@ namespace Hurricane.Controls
             "ShowMessageWhenMinimizeToTray", typeof (bool), typeof (MagicMetroWindow), new PropertyMetadata(default(bool)));
 
         public static readonly DependencyProperty WindowWidthProperty = DependencyProperty.Register(
-            "WindowWidth", typeof (double), typeof (MagicMetroWindow), new PropertyMetadata(default(double),
+            "WindowWidth", typeof (double), typeof (MagicMetroWindow), new FrameworkPropertyMetadata(default(double),
                 (o, args) =>
                 {
                     var window = o as Window;
@@ -44,10 +44,10 @@ namespace Hurricane.Controls
                     var newWidth = (double) args.NewValue;
                     // ReSharper disable once CompareOfFloatsByEqualityOperator
                     if (window.Width != newWidth) window.Width = newWidth;
-                }));
+                }) {BindsTwoWayByDefault = true});
 
         public static readonly DependencyProperty WindowHeightProperty = DependencyProperty.Register(
-            "WindowHeight", typeof (double), typeof (MagicMetroWindow), new PropertyMetadata(default(double),
+            "WindowHeight", typeof (double), typeof (MagicMetroWindow), new FrameworkPropertyMetadata(default(double),
                 (o, args) =>
                 {
                     var window = o as Window;
@@ -55,10 +55,10 @@ namespace Hurricane.Controls
                     var newHeight = (double) args.NewValue;
                     // ReSharper disable once CompareOfFloatsByEqualityOperator
                     if (window.Height != newHeight) window.Height = newHeight;
-                }));
+                }) {BindsTwoWayByDefault = true});
 
         public static readonly DependencyProperty WindowLeftProperty = DependencyProperty.Register(
-            "WindowLeft", typeof (double), typeof (MagicMetroWindow), new PropertyMetadata(default(double),
+            "WindowLeft", typeof (double), typeof (MagicMetroWindow), new FrameworkPropertyMetadata(default(double),
                 (o, args) =>
                 {
                     var window = o as Window;
@@ -66,18 +66,18 @@ namespace Hurricane.Controls
                     var newLeft = (double) args.NewValue;
                     // ReSharper disable once CompareOfFloatsByEqualityOperator
                     if (window.Left != newLeft) window.Left = newLeft;
-                }));
+                }) {BindsTwoWayByDefault = true});
 
         public static readonly DependencyProperty WindowTopProperty = DependencyProperty.Register(
-            "WindowTop", typeof (double), typeof (MagicMetroWindow), new PropertyMetadata(default(double),
+            "WindowTop", typeof (double), typeof (MagicMetroWindow), new FrameworkPropertyMetadata(default(double),
                 (o, args) =>
                 {
                     var window = o as Window;
                     if (window == null) throw new ArgumentException(o.ToString());
-                    var newTop = (double)args.NewValue;
+                    var newTop = (double) args.NewValue;
                     // ReSharper disable once CompareOfFloatsByEqualityOperator
-                    if (window.Top != newTop) window.Top = newTop;
-                }));
+                    if (!window.Top.Equals(newTop)) window.Top = newTop;
+                }) {BindsTwoWayByDefault = true});
 
         private MagicArrowService _magicArrow;
         private IWindowSkin _defaultNormalWindowSkin;

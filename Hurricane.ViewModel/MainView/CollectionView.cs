@@ -120,7 +120,7 @@ namespace Hurricane.ViewModel.MainView
             }
         }
 
-        public Task Load(MusicDataManager musicDataManager, NotificationManager notificationManager)
+        public Task Load(MusicDataManager musicDataManager, ViewController viewController, NotificationManager notificationManager)
         {
             if (!_isLoaded)
             {

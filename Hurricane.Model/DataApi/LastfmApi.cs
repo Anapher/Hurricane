@@ -64,10 +64,10 @@ namespace Hurricane.Model.DataApi
             }
         }
 
-        public async Task<Artist> GetAdvancedInfoAboutArtist(Artist artist, CultureInfo culture)
+        public async Task SetAdvancedInfoAboutArtist(Artist artist, CultureInfo culture)
         {
             if (artist.ProvidesAdvancedInfo)
-                return artist;
+                return;
 
             using (var wc = new WebClient {Proxy = null})
             {
@@ -127,7 +127,6 @@ namespace Hurricane.Model.DataApi
             }
 
             artist.ProvidesAdvancedInfo = true;
-            return artist;
         }
 
         public async Task<Artist> GetArtistByMusicbrainzId(string musicbrainzId, CultureInfo culture)

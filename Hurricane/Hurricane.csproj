@@ -127,6 +127,9 @@
     <Compile Include="WindowSkinDocked\WindowSkinDocked.xaml.cs">
       <DependentUpon>WindowSkinDocked.xaml</DependentUpon>
     </Compile>
+    <Compile Include="WindowSkinNormal\Views\ArtistView.xaml.cs">
+      <DependentUpon>ArtistView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="WindowSkinNormal\Views\ChartsView.xaml.cs">
       <DependentUpon>ChartsView.xaml</DependentUpon>
     </Compile>
@@ -210,6 +213,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="WindowSkinDocked\WindowSkinDocked.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="WindowSkinNormal\Views\ArtistView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

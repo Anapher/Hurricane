@@ -12,7 +12,7 @@ namespace Hurricane.ViewModel.MainView
         Geometry Icon { get; }
         string Text { get; }
         bool IsPlaying { get; set; }
-        Task Load(MusicDataManager musicDataManager, NotificationManager notificationManager);
+        Task Load(MusicDataManager musicDataManager, ViewController viewController, NotificationManager notificationManager);
     }
 
     public enum ViewCategorie

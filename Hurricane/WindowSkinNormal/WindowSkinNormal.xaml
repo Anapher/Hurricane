@@ -20,213 +20,237 @@
         <Grid MouseLeftButtonDown="Titlebar_OnMouseLeftButtonDown" MouseLeftButtonUp="Titlebar_OnMouseLeftButtonUp" MouseMove="Titlebar_OnMouseMove" Background="Transparent">
             <TextBlock Text="HURRICANE" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="{DynamicResource WindowTitleFontSize}" FontFamily="{DynamicResource HeaderFontFamily}" Foreground="#FFAAAAAA"/>
         </Grid>
-        <myControls:AnimationUpDown Grid.Row="1" SelectedIndex="{Binding CurrentMainView}" DistanceTop="150" DistanceBottom="150">
-            <views:SettingsView />
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="250" MinWidth="150" MaxWidth="400"/>
-                    <ColumnDefinition Width="2"/>
-                    <ColumnDefinition />
-                </Grid.ColumnDefinitions>
-                <Grid Margin="5,0,0,0">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
-                    <ListBox ItemsSource="{Binding ViewManager.ViewSource}" SelectedItem="{Binding SelectedViewItem}">
-                        <ListBox.ItemContainerStyle>
-                            <Style TargetType="ListBoxItem" d:DataContext="{d:DesignInstance viewData:IViewItem}">
-                                <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
-                                <Setter Property="Template">
-                                    <Setter.Value>
-                                        <ControlTemplate TargetType="ListBoxItem">
-                                            <Grid Background="Transparent" Margin="0,2,0,0">
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="*"/>
-                                                    <ColumnDefinition Width="Auto"/>
-                                                </Grid.ColumnDefinitions>
-                                                <StackPanel Orientation="Horizontal">
-                                                    <Viewbox Width="12" VerticalAlignment="Center">
-                                                        <Path Data="{Binding Icon}" Fill="{StaticResource GrayBrush3}" x:Name="IconPath"/>
-                                                    </Viewbox>
-                                                    <TextBlock Text="{Binding Text}" Foreground="{StaticResource GrayBrush1}" VerticalAlignment="Center" Margin="8,0,0,0" x:Name="TextBlock" FontFamily="Segoe UI Emoji" FontSize="14"/>
-                                                </StackPanel>
-                                                <Viewbox Width="16" Grid.Column="1" Margin="0,0,10,0">
-                                                    <Viewbox.Style>
-                                                        <Style TargetType="Viewbox">
-                                                            <Setter Property="Visibility" Value="Collapsed"/>
-                                                            <Style.Triggers>
-                                                                <DataTrigger Binding="{Binding IsPlaying}" Value="true">
-                                                                    <Setter Property="Visibility" Value="Visible"/>
-                                                                </DataTrigger>
-                                                            </Style.Triggers>
-                                                        </Style>
-                                                    </Viewbox.Style>
-                                                    <Path StrokeThickness="2.0" Stroke="#ff000000" StrokeStartLineCap="Round" StrokeEndLineCap="Round" StrokeLineJoin="Round">
-                                                        <Path.Data>
-                                                            <GeometryGroup>
-                                                                <Geometry>F1 M 23.000,1.000 C 35.150,1.000 45.000,10.850 45.000,23.000 C 45.000,35.150 35.150,45.000 23.000,45.000 C 10.850,45.000 1.000,35.150 1.000,23.000 C 1.000,10.850 10.850,1.000 23.000,1.000 Z</Geometry>
-                                                                <Geometry>F1 M 19.000,31.000 L 19.000,15.000 L 31.000,23.000 L 19.000,31.000 Z</Geometry>
-                                                            </GeometryGroup>
-                                                        </Path.Data>
-                                                    </Path>
-                                                </Viewbox>
-                                            </Grid>
-                                            <ControlTemplate.Triggers>
-                                                <Trigger Property="IsMouseOver" Value="True">
-                                                    <Setter TargetName="IconPath" Property="Fill" Value="{StaticResource GrayBrush2}"/>
-                                                    <Setter TargetName="TextBlock" Property="Foreground" Value="{StaticResource BlackBrush}"/>
-                                                </Trigger>
-                                                <Trigger Property="IsSelected" Value="True">
-                                                    <Setter TargetName="IconPath" Property="Fill" Value="{StaticResource AccentColorBrush}"/>
-                                                    <Setter TargetName="TextBlock" Property="Foreground" Value="{StaticResource AccentColorBrush}"/>
-                                                </Trigger>
-                                            </ControlTemplate.Triggers>
-                                        </ControlTemplate>
-                                    </Setter.Value>
-                                </Setter>
-                            </Style>
-                        </ListBox.ItemContainerStyle>
-                        <ListBox.GroupStyle>
-                            <GroupStyle>
-                                <GroupStyle.ContainerStyle>
-                                    <Style TargetType="GroupItem">
-                                        <Setter Property="Template">
-                                            <Setter.Value>
-                                                <ControlTemplate TargetType="GroupItem">
-                                                    <StackPanel Orientation="Vertical" Margin="5,0,0,0">
-                                                        <TextBlock Margin="0,30,0,5">
-                                                            <TextBlock.Style>
-                                                                <Style TargetType="TextBlock">
-                                                                    <Setter Property="FontFamily" Value="Segoe UI Emoji"/>
-                                                                    <Setter Property="FontSize" Value="11"/>
-                                                                    <Style.Triggers>
-                                                                        <DataTrigger Binding="{Binding Name}" Value="Discover">
-                                                                            <Setter Property="behavior:TextBlockBehavior.UpperText" Value="{StaticResource Discover}"/>
-                                                                        </DataTrigger>
-                                                                        <DataTrigger Binding="{Binding Name}" Value="MyMusic">
-                                                                            <Setter Property="behavior:TextBlockBehavior.UpperText" Value="{StaticResource MyMusic}"/>
-                                                                        </DataTrigger>
-                                                                        <DataTrigger Binding="{Binding Name}" Value="Playlist">
-                                                                            <Setter Property="behavior:TextBlockBehavior.UpperText" Value="{StaticResource Playlists}"/>
-                                                                        </DataTrigger>
-                                                                    </Style.Triggers>
-                                                                </Style>
-                                                            </TextBlock.Style>
-                                                        </TextBlock>
-                                                        <ItemsPresenter Margin="1,0,0,0"/>
+        <Grid Grid.Row="1">
+            <myControls:AnimationUpDown SelectedIndex="{Binding CurrentMainView}" DistanceTop="150" DistanceBottom="150">
+                <views:SettingsView />
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="250" MinWidth="150" MaxWidth="400"/>
+                        <ColumnDefinition Width="2"/>
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <Grid Margin="5,0,0,0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <ListBox ItemsSource="{Binding ViewManager.ViewSource}" SelectedItem="{Binding SelectedViewItem}">
+                            <ListBox.ItemContainerStyle>
+                                <Style TargetType="ListBoxItem" d:DataContext="{d:DesignInstance viewData:IViewItem}">
+                                    <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="ListBoxItem">
+                                                <Grid Background="Transparent" Margin="0,2,0,0">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="*"/>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <Viewbox Width="12" VerticalAlignment="Center">
+                                                            <Path Data="{Binding Icon}" Fill="{StaticResource GrayBrush3}" x:Name="IconPath"/>
+                                                        </Viewbox>
+                                                        <TextBlock Text="{Binding Text}" Foreground="{StaticResource GrayBrush1}" VerticalAlignment="Center" Margin="8,0,0,0" x:Name="TextBlock" FontFamily="Segoe UI Emoji" FontSize="14"/>
                                                     </StackPanel>
-                                                </ControlTemplate>
-                                            </Setter.Value>
-                                        </Setter>
-                                    </Style>
-                                </GroupStyle.ContainerStyle>
-                            </GroupStyle>
-                        </ListBox.GroupStyle>
-                    </ListBox>
-                    <StackPanel Grid.Row="1" Visibility="{Binding NotificationManager.IsVisible,Converter={StaticResource BooleanToVisibilityConverter}}">
-                        <Separator />
-                        <ItemsControl ItemsSource="{Binding NotificationManager.Notifications}" Margin="2">
-                            <ItemsControl.Resources>
-                                <DataTemplate DataType="{x:Type notifications:ProgressNotification}">
-                                    <Border BorderThickness="1" BorderBrush="{StaticResource GrayBrush6}" CornerRadius="2" Height="40">
-                                        <Border.Effect>
-                                            <DropShadowEffect ShadowDepth="0" BlurRadius="1" Color="{StaticResource BlackColor}" Opacity=".8"/>
-                                        </Border.Effect>
-                                        <Grid Background="{StaticResource WhiteBrush}">
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="40"/>
-                                                <ColumnDefinition Width="*"/>
-                                            </Grid.ColumnDefinitions>
-                                            <myControls:PieProgress Width="30" Height="30" VerticalAlignment="Center" HorizontalAlignment="Center" Value="{Binding CurrentProgress}"
+                                                    <Viewbox Width="16" Grid.Column="1" Margin="0,0,10,0">
+                                                        <Viewbox.Style>
+                                                            <Style TargetType="Viewbox">
+                                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding IsPlaying}" Value="true">
+                                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </Viewbox.Style>
+                                                        <Path StrokeThickness="2.0" Stroke="#ff000000" StrokeStartLineCap="Round" StrokeEndLineCap="Round" StrokeLineJoin="Round">
+                                                            <Path.Data>
+                                                                <GeometryGroup>
+                                                                    <Geometry>F1 M 23.000,1.000 C 35.150,1.000 45.000,10.850 45.000,23.000 C 45.000,35.150 35.150,45.000 23.000,45.000 C 10.850,45.000 1.000,35.150 1.000,23.000 C 1.000,10.850 10.850,1.000 23.000,1.000 Z</Geometry>
+                                                                    <Geometry>F1 M 19.000,31.000 L 19.000,15.000 L 31.000,23.000 L 19.000,31.000 Z</Geometry>
+                                                                </GeometryGroup>
+                                                            </Path.Data>
+                                                        </Path>
+                                                    </Viewbox>
+                                                </Grid>
+                                                <ControlTemplate.Triggers>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter TargetName="IconPath" Property="Fill" Value="{StaticResource GrayBrush2}"/>
+                                                        <Setter TargetName="TextBlock" Property="Foreground" Value="{StaticResource BlackBrush}"/>
+                                                    </Trigger>
+                                                    <Trigger Property="IsSelected" Value="True">
+                                                        <Setter TargetName="IconPath" Property="Fill" Value="{StaticResource AccentColorBrush}"/>
+                                                        <Setter TargetName="TextBlock" Property="Foreground" Value="{StaticResource AccentColorBrush}"/>
+                                                    </Trigger>
+                                                </ControlTemplate.Triggers>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </ListBox.ItemContainerStyle>
+                            <ListBox.GroupStyle>
+                                <GroupStyle>
+                                    <GroupStyle.ContainerStyle>
+                                        <Style TargetType="GroupItem">
+                                            <Setter Property="Template">
+                                                <Setter.Value>
+                                                    <ControlTemplate TargetType="GroupItem">
+                                                        <StackPanel Orientation="Vertical" Margin="5,0,0,0">
+                                                            <TextBlock Margin="0,30,0,5">
+                                                                <TextBlock.Style>
+                                                                    <Style TargetType="TextBlock">
+                                                                        <Setter Property="FontFamily" Value="Segoe UI Emoji"/>
+                                                                        <Setter Property="FontSize" Value="11"/>
+                                                                        <Style.Triggers>
+                                                                            <DataTrigger Binding="{Binding Name}" Value="Discover">
+                                                                                <Setter Property="behavior:TextBlockBehavior.UpperText" Value="{StaticResource Discover}"/>
+                                                                            </DataTrigger>
+                                                                            <DataTrigger Binding="{Binding Name}" Value="MyMusic">
+                                                                                <Setter Property="behavior:TextBlockBehavior.UpperText" Value="{StaticResource MyMusic}"/>
+                                                                            </DataTrigger>
+                                                                            <DataTrigger Binding="{Binding Name}" Value="Playlist">
+                                                                                <Setter Property="behavior:TextBlockBehavior.UpperText" Value="{StaticResource Playlists}"/>
+                                                                            </DataTrigger>
+                                                                        </Style.Triggers>
+                                                                    </Style>
+                                                                </TextBlock.Style>
+                                                            </TextBlock>
+                                                            <ItemsPresenter Margin="1,0,0,0"/>
+                                                        </StackPanel>
+                                                    </ControlTemplate>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Style>
+                                    </GroupStyle.ContainerStyle>
+                                </GroupStyle>
+                            </ListBox.GroupStyle>
+                        </ListBox>
+                        <StackPanel Grid.Row="1" Visibility="{Binding NotificationManager.IsVisible,Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <Separator />
+                            <ItemsControl ItemsSource="{Binding NotificationManager.Notifications}" Margin="2">
+                                <ItemsControl.Resources>
+                                    <DataTemplate DataType="{x:Type notifications:ProgressNotification}">
+                                        <Border BorderThickness="1" BorderBrush="{StaticResource GrayBrush6}" CornerRadius="2" Height="40">
+                                            <Border.Effect>
+                                                <DropShadowEffect ShadowDepth="0" BlurRadius="1" Color="{StaticResource BlackColor}" Opacity=".8"/>
+                                            </Border.Effect>
+                                            <Grid Background="{StaticResource WhiteBrush}">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="40"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                </Grid.ColumnDefinitions>
+                                                <myControls:PieProgress Width="30" Height="30" VerticalAlignment="Center" HorizontalAlignment="Center" Value="{Binding CurrentProgress}"
                                                                 PieBrush="{StaticResource AccentColorBrush2}" Background="{StaticResource WhiteBrush}"
                                                                 Foreground="{StaticResource BlackBrush}" CanCancel="True" CommandParameter="{Binding}"
                                                                 Command="{Binding RelativeSource={RelativeSource AncestorType=ItemsControl},Path=DataContext.CancelProgressNotificationCommand}"/>
-                                            <StackPanel Orientation="Vertical" Grid.Column="1" VerticalAlignment="Center">
-                                                <TextBlock Text="{Binding Title}" FontSize="12"/>
-                                                <TextBlock Text="{Binding Message}" TextTrimming="CharacterEllipsis"/>
-                                            </StackPanel>
-                                        </Grid>
-                                    </Border>
-                                </DataTemplate>
-                                <DataTemplate DataType="{x:Type notifications:MessageNotification}">
-                                    <Border BorderThickness="1" BorderBrush="{StaticResource GrayBrush6}" CornerRadius="2" Height="40">
-                                        <Border.Effect>
-                                            <DropShadowEffect ShadowDepth="0" BlurRadius="1" Color="{StaticResource BlackColor}" Opacity=".8"/>
-                                        </Border.Effect>
-                                        <Grid Background="{StaticResource WhiteBrush}">
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="40"/>
-                                                <ColumnDefinition Width="*"/>
-                                            </Grid.ColumnDefinitions>
-                                            <Viewbox Width="25" Height="25" VerticalAlignment="Center" HorizontalAlignment="Center">
-                                                <Path Fill="{StaticResource GrayBrush1}">
-                                                    <Path.Style>
-                                                        <Style TargetType="Path">
-                                                            <Style.Triggers>
-                                                                <DataTrigger Binding="{Binding Icon}" Value="Information">
-                                                                    <Setter Property="Data" Value="{StaticResource VectorInformation}"/>
-                                                                </DataTrigger>
-                                                                <DataTrigger Binding="{Binding Icon}" Value="Error">
-                                                                    <Setter Property="Data" Value="{StaticResource VectorError}"/>
-                                                                </DataTrigger>
-                                                            </Style.Triggers>
-                                                        </Style>
-                                                    </Path.Style>
-                                                </Path>
-                                            </Viewbox>
-                                            <StackPanel Orientation="Vertical" Grid.Column="1" VerticalAlignment="Center">
-                                                <TextBlock Text="{Binding Title}" FontSize="12"/>
-                                                <TextBlock Text="{Binding Message}" TextTrimming="CharacterEllipsis"/>
-                                            </StackPanel>
-                                        </Grid>
-                                    </Border>
-                                </DataTemplate>
-                            </ItemsControl.Resources>
-                            <ItemsControl.ItemContainerStyle>
-                                <Style TargetType="ContentPresenter">
-                                    <Setter Property="Margin" Value="0,2,0,2"/>
-                                </Style>
-                            </ItemsControl.ItemContainerStyle>
-                        </ItemsControl>
-                    </StackPanel>
+                                                <StackPanel Orientation="Vertical" Grid.Column="1" VerticalAlignment="Center">
+                                                    <TextBlock Text="{Binding Title}" FontSize="12"/>
+                                                    <TextBlock Text="{Binding Message}" TextTrimming="CharacterEllipsis"/>
+                                                </StackPanel>
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                    <DataTemplate DataType="{x:Type notifications:MessageNotification}">
+                                        <Border BorderThickness="1" BorderBrush="{StaticResource GrayBrush6}" CornerRadius="2" Height="40">
+                                            <Border.Effect>
+                                                <DropShadowEffect ShadowDepth="0" BlurRadius="1" Color="{StaticResource BlackColor}" Opacity=".8"/>
+                                            </Border.Effect>
+                                            <Grid Background="{StaticResource WhiteBrush}">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="40"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                </Grid.ColumnDefinitions>
+                                                <Viewbox Width="25" Height="25" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                                    <Path Fill="{StaticResource GrayBrush1}">
+                                                        <Path.Style>
+                                                            <Style TargetType="Path">
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding Icon}" Value="Information">
+                                                                        <Setter Property="Data" Value="{StaticResource VectorInformation}"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding Icon}" Value="Error">
+                                                                        <Setter Property="Data" Value="{StaticResource VectorError}"/>
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </Path.Style>
+                                                    </Path>
+                                                </Viewbox>
+                                                <StackPanel Orientation="Vertical" Grid.Column="1" VerticalAlignment="Center">
+                                                    <TextBlock Text="{Binding Title}" FontSize="12"/>
+                                                    <TextBlock Text="{Binding Message}" TextTrimming="CharacterEllipsis"/>
+                                                </StackPanel>
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.Resources>
+                                <ItemsControl.ItemContainerStyle>
+                                    <Style TargetType="ContentPresenter">
+                                        <Setter Property="Margin" Value="0,2,0,2"/>
+                                    </Style>
+                                </ItemsControl.ItemContainerStyle>
+                            </ItemsControl>
+                        </StackPanel>
+                    </Grid>
+                    <GridSplitter HorizontalAlignment="Stretch" Grid.Column="1">
+                        <GridSplitter.Style>
+                            <Style TargetType="GridSplitter">
+                                <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+                            </Style>
+                        </GridSplitter.Style>
+                    </GridSplitter>
+                    <ContentControl Content="{Binding SelectedViewItem}" Grid.Column="2">
+                        <behavior:ContentControlBehavior.ContentChangedAnimation>
+                            <Storyboard>
+                                <ThicknessAnimation To="0" From="30,0,-30,0" Duration="0:0:0.5" Storyboard.TargetProperty="Margin">
+                                    <ThicknessAnimation.EasingFunction>
+                                        <CubicEase EasingMode="EaseOut" />
+                                    </ThicknessAnimation.EasingFunction>
+                                </ThicknessAnimation>
+                            </Storyboard>
+                        </behavior:ContentControlBehavior.ContentChangedAnimation>
+                        <ContentControl.Resources>
+                            <DataTemplate DataType="{x:Type viewData:HomeView}">
+                                <Grid Background="#FFF3F3F3">
+                                    <TextBlock Text="Startseite" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="16"/>
+                                </Grid>
+                            </DataTemplate>
+                            <DataTemplate DataType="{x:Type viewData:CollectionView}">
+                                <views:CollectionView DataContext="{Binding}"/>
+                            </DataTemplate>
+                            <DataTemplate DataType="{x:Type viewData:ChartsView}">
+                                <views:ChartsView DataContext="{Binding}"/>
+                            </DataTemplate>
+                            <DataTemplate DataType="{x:Type viewData:PlaylistView}">
+                                <views:PlaylistView DataContext="{Binding}"/>
+                            </DataTemplate>
+                        </ContentControl.Resources>
+                    </ContentControl>
+                    <ContentControl Content="{Binding SpecialView}" Grid.ColumnSpan="3" Grid.Column="0">
+                        <ContentControl.Style>
+                            <Style TargetType="ContentControl">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding SpecialView}" Value="{x:Null}">
+                                        <DataTrigger.ExitActions>
+                                            <BeginStoryboard>
+                                                <Storyboard>
+                                                    <DoubleAnimation From="0" To="1" Duration="0:0:0.2" Storyboard.TargetProperty="Opacity"/>
+                                                </Storyboard>
+                                            </BeginStoryboard>
+                                        </DataTrigger.ExitActions>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ContentControl.Style>
+                        <ContentControl.Resources>
+                            <DataTemplate DataType="{x:Type viewData:ArtistView}">
+                                <views:ArtistView DataContext="{Binding}"/>
+                            </DataTemplate>
+                        </ContentControl.Resources>
+                    </ContentControl>
                 </Grid>
-                <GridSplitter HorizontalAlignment="Stretch" Grid.Column="1">
-                    <GridSplitter.Style>
-                        <Style TargetType="GridSplitter">
-                            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
-                        </Style>
-                    </GridSplitter.Style>
-                </GridSplitter>
-                <ContentControl Content="{Binding SelectedViewItem}" Grid.Column="2">
-                    <behavior:ContentControlBehavior.ContentChangedAnimation>
-                        <Storyboard>
-                            <ThicknessAnimation To="0" From="30,0,-30,0" Duration="0:0:0.5" Storyboard.TargetProperty="Margin">
-                                <ThicknessAnimation.EasingFunction>
-                                    <CubicEase EasingMode="EaseOut" />
-                                </ThicknessAnimation.EasingFunction>
-                            </ThicknessAnimation>
-                        </Storyboard>
-                    </behavior:ContentControlBehavior.ContentChangedAnimation>
-                    <ContentControl.Resources>
-                        <DataTemplate DataType="{x:Type viewData:HomeView}">
-                            <Grid Background="#FFF3F3F3">
-                                <TextBlock Text="Startseite" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="16"/>
-                            </Grid>
-                        </DataTemplate>
-                        <DataTemplate DataType="{x:Type viewData:CollectionView}">
-                            <views:CollectionView DataContext="{Binding}"/>
-                        </DataTemplate>
-                        <DataTemplate DataType="{x:Type viewData:ChartsView}">
-                            <views:ChartsView DataContext="{Binding}"/>
-                        </DataTemplate>
-                        <DataTemplate DataType="{x:Type viewData:PlaylistView}">
-                            <views:PlaylistView DataContext="{Binding}"/>
-                        </DataTemplate>
-                    </ContentControl.Resources>
-                </ContentControl>
-            </Grid>
-        </myControls:AnimationUpDown>
+            </myControls:AnimationUpDown>
+        </Grid>
         <Grid Grid.Row="2">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
