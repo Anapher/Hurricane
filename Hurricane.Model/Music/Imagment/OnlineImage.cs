@@ -57,6 +57,7 @@ namespace Hurricane.Model.Music.Imagment
             }
 
             image.EndInit();
+            image.Freeze();
             return image;
         }
 
@@ -71,6 +72,8 @@ namespace Hurricane.Model.Music.Imagment
             bitmapImage.BeginInit();
             bitmapImage.UriSource = new Uri(imageFile.FullName);
             bitmapImage.EndInit();
+            bitmapImage.Freeze();
+
             image = bitmapImage;
             return true;
         }

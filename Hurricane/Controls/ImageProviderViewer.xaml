@@ -11,7 +11,7 @@
                 <ScaleTransform ScaleX=".7" ScaleY=".7"/>
             </ContentControl.RenderTransform>
         </ContentControl>
-        <Image Source="{Binding ImageProvider.Image}" Stretch="UniformToFill" RenderOptions.EdgeMode="Aliased" RenderOptions.BitmapScalingMode="HighQuality">
+        <Image Source="{Binding ImageProvider.Image}" Stretch="UniformToFill" RenderOptions.EdgeMode="Aliased" RenderOptions.BitmapScalingMode="HighQuality" VerticalAlignment="Center" HorizontalAlignment="Center">
             <Image.Style>
                 <Style TargetType="Image">
                     <Setter Property="Opacity" Value="1"/>

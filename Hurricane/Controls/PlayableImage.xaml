@@ -19,10 +19,10 @@
                                     <Grid.RenderTransform>
                                         <ScaleTransform ScaleX="1" ScaleY="1" x:Name="ImageScaleTransform"/>
                                     </Grid.RenderTransform>
-                                    <Image Source="{Binding ElementName=Root,Path=Image}" Stretch="UniformToFill"/>
+                                    <Image Source="{Binding ElementName=Root,Path=Image}" Stretch="UniformToFill" RenderOptions.BitmapScalingMode="HighQuality" RenderOptions.EdgeMode="Unspecified"/>
                                     <Grid Background="Black" Opacity="0" x:Name="OverlayGrid"/>
                                 </Grid>
-                                <Button RenderTransformOrigin=".5,.5" Opacity="0" x:Name="PlayButton">
+                                <Button RenderTransformOrigin=".5,.5" Opacity="0" x:Name="PlayButton" Command="{Binding ElementName=Root,Path=Command}" CommandParameter="{Binding ElementName=Root,Path=CommandParameter}">
                                     <Button.RenderTransform>
                                         <ScaleTransform ScaleX=".4" ScaleY=".4"/>
                                     </Button.RenderTransform>
@@ -120,19 +120,4 @@
             </Style>
         </ContentControl.Style>
     </ContentControl>
-    <!--    <Grid>
-        <Grid.Style>
-            <Style TargetType="Grid">
-                <Style.Triggers>
-                    
-                </Style.Triggers>
-            </Style>
-        </Grid.Style>
-        <Image Source="{Binding ElementName=Root,Path=Image}" Stretch="UniformToFill">
-            <Image.LayoutTransform>
-                <ScaleTransform ScaleX="1" ScaleY="1" x:Name="ImageScaleTransform"/>
-            </Image.LayoutTransform>
-        </Image>
-       
-    </Grid> -->
 </UserControl>

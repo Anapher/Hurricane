@@ -60,15 +60,17 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MainView\ArtistView.cs" />
+    <Compile Include="MainView\Base\SideListItem.cs" />
     <Compile Include="MainView\ChartsView.cs" />
     <Compile Include="MainView\HomeView.cs" />
-    <Compile Include="MainView\IViewItem.cs" />
+    <Compile Include="MainView\Base\ISideListItem.cs" />
+    <Compile Include="MainView\Base\IViewItem.cs" />
     <Compile Include="MainView\CollectionView.cs" />
-    <Compile Include="MainView\ViewController.cs" />
+    <Compile Include="MainView\Base\ViewController.cs" />
     <Compile Include="MainView\PlaylistView.cs" />
     <Compile Include="MainView\QueueView.cs" />
     <Compile Include="MainViewModel.cs" />
-    <Compile Include="MainView\ViewManager.cs" />
+    <Compile Include="MainView\Base\ViewManager.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="RelayCommand.cs" />
     <Compile Include="SettingsViewModel.cs" />

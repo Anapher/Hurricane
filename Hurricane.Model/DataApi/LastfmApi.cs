@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Net;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Hurricane.Model.DataApi.SerializeClasses.Lastfm;
 using Hurricane.Model.DataApi.SerializeClasses.Lastfm.GetArtistInfo;
@@ -25,7 +26,7 @@ namespace Hurricane.Model.DataApi
         }
 
         private List<Artist> Artists { get; }
-        private Dictionary<List<string>, Artist> ArtistKeywords { get; set; }
+        private Dictionary<List<string>, Artist> ArtistKeywords { get; }
 
         public async Task<Artist> SearchArtist(string name)
         {
@@ -81,16 +82,20 @@ namespace Hurricane.Model.DataApi
 
                 var topTracksTask =
                     wc.DownloadStringTaskAsync(string.IsNullOrEmpty(artist.MusicBrainzId)
-                        ? $"http://ws.audioscrobbler.com/2.0/?method=artist.gettoptracks&artist={artist.Name}&api_key={SensitiveInformation.LastfmKey}&format=json"
-                        : $"http://ws.audioscrobbler.com/2.0/?method=artist.gettoptracks&mbid={artist.MusicBrainzId}&api_key={SensitiveInformation.LastfmKey}&format=json");
+                        ? $"http://ws.audioscrobbler.com/2.0/?method=artist.gettoptracks&artist={artist.Name}&api_key={SensitiveInformation.LastfmKey}&limit=10&format=json"
+                        : $"http://ws.audioscrobbler.com/2.0/?method=artist.gettoptracks&mbid={artist.MusicBrainzId}&api_key={SensitiveInformation.LastfmKey}&limit=10&format=json");
 
-                artist.Biography = artistInfo.artist.bio.content;
+                artist.Biography = Regex.Match(artistInfo.artist.bio.summary.Trim(), @"^(?<content>(.+))<a", RegexOptions.Singleline).Groups["content"].Value.Trim();
+                if (string.IsNullOrWhiteSpace(artist.Biography))
+                    artist.Biography = null;
+
+                var similarArtists = new List<Artist>();
                 foreach (var similarArtist in artistInfo.artist.similar.artist)
                 {
                     var existingArtist = Artists.FirstOrDefault(x => string.Equals(x.Name, similarArtist.name, StringComparison.OrdinalIgnoreCase));
                     if (existingArtist != null)
                     {
-                        artist.SimilarArtists.Add(existingArtist);
+                        similarArtists.Add(existingArtist);
                         break;
                     }
 
@@ -103,11 +108,12 @@ namespace Hurricane.Model.DataApi
 
                     SetImages(newArtist, similarArtist.image);
                     Artists.Add(newArtist);
-                    artist.SimilarArtists.Add(newArtist);
+                    similarArtists.Add(newArtist);
                 }
+                artist.SimilarArtists = similarArtists;
 
                 var topTrackResult = JsonConvert.DeserializeObject<GetTopTracksResult>(await topTracksTask);
-                artist.TopTracks = topTrackResult.toptracks?.track.Select(x => new TopTrack
+                artist.TopTracks = topTrackResult.toptracks?.track.Where(x => !string.IsNullOrWhiteSpace(x.duration)).Select(x => new TopTrack
                 {
                     Artist = artist,
                     Duration = TimeSpan.FromMilliseconds(int.Parse(x.duration)),
@@ -115,17 +121,11 @@ namespace Hurricane.Model.DataApi
                     Name = x.name,
                     Url = x.url,
                     Thumbnail =
-                        x.image.Count > 0
-                            ? new OnlineImage(
-                                (x.image.OrderBy(y => y.size)
-                                    .FirstOrDefault(
-                                        y =>
-                                            y.size != ImageSize.extralarge &&
-                                            y.size != ImageSize.mega) ?? x.image.First()).text)
+                        x.image?.Count > 0
+                            ? GetBestImage(x.image)
                             : null
                 }).ToList();
             }
-
             artist.ProvidesAdvancedInfo = true;
         }
 
@@ -183,13 +183,28 @@ namespace Hurricane.Model.DataApi
             images = images.Where(x => !string.IsNullOrEmpty(x.text)).ToList();
             if (images.Count == 0)
                 return;
-            images = images.OrderBy(x => x.size).ToList();
-            artist.SmallImage = new OnlineImage(images.First().text);
-            artist.MediumImage =
-                new OnlineImage((images.FirstOrDefault(x => x.size == ImageSize.medium) ??
-                                   images.FirstOrDefault(x => x.size == ImageSize.large) ??
-                                   images.First())?.text);
-            artist.LargeImage = new OnlineImage(images.Last().text);
+
+            artist.SmallImage = GetSmallImage(images);
+            artist.MediumImage = GetMediumImage(images);
+            artist.LargeImage = GetBestImage(images);
+        }
+
+        private static OnlineImage GetBestImage(IEnumerable<Image> images)
+        {
+            return new OnlineImage(images.OrderBy(x => x.size).Last().text);
+        }
+
+        private static OnlineImage GetMediumImage(IEnumerable<Image> images)
+        {
+            var source = images.OrderBy(x => x.size);
+            return new OnlineImage((source.FirstOrDefault(x => x.size == ImageSize.large) ??
+                                   source.FirstOrDefault(x => x.size == ImageSize.medium) ??
+                                   source.First()).text);
+        }
+
+        private static OnlineImage GetSmallImage(IEnumerable<Image> images)
+        {
+            return new OnlineImage(images.OrderBy(x => x.size).First().text);
         }
     }
 

@@ -1,29 +1,19 @@
 ﻿using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
-using Hurricane.Model;
-using Hurricane.Model.Music;
-using Hurricane.Model.Notifications;
+using Hurricane.ViewModel.MainView.Base;
 
 namespace Hurricane.ViewModel.MainView
 {
-    public class HomeView : PropertyChangedBase, IViewItem
+    public class HomeView : SideListItem
     {
-        private bool _isPlaying;
+        public override ViewCategorie ViewCategorie { get; } = ViewCategorie.Discover;
+        public override Geometry Icon { get; } = (Geometry)Application.Current.Resources["VectorHome"];
+        public override string Text => Application.Current.Resources["Home"].ToString();
 
-        public ViewCategorie ViewCategorie { get; } = ViewCategorie.Discover;
-        public Geometry Icon { get; } = (Geometry)Application.Current.Resources["VectorHome"];
-        public string Text => Application.Current.Resources["Home"].ToString();
-
-        public bool IsPlaying
+        protected async override Task Load()
         {
-            get { return _isPlaying; }
-            set { SetProperty(value, ref _isPlaying); }
-        }
-
-        public async Task Load(MusicDataManager musicDataManager, ViewController viewController, NotificationManager notificationManager)
-        {
-
+            
         }
     }
 }

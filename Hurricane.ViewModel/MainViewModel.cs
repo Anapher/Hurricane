@@ -12,16 +12,17 @@ using Hurricane.Model.Notifications;
 using Hurricane.Model.Settings;
 using Hurricane.Utilities;
 using Hurricane.ViewModel.MainView;
+using Hurricane.ViewModel.MainView.Base;
 
 namespace Hurricane.ViewModel
 {
     public class MainViewModel : PropertyChangedBase
     {
-        private IViewItem _selectedViewItem;
+        private ISideListItem _selectedViewItem;
         private ViewManager _viewManager;
         private int _currentMainView = 1;
         private readonly ViewController _viewController;
-        private object _specialView;
+        private IViewItem _specialView;
 
         private RelayCommand _openSettingsCommand;
         private RelayCommand _playPauseCommand;
@@ -51,7 +52,7 @@ namespace Hurricane.ViewModel
             set { SetProperty(value, ref _viewManager); }
         }
 
-        public IViewItem SelectedViewItem
+        public ISideListItem SelectedViewItem
         {
             get { return _selectedViewItem; }
             protected set
@@ -67,10 +68,14 @@ namespace Hurricane.ViewModel
             set { SetProperty(value, ref _currentMainView); }
         }
 
-        public object SpecialView
+        public IViewItem SpecialView
         {
             get { return _specialView; }
-            set { SetProperty(value, ref _specialView); }
+            set
+            {
+                if (SetProperty(value, ref _specialView))
+                    value?.Load(MusicDataManager, _viewController, NotificationManager).Forget();
+            }
         }
 
         public RelayCommand OpenSettingsCommand
@@ -155,7 +160,7 @@ namespace Hurricane.ViewModel
 
         private void OpenArtist(Artist artist)
         {
-            SpecialView = new ArtistView(artist, MusicDataManager, () => SpecialView = null);
+            SpecialView = new ArtistView(artist, () => SpecialView = null);
         }
     }
 }

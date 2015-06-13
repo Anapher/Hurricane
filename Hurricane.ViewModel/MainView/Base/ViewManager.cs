@@ -4,15 +4,15 @@ using System.Windows.Data;
 using Hurricane.Model.Data;
 using Hurricane.Model.Music.Playlist;
 
-namespace Hurricane.ViewModel.MainView
+namespace Hurricane.ViewModel.MainView.Base
 {
     public class ViewManager
     {
         public ViewManager(PlaylistProvider playlistProvider)
         {
-            ViewItems = new ObservableCollection<IViewItem>
+            ViewItems = new ObservableCollection<ISideListItem>
             {
-                new HomeView {IsPlaying = true},
+                new HomeView(),
                 new CollectionView(),
                 new ChartsView(),
                 new QueueView()
@@ -47,7 +47,7 @@ namespace Hurricane.ViewModel.MainView
             }
         }
 
-        public ObservableCollection<IViewItem> ViewItems { get; }
+        public ObservableCollection<ISideListItem> ViewItems { get; }
         public ICollectionView ViewSource { get; }
     }
 }

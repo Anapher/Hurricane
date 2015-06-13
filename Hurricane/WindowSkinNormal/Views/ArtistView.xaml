@@ -3,25 +3,118 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:Hurricane.WindowSkinNormal.Views"
+             xmlns:behavior="clr-namespace:Hurricane.Behavior"
+             xmlns:myControls="clr-namespace:Hurricane.Controls"
              xmlns:viewData="clr-namespace:Hurricane.ViewModel.MainView;assembly=Hurricane.ViewModel"
+             xmlns:data="clr-namespace:Hurricane.Model.Music.TrackProperties;assembly=Hurricane.Model"
+             xmlns:converter="clr-namespace:Hurricane.Converter"
              mc:Ignorable="d" 
-             d:DesignHeight="400" d:DesignWidth="800" d:DataContext="{d:DesignInstance viewData:ArtistView}" Background="{StaticResource WhiteBrush}">
+             d:DesignHeight="600" d:DesignWidth="1000" d:DataContext="{d:DesignInstance viewData:ArtistView}" Background="{StaticResource WhiteBrush}" x:Name="Root">
+    <UserControl.Resources>
+        <converter:HtmlToInlinesConverter x:Key="HtmlToInlinesConverter"/>
+        <converter:SizeToColumnsConverter x:Key="SizeToColumnsConverter" MaxSize="100"/>
+        <Style TargetType="Hyperlink">
+            <Setter Property="TextBlock.TextDecorations" Value="{x:Null}"/>
+            <Setter Property="Foreground" Value="{DynamicResource AccentColorBrush}"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Trigger.EnterActions>
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <ColorAnimation To="{StaticResource AccentColor3}" Duration="0:0:0.1" Storyboard.TargetProperty="(Hyperlink.Foreground).(SolidColorBrush.Color)"/>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </Trigger.EnterActions>
+                    <Trigger.ExitActions>
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <ColorAnimation To="{StaticResource AccentColor}" Duration="0:0:0.1" Storyboard.TargetProperty="(Hyperlink.Foreground).(SolidColorBrush.Color)"/>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </Trigger.ExitActions>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="10"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <StackPanel Orientation="Vertical">
-            <Separator />
-            <DockPanel Margin="5">
-                <TextBlock Text="{Binding Artist.Name}" VerticalAlignment="Center" HorizontalAlignment="Left" FontSize="16"/>
-                <Button Style="{DynamicResource MetroCircleButtonStyle}" Height="25" Width="25" HorizontalAlignment="Right" Command="{Binding CloseCommand}">
-                    <Viewbox Margin="9">
-                        <Path Data="{StaticResource VectorCancel}" Fill="{StaticResource GrayBrush2}"/>
-                    </Viewbox>
-                </Button>
-            </DockPanel>
-        </StackPanel>
+        <DockPanel VerticalAlignment="Center" Background="{StaticResource AccentColorBrush2}" Height="60">
+            <TextBlock Text="{Binding Artist.Name}" VerticalAlignment="Center" HorizontalAlignment="Left" FontSize="16" Foreground="White" Margin="5,0,0,0"/>
+            <Button Style="{DynamicResource MetroCircleButtonStyle}" Height="25" Width="25" HorizontalAlignment="Right" Command="{Binding CloseCommand}" VerticalAlignment="Top">
+                <Viewbox Margin="9">
+                    <Path Data="{StaticResource VectorCancel}" Fill="{StaticResource GrayBrush10}"/>
+                </Viewbox>
+            </Button>
+        </DockPanel>
+        <ScrollViewer Grid.Row="2">
+            <Grid Margin="10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Orientation="Vertical" Grid.Column="1" Margin="10">
+                    <StackPanel Orientation="Vertical">
+                        <StackPanel.Style>
+                            <Style TargetType="StackPanel">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Artist.Biography}" Value="{x:Null}">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </StackPanel.Style>
+                        <TextBlock Text="{StaticResource Biography}" FontSize="16"/>
+                        <TextBlock Margin="0,2,0,0" behavior:TextBlockBehavior.Inlines="{Binding Artist.Biography,Converter={StaticResource HtmlToInlinesConverter}}" TextWrapping="Wrap" FontSize="13"/>
+                    </StackPanel>
+                    <TextBlock Text="{StaticResource TopHits}" FontSize="16" Margin="0,50,0,0"/>
+                    <ItemsControl ItemsSource="{Binding Artist.TopTracks}" Margin="0,2,0,0">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <UniformGrid Columns="{Binding ElementName=Root,Path=ActualWidth,Converter={StaticResource SizeToColumnsConverter}}"/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Margin="7">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+                                    <myControls:PlayableImage Image="{Binding Thumbnail.Image}" x:Name="Image" Height="{Binding ElementName=Image,Path=ActualWidth}"/>
+                                    <TextBlock Grid.Row="1" Text="{Binding Name}" TextTrimming="CharacterEllipsis" FontSize="12" FontFamily="Segoe UI Emoji"/>
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                    <TextBlock Text="{StaticResource SimilarArtists}" FontSize="16" Margin="0,8,0,0"/>
+                    <ItemsControl ItemsSource="{Binding Artist.SimilarArtists}" Margin="0,2,0,0">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <UniformGrid Columns="{Binding ElementName=Root,Path=ActualWidth,Converter={StaticResource SizeToColumnsConverter}}"/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Margin="7">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+                                    <myControls:PlayableImage Image="{Binding MediumImage.Image}" x:Name="Image" Height="{Binding ElementName=Image,Path=ActualWidth}"
+                                                              Command="{Binding RelativeSource={RelativeSource AncestorType=ItemsControl},Path=DataContext.OpenArtistCommand}"
+                                                              CommandParameter="{Binding}"/>
+                                    <TextBlock Grid.Row="1" Text="{Binding Name}" TextTrimming="CharacterEllipsis" FontSize="12" FontFamily="Segoe UI Emoji"/>
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+                <myControls:ImageProviderViewer ImageProvider="{Binding Artist.LargeImage}" Height="500" Width="350" VerticalAlignment="Top" Grid.Column="0"/>
+            </Grid>
+        </ScrollViewer>
     </Grid>
 </UserControl>

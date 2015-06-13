@@ -33,6 +33,9 @@
     <system:String x:Key="Language">Sprache</system:String>
     <system:String x:Key="PlaybackDevice">Wiedergabegerät</system:String>
     <system:String x:Key="Apply">Übernehmen</system:String>
+    <system:String x:Key="Biography">Biografie</system:String>
+    <system:String x:Key="SimilarArtists">Ähnliche Künstler</system:String>
+    <system:String x:Key="TopHits">Top Hits</system:String>
     
     <system:String x:Key="Error">Fehler</system:String>
     <system:String x:Key="ErrorWhileLoadingData">Es ist ein Fehler bei dem Laden der Daten aufgetreten.</system:String>

@@ -9,6 +9,7 @@
              xmlns:behavior="clr-namespace:Hurricane.Behavior"
              xmlns:views="clr-namespace:Hurricane.WindowSkinNormal.Views"
              xmlns:notifications="clr-namespace:Hurricane.Model.Notifications;assembly=Hurricane.Model"
+             xmlns:base="clr-namespace:Hurricane.ViewModel.MainView.Base;assembly=Hurricane.ViewModel"
              mc:Ignorable="d" 
              d:DesignHeight="500" d:DesignWidth="1000" d:DataContext="{d:DesignInstance viewModels:MainViewModel, d:IsDesignTimeCreatable=True}">
     <Grid>
@@ -36,7 +37,7 @@
                         </Grid.RowDefinitions>
                         <ListBox ItemsSource="{Binding ViewManager.ViewSource}" SelectedItem="{Binding SelectedViewItem}">
                             <ListBox.ItemContainerStyle>
-                                <Style TargetType="ListBoxItem" d:DataContext="{d:DesignInstance viewData:IViewItem}">
+                                <Style TargetType="ListBoxItem" d:DataContext="{d:DesignInstance base:IViewItem}">
                                     <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
                                     <Setter Property="Template">
                                         <Setter.Value>
@@ -55,10 +56,30 @@
                                                     <Viewbox Width="16" Grid.Column="1" Margin="0,0,10,0">
                                                         <Viewbox.Style>
                                                             <Style TargetType="Viewbox">
-                                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                                <Setter Property="Opacity" Value="0"/>
+                                                                <Setter Property="RenderTransformOrigin" Value=".5,.5"/>
+                                                                <Setter Property="RenderTransform">
+                                                                    <Setter.Value>
+                                                                        <RotateTransform x:Name="RotateTransform"/>
+                                                                    </Setter.Value>
+                                                                </Setter>
                                                                 <Style.Triggers>
                                                                     <DataTrigger Binding="{Binding IsPlaying}" Value="true">
-                                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                                        <DataTrigger.EnterActions>
+                                                                            <BeginStoryboard>
+                                                                                <Storyboard>
+                                                                                    <DoubleAnimation To="1" Duration="0:0:0.2" Storyboard.TargetProperty="Opacity"/>
+                                                                                    <DoubleAnimation To="0" From="-90" Duration="0:0:0.4" Storyboard.TargetProperty="(ContentControl.RenderTransform).(RotateTransform.Angle)"/>
+                                                                                </Storyboard>
+                                                                            </BeginStoryboard>
+                                                                        </DataTrigger.EnterActions>
+                                                                        <DataTrigger.ExitActions>
+                                                                            <BeginStoryboard>
+                                                                                <Storyboard>
+                                                                                    <DoubleAnimation To="0" Duration="0:0:0.2" Storyboard.TargetProperty="Opacity"/>
+                                                                                </Storyboard>
+                                                                            </BeginStoryboard>
+                                                                        </DataTrigger.ExitActions>
                                                                     </DataTrigger>
                                                                 </Style.Triggers>
                                                             </Style>

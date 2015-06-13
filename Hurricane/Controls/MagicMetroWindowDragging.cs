@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Input;
-using System.Windows.Interop;
-using Hurricane.Utilities;
 
 namespace Hurricane.Controls
 {
@@ -26,7 +24,7 @@ namespace Hurricane.Controls
                 try
                 {
                     if (Mouse.LeftButton == MouseButtonState.Pressed)
-                        DragMove();
+                        Application.Current.Dispatcher.Invoke(DragMove);
                 }
                 catch (InvalidOperationException)
                 {

@@ -7,22 +7,20 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media;
-using Hurricane.Model;
 using Hurricane.Model.Data;
 using Hurricane.Model.Music;
 using Hurricane.Model.Music.Playable;
 using Hurricane.Model.Notifications;
 using Hurricane.Utilities;
+using Hurricane.ViewModel.MainView.Base;
 using Ookii.Dialogs.Wpf;
 using TaskExtensions = Hurricane.Utilities.TaskExtensions;
 
 namespace Hurricane.ViewModel.MainView
 {
-    public class CollectionView : PropertyChangedBase, IViewItem
+    public class CollectionView : SideListItem
     {
         private string _searchText;
-        private bool _isPlaying;
-        private bool _isLoaded;
         private NotificationManager _notificationManager;
         private MusicDataManager _musicDataManager;
 
@@ -31,16 +29,12 @@ namespace Hurricane.ViewModel.MainView
         private RelayCommand _playAudioCommand;
 
         public ICollectionView ViewSource { get; private set; }
-        public ViewCategorie ViewCategorie { get; } = ViewCategorie.MyMusic;
+        public override ViewCategorie ViewCategorie { get; } = ViewCategorie.MyMusic;
         public ICollectionView AlbumViewSource { get; set; }
 
-        public string Text => Application.Current.Resources["Collection"].ToString();
-        public Geometry Icon { get; } = (Geometry)Application.Current.Resources["VectorCollection"];
-        public bool IsPlaying
-        {
-            get { return _isPlaying; }
-            set { SetProperty(value, ref _isPlaying); }
-        }
+        public override string Text => Application.Current.Resources["Collection"].ToString();
+
+        public override Geometry Icon { get; } = (Geometry)Application.Current.Resources["VectorCollection"];
 
         public string SearchText
         {
@@ -116,28 +110,24 @@ namespace Hurricane.ViewModel.MainView
                         return;
 
                     _musicDataManager.MusicManager.OpenPlayable(playable, _musicDataManager.Tracks).Forget();
+                    ViewController.SetIsPlaying(this);
                 }));
             }
         }
 
-        public Task Load(MusicDataManager musicDataManager, ViewController viewController, NotificationManager notificationManager)
+        protected override Task Load()
         {
-            if (!_isLoaded)
-            {
-                ViewSource = CollectionViewSource.GetDefaultView(musicDataManager.Tracks.Tracks);
-                ViewSource.Filter = FilterViewSource;
-                ViewSource.GroupDescriptions.Add(new PropertyGroupDescription("Artist"));
-                ViewSource.SortDescriptions.Add(new SortDescription("Artist.Name", ListSortDirection.Ascending));
+            ViewSource = CollectionViewSource.GetDefaultView(MusicDataManager.Tracks.Tracks);
+            ViewSource.Filter = FilterViewSource;
+            ViewSource.GroupDescriptions.Add(new PropertyGroupDescription("Artist"));
+            ViewSource.SortDescriptions.Add(new SortDescription("Artist.Name", ListSortDirection.Ascending));
 
-                AlbumViewSource = new CollectionViewSource {Source = musicDataManager.Tracks.Tracks}.View;
-                AlbumViewSource.GroupDescriptions.Add(new PropertyGroupDescription("Album"));
-                AlbumViewSource.SortDescriptions.Add(new SortDescription("Album.Name", ListSortDirection.Ascending));
+            AlbumViewSource = new CollectionViewSource { Source = MusicDataManager.Tracks.Tracks }.View;
+            AlbumViewSource.GroupDescriptions.Add(new PropertyGroupDescription("Album"));
+            AlbumViewSource.SortDescriptions.Add(new SortDescription("Album.Name", ListSortDirection.Ascending));
 
-                _notificationManager = notificationManager;
-                _musicDataManager = musicDataManager;
-                _isLoaded = true;
-            }
-
+            _notificationManager = NotificationManager;
+            _musicDataManager = MusicDataManager;
             return TaskExtensions.CompletedTask;
         }
 

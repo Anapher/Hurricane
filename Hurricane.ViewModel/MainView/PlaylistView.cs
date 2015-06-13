@@ -7,26 +7,20 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media;
-using Hurricane.Model;
 using Hurricane.Model.Data;
-using Hurricane.Model.Music;
 using Hurricane.Model.Music.Playable;
 using Hurricane.Model.Music.Playlist;
 using Hurricane.Model.Music.TrackProperties;
-using Hurricane.Model.Notifications;
 using Hurricane.Utilities;
+using Hurricane.ViewModel.MainView.Base;
 using Ookii.Dialogs.Wpf;
 using TaskExtensions = Hurricane.Utilities.TaskExtensions;
 
 namespace Hurricane.ViewModel.MainView
 {
-    public class PlaylistView : PropertyChangedBase, IViewItem
+    public class PlaylistView : SideListItem
     {
         private string _searchText;
-        private bool _isLoaded;
-        private MusicDataManager _musicDataManager;
-        private NotificationManager _notificationManager;
-        private ViewController _viewController;
 
         private RelayCommand _addFilesCommand;
         private RelayCommand _addDirectoryCommand;
@@ -39,10 +33,10 @@ namespace Hurricane.ViewModel.MainView
             Icon = (Geometry)Application.Current.Resources["VectorPlaylist"];
         }
 
-        public ViewCategorie ViewCategorie { get; } = ViewCategorie.Playlist;
-        public Geometry Icon { get; }
-        public string Text => Playlist.Name;
-        public bool IsPlaying { get; set; }
+        public override ViewCategorie ViewCategorie { get; } = ViewCategorie.Playlist;
+        public override Geometry Icon { get; }
+        public override string Text => Playlist.Name;
+
         public UserPlaylist Playlist { get; }
 
         public string SearchText
@@ -65,7 +59,8 @@ namespace Hurricane.ViewModel.MainView
                     if (playable == null)
                         return;
 
-                    _musicDataManager.MusicManager.OpenPlayable(playable, Playlist).Forget();
+                    MusicDataManager.MusicManager.OpenPlayable(playable, Playlist).Forget();
+                    ViewController.SetIsPlaying(this);
                 }));
             }
         }
@@ -78,7 +73,7 @@ namespace Hurricane.ViewModel.MainView
                 {
                     var stringBuilder = new StringBuilder();
                     stringBuilder.Append($"{Application.Current.Resources["AudioFiles"]}|");
-                    stringBuilder.Append(string.Concat(_musicDataManager.MusicManager.AudioEngine.SupportedExtensions.Select(x => "*." + x + ";").ToArray()));
+                    stringBuilder.Append(string.Concat(MusicDataManager.MusicManager.AudioEngine.SupportedExtensions.Select(x => "*." + x + ";").ToArray()));
                     stringBuilder.Remove(stringBuilder.Length - 1, 1);
                     stringBuilder.Append($"|{Application.Current.Resources["AllFiles"]}|*.*");
 
@@ -94,8 +89,8 @@ namespace Hurricane.ViewModel.MainView
 
                     if (ofd.ShowDialog(Application.Current.MainWindow) == true)
                     {
-                        var importer = new TrackImporter(_musicDataManager);
-                        _notificationManager.ShowProgress(Application.Current.Resources["ImportingTracks"].ToString(), importer);
+                        var importer = new TrackImporter(MusicDataManager);
+                        NotificationManager.ShowProgress(Application.Current.Resources["ImportingTracks"].ToString(), importer);
                         await importer.ImportTracks(ofd.FileNames.Select(x => new FileInfo(x)), Playlist);
                     }
                 }));
@@ -115,8 +110,8 @@ namespace Hurricane.ViewModel.MainView
                     };
                     if (fbd.ShowDialog(Application.Current.MainWindow) == true)
                     {
-                        var importer = new TrackImporter(_musicDataManager);
-                        _notificationManager.ShowProgress(Application.Current.Resources["ImportingTracks"].ToString(), importer);
+                        var importer = new TrackImporter(MusicDataManager);
+                        NotificationManager.ShowProgress(Application.Current.Resources["ImportingTracks"].ToString(), importer);
                         await importer.ImportDirectory(new DirectoryInfo(fbd.SelectedPath), true, Playlist);
                     }
                 }));
@@ -125,26 +120,21 @@ namespace Hurricane.ViewModel.MainView
 
         public RelayCommand OpenArtistCommand
         {
-            get { return _openArtistCommand ?? (_openArtistCommand = new RelayCommand(parameter =>
+            get
             {
-                _viewController.OpenArtist((Artist) parameter);
-            })); }
+                return _openArtistCommand ?? (_openArtistCommand = new RelayCommand(parameter =>
+                {
+                    ViewController.OpenArtist((Artist)parameter);
+                }));
+            }
         }
 
         public ICollectionView ViewSource { get; private set; }
 
-        public Task Load(MusicDataManager musicDataManager, ViewController viewController, NotificationManager notificationManager)
+        protected override Task Load()
         {
-            if (!_isLoaded)
-            {
-                _musicDataManager = musicDataManager;
-                _notificationManager = notificationManager;
-                _viewController = viewController;
-                ViewSource = CollectionViewSource.GetDefaultView(Playlist.Tracks);
-                ViewSource.Filter = FilterViewSource;
-                _isLoaded = true;
-            }
-
+            ViewSource = CollectionViewSource.GetDefaultView(Playlist.Tracks);
+            ViewSource.Filter = FilterViewSource;
             return TaskExtensions.CompletedTask;
         }
 

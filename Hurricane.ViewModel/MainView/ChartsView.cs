@@ -3,23 +3,20 @@ using System.Globalization;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
-using Hurricane.Model;
 using Hurricane.Model.DataApi;
-using Hurricane.Model.Music;
 using Hurricane.Model.Music.TrackProperties;
-using Hurricane.Model.Notifications;
+using Hurricane.ViewModel.MainView.Base;
 
 namespace Hurricane.ViewModel.MainView
 {
-    public class ChartsView : PropertyChangedBase, IViewItem
+    public class ChartsView : SideListItem
     {
         private List<PreviewTrack> _chartList;
         private bool _isLoading;
 
-        public ViewCategorie ViewCategorie { get; } = ViewCategorie.Discover;
-        public Geometry Icon { get; } = (GeometryGroup)Application.Current.Resources["VectorCharts"];
-        public string Text => Application.Current.Resources["Charts"].ToString();
-        public bool IsPlaying { get; set; }
+        public override ViewCategorie ViewCategorie { get; } = ViewCategorie.Discover;
+        public override Geometry Icon { get; } = (GeometryGroup)Application.Current.Resources["VectorCharts"];
+        public override string Text => Application.Current.Resources["Charts"].ToString();
 
         public List<PreviewTrack> ChartList
         {
@@ -27,18 +24,18 @@ namespace Hurricane.ViewModel.MainView
             set { SetProperty(value, ref _chartList); }
         }
 
-        public bool IsLoading
+        public bool IsLoading //If the charts are loading
         {
             get { return _isLoading; }
             set { SetProperty(value, ref _isLoading); }
         }
 
-        public async Task Load(MusicDataManager musicDataManager, ViewController viewController, NotificationManager notificationManager)
+        protected async override Task Load()
         {
-            if (ChartList != null || IsLoading) return;
             IsLoading = true;
             ChartList = await iTunesApi.GetTop100(CultureInfo.CurrentCulture);
             IsLoading = false;
+
             foreach (var previewTrack in ChartList)
                 await previewTrack.Image.LoadImageAsync();
         }

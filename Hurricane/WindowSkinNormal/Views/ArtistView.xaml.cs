@@ -1,6 +1,4 @@
-﻿using System.Windows.Controls;
-
-namespace Hurricane.WindowSkinNormal.Views
+﻿namespace Hurricane.WindowSkinNormal.Views
 {
     /// <summary>
     /// Interaktionslogik für ArtistView.xaml
