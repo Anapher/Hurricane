@@ -1,5 +1,4 @@
 ﻿using System.Threading.Tasks;
-using System.Windows.Media.Imaging;
 using Hurricane.Model.AudioEngine;
 using Hurricane.Model.Music.Imagment;
 

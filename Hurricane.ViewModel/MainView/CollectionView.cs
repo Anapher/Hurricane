@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.ComponentModel;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -11,6 +12,7 @@ using System.Windows.Media;
 using Hurricane.Model.Data;
 using Hurricane.Model.Music;
 using Hurricane.Model.Music.Playable;
+using Hurricane.Model.Music.TrackProperties;
 using Hurricane.Model.Notifications;
 using Hurricane.Utilities;
 using Hurricane.ViewModel.MainView.Base;
@@ -29,6 +31,7 @@ namespace Hurricane.ViewModel.MainView
         private RelayCommand _addDirectoryCommand;
         private RelayCommand _playAudioCommand;
         private RelayCommand _addToQueueCommand;
+        private RelayCommand _openArtistCommand;
 
         public ICollectionView ViewSource { get; private set; }
         public override ViewCategorie ViewCategorie { get; } = ViewCategorie.MyMusic;
@@ -127,10 +130,21 @@ namespace Hurricane.ViewModel.MainView
                     if (items == null)
                         return;
 
-                    foreach (var track in items.Cast<IPlayable>())
+                    foreach (var track in items.Cast<PlayableBase>())
                     {
                         MusicDataManager.MusicManager.Queue.AddTrackToQueue(track);
                     }
+                }));
+            }
+        }
+
+        public RelayCommand OpenArtistCommand
+        {
+            get
+            {
+                return _openArtistCommand ?? (_openArtistCommand = new RelayCommand(parameter =>
+                {
+                    ViewController.OpenArtist((Artist)parameter);
                 }));
             }
         }
@@ -157,6 +171,26 @@ namespace Hurricane.ViewModel.MainView
             return string.IsNullOrWhiteSpace(_searchText) ||
                    track.Title.IndexOf(_searchText, StringComparison.OrdinalIgnoreCase) > -1 ||
                    track.Artist?.IndexOf(_searchText, StringComparison.OrdinalIgnoreCase) > -1;
+        }
+    }
+
+    public class AlbumImageConverter : IValueConverter
+    {
+        
+
+        public AlbumImageConverter()
+        {
+            
+        }
+
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return value;
         }
     }
 }

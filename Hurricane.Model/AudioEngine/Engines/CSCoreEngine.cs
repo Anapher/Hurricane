@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -36,6 +37,7 @@ namespace Hurricane.Model.AudioEngine.Engines
         private readonly CSCoreSoundOutProvider _soundOutProvider;
         private LoopStream _loopStream;
         private bool _isLooping;
+        private Stopwatch _playTimeStopwatch;
 
         public CSCoreEngine()
         {
@@ -44,6 +46,7 @@ namespace Hurricane.Model.AudioEngine.Engines
             _crossfadeService = new FadingService();
 
             _soundOutProvider.InvalidateSoundOut += SoundOutProvider_InvalidateSoundOut;
+            _playTimeStopwatch = new Stopwatch();
         }
 
         public void Dispose()
@@ -150,6 +153,7 @@ namespace Hurricane.Model.AudioEngine.Engines
         public ISoundOutProvider SoundOutProvider => _soundOutProvider;
 
         public List<string> SupportedExtensions => CodecFactory.Instance.GetSupportedFileExtensions().ToList();
+        public TimeSpan TimePlaySourcePlayed => TimeSpan.FromMilliseconds(_playTimeStopwatch.ElapsedMilliseconds);
 
         public async Task TogglePlayPause()
         {
@@ -161,6 +165,7 @@ namespace Hurricane.Model.AudioEngine.Engines
 
             if (_soundOut.PlaybackState == PlaybackState.Playing)
             {
+                _playTimeStopwatch.Stop();
                 _isPausing = true;
                 CurrentStateChanged();
                 await _fadingService.FadeOut(_soundOut, Volume);
@@ -170,6 +175,7 @@ namespace Hurricane.Model.AudioEngine.Engines
             }
             else
             {
+                _playTimeStopwatch.Start();
                 _soundOut?.Play();
                 CurrentStateChanged();
                 await _fadingService.FadeIn(_soundOut, Volume);
@@ -258,6 +264,7 @@ namespace Hurricane.Model.AudioEngine.Engines
             IsLoading = false;
 
             OnTrackLengthChanged();
+            _playTimeStopwatch.Reset();
 
             if (openCrossfading)
             {

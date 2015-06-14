@@ -215,13 +215,19 @@
                 </Grid>
             </TabItem>
             <TabItem>
-                <ListView ItemsSource="{Binding AlbumViewSource.Groups}">
-                    <ListView.View>
-                        <GridView>
-                            
-                        </GridView>
-                    </ListView.View>
-                </ListView>
+                <ListBox ItemsSource="{Binding AlbumViewSource.Groups}">
+                    <ListBox.ItemContainerStyle>
+                        <Style TargetType="ListBoxItem">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="ListBoxItem">
+                                        <myControls:PlayableImage />
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </ListBox.ItemContainerStyle>
+                </ListBox>
             </TabItem>
             <TabItem>
                 <ListView ctrl:ListViewLayoutManager.Enabled="True" ItemsSource="{Binding ViewSource}" IsSynchronizedWithCurrentItem="True" extensions:GridViewSort.AutoSort="True"
@@ -237,7 +243,34 @@
                     </ListView.InputBindings>
                     <ListView.View>
                         <GridView d:DataContext="{d:DesignInstance data:IPlayable}">
-                            <GridViewColumn Header="{StaticResource Artist}" DisplayMemberBinding="{Binding Artist.Name}" ctrl:ProportionalColumn.Width="1" extensions:GridViewSort.PropertyName="Artist.Name"/>
+                            <GridViewColumn Header="{StaticResource Artist}" ctrl:ProportionalColumn.Width="1" extensions:GridViewSort.PropertyName="Artist.Name">
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Button Content="{Binding Artist.Name}" Command="{Binding RelativeSource={RelativeSource AncestorType=ListBox},Path=DataContext.OpenArtistCommand}"
+                                                CommandParameter="{Binding Artist}" HorizontalAlignment="Left">
+                                            <Button.Style>
+                                                <Style TargetType="Button">
+                                                    <Setter Property="Cursor" Value="Hand"/>
+                                                    <Setter Property="OverridesDefaultStyle" Value="True"/>
+                                                    <Setter Property="Foreground" Value="{StaticResource BlackBrush}"/>
+                                                    <Setter Property="Template">
+                                                        <Setter.Value>
+                                                            <ControlTemplate TargetType="Button">
+                                                                <TextBlock><ContentPresenter /></TextBlock>
+                                                            </ControlTemplate>
+                                                        </Setter.Value>
+                                                    </Setter>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=ListBoxItem},Path=IsSelected}" Value="true">
+                                                            <Setter Property="Foreground" Value="White"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Button.Style>
+                                        </Button>
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
                             <GridViewColumn Header="{StaticResource Titel}" DisplayMemberBinding="{Binding Title}" ctrl:ProportionalColumn.Width="2" extensions:GridViewSort.PropertyName="Title"/>
                             <GridViewColumn Header="{StaticResource Album}" DisplayMemberBinding="{Binding Album.Name}" ctrl:ProportionalColumn.Width="1" extensions:GridViewSort.PropertyName="Album.Name"/>
                             <GridViewColumn Header="{StaticResource Duration}" DisplayMemberBinding="{Binding Duration,Converter={StaticResource TimespanToStringConverter}}" Width="100" extensions:GridViewSort.PropertyName="Duration"/>

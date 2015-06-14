@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows;
 using Hurricane.Model.Data;
 using Hurricane.Model.DataApi;
 using Hurricane.Model.Music.Playlist;
@@ -15,15 +16,18 @@ namespace Hurricane.Model.Music
         private const string TracksFilename = "Tracks.xml";
         private const string PlaylistsFilename = "Playlists.xml";
         private const string AlbumsFilename = "Albums.xml";
+        private const string UserDataFilename = "UserData.xml";
 
         public MusicDataManager()
         {
             Playlists = new PlaylistProvider();
             LastfmApi = new LastfmApi();
-            MusicManager = new MusicManager();
             Artists = new ArtistProvider();
             Tracks = new TrackProvider();
             Albums = new AlbumsProvider();
+            UserData = new UserDataProvider();
+            MusicManager = new MusicManager();
+            MusicManager.TrackChanged += MusicManager_TrackChanged;
         }
 
         public void Dispose()
@@ -31,12 +35,13 @@ namespace Hurricane.Model.Music
             MusicManager.Dispose();
         }
 
-        public TrackProvider Tracks { get; set; }
+        public TrackProvider Tracks { get; }
         public PlaylistProvider Playlists { get; }
         public MusicManager MusicManager { get; }
         public LastfmApi LastfmApi { get; }
         public ArtistProvider Artists { get; }
-        public AlbumsProvider Albums { get; set; }
+        public AlbumsProvider Albums { get; }
+        public UserDataProvider UserData { get; }
 
         public async Task Load(string rootFolder)
         {
@@ -44,6 +49,7 @@ namespace Hurricane.Model.Music
             var tracksFileInfo = new FileInfo(Path.Combine(rootFolder, TracksFilename));
             var playlistsFileInfo = new FileInfo(Path.Combine(rootFolder, PlaylistsFilename));
             var albumsFileInfo = new FileInfo(Path.Combine(rootFolder, AlbumsFilename));
+            var userDataFileInfo = new FileInfo(Path.Combine(rootFolder, UserDataFilename));
 
             if (artistFileInfo.Exists)
                 await Artists.LoadFromFile(artistFileInfo.FullName);
@@ -60,15 +66,23 @@ namespace Hurricane.Model.Music
             if (playlistsFileInfo.Exists)
                 await Playlists.LoadFromFile(playlistsFileInfo.FullName, Tracks.Collection);
 
+            if (userDataFileInfo.Exists)
+                await UserData.LoadFromFile(userDataFileInfo.FullName);
+
             LoadSettings();
         }
 
         public void Save(string rootFolder)
         {
+            if (MusicManager.CurrentTrack != null)
+                UserData.UserData.History.AddEntry(MusicManager.CurrentTrack,
+                    MusicManager.AudioEngine.TimePlaySourcePlayed);
+
             Playlists.SaveToFile(Path.Combine(rootFolder, PlaylistsFilename), Tracks.Collection);
             Artists.SaveToFile(Path.Combine(rootFolder, ArtistFilename));
             Tracks.SaveToFile(Path.Combine(rootFolder, TracksFilename));
             Albums.SaveToFile(Path.Combine(rootFolder, AlbumsFilename));
+            UserData.SaveToFile(Path.Combine(rootFolder, UserDataFilename));
 
             CopyToSettings();
         }
@@ -114,6 +128,12 @@ namespace Hurricane.Model.Music
                 //settings.CurrentTrack = Tracks.Collection.First(x => x.Value == MusicManager.CurrentTrack).Key;
                 //settings.CurrentPlaylist = MusicManager.CurrentPlaylist.id;
             }
+        }
+
+        private void MusicManager_TrackChanged(object sender, Args.TrackChangedEventArgs e)
+        {
+            Application.Current.Dispatcher.BeginInvoke(
+                new Action(() => UserData.UserData.History.AddEntry(e.Track, e.TimePlayed)));
         }
     }
 }

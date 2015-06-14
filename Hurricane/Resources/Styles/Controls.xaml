@@ -84,4 +84,55 @@
             </Setter.Value>
         </Setter>
     </Style>
+    
+    <Style TargetType="Button" x:Key="CloseButton" x:Shared="False">
+        <Setter Property="OverridesDefaultStyle" Value="True"/>
+        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="CircularBorder" CornerRadius="{Binding ElementName=CircularBorder,Path=ActualHeight}" Width="{Binding ElementName=CircularBorder,Path=ActualHeight}"
+                            Background="{StaticResource WhiteBrush}" BorderThickness="1" BorderBrush="{StaticResource GrayBrush7}">
+                        <Viewbox Margin="6">
+                            <Path Data="{StaticResource VectorCancel}" Fill="{StaticResource BlackBrush}"/>
+                        </Viewbox>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Trigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ColorAnimation To="{StaticResource Gray10}" Duration="0:0:0.2" Storyboard.TargetName="CircularBorder" Storyboard.TargetProperty="(Border.BorderBrush).(SolidColorBrush.Color)"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.EnterActions>
+                            <Trigger.ExitActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ColorAnimation To="{StaticResource Gray7}" Duration="0:0:0.2" Storyboard.TargetName="CircularBorder" Storyboard.TargetProperty="(Border.BorderBrush).(SolidColorBrush.Color)"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.ExitActions>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Trigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ColorAnimation To="{StaticResource Gray9}" Duration="0:0:0.2" Storyboard.TargetName="CircularBorder" Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.EnterActions>
+                            <Trigger.ExitActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ColorAnimation To="{StaticResource WhiteColor}" Duration="0:0:0.2" Storyboard.TargetName="CircularBorder" Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.ExitActions>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
 </ResourceDictionary>

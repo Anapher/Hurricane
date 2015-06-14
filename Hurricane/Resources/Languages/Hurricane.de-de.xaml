@@ -36,6 +36,13 @@
     <system:String x:Key="Biography">Biografie</system:String>
     <system:String x:Key="SimilarArtists">Ähnliche Künstler</system:String>
     <system:String x:Key="TopHits">Top Hits</system:String>
+    <system:String x:Key="ClearQueue">Warteschlange leeren</system:String>
+    <system:String x:Key="PlayAudio">Abspielen</system:String>
+    <system:String x:Key="RemoveFromQueue">Von Warteschlange entfernen</system:String>
+    <system:String x:Key="QueueIsEmpty">Die Warteschlange ist leer</system:String>
+    <system:String x:Key="History">Chronik</system:String>
+    <system:String x:Key="Date">Datum</system:String>
+    <system:String x:Key="TimePlayed">Abspieldauer</system:String>
     
     <system:String x:Key="Error">Fehler</system:String>
     <system:String x:Key="ErrorWhileLoadingData">Es ist ein Fehler bei dem Laden der Daten aufgetreten.</system:String>

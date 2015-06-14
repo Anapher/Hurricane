@@ -3,10 +3,10 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:Hurricane.WindowSkinNormal.Views"
              xmlns:mainView="clr-namespace:Hurricane.ViewModel.MainView;assembly=Hurricane.ViewModel"
              xmlns:behavior="clr-namespace:Hurricane.Behavior"
-             xmlns:musicData="clr-namespace:Hurricane.Model.Music.Playable;assembly=Hurricane.Model"
+             xmlns:dd="clr-namespace:GongSolutions.Wpf.DragDrop;assembly=GongSolutions.Wpf.DragDrop"
+             xmlns:playlistData="clr-namespace:Hurricane.Model.Music.Playlist;assembly=Hurricane.Model"
              mc:Ignorable="d" 
              d:DesignHeight="400" d:DesignWidth="800" d:DataContext="{d:DesignInstance mainView:QueueView}">
     <Grid>
@@ -14,27 +14,49 @@
             <RowDefinition Height="75"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <StackPanel Orientation="Horizontal" Margin="10">
+        <DockPanel Margin="10">
             <Viewbox Height="20">
                 <Path Data="{StaticResource VectorQueue}" Fill="{StaticResource GrayBrush2}"/>
             </Viewbox>
             <TextBlock Text="{StaticResource Queue}" VerticalAlignment="Center" FontSize="20" TextTrimming="CharacterEllipsis" Margin="10,0,0,0"/>
-        </StackPanel>
-        <ListBox Grid.Row="1" ItemsSource="{Binding Queue.Playables}" Style="{StaticResource VirtualisedMetroListBox}">
+            <Button VerticalAlignment="Center" HorizontalAlignment="Right" Content="{StaticResource ClearQueue}" Command="{Binding ClearQueue}">
+                <Button.Style>
+                    <Style TargetType="Button" BasedOn="{StaticResource MetroButton}">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Queue.IsEmpty}" Value="true">
+                                <Setter Property="IsEnabled" Value="False"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Button.Style>
+            </Button>
+        </DockPanel>
+        <ListBox Grid.Row="1" ItemsSource="{Binding Queue.QueueItems}" Style="{StaticResource VirtualisedMetroListBox}" dd:DragDrop.IsDragSource="True" dd:DragDrop.IsDropTarget="True"
+                 SelectionMode="Extended" x:Name="QueueListBox">
+            <ListBox.Resources>
+                <ContextMenu x:Key="QueueItemContextMenu">
+                    <MenuItem Header="{StaticResource PlayAudio}" Command="{Binding RelativeSource={RelativeSource AncestorType=ListBox},Path=DataContext.PlayAudioCommand}"
+                              CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=ListBox},Path=SelectedItem}"/>
+                    <Separator />
+                    <MenuItem Header="{StaticResource RemoveFromQueue}" Command="{Binding RelativeSource={RelativeSource AncestorType=ListBox},Path=DataContext.RemoveFromQueueCommand}"
+                              CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=ListBox},Path=SelectedItems}"/>
+                </ContextMenu>
+            </ListBox.Resources>
             <ListBox.ItemContainerStyle>
                 <Style TargetType="ListBoxItem" BasedOn="{StaticResource MetroListBoxItem}">
                     <Setter Property="behavior:ControlBehavior.DoubleClickCommand" Value="{Binding RelativeSource={RelativeSource AncestorType=ListBox},Path=DataContext.PlayAudioCommand}"/>
                     <Setter Property="behavior:ControlBehavior.DoubleClickCommandParameter" Value="{Binding}"/>
+                    <Setter Property="ContextMenu" Value="{StaticResource QueueItemContextMenu}"/>
                 </Style>
             </ListBox.ItemContainerStyle>
             <ListBox.ItemTemplate>
-                <DataTemplate DataType="{x:Type musicData:PlayableBase}">
+                <DataTemplate DataType="{x:Type playlistData:QueueItem}">
                     <Border BorderBrush="{StaticResource AccentColorBrush}">
                         <Border.Style>
                             <Style TargetType="Border">
                                 <Setter Property="BorderThickness" Value="0"/>
                                 <Style.Triggers>
-                                    <DataTrigger Binding="{Binding IsPlaying}" Value="true">
+                                    <DataTrigger Binding="{Binding Playable.IsPlaying}" Value="true">
                                         <Setter Property="BorderThickness" Value="1"/>
                                     </DataTrigger>
                                 </Style.Triggers>
@@ -42,13 +64,15 @@
                         </Border.Style>
                         <Grid Margin="3">
                             <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="45"/>
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
-                            <StackPanel Orientation="Vertical">
-                                <TextBlock Text="{Binding Title}" FontSize="13"/>
-                                <Button Margin="0,2,0,0" Content="{Binding Artist.Name}" HorizontalAlignment="Left"
-                                    Command="{Binding RelativeSource={RelativeSource AncestorType=ListBox},Path=DataContext.OpenArtistCommand}" CommandParameter="{Binding Artist}">
+                            <TextBlock Text="{Binding Number}" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="16" FontFamily="Segoe UI Light"/>
+                            <StackPanel Orientation="Vertical" Grid.Column="1">
+                                <TextBlock Text="{Binding Playable.Title}" FontSize="13"/>
+                                <Button Margin="0,2,0,0" Content="{Binding Artist}" HorizontalAlignment="Left"
+                                    Command="{Binding RelativeSource={RelativeSource AncestorType=ListBox},Path=DataContext.OpenArtistCommand}" CommandParameter="{Binding Playable.Artist}">
                                     <Button.Style>
                                         <Style TargetType="Button">
                                             <Setter Property="Cursor" Value="Hand"/>
@@ -70,11 +94,13 @@
                                     </Button.Style>
                                 </Button>
                             </StackPanel>
-                            <TextBlock Text="{Binding Duration,Converter={StaticResource TimespanToStringConverter}}" Grid.Column="1" VerticalAlignment="Center" Margin="5,0,0,0"/>
+                            <TextBlock Text="{Binding Duration,Converter={StaticResource TimespanToStringConverter}}" Grid.Column="2" VerticalAlignment="Center" Margin="5,0,0,0"/>
                         </Grid>
                     </Border>
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
+        <TextBlock Grid.Row="1" Visibility="{Binding Queue.IsEmpty,Converter={StaticResource BooleanToVisibilityConverter}}" VerticalAlignment="Center" HorizontalAlignment="Center"
+                   Text="{StaticResource QueueIsEmpty}" FontSize="20" FontFamily="Segoe UI Light"/>
     </Grid>
 </UserControl>

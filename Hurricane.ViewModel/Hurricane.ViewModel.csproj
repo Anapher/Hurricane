@@ -32,6 +32,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="GongSolutions.Wpf.DragDrop, Version=0.1.4.3, Culture=neutral, PublicKeyToken=d19974ea350ccea1, processorArchitecture=MSIL">
+      <HintPath>..\packages\gong-wpf-dragdrop.0.1.4.3\lib\net40\GongSolutions.Wpf.DragDrop.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="MahApps.Metro, Version=1.1.2.0, Culture=neutral, PublicKeyToken=f4fb5a3c4d1e5b4f, processorArchitecture=MSIL">
       <HintPath>..\packages\MahApps.Metro.1.1.2.0\lib\net45\MahApps.Metro.dll</HintPath>
       <Private>True</Private>
@@ -62,6 +66,7 @@
     <Compile Include="MainView\ArtistView.cs" />
     <Compile Include="MainView\Base\SideListItem.cs" />
     <Compile Include="MainView\ChartsView.cs" />
+    <Compile Include="MainView\HistoryView.cs" />
     <Compile Include="MainView\HomeView.cs" />
     <Compile Include="MainView\Base\ISideListItem.cs" />
     <Compile Include="MainView\Base\IViewItem.cs" />

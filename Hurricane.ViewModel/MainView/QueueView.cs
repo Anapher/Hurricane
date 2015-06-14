@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
@@ -7,6 +9,7 @@ using Hurricane.Model.Music.Playlist;
 using Hurricane.Model.Music.TrackProperties;
 using Hurricane.Utilities;
 using Hurricane.ViewModel.MainView.Base;
+using Queue = Hurricane.Model.Music.Playlist.Queue;
 using TaskExtensions = Hurricane.Utilities.TaskExtensions;
 
 namespace Hurricane.ViewModel.MainView
@@ -15,6 +18,8 @@ namespace Hurricane.ViewModel.MainView
     {
         private RelayCommand _playAudioCommand;
         private RelayCommand _openArtistCommand;
+        private RelayCommand _clearQueueCommand;
+        private RelayCommand _removeFromQueueCommand;
 
         public override ViewCategorie ViewCategorie { get; } = ViewCategorie.Discover;
         public override Geometry Icon { get; } = (Geometry)Application.Current.Resources["VectorQueue"];
@@ -28,12 +33,12 @@ namespace Hurricane.ViewModel.MainView
             {
                 return _playAudioCommand ?? (_playAudioCommand = new RelayCommand(parameter =>
                 {
-                    var playable = parameter as IPlayable;
-                    if (playable == null)
+                    var queueItem = parameter as QueueItem;
+                    if (queueItem == null)
                         return;
 
-                    MusicDataManager.MusicManager.OpenPlayable(playable, null).Forget();
-                    Queue.Playables.Remove(playable);
+                    MusicDataManager.MusicManager.OpenPlayable(queueItem.Playable, null).Forget();
+                    Queue.RemoveTrackFromQueue(queueItem.Playable);
                     ViewController.SetIsPlaying(this);
                 }));
             }
@@ -45,7 +50,49 @@ namespace Hurricane.ViewModel.MainView
             {
                 return _openArtistCommand ?? (_openArtistCommand = new RelayCommand(parameter =>
                 {
-                    ViewController.OpenArtist((Artist)parameter);
+                    var artist = parameter as Artist;
+
+                    if (artist == null)
+                    {
+                        var artistName = parameter as string;
+                        if (string.IsNullOrWhiteSpace(artistName))
+                            return;
+
+                        var artistMatches =
+                            MusicDataManager.Artists.ArtistDictionary.Where(x => string.Equals(x.Value.Name, artistName, StringComparison.OrdinalIgnoreCase)).ToList();
+                        if (!artistMatches.Any())
+                            return;
+                        artist = artistMatches.First().Value;
+                    }
+
+                    ViewController.OpenArtist(artist);
+                }));
+            }
+        }
+
+        public RelayCommand ClearQueue
+        {
+            get
+            {
+                return _clearQueueCommand ?? (_clearQueueCommand = new RelayCommand(parameter =>
+                {
+                    Queue.QueueItems.Clear();
+                }));
+            }
+        }
+
+        public RelayCommand RemoveFromQueueCommand
+        {
+            get
+            {
+                return _removeFromQueueCommand ?? (_removeFromQueueCommand = new RelayCommand(parameter =>
+                {
+                    var items = parameter as IList;
+                    if (items == null)
+                        return;
+
+                    foreach (var queueItem in items.Cast<QueueItem>())
+                        Queue.QueueItems.Remove(queueItem);
                 }));
             }
         }

@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using Hurricane.Model.AudioEngine;
 using Hurricane.Model.AudioEngine.Engines;
+using Hurricane.Model.Music.Args;
 using Hurricane.Model.Music.Playable;
 using Hurricane.Model.Music.Playlist;
 using Hurricane.Model.MusicEqualizer;
@@ -26,7 +26,6 @@ namespace Hurricane.Model.Music
             AudioEngine = new CSCoreEngine();
             AudioEngine.TrackFinished += AudioEngineOnTrackFinished;
             AudioEngine.EqualizerBands = new EqualizerBandCollection();
-            TrackHistory = new ObservableCollection<IPlayable>();
             Queue = new Queue();
 
             AudioEngine.CrossfadeDuration = TimeSpan.FromSeconds(4);
@@ -46,6 +45,7 @@ namespace Hurricane.Model.Music
         }
 
         public event EventHandler QueuePlaying;
+        public event EventHandler<TrackChangedEventArgs> TrackChanged;
 
         public IPlayable CurrentTrack
         {
@@ -94,11 +94,12 @@ namespace Hurricane.Model.Music
         }
 
         public IAudioEngine AudioEngine { get; }
-        public ObservableCollection<IPlayable> TrackHistory { get; }
         public Queue Queue { get; }
 
         private async Task OpenPlayable(IPlayable playable, IPlaylist playlist, bool openPlaying, bool openCrossfading, bool addToTempHistory)
         {
+            if (CurrentTrack != null)
+                TrackChanged?.Invoke(this, new TrackChangedEventArgs(CurrentTrack, AudioEngine.TimePlaySourcePlayed));
             CurrentTrack = playable;
             CurrentPlaylist = playlist;
 
@@ -108,7 +109,6 @@ namespace Hurricane.Model.Music
                 if (track != null)
                     track.LastTimePlayed = DateTime.Now;
                 
-                TrackHistory.Add(playable);
                 playlist?.GetBackHistory().Add(track);
                 if (addToTempHistory && (_tempHistory.Count == 0 || _tempHistory.Last().Item1 != playlist || _tempHistory.Last().Item2 != playable))
                     _tempHistory.Add(Tuple.Create(playlist, playable));
@@ -132,7 +132,7 @@ namespace Hurricane.Model.Music
         {
             IPlayable track;
 
-            if (Queue.Playables.Any())
+            if (Queue.QueueItems.Any())
             {
                 track = Queue.GetNextPlayable();
                 QueuePlaying?.Invoke(this, EventArgs.Empty);

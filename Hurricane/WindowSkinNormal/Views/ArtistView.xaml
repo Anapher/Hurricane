@@ -43,12 +43,8 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <DockPanel VerticalAlignment="Center" Background="{StaticResource AccentColorBrush2}" Height="60">
-            <TextBlock Text="{Binding Artist.Name}" VerticalAlignment="Center" HorizontalAlignment="Left" FontSize="16" Foreground="White" Margin="5,0,0,0"/>
-            <Button Style="{DynamicResource MetroCircleButtonStyle}" Height="25" Width="25" HorizontalAlignment="Right" Command="{Binding CloseCommand}" VerticalAlignment="Top">
-                <Viewbox Margin="9">
-                    <Path Data="{StaticResource VectorCancel}" Fill="{StaticResource GrayBrush10}"/>
-                </Viewbox>
-            </Button>
+            <TextBlock Text="{Binding Artist.Name}" VerticalAlignment="Center" HorizontalAlignment="Left" FontSize="19" Foreground="White" Margin="10,0,0,0"/>
+            <Button Style="{StaticResource CloseButton}" Height="20" Width="20" HorizontalAlignment="Right" Command="{Binding CloseCommand}" VerticalAlignment="Top" Margin="10"/>
         </DockPanel>
         <ScrollViewer Grid.Row="2">
             <Grid Margin="10">

@@ -46,7 +46,7 @@
         <Grid Background="{StaticResource WhiteBrush}" Visibility="{Binding IsLoading,Converter={StaticResource BooleanToVisibilityConverter}}">
             <StackPanel Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center">
                 <TextBlock Text="{StaticResource LoadingCharts}" FontSize="20" FontFamily="Segoe UI Light"/>
-                <controls:MetroProgressBar IsIndeterminate="{Binding IsLoading}" Maximum="1" MinWidth="300"/>
+                <controls:MetroProgressBar IsIndeterminate="{Binding IsLoading}" Maximum="1" MinWidth="300" Foreground="{StaticResource AccentColorBrush}"/>
             </StackPanel>
         </Grid>
     </Grid>

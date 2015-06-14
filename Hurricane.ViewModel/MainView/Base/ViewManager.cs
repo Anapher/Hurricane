@@ -16,7 +16,8 @@ namespace Hurricane.ViewModel.MainView.Base
                 new HomeView(),
                 new CollectionView(),
                 new ChartsView(),
-                new QueueView()
+                new QueueView(),
+                new HistoryView()
             };
 
             playlistProvider.PlaylistAdded += PlaylistProvider_PlaylistAdded;

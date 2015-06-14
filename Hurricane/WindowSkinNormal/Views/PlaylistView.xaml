@@ -3,7 +3,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:Hurricane.WindowSkinNormal.Views"
              xmlns:viewData="clr-namespace:Hurricane.ViewModel.MainView;assembly=Hurricane.ViewModel"
              xmlns:musicData="clr-namespace:Hurricane.Model.Music.Playable;assembly=Hurricane.Model"
              xmlns:controls="clr-namespace:Hurricane.Controls"
@@ -37,7 +36,10 @@
                 </Menu>
             </StackPanel>
         </Grid>
-        <ListBox Grid.Row="1" ItemsSource="{Binding ViewSource}" Style="{StaticResource VirtualisedMetroListBox}">
+        <ListBox Grid.Row="1" ItemsSource="{Binding ViewSource}" Style="{StaticResource VirtualisedMetroListBox}" SelectionMode="Extended" x:Name="TrackListBox">
+            <ListBox.InputBindings>
+                <KeyBinding Key="Q" Command="{Binding AddToQueueCommand}" CommandParameter="{Binding ElementName=TrackListBox,Path=SelectedItems}"/>
+            </ListBox.InputBindings>
             <ListBox.ItemContainerStyle>
                 <Style TargetType="ListBoxItem" BasedOn="{StaticResource MetroListBoxItem}">
                     <Setter Property="behavior:ControlBehavior.DoubleClickCommand" Value="{Binding RelativeSource={RelativeSource AncestorType=ListBox},Path=DataContext.PlayAudioCommand}"/>

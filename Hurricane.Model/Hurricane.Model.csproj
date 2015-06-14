@@ -89,9 +89,13 @@
     <Compile Include="Data\ArtistProvider.cs" />
     <Compile Include="Data\PlaylistProvider.cs" />
     <Compile Include="Data\TrackImporter.cs" />
+    <Compile Include="Data\UserData.cs" />
+    <Compile Include="Data\UserDataProvider.cs" />
+    <Compile Include="Music\Args\TrackChangedEventArgs.cs" />
     <Compile Include="Music\Imagment\ImageLoader.cs" />
     <Compile Include="Music\Imagment\OnlineImage.cs" />
     <Compile Include="Music\Imagment\TagImage.cs" />
+    <Compile Include="Music\Playlist\History.cs" />
     <Compile Include="Music\Playlist\Queue.cs" />
     <Compile Include="Music\TrackProperties\Album.cs" />
     <Compile Include="Music\TrackProperties\PreviewTrack.cs" />
@@ -134,7 +138,6 @@
     <Compile Include="Music\Playable\LocalPlayable.cs" />
     <Compile Include="Music\Playable\PlayableBase.cs" />
     <Compile Include="Music\Playlist\IPlaylist.cs" />
-    <Compile Include="Music\Playlist\QueueList.cs" />
     <Compile Include="Music\Playlist\UserPlaylist.cs" />
     <Compile Include="Music\TrackProperties\Artist.cs" />
     <Compile Include="Music\Imagment\ImageProvider.cs" />

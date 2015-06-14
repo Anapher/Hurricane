@@ -96,6 +96,11 @@ namespace Hurricane.Model.AudioEngine
         List<string> SupportedExtensions { get; }
 
         /// <summary>
+        /// The playtime of the current playsource
+        /// </summary>
+        TimeSpan TimePlaySourcePlayed { get; }
+
+        /// <summary>
         /// Toggles play/pause
         /// </summary>
         Task TogglePlayPause();

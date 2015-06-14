@@ -53,6 +53,7 @@ namespace Hurricane.ViewModel
                     _selectedAccentColor = value;
                     var theme = ThemeManager.DetectAppStyle(Application.Current);
                     ThemeManager.ChangeAppStyle(Application.Current, value.AccentColor, theme.Item1);
+                    _refreshViewAction.Invoke();
                     _settings.AccentColor = value.Key;
                 }
             }

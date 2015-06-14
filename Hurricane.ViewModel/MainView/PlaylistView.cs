@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
@@ -26,6 +27,7 @@ namespace Hurricane.ViewModel.MainView
         private RelayCommand _addDirectoryCommand;
         private RelayCommand _playAudioCommand;
         private RelayCommand _openArtistCommand;
+        private RelayCommand _addToQueueCommand;
 
         public PlaylistView(UserPlaylist playlist)
         {
@@ -125,6 +127,24 @@ namespace Hurricane.ViewModel.MainView
                 return _openArtistCommand ?? (_openArtistCommand = new RelayCommand(parameter =>
                 {
                     ViewController.OpenArtist((Artist)parameter);
+                }));
+            }
+        }
+
+        public RelayCommand AddToQueueCommand
+        {
+            get
+            {
+                return _addToQueueCommand ?? (_addToQueueCommand = new RelayCommand(parameter =>
+                {
+                    var items = parameter as IList;
+                    if (items == null)
+                        return;
+
+                    foreach (var track in items.Cast<PlayableBase>())
+                    {
+                        MusicDataManager.MusicManager.Queue.AddTrackToQueue(track);
+                    }
                 }));
             }
         }
