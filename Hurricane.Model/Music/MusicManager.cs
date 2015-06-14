@@ -27,6 +27,7 @@ namespace Hurricane.Model.Music
             AudioEngine.TrackFinished += AudioEngineOnTrackFinished;
             AudioEngine.EqualizerBands = new EqualizerBandCollection();
             TrackHistory = new ObservableCollection<IPlayable>();
+            Queue = new Queue();
 
             AudioEngine.CrossfadeDuration = TimeSpan.FromSeconds(4);
             IsCrossfadeEnabled = true;
@@ -43,6 +44,8 @@ namespace Hurricane.Model.Music
         {
             AudioEngine.Dispose();
         }
+
+        public event EventHandler QueuePlaying;
 
         public IPlayable CurrentTrack
         {
@@ -92,6 +95,7 @@ namespace Hurricane.Model.Music
 
         public IAudioEngine AudioEngine { get; }
         public ObservableCollection<IPlayable> TrackHistory { get; }
+        public Queue Queue { get; }
 
         private async Task OpenPlayable(IPlayable playable, IPlaylist playlist, bool openPlaying, bool openCrossfading, bool addToTempHistory)
         {
@@ -105,7 +109,7 @@ namespace Hurricane.Model.Music
                     track.LastTimePlayed = DateTime.Now;
                 
                 TrackHistory.Add(playable);
-                playlist.GetBackHistory().Add(track);
+                playlist?.GetBackHistory().Add(track);
                 if (addToTempHistory && (_tempHistory.Count == 0 || _tempHistory.Last().Item1 != playlist || _tempHistory.Last().Item2 != playable))
                     _tempHistory.Add(Tuple.Create(playlist, playable));
 
@@ -126,12 +130,23 @@ namespace Hurricane.Model.Music
 
         public void GoForward(bool crossfade)
         {
-            if (CurrentPlaylist == null || CurrentPlaylist.Tracks.Count == 0 ||
-                CurrentPlaylist.Tracks.All(x => !x.IsAvailable)) return;
+            IPlayable track;
 
-            var track = CurrentPlayMode == PlayMode.Default
-                ? CurrentPlaylist.GetNextTrack(CurrentTrack)
-                : CurrentPlaylist.GetRandomTrack();
+            if (Queue.Playables.Any())
+            {
+                track = Queue.GetNextPlayable();
+                QueuePlaying?.Invoke(this, EventArgs.Empty);
+            }
+            else
+            {
+                if (CurrentPlaylist == null || CurrentPlaylist.Tracks.Count == 0 ||
+                    CurrentPlaylist.Tracks.All(x => !x.IsAvailable))
+                    return;
+
+                track = CurrentPlayMode == PlayMode.Default
+                    ? CurrentPlaylist.GetNextTrack(CurrentTrack)
+                    : CurrentPlaylist.GetRandomTrack();
+            }
 
             OpenPlayable(track, CurrentPlaylist, true, crossfade, true).Forget();
         }

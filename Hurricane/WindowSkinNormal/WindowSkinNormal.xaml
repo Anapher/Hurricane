@@ -245,6 +245,9 @@
                             <DataTemplate DataType="{x:Type viewData:PlaylistView}">
                                 <views:PlaylistView DataContext="{Binding}"/>
                             </DataTemplate>
+                            <DataTemplate DataType="{x:Type viewData:QueueView}">
+                                <views:QueueView DataContext="{Binding}"/>
+                            </DataTemplate>
                         </ContentControl.Resources>
                     </ContentControl>
                     <ContentControl Content="{Binding SpecialView}" Grid.ColumnSpan="3" Grid.Column="0">

@@ -92,6 +92,7 @@
     <Compile Include="Music\Imagment\ImageLoader.cs" />
     <Compile Include="Music\Imagment\OnlineImage.cs" />
     <Compile Include="Music\Imagment\TagImage.cs" />
+    <Compile Include="Music\Playlist\Queue.cs" />
     <Compile Include="Music\TrackProperties\Album.cs" />
     <Compile Include="Music\TrackProperties\PreviewTrack.cs" />
     <Compile Include="DataApi\SensitiveInformation.cs" />

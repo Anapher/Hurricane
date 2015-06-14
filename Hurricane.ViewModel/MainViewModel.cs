@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using Hurricane.Model;
@@ -151,6 +152,8 @@ namespace Hurricane.ViewModel
             }
 
             ViewManager = new ViewManager(MusicDataManager.Playlists);
+            ViewManager.ViewItems.First(x => x is QueueView)
+                .Load(MusicDataManager, _viewController, NotificationManager).Forget(); //Important because the queue view wants to set an event
         }
 
         private void AudioEngine_ErrorOccurred(object sender, ErrorOccurredEventArgs e)

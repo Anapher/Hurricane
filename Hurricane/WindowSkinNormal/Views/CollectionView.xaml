@@ -123,7 +123,10 @@
                             </Style>
                         </GridSplitter.Style>
                     </GridSplitter>
-                    <ListBox Grid.Column="2" ItemsSource="{Binding Source={StaticResource AlbumGrouping}}" ScrollViewer.CanContentScroll="True">
+                    <ListBox Grid.Column="2" ItemsSource="{Binding Source={StaticResource AlbumGrouping}}" ScrollViewer.CanContentScroll="True" SelectionMode="Extended" x:Name="ArtistTracksListBox">
+                        <ListBox.InputBindings>
+                            <KeyBinding Key="Q" Command="{Binding AddToQueueCommand}" CommandParameter="{Binding ElementName=ArtistTracksListBox,Path=SelectedItems}"/>
+                        </ListBox.InputBindings>
                         <ListBox.GroupStyle>
                             <GroupStyle>
                                 <GroupStyle.Panel>
@@ -205,6 +208,7 @@
                             <Style TargetType="ListBoxItem" BasedOn="{StaticResource MetroListBoxItem}">
                                 <Setter Property="behavior:ControlBehavior.DoubleClickCommand" Value="{Binding RelativeSource={RelativeSource AncestorType=ListBox},Path=DataContext.PlayAudioCommand}"/>
                                 <Setter Property="behavior:ControlBehavior.DoubleClickCommandParameter" Value="{Binding}"/>
+                                
                             </Style>
                         </ListBox.ItemContainerStyle>
                     </ListBox>
@@ -221,12 +225,16 @@
             </TabItem>
             <TabItem>
                 <ListView ctrl:ListViewLayoutManager.Enabled="True" ItemsSource="{Binding ViewSource}" IsSynchronizedWithCurrentItem="True" extensions:GridViewSort.AutoSort="True"
-                          extensions:GridViewSort.SortGlyphAscending="/Resources/Images/ArrowUp.png" extensions:GridViewSort.SortGlyphDescending="/Resources/Images/ArrowDown.png">
+                          extensions:GridViewSort.SortGlyphAscending="/Resources/Images/ArrowUp.png" extensions:GridViewSort.SortGlyphDescending="/Resources/Images/ArrowDown.png"
+                          x:Name="TrackListView">
                     <ListView.Style>
                         <Style TargetType="ListView" BasedOn="{StaticResource VirtualisedMetroListView}">
                             <Setter Property="ScrollViewer.IsDeferredScrollingEnabled" Value="False" />
                         </Style>
                     </ListView.Style>
+                    <ListView.InputBindings>
+                        <KeyBinding Key="Q" Command="{Binding AddToQueueCommand}" CommandParameter="{Binding ElementName=TrackListView,Path=SelectedItems}"/>
+                    </ListView.InputBindings>
                     <ListView.View>
                         <GridView d:DataContext="{d:DesignInstance data:IPlayable}">
                             <GridViewColumn Header="{StaticResource Artist}" DisplayMemberBinding="{Binding Artist.Name}" ctrl:ProportionalColumn.Width="1" extensions:GridViewSort.PropertyName="Artist.Name"/>
