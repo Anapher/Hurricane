@@ -15,7 +15,7 @@ namespace Hurricane.Music.Track.WebApi.YouTubeApi
 
         public override PlayableBase ToPlayable()
         {
-            var ytresult = (Entry)Result;
+            var ytresult = (IVideoInfo) Result;
             var result = new YouTubeTrack
             {
                 YouTubeId = YouTubeTrack.GetYouTubeIdFromLink(Url),

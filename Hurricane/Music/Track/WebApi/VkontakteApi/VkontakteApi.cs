@@ -118,11 +118,6 @@ namespace Hurricane.Music.Track.WebApi.VkontakteApi
                           new PasswordEntry {Id = Id};
         }
 
-        public VkontakteApi(string email, string password)
-        {
-            Credentials = new PasswordEntry {Field1 = email, Field2 = password, Id = Id};
-        }
-
         public void OnIsEnabledChanged()
         {
             if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs("IsEnabled"));

@@ -56,7 +56,7 @@ namespace Hurricane.Music.MusicCover
                 if (!di.Exists) di.Create();
             }
 
-            return await LastfmApi.GetImage(config.DownloadAlbumCoverQuality, config.SaveCoverLocal, di, track, config.TrimTrackname, useArtist);
+            return await LastfmAPI.GetImage(config.DownloadAlbumCoverQuality, config.SaveCoverLocal, di, track, config.TrimTrackname, useArtist);
         }
     }
 }

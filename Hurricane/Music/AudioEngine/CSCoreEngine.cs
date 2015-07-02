@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -91,20 +90,18 @@ namespace Hurricane.Music.AudioEngine
                 OnPositionChanged();
             }
         }
-
+        
         async void SetSoundSourcePosition(long value)
         {
-            IsLoading = true;
             try
             {
                 await Task.Run(() => SoundSource.Position = value);
             }
             catch (Exception)
             {
-                IsLoading = false;
                 return;
             }
-            IsLoading = false;
+
             if (PositionChanged != null) PositionChanged(this, new PositionChangedEventArgs((int)CurrentTrackPosition.TotalSeconds, (int)CurrentTrackLength.TotalSeconds));
         }
 
@@ -404,6 +401,7 @@ namespace Hurricane.Music.AudioEngine
                 {
                     if (_crossfade != null && _crossfade.IsCrossfading) { _crossfade.CancelFading(); }
                     _isfadingout = true;
+                    CurrentStateChanged();
                     await _fader.FadeOut(_soundOut, Volume);
                     _soundOut.Pause();
                     CurrentStateChanged();
@@ -426,7 +424,6 @@ namespace Hurricane.Music.AudioEngine
         #region Protected Methods
         protected void OnPositionChanged()
         {
-            if (SoundSource == null) return;
             CurrentTrackPosition = TimeSpan.FromMilliseconds(SoundSource.WaveFormat.BytesToMilliseconds(Position));
             OnPropertyChanged("Position");
         }

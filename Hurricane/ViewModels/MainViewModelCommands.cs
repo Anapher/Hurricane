@@ -308,7 +308,6 @@ namespace Hurricane.ViewModels
             {
                 return _toggleVolume ?? (_toggleVolume = new RelayCommand(parameter =>
                 {
-                    Debug.WriteLine("asd");
                     // ReSharper disable once CompareOfFloatsByEqualityOperator
                     if (MusicManager.CSCoreEngine.Volume == 0)
                     {

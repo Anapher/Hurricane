@@ -59,13 +59,13 @@ namespace Hurricane.Music.Track
             return true;
         }
 
-        public bool LoadInformation(Entry ytResult)
+        public bool LoadInformation(IVideoInfo ytResult)
         {
-            Year = (uint)DateTime.Parse(ytResult.published.Date).Year;
-            Title = ytResult.title.Name;
-            Artist = ytResult.author.First().name.Text;
-            Uploader = ytResult.author.First().name.Text;
-            SetDuration(TimeSpan.FromSeconds(int.Parse(ytResult.MediaGroup.Duration.seconds)));
+            //Year = (uint)DateTime.Parse(ytResult..duration).Year;
+            Title = ytResult.title;
+            Artist = ytResult.uploader;
+            Uploader = ytResult.uploader;
+            //SetDuration(TimeSpan.FromSeconds(int.Parse(ytResult.MediaGroup.Duration.seconds)));
             return true;
         }
 

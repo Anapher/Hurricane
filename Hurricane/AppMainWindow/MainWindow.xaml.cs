@@ -63,7 +63,6 @@ namespace Hurricane
             MagicArrow.DockManager.Docked += (s, e) => { ApplyHostWindow(SmartWindowSkin); };
             MagicArrow.DockManager.Undocked += (s, e) => { ApplyHostWindow(AdvancedWindowSkin); };
             MagicArrow.DockManager.DragStopped += DockManagerOnDragStopped;
-            SourceInitialized += MainWindow_SourceInitialized;
 
             var appsettings = HurricaneSettings.Instance.CurrentState;
             if (appsettings.ApplicationState == null)
@@ -99,11 +98,6 @@ namespace Hurricane
             MagicArrow.DockManager.CurrentSide = appsettings.ApplicationState.CurrentSide;
             WindowDialogService = new WindowDialogService(this);
             SystemEvents.PowerModeChanged += SystemEventsOnPowerModeChanged;
-        }
-
-        void MainWindow_SourceInitialized(object sender, EventArgs e)
-        {
-            WindowHelper.DisableAeroSnap(this);
         }
 
         public void CenterWindowOnScreen()
@@ -197,11 +191,13 @@ namespace Hurricane
             {
                 if (skin.Configuration.IsResizable)
                 {
-                    SetResizeMode(ResizeMode.CanResize);
+                    WindowHelper.ShowMinimizeAndMaximizeButtons(this);
+                    ResizeMode = ResizeMode.CanResize;
                 }
                 else
                 {
-                    SetResizeMode(ResizeMode.NoResize);
+                    WindowHelper.HideMinimizeAndMaximizeButtons(this);
+                    ResizeMode = ResizeMode.NoResize;
                 }
             }
 
@@ -306,7 +302,8 @@ namespace Hurricane
         {
             _isDragging = true;
             if (WindowState == WindowState.Maximized) _restoreIfMove = true;
-            SetResizeMode(ResizeMode.CanResize);
+            ResizeMode = ResizeMode.CanResize;
+            WindowHelper.HideMinimizeAndMaximizeButtons(this);
 
             MagicArrow.DockManager.DragStart();
             if (HostedWindow.Configuration.NeedsMovingHelp)
@@ -327,22 +324,14 @@ namespace Hurricane
             _isDragging = false;
             if (HostedWindow.Configuration.IsResizable)
             {
-                SetResizeMode(ResizeMode.CanResize);
+                WindowHelper.ShowMinimizeAndMaximizeButtons(this);
+                ResizeMode = ResizeMode.CanResize;
             }
             else
             {
-                SetResizeMode(ResizeMode.NoResize);
+                WindowHelper.HideMinimizeAndMaximizeButtons(this);
+                ResizeMode = ResizeMode.NoResize;
             }
-        }
-
-        private void SetResizeMode(ResizeMode newResizeMode)
-        {
-            if (newResizeMode == ResizeMode)
-                return;
-
-            ResizeMode = newResizeMode;
-            if(newResizeMode == ResizeMode.CanResize)
-                WindowHelper.DisableAeroSnap(this);
         }
 
         void skin_DragMoveStop(object sender, EventArgs e)

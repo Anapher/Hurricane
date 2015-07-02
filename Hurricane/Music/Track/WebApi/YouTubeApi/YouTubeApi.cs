@@ -6,6 +6,11 @@ using System.Net;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
+using System.Xml;
+using Hurricane.Music.Track.WebApi.YouTubeApi.DataClasses;
+using Hurricane.Music.Track.WebApi.YouTubeApi.DataClasses.PlaylistInfo;
+using Hurricane.Music.Track.WebApi.YouTubeApi.DataClasses.SearchResult;
+using Hurricane.Music.Track.WebApi.YouTubeApi.DataClasses.VideoInfo;
 using Hurricane.Settings;
 using Hurricane.Utilities;
 using Newtonsoft.Json;
@@ -30,54 +35,37 @@ namespace Hurricane.Music.Track.WebApi.YouTubeApi
             }
         }
 
-        public static List<YouTubeWebTrackResult> GetPlaylistTracks(YouTubePlaylistResult playlist)
+        public static List<YouTubeWebTrackResult> GetPlaylistTracks(PlaylistInfo playlist)
         {
-            if (playlist.feed != null && playlist.feed.entry != null && playlist.feed.entry.Count > 0)
+            if (playlist?.items != null && playlist.items.Count > 0)
             {
-                return playlist.feed.entry.Where(x => x.MediaGroup.Duration != null).Select(x => new YouTubeWebTrackResult
+                return playlist.items.Select(x => new YouTubeWebTrackResult
                 {
-                    Duration = TimeSpan.FromSeconds(int.Parse(x.MediaGroup.Duration.seconds)),
-                    Title = x.title.Name,
-                    Uploader = x.author.First().name.Text,
+                    Duration = TimeSpan.Zero,
+                    Title = x.snippet.title,
+                    Uploader = x.snippet.channelTitle,
                     Result = x,
-                    Year = (uint)DateTime.Parse(x.published.Date).Year,
-                    ImageUrl = x.MediaGroup.Thumbnails.First().url,
-                    Views = x.Statistics != null ? uint.Parse(x.Statistics.viewCount) : 0,
-                    Url = x.link.First().href,
-                    Description = x.MediaGroup.Description.Text
+                    Year = (uint)DateTime.Parse(x.snippet.publishedAt).Year,
+                    ImageUrl = x.snippet.thumbnails.@default.url,
+                    Views =  0,
+                    Url = $"https://www.youtube.com/watch?v={x.contentDetails.videoId}",
+                    Description = x.snippet.description
                 }).ToList();
-
-/*                List<YouTubeWebTrackResult> lst = new List<YouTubeWebTrackResult>();
-                foreach (var entry in playlist.feed.entry)
-                {
-                    if (entry.title.Name == "Private video" || entry.MediaGroup.Duration == null) continue;
-                    var yt = new YouTubeWebTrackResult();
-                    if (entry.MediaGroup == null || entry.MediaGroup.Duration == null ||
-                        entry.MediaGroup.Duration.seconds == null)
-                    {
-                        Debug.Print("hey");
-                    }
-                    yt.Duration = TimeSpan.FromSeconds(int.Parse(entry.MediaGroup.Duration.seconds)); //
-                    yt.Title = entry.title.Name;
-                    yt.Uploader = entry.author.First().name.Text;
-                    yt.Result = entry;
-                    yt.Year = (uint) DateTime.Parse(entry.published.Date).Year;
-                    yt.ImageUrl = entry.MediaGroup.Thumbnails.First().url;
-                    yt.Views = entry.Statistics != null ? int.Parse(entry.Statistics.viewCount) : 0;
-                    yt.Url = entry.link.First().href;
-                    lst.Add(yt);
-                }*/ //if we have to find an error
             }
             return null;
         }
 
-        public static async Task<YouTubePlaylistResult> GetPlaylist(string playlistId, int index, int maxResults)
+        public static async Task<PlaylistInfo> GetPlaylist(string playlistId, string nextPageToken, int maxResults)
         {
             using (var web = new WebClient { Proxy = null })
             {
-                var link = string.Format("https://gdata.youtube.com/feeds/api/playlists/{0}?max-results={1}{2}&alt=json", playlistId, maxResults, index > 0 ? "&start-index=" + index : string.Empty);
+                var pageTokenPart = string.IsNullOrEmpty(nextPageToken) ? null : "&pageToken=" + nextPageToken; 
+                var link =
+                    $"https://www.googleapis.com/youtube/v3/playlistItems?part=snippet%2CcontentDetails&maxResults={maxResults}&playlistId={playlistId}{pageTokenPart}&key={SensitiveInformation.YouTubeApiKey}";
+
                 var resultstr = await web.DownloadStringTaskAsync(link);
-                var result = JsonConvert.DeserializeObject<YouTubePlaylistResult>(resultstr);
+                var result = JsonConvert.DeserializeObject<PlaylistInfo>(resultstr);
+                result.PlaylistId = playlistId;
                 return result;
             }
         }
@@ -86,22 +74,24 @@ namespace Hurricane.Music.Track.WebApi.YouTubeApi
         {
             using (var web = new WebClient { Proxy = null })
             {
-                var link = string.Format("https://gdata.youtube.com/feeds/api/videos/{0}?v=2&alt=json", youtubeVideoId);
+                var link =
+                    $"https://www.googleapis.com/youtube/v3/videos?id={youtubeVideoId}&part=snippet,contentDetails&key={SensitiveInformation.YouTubeApiKey}";
                 var resultstr = await web.DownloadStringTaskAsync(link);
-                var result = JsonConvert.DeserializeObject<YouTubeVideoResult>(resultstr);
-                if (result.entry != null)
+                var result = JsonConvert.DeserializeObject<GetVideoInfoResult>(resultstr);
+                if (result?.items != null && result.items.Count > 0)
                 {
+                    var video = result.items[0];
                     return new YouTubeWebTrackResult
                     {
-                        Duration = TimeSpan.FromSeconds(int.Parse(result.entry.MediaGroup.Duration.seconds)),
-                        Title = result.entry.title.Name,
-                        Uploader = result.entry.author.First().name.Text,
-                        Result = result.entry,
-                        Year = (uint)DateTime.Parse(result.entry.published.Date).Year,
-                        ImageUrl = result.entry.MediaGroup.Thumbnails.First().url,
-                        Views = result.entry.Statistics != null ? uint.Parse(result.entry.Statistics.viewCount) : 0,
-                        Url = result.entry.link.First().href,
-                        Description = result.entry.MediaGroup.Description.Text
+                        Duration = XmlConvert.ToTimeSpan(video.contentDetails.duration),
+                        Title = video.snippet.title,
+                        Uploader = video.snippet.channelTitle,
+                        Result = video,
+                        Year = (uint)DateTime.Parse(video.snippet.publishedAt).Year,
+                        ImageUrl =video.snippet.thumbnails.@default.url,
+                        Views = 0,
+                        Url = $"https://www.youtube.com/watch?v={youtubeVideoId}",
+                        Description = video.snippet.description
                     };
                 }
                 return null;
@@ -113,9 +103,9 @@ namespace Hurricane.Music.Track.WebApi.YouTubeApi
             var match = Regex.Match(url, @"youtu(?:\.be|be\.com).*?[&?]list=(?<id>[a-zA-Z0-9-_]+)");
             if (match.Success)
             {
-                var playlist = await GetPlaylist(match.Groups["id"].Value, 0, 50);
-                await playlist.feed.LoadImage();
-                return new Tuple<bool, List<WebTrackResultBase>, IPlaylistResult>(true, GetPlaylistTracks(playlist).Cast<WebTrackResultBase>().ToList(), playlist.feed);
+                var playlist = await GetPlaylist(match.Groups["id"].Value, null, 50);
+                await playlist.LoadImage();
+                return new Tuple<bool, List<WebTrackResultBase>, IPlaylistResult>(true, GetPlaylistTracks(playlist).Cast<WebTrackResultBase>().ToList(), playlist);
             }
 
             match = Regex.Match(url, @"youtu(?:\.be|be\.com)/(?:.*v(?:/|=)|(?:.*/)?)(?<id>[a-zA-Z0-9-_]+)");
@@ -135,21 +125,31 @@ namespace Hurricane.Music.Track.WebApi.YouTubeApi
         {
             using (var web = new WebClient { Proxy = null })
             {
-                var link = string.Format("https://gdata.youtube.com/feeds/api/videos?q={0}&alt=json&max-results=50",
-                    searchText.ToEscapedUrl());
-                var result = JsonConvert.DeserializeObject<YouTubeSearchResult>(await web.DownloadStringTaskAsync(link));
-                if (result.feed == null || result.feed.entry == null || result.feed.entry.Count == 0) return new List<WebTrackResultBase>();
-                return result.feed.entry.Where(x => x.MediaGroup.Duration != null).Select(x => new YouTubeWebTrackResult
+                var link =
+                    $"https://www.googleapis.com/youtube/v3/search?part=snippet&q={searchText.ToEscapedUrl()}&maxResults=50&key={SensitiveInformation.YouTubeApiKey}";
+                var result = JsonConvert.DeserializeObject<SearchResult>(await web.DownloadStringTaskAsync(link));
+                if (result?.items == null || result.items.Count == 0)
+                    return new List<WebTrackResultBase>();
+
+                var videos = result.items.Where(x => x.id.kind == "youtube#video").ToList();
+
+                var detailedInfo =
+                    JsonConvert.DeserializeObject<ContentSearchResult>(
+                        await
+                            web.DownloadStringTaskAsync(
+                                $"https://www.googleapis.com/youtube/v3/videos?id={string.Join(",", videos.Select(x => x.id.videoId))}&part=contentDetails&key={SensitiveInformation.YouTubeApiKey}"));
+
+                return videos.Select(x => new YouTubeWebTrackResult
                 {
-                    Duration = TimeSpan.FromSeconds(int.Parse(x.MediaGroup.Duration.seconds)),
-                    Title = x.title.Name,
-                    Uploader = x.author.First().name.Text,
+                    Duration = XmlConvert.ToTimeSpan(detailedInfo.items.First(y => y.id == x.id.videoId).contentDetails.duration),
+                    Title = x.snippet.title,
+                    Uploader = x.snippet.channelTitle,
                     Result = x,
-                    Year = (uint)DateTime.Parse(x.published.Date).Year,
-                    ImageUrl = x.MediaGroup.Thumbnails.First().url,
-                    Views = x.Statistics != null ? uint.Parse(x.Statistics.viewCount) : 0,
-                    Url = x.link.First().href,
-                    Description = x.MediaGroup.Description.Text
+                    Year = (uint)DateTime.Parse(x.snippet.publishedAt).Year,
+                    ImageUrl = x.snippet.thumbnails.@default.url,
+                    Views = 0,
+                    Url = $"https://www.youtube.com/watch?v={x.id.videoId}",
+                    Description = x.snippet.description
                 }).Cast<WebTrackResultBase>().ToList();
             }
         }

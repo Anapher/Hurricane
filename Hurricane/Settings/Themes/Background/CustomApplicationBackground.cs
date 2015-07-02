@@ -42,7 +42,7 @@ namespace Hurricane.Settings.Themes.Background
 
         public bool IsAnimated
         {
-            get { return FileSystemHelper.IsVideo(BackgroundPath); }
+            get { return GeneralHelper.IsVideo(BackgroundPath); }
         }
 
         public bool IsAvailable

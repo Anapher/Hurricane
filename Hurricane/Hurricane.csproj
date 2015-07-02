@@ -88,9 +88,9 @@
     <Reference Include="ICSharpCode.SharpZipLib">
       <HintPath>..\packages\SharpZipLib.0.86.0\lib\20\ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
-    <Reference Include="MahApps.Metro, Version=1.1.2.0, Culture=neutral, PublicKeyToken=f4fb5a3c4d1e5b4f, processorArchitecture=MSIL">
+    <Reference Include="MahApps.Metro, Version=0.14.0.0, Culture=neutral, PublicKeyToken=f4fb5a3c4d1e5b4f, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\MahApps.Metro.1.1.2.0\lib\net45\MahApps.Metro.dll</HintPath>
+      <HintPath>..\Libraries\MahApps.Metro.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -102,9 +102,6 @@
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Web" />
     <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\MahApps.Metro.1.1.2.0\lib\net45\System.Windows.Interactivity.dll</HintPath>
-    </Reference>
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -159,12 +156,6 @@
     </Compile>
     <Compile Include="AppMainWindow\Messages\ProgressDialog.cs" />
     <Compile Include="AppMainWindow\Messages\WindowDialogService.cs" />
-    <Compile Include="Music\View\ListItem\NormalListItem.cs" />
-    <Compile Include="Music\View\ListItem\IListItem.cs" />
-    <Compile Include="Music\View\ListItem\PlaylistItem.cs" />
-    <Compile Include="AppMainWindow\WindowSkins\AdvancedViewResources\PlaylistsView.xaml.cs">
-      <DependentUpon>PlaylistsView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Designer\Data\ThemeData\AppThemeData.cs" />
     <Compile Include="Designer\Data\ThemeData\AccentColorData.cs" />
     <Compile Include="Designer\Data\EditableThemePack.cs" />
@@ -206,6 +197,9 @@
     <Compile Include="GUI\Controls\AnimatedStackPanel.cs" />
     <Compile Include="GUI\Behaviors\AudioVisualisationBehavior.cs" />
     <Compile Include="GUI\Behaviors\TransitioningContentControlBehavior.cs" />
+    <Compile Include="GUI\Controls\PlayPauseButton.xaml.cs">
+      <DependentUpon>PlayPauseButton.xaml</DependentUpon>
+    </Compile>
     <Compile Include="GUI\Converter\IsMusicApiConverter.cs" />
     <Compile Include="GUI\Extensions\ComboBoxItemTemplateChooser.cs" />
     <Compile Include="GUI\Behaviors\ControlBehavior.cs" />
@@ -222,11 +216,9 @@
     <Compile Include="Music\Download\DownloadSettings.cs" />
     <Compile Include="Music\Download\ffmpeg.cs" />
     <Compile Include="Music\Download\GroovesharkApi.cs" />
-    <Compile Include="Music\View\ListItem\QueueListItem.cs" />
-    <Compile Include="Music\View\MusicViewManager.cs" />
     <Compile Include="Music\Playlist\CueSharp.cs" />
     <Compile Include="Music\Playlist\ImportCueSheet.cs" />
-    <Compile Include="Music\Playlist\ImportM3UPlaylist.cs" />
+    <Compile Include="Music\Playlist\ImportM3uPlaylist.cs" />
     <Compile Include="Music\Playlist\Playlists.cs" />
     <Compile Include="Music\AudioEngine\SoundOutManager.cs" />
     <Compile Include="Music\Proxy\HttpProxy.cs" />
@@ -248,7 +240,11 @@
     <Compile Include="Music\Track\WebApi\VkontakteApi\VkAuthorization.cs" />
     <Compile Include="Music\Track\WebApi\VkontakteApi\VkontakteApi.cs" />
     <Compile Include="Music\Track\WebApi\VkontakteApi\VkontakteWebTrackResult.cs" />
-    <Compile Include="Music\Track\WebApi\YouTubeApi\DataClasses\MediaDescription.cs" />
+    <Compile Include="Music\Track\WebApi\YouTubeApi\DataClasses\ContentSearchResult.cs" />
+    <Compile Include="Music\Track\WebApi\YouTubeApi\DataClasses\IVideoInfo.cs" />
+    <Compile Include="Music\Track\WebApi\YouTubeApi\DataClasses\PlaylistInfo\PlaylistInfo.cs" />
+    <Compile Include="Music\Track\WebApi\YouTubeApi\DataClasses\VideoInfo\GetVideoInfoResult.cs" />
+    <Compile Include="Music\Track\WebApi\YouTubeApi\DataClasses\SearchResult\SearchResult.cs" />
     <Compile Include="Settings\Converter\GroupConverter.cs" />
     <Compile Include="Settings\Converter\TransitionConverter.cs" />
     <Compile Include="Settings\PasswordEntry.cs" />
@@ -343,27 +339,8 @@
     <Compile Include="Music\Track\SoundSourceInfo.cs" />
     <Compile Include="Music\Track\WebApi\TrackSearcher.cs" />
     <Compile Include="Music\Track\WebApi\WebTrackResultBase.cs" />
-    <Compile Include="Music\Track\WebApi\YouTubeApi\DataClasses\Author.cs" />
-    <Compile Include="Music\Track\WebApi\YouTubeApi\DataClasses\Entry.cs" />
-    <Compile Include="Music\Track\WebApi\YouTubeApi\DataClasses\Link.cs" />
-    <Compile Include="Music\Track\WebApi\YouTubeApi\DataClasses\MediaContent.cs" />
-    <Compile Include="Music\Track\WebApi\YouTubeApi\DataClasses\MediaGroup.cs" />
-    <Compile Include="Music\Track\WebApi\YouTubeApi\DataClasses\MediaThumbnail.cs" />
-    <Compile Include="Music\Track\WebApi\YouTubeApi\DataClasses\MediaTitle.cs" />
-    <Compile Include="Music\Track\WebApi\YouTubeApi\DataClasses\Name.cs" />
-    <Compile Include="Music\Track\WebApi\YouTubeApi\DataClasses\OpenSearchItemsPerPage.cs" />
-    <Compile Include="Music\Track\WebApi\YouTubeApi\DataClasses\OpenSearchStartIndex.cs" />
-    <Compile Include="Music\Track\WebApi\YouTubeApi\DataClasses\OpenSearchTotalResults.cs" />
-    <Compile Include="Music\Track\WebApi\YouTubeApi\DataClasses\Published.cs" />
-    <Compile Include="Music\Track\WebApi\YouTubeApi\DataClasses\Title.cs" />
-    <Compile Include="Music\Track\WebApi\YouTubeApi\DataClasses\YtDuration.cs" />
-    <Compile Include="Music\Track\WebApi\YouTubeApi\DataClasses\YtPlaylistId.cs" />
-    <Compile Include="Music\Track\WebApi\YouTubeApi\DataClasses\YtStatistics.cs" />
-    <Compile Include="Music\Track\WebApi\YouTubeApi\YouTubePlaylistResult.cs" />
     <Compile Include="Music\Track\WebApi\YouTubeApi\SingleVideoSearchResult.cs" />
     <Compile Include="Music\Track\WebApi\YouTubeApi\YouTubeApi.cs" />
-    <Compile Include="Music\Track\WebApi\YouTubeApi\YouTubeSearchResult.cs" />
-    <Compile Include="Music\Track\WebApi\YouTubeApi\YouTubeVideoResult.cs" />
     <Compile Include="Music\Track\WebApi\YouTubeApi\YouTubeWebTrackResult.cs" />
     <Compile Include="Music\Track\YouTubeTrack.cs" />
     <Compile Include="Music\AudioEngine\VolumeFading.cs" />
@@ -410,7 +387,6 @@
     <Compile Include="Settings\UpdateService.cs" />
     <Compile Include="Utilities\ActiveWindowHook.cs" />
     <Compile Include="Utilities\DependencyObjectExtensions.cs" />
-    <Compile Include="Utilities\FileSystemHelper.cs" />
     <Compile Include="Utilities\GeneralHelper.cs" />
     <Compile Include="Utilities\Keyboard.cs" />
     <Compile Include="Utilities\LevenshteinDistance.cs" />
@@ -513,10 +489,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="AppMainWindow\WindowSkins\AdvancedViewResources\PlaylistsView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Designer\DesignerWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -538,6 +510,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Designer\Pages\ThemePage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="GUI\Controls\PlayPauseButton.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -586,6 +562,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Resources\Styles\AdvancedTimelineSlider.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Resources\Styles\CleanWindowStyle.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

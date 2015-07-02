@@ -5,25 +5,25 @@
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/Resources/Languages/Hurricane.en-us.xaml"/>
+                <ResourceDictionary Source="/Resources/Languages/Hurricane.en-us.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Colors.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.AnimatedTabControl.xaml" />
+                <ResourceDictionary Source="Resources/Styles/CleanWindowStyle.xaml" />
+                <ResourceDictionary Source="/Resources/VectorGraphics.xaml" />
 
-                <ResourceDictionary Source="/Resources/VectorGraphics.xaml"/>
-
-                <ResourceDictionary Source="/Resources/Themes/BaseLight.xaml"/>
-                <ResourceDictionary Source="/Resources/Themes/Cyan.xaml"/>
+                <ResourceDictionary Source="/Resources/Themes/BaseLight.xaml" />
+                <ResourceDictionary Source="/Resources/Themes/Cyan.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
-            <Style TargetType="{x:Type ListView}" x:Key="VisualizingListView">
-                <Setter Property="VirtualizingStackPanel.IsVirtualizing" Value="True"/>
-                <Setter Property="VirtualizingStackPanel.VirtualizationMode" Value="Recycling"/>
-                <Setter Property="VirtualizingStackPanel.IsVirtualizingWhenGrouping" Value="True"/>
+            <Style x:Key="VisualizingListView" TargetType="{x:Type ListView}">
+                <Setter Property="VirtualizingStackPanel.IsVirtualizing" Value="True" />
+                <Setter Property="VirtualizingStackPanel.VirtualizationMode" Value="Recycling" />
+                <Setter Property="VirtualizingStackPanel.IsVirtualizingWhenGrouping" Value="True" />
             </Style>
-            
-            <converter:FalseOnEmptyString x:Key="FalseOnEmptyString"/>
+
+            <converter:FalseOnEmptyString x:Key="FalseOnEmptyString" />
         </ResourceDictionary>
     </Application.Resources>
 </Application>

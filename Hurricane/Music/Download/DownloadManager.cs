@@ -120,7 +120,7 @@ namespace Hurricane.Music.Download
             if (settings.IsConverterEnabled)
             {
                 var oldFile = new FileInfo(fileName);
-                oldFile.MoveTo(FileSystemHelper.GetFreeFileName(oldFile.Directory, oldFile.Extension).FullName); //We move the downloaded file to a temp location
+                oldFile.MoveTo(GeneralHelper.GetFreeFileName(oldFile.Directory, oldFile.Extension).FullName); //We move the downloaded file to a temp location
                 await ffmpeg.ConvertFile(oldFile.FullName, fileName, settings.Bitrate, settings.Format);
 
             }

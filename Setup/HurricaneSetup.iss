@@ -6,7 +6,6 @@
 #define MyAppPublisher "Alkaline"
 #define MyAppURL "hurricaneproject.org"
 #define MyAppExeName "Hurricane.exe"
-#define UpdateUrl "https://github.com/Alkalinee/Hurricane/releases"
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application.
@@ -19,7 +18,7 @@ AppVersion={#MyAppVersion}
 AppPublisher={#MyAppPublisher}
 AppPublisherURL={#MyAppURL}
 AppSupportURL={#MyAppURL}
-AppUpdatesURL={#UpdateUrl}
+AppUpdatesURL={#MyAppURL}
 DefaultDirName={pf}\{#MyAppName}
 DefaultGroupName={#MyAppName}
 AllowNoIcons=yes

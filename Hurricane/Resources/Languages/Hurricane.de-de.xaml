@@ -376,6 +376,4 @@
     <system:String x:Key="LogIn">Einloggen</system:String>
     <system:String x:Key="AnErrorOccurred">Ein Fehler ist aufgetreten: {0}</system:String>
     <system:String x:Key="StreamingServices">Streaming-Dienste</system:String>
-    
-    <system:String x:Key="PlaylistDetails">Playlist Details</system:String>
 </ResourceDictionary>

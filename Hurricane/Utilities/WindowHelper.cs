@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows;
@@ -10,21 +9,6 @@ namespace Hurricane.Utilities
 {
     static class WindowHelper
     {
-        private const int GWL_STYLE = -16;
-        private const uint WS_MAXIMIZEBOX = 0x10000;
-        private const uint WS_MINIMIZEBOX = 0x20000;
-        private const uint WS_OVERLAPPED = 0x00000000;
-        private const uint WS_CAPTION = 0x00C00000;
-        private const uint WS_SYSMENU = 0x00080000;
-        private const uint WS_THICKFRAME = 0x00040000;
-        private const uint WS_OVERLAPPEDWINDOW =
-            (WS_OVERLAPPED |
-             WS_CAPTION |
-             WS_SYSMENU |
-             WS_THICKFRAME |
-             WS_MINIMIZEBOX |
-             WS_MAXIMIZEBOX);
-
         public static string GetActiveWindowTitle(IntPtr handle)
         {
             const int nChars = 256;
@@ -66,12 +50,18 @@ namespace Hurricane.Utilities
             return string.Empty;
         }
 
+        private const int GWL_STYLE = -16,
+                          WS_MAXIMIZEBOX = 0x10000,
+                          WS_MINIMIZEBOX = 0x20000;
+
+
         internal static void HideMinimizeAndMaximizeButtons(Window window)
         {
             var hwnd = new WindowInteropHelper(window).Handle;
             var currentStyle = UnsafeNativeMethods.GetWindowLong(hwnd, GWL_STYLE);
 
-            UnsafeNativeMethods.SetWindowLong(hwnd, GWL_STYLE, (currentStyle & ~(int)WS_MAXIMIZEBOX & ~(int)WS_MINIMIZEBOX));
+            UnsafeNativeMethods.SetWindowLong(hwnd, GWL_STYLE, (currentStyle & ~WS_MAXIMIZEBOX & ~WS_MINIMIZEBOX));
+
         }
 
         internal static void ShowMinimizeAndMaximizeButtons(Window window)
@@ -79,17 +69,7 @@ namespace Hurricane.Utilities
             var hwnd = new WindowInteropHelper(window).Handle;
             var currentStyle = UnsafeNativeMethods.GetWindowLong(hwnd, GWL_STYLE);
 
-            UnsafeNativeMethods.SetWindowLong(hwnd, GWL_STYLE, (currentStyle | (int)WS_MAXIMIZEBOX | (int)WS_MINIMIZEBOX));
-        }
-
-        internal static void DisableAeroSnap(Window window)
-        {
-            var helper = new WindowInteropHelper(window);
-            var currentStyle = UnsafeNativeMethods.GetWindowLong(helper.Handle, GWL_STYLE);
-            currentStyle |= (int)WS_OVERLAPPEDWINDOW;
-            currentStyle ^= (int)WS_THICKFRAME;
-            UnsafeNativeMethods.SetWindowLong(helper.Handle, GWL_STYLE, currentStyle);
-            Debug.Print("disable aero");
+            UnsafeNativeMethods.SetWindowLong(hwnd, GWL_STYLE, (currentStyle | WS_MAXIMIZEBOX | WS_MINIMIZEBOX));
         }
     }
 }

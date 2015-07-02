@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text.RegularExpressions;
 using CSCore;
 using Hurricane.Music;
@@ -47,7 +46,7 @@ namespace Hurricane.AppCommunication.Commands
         public override void Execute(string line, StreamProvider streams, MusicManager musicManager)
         {
             var command = Regex.Match(line, RegexPattern).Groups["command"].Value;
-            MediaCommands.First(x => Regex.IsMatch(command, x.RegexPattern)).Execute(line, streams, musicManager);
+
         }
 
         class MediaCommand : CommandBase

@@ -310,7 +310,7 @@ namespace Hurricane.Music.Track.WebApi
             MusicApis = new List<IMusicApi>
             {
                 new SoundCloudApi.SoundCloudApi(),
-                new VkontakteApi.VkontakteApi(),
+                //new VkontakteApi.VkontakteApi(),
                 new YouTubeApi.YouTubeApi()
             }; //new GroovesharkApi.GroovesharkApi()
         }
