@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
@@ -32,23 +33,37 @@ namespace Hurricane.Model.Music.Imagment
         [XmlAttribute]
         public string FilePath { get; set; }
 
-        protected override async Task<BitmapImage> LoadImage()
+        protected override Task<BitmapImage> LoadImage()
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override async Task<BitmapImage> GetImageFast()
         {
             using (var tagFile = File.Create(FilePath))
             {
-                var bitmapImage = new BitmapImage();
-                bitmapImage.BeginInit();
-                await
-                    Task.Run(() => bitmapImage.StreamSource = new MemoryStream(tagFile.Tag.Pictures.First().Data.Data));
-                bitmapImage.EndInit();
+                BitmapImage bitmapImage = null;
+                var ms = new MemoryStream(tagFile.Tag.Pictures.First().Data.Data);
+                try
+                {
+                    await Task.Run(() =>
+                    {
+                        bitmapImage = new BitmapImage();
+                        bitmapImage.BeginInit();
+                        bitmapImage.StreamSource = ms;
+                        bitmapImage.EndInit();
+                        bitmapImage.Freeze();
+                    });
+                }
+                catch (NotSupportedException)
+                {
+                    //Fuck it
+                    ms.Dispose();
+                    return null;
+                }
+
                 return bitmapImage;
             }
-        }
-
-        protected override bool GetImageFast(out BitmapImage image)
-        {
-            image = null;
-            return false;
         }
     }
 }

@@ -1,52 +1,71 @@
 ﻿<UserControl x:Class="Hurricane.WindowSkinNormal.Views.ChartsView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:behavior="clr-namespace:Hurricane.Behavior"
+             xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
+             xmlns:converter="clr-namespace:Hurricane.Converter"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mainView="clr-namespace:Hurricane.ViewModel.MainView;assembly=Hurricane.ViewModel"
-             xmlns:behavior="clr-namespace:Hurricane.Behavior"
-             xmlns:converter="clr-namespace:Hurricane.Converter"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:myControls="clr-namespace:Hurricane.Controls"
-             xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
-             mc:Ignorable="d" 
-             d:DesignHeight="400" d:DesignWidth="800" d:DataContext="{d:DesignInstance mainView:ChartsView}" x:Name="Root">
+             x:Name="Root"
+             d:DataContext="{d:DesignInstance mainView:ChartsView}"
+             d:DesignHeight="400"
+             d:DesignWidth="800"
+             mc:Ignorable="d">
     <UserControl.Resources>
-        <converter:SizeToColumnsConverter x:Key="SizeToColumnsConverter" MaxSize="150"/>
+        <converter:SizeToColumnsConverter x:Key="SizeToColumnsConverter" MaxSize="150" />
     </UserControl.Resources>
     <Grid>
-        <ScrollViewer behavior:ScrollAnimationBehavior.IsEnabled="True" behavior:ScrollAnimationBehavior.PointsToScroll="100" behavior:ScrollAnimationBehavior.TimeDuration="0:0:0.2" behavior:ScrollAnimationBehavior.VerticalOffset="50">
+        <ScrollViewer behavior:ScrollAnimationBehavior.IsEnabled="True"
+                      behavior:ScrollAnimationBehavior.PointsToScroll="100"
+                      behavior:ScrollAnimationBehavior.TimeDuration="0:0:0.2"
+                      behavior:ScrollAnimationBehavior.VerticalOffset="50">
             <Grid>
                 <ItemsControl ItemsSource="{Binding ChartList}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
-                            <UniformGrid Columns="{Binding ElementName=Root,Path=ActualWidth,Converter={StaticResource SizeToColumnsConverter}}"/>
+                            <UniformGrid Columns="{Binding ElementName=Root, Path=ActualWidth, Converter={StaticResource SizeToColumnsConverter}}" />
                         </ItemsPanelTemplate>
                     </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <Grid Margin="7">
                                 <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
                                 </Grid.RowDefinitions>
-                                <myControls:PlayableImage Image="{Binding Image.Image}"/>
-                                <DockPanel Grid.Row="1" >
-                                    <TextBlock Text="{Binding Number}" FontSize="32" VerticalAlignment="Center"/>
-                                    <StackPanel Orientation="Vertical" Margin="8,5,0,0">
-                                        <TextBlock Text="{Binding Name}" FontWeight="Bold" TextTrimming="CharacterEllipsis" FontSize="14" FontFamily="Segoe UI Emoji"/>
-                                        <TextBlock Text="{Binding Artist}" Margin="0,3,0,0"/>
+                                <DockPanel Grid.Row="1">
+                                    <TextBlock VerticalAlignment="Center"
+                                               FontSize="32"
+                                               Text="{Binding Number}" />
+                                    <StackPanel Margin="8,5,0,0" Orientation="Vertical">
+                                        <TextBlock FontFamily="Segoe UI Emoji"
+                                                   FontSize="14"
+                                                   FontWeight="Bold"
+                                                   Text="{Binding Name}"
+                                                   TextTrimming="CharacterEllipsis" />
+                                        <TextBlock Margin="0,3,0,0" Text="{Binding Artist}" />
                                     </StackPanel>
                                 </DockPanel>
+                                <myControls:PlayableImage Image="{Binding Image.Image}" Grid.Row="0"/>
                             </Grid>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
             </Grid>
         </ScrollViewer>
-        <Grid Background="{StaticResource WhiteBrush}" Visibility="{Binding IsLoading,Converter={StaticResource BooleanToVisibilityConverter}}">
-            <StackPanel Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center">
-                <TextBlock Text="{StaticResource LoadingCharts}" FontSize="20" FontFamily="Segoe UI Light"/>
-                <controls:MetroProgressBar IsIndeterminate="{Binding IsLoading}" Maximum="1" MinWidth="300" Foreground="{StaticResource AccentColorBrush}"/>
+        <Grid Background="{StaticResource WhiteBrush}" Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <StackPanel HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Orientation="Vertical">
+                <TextBlock FontFamily="Segoe UI Light"
+                           FontSize="20"
+                           Text="{StaticResource LoadingCharts}" />
+                <controls:MetroProgressBar MinWidth="300"
+                                           Foreground="{StaticResource AccentColorBrush}"
+                                           IsIndeterminate="{Binding IsLoading}"
+                                           Maximum="1" />
             </StackPanel>
         </Grid>
     </Grid>

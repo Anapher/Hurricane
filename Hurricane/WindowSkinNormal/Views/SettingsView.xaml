@@ -8,6 +8,7 @@
              xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
              xmlns:extensions="clr-namespace:Hurricane.Extensions"
              xmlns:audioEngineData="clr-namespace:Hurricane.Model.AudioEngine;assembly=Hurricane.Model"
+             xmlns:views="clr-namespace:Hurricane.WindowSkinNormal.Views"
              mc:Ignorable="d" 
              d:DesignHeight="400" d:DesignWidth="1000">
     <UserControl.Resources>
@@ -90,6 +91,9 @@
         </TabItem>
         <TabItem Header="{StaticResource Behavior}">
             
+        </TabItem>
+        <TabItem Header="{StaticResource About}">
+            <views:AboutView />
         </TabItem>
     </controls:MetroAnimatedTabControl>
 </UserControl>

@@ -1,5 +1,6 @@
-﻿using Hurricane.ViewModel;
-using MahApps.Metro.Controls;
+﻿using System.Windows;
+using System.Windows.Media.Animation;
+using Hurricane.ViewModel;
 
 namespace Hurricane
 {
@@ -14,6 +15,10 @@ namespace Hurricane
 
             var viewModel = (MainViewModel) DataContext;
             viewModel.RefreshView += (s, e) => RefreshView();
+            Timeline.DesiredFrameRateProperty.OverrideMetadata(
+                typeof (Timeline),
+                new FrameworkPropertyMetadata {DefaultValue = 60}
+                );
         }
     }
 }

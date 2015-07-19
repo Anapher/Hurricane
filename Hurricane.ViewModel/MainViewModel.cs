@@ -154,11 +154,16 @@ namespace Hurricane.ViewModel
             ViewManager = new ViewManager(MusicDataManager.Playlists);
             ViewManager.ViewItems.First(x => x is QueueView)
                 .Load(MusicDataManager, _viewController, NotificationManager).Forget(); //Important because the queue view wants to set an event
+            SelectedViewItem = ViewManager.ViewItems[0];
         }
 
         private void AudioEngine_ErrorOccurred(object sender, ErrorOccurredEventArgs e)
         {
-            NotificationManager.ShowInformation(Application.Current.Resources["PlaybackError"].ToString(), e.ErrorMessage, MessageNotificationIcon.Error);
+            Application.Current.Dispatcher.BeginInvoke(
+                new Action(
+                    () =>
+                        NotificationManager.ShowInformation(Application.Current.Resources["PlaybackError"].ToString(),
+                            e.ErrorMessage, MessageNotificationIcon.Error)));
         }
 
         private void OpenArtist(Artist artist)

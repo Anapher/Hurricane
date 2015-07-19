@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+
 // ReSharper disable InconsistentNaming
 
 namespace Hurricane.Model.DataApi.SerializeClasses.Lastfm.GetArtistInfo

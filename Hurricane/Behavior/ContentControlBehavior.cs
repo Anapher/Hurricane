@@ -28,7 +28,7 @@ namespace Hurricane.Behavior
         {
             var contentControl = dependencyObject as ContentControl;
             if (contentControl == null)
-                throw new Exception("Can only be applied to a ContentControl");
+                throw new InvalidOperationException("Can only be applied to a ContentControl");
 
             var propertyDescriptor = DependencyPropertyDescriptor.FromProperty(ContentControl.ContentProperty,
                 typeof (ContentControl));

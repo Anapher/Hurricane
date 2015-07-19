@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using Hurricane.Model.Data;
 using Hurricane.Model.DataApi;
+using Hurricane.Model.Music.Args;
 using Hurricane.Model.Music.Playlist;
 using Hurricane.Model.Settings;
 
@@ -130,7 +131,7 @@ namespace Hurricane.Model.Music
             }
         }
 
-        private void MusicManager_TrackChanged(object sender, Args.TrackChangedEventArgs e)
+        private void MusicManager_TrackChanged(object sender, TrackChangedEventArgs e)
         {
             Application.Current.Dispatcher.BeginInvoke(
                 new Action(() => UserData.UserData.History.AddEntry(e.Track, e.TimePlayed)));

@@ -49,11 +49,8 @@ namespace Hurricane.Model.Music.Imagment
             get
             {
                 if (_image == null)
-                {
-                    if(!GetImageFast(out _image))
-                        ImageLoader.AddImage(this);
-                }
-
+                    BeginLoadingImage();
+                
                 return _image;
             }
             set
@@ -106,14 +103,27 @@ namespace Hurricane.Model.Music.Imagment
         /// <returns></returns>
         public async Task LoadImageAsync()
         {
-            if (IsLoadingImage || Image != null) return;
-            IsLoadingImage = true;
+            if (Image != null) return;
             Image = await LoadImage();
             IsLoadingImage = false;
         }
 
+        public async void BeginLoadingImage(bool highPriority = false)
+        {
+            IsLoadingImage = true;
+            var image = await GetImageFast();
+            if (image == null)
+            {
+                ImageLoader.AddImage(this);
+                return;
+            }
+
+            Image = image;
+            IsLoadingImage = false;
+        }
+
         protected abstract Task<BitmapImage> LoadImage();
-        protected abstract bool GetImageFast(out BitmapImage image);
+        protected abstract Task<BitmapImage> GetImageFast();
 
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {

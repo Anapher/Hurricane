@@ -1,7 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Threading.Tasks;
-using System.Windows.Media.Imaging;
 using System.Xml;
 using System.Xml.Serialization;
 using Hurricane.Model.AudioEngine;
@@ -41,7 +40,7 @@ namespace Hurricane.Model.Music.Playable
             get { return _artist; }
             set
             {
-                if (SetProperty(value, ref _artist))
+                if (SetProperty(value, ref _artist) && value != null)
                     ArtistGuid = value.Guid;
             }
         }

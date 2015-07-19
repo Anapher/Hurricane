@@ -2,7 +2,6 @@
 using System.ComponentModel;
 using System.Windows.Data;
 using Hurricane.Model.Data;
-using Hurricane.Model.Music;
 using Hurricane.Model.Music.Playlist;
 
 namespace Hurricane.ViewModel.MainView.Base

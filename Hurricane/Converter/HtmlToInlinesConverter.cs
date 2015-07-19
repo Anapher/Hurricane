@@ -5,6 +5,7 @@ using System.Globalization;
 using System.Text.RegularExpressions;
 using System.Windows.Data;
 using System.Windows.Documents;
+using System.Windows.Navigation;
 
 namespace Hurricane.Converter
 {
@@ -63,7 +64,7 @@ namespace Hurricane.Converter
             }
         }
 
-        private void Hyperlink_RequestNavigate(object sender, System.Windows.Navigation.RequestNavigateEventArgs e)
+        private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
         {
             Process.Start(e.Uri.AbsoluteUri);
         }

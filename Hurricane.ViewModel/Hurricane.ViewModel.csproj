@@ -63,6 +63,7 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AboutViewModel.cs" />
     <Compile Include="MainView\ArtistView.cs" />
     <Compile Include="MainView\Base\SideListItem.cs" />
     <Compile Include="MainView\ChartsView.cs" />

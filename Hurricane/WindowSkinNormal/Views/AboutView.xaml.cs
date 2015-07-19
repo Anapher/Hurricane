@@ -1,11 +1,11 @@
 ﻿namespace Hurricane.WindowSkinNormal.Views
 {
     /// <summary>
-    /// Interaktionslogik für HistoryView.xaml
+    /// Interaktionslogik für AboutView.xaml
     /// </summary>
-    public partial class HistoryView
+    public partial class AboutView
     {
-        public HistoryView()
+        public AboutView()
         {
             InitializeComponent();
         }

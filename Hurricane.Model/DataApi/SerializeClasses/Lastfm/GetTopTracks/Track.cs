@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+
 // ReSharper disable InconsistentNaming
 
 namespace Hurricane.Model.DataApi.SerializeClasses.Lastfm.GetTopTracks

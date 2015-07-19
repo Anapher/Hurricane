@@ -61,21 +61,22 @@ namespace Hurricane.Model.Music.Imagment
             return image;
         }
 
-        protected override bool GetImageFast(out BitmapImage image)
+        protected async override Task<BitmapImage> GetImageFast()
         {
-            image = null;
-
             var imageFile = new FileInfo(Path.Combine(ImageDirectory, $"{Guid.ToString("D")}.png"));
             if (!imageFile.Exists)
-                return false;
-            var bitmapImage = new BitmapImage();
-            bitmapImage.BeginInit();
-            bitmapImage.UriSource = new Uri(imageFile.FullName);
-            bitmapImage.EndInit();
-            bitmapImage.Freeze();
+                return null;
 
-            image = bitmapImage;
-            return true;
+            var bitmapImage = new BitmapImage();
+            await Task.Run(() =>
+            {
+                bitmapImage.BeginInit();
+                bitmapImage.UriSource = new Uri(imageFile.FullName);
+                bitmapImage.EndInit();
+                bitmapImage.Freeze();
+            });
+
+            return bitmapImage;
         }
     }
 }

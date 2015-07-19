@@ -35,6 +35,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.6.0.8\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
   </ItemGroup>
   <Choose>
@@ -51,6 +55,7 @@
   </Choose>
   <ItemGroup>
     <Compile Include="DataApi\iTunesApiTests.cs" />
+    <Compile Include="Utilities\StringExtensionsTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -58,10 +63,17 @@
       <Project>{24BAF95B-136D-41E0-97AD-5C85D76014C9}</Project>
       <Name>Hurricane.Model</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Hurricane.Utilities\Hurricane.Utilities.csproj">
+      <Project>{A3109E52-8E1D-4C07-BA81-8925B6E7D217}</Project>
+      <Name>Hurricane.Utilities</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Hurricane.ViewModel\Hurricane.ViewModel.csproj">
       <Project>{83C1CE59-B4A0-4560-9238-35BD997485FC}</Project>
       <Name>Hurricane.ViewModel</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
-using Hurricane.Model.Music.Playable;
 using Hurricane.Model.Music.Playlist;
 using Hurricane.Model.Music.TrackProperties;
 using Hurricane.Utilities;

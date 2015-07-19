@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using System.Linq;
+﻿using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using Hurricane.Model.DataApi.SerializeClasses.MusicBrainz.GetArtistByTrackId;

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using Hurricane.MagicArrow;
 using Hurricane.Model.Skin;
@@ -82,6 +83,7 @@ namespace Hurricane.Controls
         private MagicArrowService _magicArrow;
         private IWindowSkin _defaultNormalWindowSkin;
         private IWindowSkin _defaultDockedWindowSkin;
+        private readonly ContentControl _windowViewControl;
 
         public MagicMetroWindow()
         {
@@ -90,6 +92,9 @@ namespace Hurricane.Controls
             StateChanged += MagicMetroWindow_StateChanged;
             _defaultNormalWindowSkin = new WindowSkinNormal.WindowSkinNormal();
             _defaultDockedWindowSkin = new WindowSkinDocked.WindowSkinDocked();
+
+            _windowViewControl = new TransitioningContentControl {Transition = TransitionType.Left};
+            Content = _windowViewControl;
         }
 
         void MagicMetroWindow_Closing(object sender, CancelEventArgs e)
@@ -264,7 +269,7 @@ namespace Hurricane.Controls
                 Width = 300;
             }
 
-            Content = newWindowSkin;
+            _windowViewControl.Content = newWindowSkin;
             CurrentView = newWindowSkin;
         }
 

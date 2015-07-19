@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Hurricane.Utilities.Native
+﻿namespace Hurricane.Utilities.Native
 {
     /// <summary>
     /// SetWindowPos Flags

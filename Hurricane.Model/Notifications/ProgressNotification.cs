@@ -56,7 +56,7 @@ namespace Hurricane.Model.Notifications
             _progressReporter.Cancel();
         }
 
-        private void ProgressReporter_Finished(object sender, System.EventArgs e)
+        private void ProgressReporter_Finished(object sender, EventArgs e)
         {
             Close?.Invoke(this, EventArgs.Empty);
         }

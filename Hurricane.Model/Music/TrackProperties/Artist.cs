@@ -94,5 +94,10 @@ namespace Hurricane.Model.Music.TrackProperties
             get { return _topTracks; }
             set { SetProperty(value, ref _topTracks); }
         }
+
+        public override string ToString()
+        {
+            return Name;
+        }
     }
 }

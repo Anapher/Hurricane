@@ -134,7 +134,7 @@ namespace Hurricane.Controls
         private AnimationTimeline CreateAnimation(double from, double to, EventHandler whenDone = null)
         {
             var duration = new Duration(TimeSpan.FromSeconds(0.5));
-            var anim = new DoubleAnimation(from, to, duration);
+            var anim = new DoubleAnimation(from, to, duration) {EasingFunction = new CircleEase {EasingMode = EasingMode.EaseOut} };
             if (whenDone != null)
                 anim.Completed += whenDone;
 

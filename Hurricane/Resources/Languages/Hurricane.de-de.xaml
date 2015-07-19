@@ -1,6 +1,8 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:system="clr-namespace:System;assembly=mscorlib">
+    <system:String x:Key="DateTimeFormat">dd.MM.yyyy HH:mm:ss</system:String>
+
     <system:String x:Key="Discover">Entdecken</system:String>
     <system:String x:Key="MyMusic">Meine Musik</system:String>
     <system:String x:Key="Playlists">Wiedergabelisten</system:String>
@@ -16,7 +18,7 @@
     <system:String x:Key="Album">Album</system:String>
     <system:String x:Key="Charts">Charts</system:String>
     <system:String x:Key="Queue">Warteschlange</system:String>
-    
+
     <system:String x:Key="AddFiles">Dateien hinzufügen</system:String>
     <system:String x:Key="AddDirectory">Ordner hinzufügen</system:String>
     <system:String x:Key="AddFilesOpenFileDialogTitle">Bitte wählen Sie die zu importierenden Dateien aus</system:String>
@@ -43,12 +45,20 @@
     <system:String x:Key="History">Chronik</system:String>
     <system:String x:Key="Date">Datum</system:String>
     <system:String x:Key="TimePlayed">Abspieldauer</system:String>
-    
+    <system:String x:Key="Settings">Einstellungen</system:String>
+    <system:String x:Key="Back">Zurück</system:String>
+    <system:String x:Key="About">Über</system:String>
+    <system:String x:Key="Libraries">Bibilotheken</system:String>
+    <system:String x:Key="Licence">Lizenz</system:String>
+    <system:String x:Key="Images">Grafiken</system:String>
+    <system:String x:Key="Website">Website</system:String>
+    <system:String x:Key="Unkown">Unbekannt</system:String>
+
     <system:String x:Key="Error">Fehler</system:String>
     <system:String x:Key="ErrorWhileLoadingData">Es ist ein Fehler bei dem Laden der Daten aufgetreten.</system:String>
     <system:String x:Key="PlaybackError">Fehler bei der Wiedergabe</system:String>
 
-    <!-- MahApps.Metro Translation -->
+    <!--  MahApps.Metro Translation  -->
     <system:String x:Key="Amber">Bernstein</system:String>
     <system:String x:Key="Blue">Blau</system:String>
     <system:String x:Key="Brown">Braun</system:String>

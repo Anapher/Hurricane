@@ -96,7 +96,6 @@ namespace Hurricane.Controls
                 throw new ArgumentException("dependencyObject");
 
             pieProgress.DrawSector();
-            pieProgress.RefreshProgressText();
         }
 
         private void PieProgress_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -198,15 +197,9 @@ namespace Hurricane.Controls
             Path.Data = pathGeometry;
         }
 
-        private void RefreshProgressText()
-        {
-            ProgressTextBlock.Text = $"{Math.Round(Value*100, 0)} %";
-        }
-
         private void Resize()
         {
             Height = ActualWidth;
-            ProgressTextBlock.FontSize = ActualHeight * 0.23;
         }
 
         [NotifyPropertyChangedInvocator]

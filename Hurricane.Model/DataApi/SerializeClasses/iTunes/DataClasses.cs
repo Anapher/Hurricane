@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Newtonsoft.Json;
+
 // ReSharper disable InconsistentNaming
 
 namespace Hurricane.Model.DataApi.SerializeClasses.iTunes

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+
 // ReSharper disable InconsistentNaming
 
 namespace Hurricane.Model.DataApi.SerializeClasses.Lastfm.GetArtistInfo
@@ -13,7 +14,7 @@ namespace Hurricane.Model.DataApi.SerializeClasses.Lastfm.GetArtistInfo
         public string ontour { get; set; }
         public Stats stats { get; set; }
         public Similar similar { get; set; }
-        public Tags tags { get; set; }
+        public Tag tags { get; set; }
         public Bio bio { get; set; }
     }
 }

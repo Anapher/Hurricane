@@ -1,21 +1,29 @@
 ﻿<hurricaneControls:MagicMetroWindow x:Class="Hurricane.MainWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:hurricaneControls="clr-namespace:Hurricane.Controls"
-        xmlns:viewModels="clr-namespace:Hurricane.ViewModel;assembly=Hurricane.ViewModel"
-        xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
-        xmlns:data="clr-namespace:Hurricane.Model.Music.TrackProperties;assembly=Hurricane.Model"
-        xmlns:views="clr-namespace:Hurricane.WindowSkinNormal.Views"
-        Title="Hurricane" SizeToContent="Manual" IsWindowDraggable="False" ShowIconOnTitleBar="False" Height="468.06" Width="946.268"
-        GlowBrush="{DynamicResource AccentColorBrush}" Style="{DynamicResource CleanWindowStyleKey}" ResizeMode="CanResize" ShowTitleBar="False" x:Name="Root"
-                                    WindowHeight="{Binding Settings.WindowHeight}" WindowWidth="{Binding Settings.WindowWidth}"
-                                    WindowTop="{Binding Settings.WindowTop}" WindowLeft="{Binding Settings.WindowLeft}">
+                                    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                                    xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
+                                    xmlns:hurricaneControls="clr-namespace:Hurricane.Controls"
+                                    xmlns:viewModels="clr-namespace:Hurricane.ViewModel;assembly=Hurricane.ViewModel"
+                                    Title="Hurricane"
+                                    Width="946.268"
+                                    Height="468.06"
+                                    GlowBrush="{DynamicResource AccentColorBrush}"
+                                    IsWindowDraggable="False"
+                                    ResizeMode="CanResize"
+                                    ShowIconOnTitleBar="False"
+                                    ShowTitleBar="False"
+                                    SizeToContent="Manual"
+                                    Style="{DynamicResource CleanWindowStyleKey}"
+                                    WindowHeight="{Binding Settings.WindowHeight}"
+                                    WindowLeft="{Binding Settings.WindowLeft}"
+                                    WindowTop="{Binding Settings.WindowTop}"
+                                    WindowWidth="{Binding Settings.WindowWidth}">
     <Window.DataContext>
         <viewModels:MainViewModel />
     </Window.DataContext>
     <hurricaneControls:MagicMetroWindow.RightWindowCommands>
         <controls:WindowCommands>
-            <Button Content="Einstellungen" Command="{Binding OpenSettingsCommand}"/>
+            <Button Command="{Binding OpenSettingsCommand}" Content="{DynamicResource Settings}" />
         </controls:WindowCommands>
     </hurricaneControls:MagicMetroWindow.RightWindowCommands>
 </hurricaneControls:MagicMetroWindow>

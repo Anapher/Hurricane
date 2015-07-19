@@ -15,6 +15,7 @@ namespace Hurricane.Model.Data
         public PlaylistProvider()
         {
             Playlists = new ObservableCollection<UserPlaylist>();
+            Playlists.Add(new UserPlaylist {Name = "Default List"});
         }
 
         public event EventHandler<UserPlaylist> PlaylistAdded;

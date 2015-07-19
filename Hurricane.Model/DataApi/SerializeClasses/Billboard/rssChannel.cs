@@ -1,4 +1,5 @@
 ﻿using System.Xml.Serialization;
+
 // ReSharper disable InconsistentNaming
 
 namespace Hurricane.Model.DataApi.SerializeClasses.Billboard

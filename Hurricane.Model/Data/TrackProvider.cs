@@ -17,8 +17,7 @@ namespace Hurricane.Model.Data
         public TrackProvider()
         {
             Collection = new Dictionary<Guid, PlayableBase>();
-
-            var aor = new XmlAttributeOverrides();
+            Tracks = new ObservableCollection<PlayableBase>();
             _serializer = new XmlSerializer(typeof(Track[]), new[] {typeof(LocalPlayable)});
         }
 

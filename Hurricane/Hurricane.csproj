@@ -83,6 +83,7 @@
     </ApplicationDefinition>
     <Compile Include="Behavior\ContentControlBehavior.cs" />
     <Compile Include="Behavior\ControlBehavior.cs" />
+    <Compile Include="Behavior\ItemsControlBehavior.cs" />
     <Compile Include="Behavior\ScrollAnimationBehavior.cs" />
     <Compile Include="Behavior\TextBlockBehavior.cs" />
     <Compile Include="Controls\AnimatedSlider.cs" />
@@ -109,6 +110,8 @@
     <Compile Include="Converter\IsNullConverter.cs" />
     <Compile Include="Converter\SizeToColumnsConverter.cs" />
     <Compile Include="Converter\TimespanToStringConverter.cs" />
+    <Compile Include="Converter\TrueFalseValueConverter.cs" />
+    <Compile Include="Converter\ViewManager.cs" />
     <Compile Include="Extensions\ComboBoxItemTemplateChooser.cs" />
     <Compile Include="Extensions\GridViewSort.cs" />
     <Compile Include="Extensions\ListViewLayoutManager\ConverterGridViewColumn.cs" />
@@ -131,6 +134,9 @@
     </Compile>
     <Compile Include="WindowSkinDocked\WindowSkinDocked.xaml.cs">
       <DependentUpon>WindowSkinDocked.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="WindowSkinNormal\Views\AboutView.xaml.cs">
+      <DependentUpon>AboutView.xaml</DependentUpon>
     </Compile>
     <Compile Include="WindowSkinNormal\Views\ArtistView.xaml.cs">
       <DependentUpon>ArtistView.xaml</DependentUpon>
@@ -224,6 +230,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="WindowSkinDocked\WindowSkinDocked.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="WindowSkinNormal\Views\AboutView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

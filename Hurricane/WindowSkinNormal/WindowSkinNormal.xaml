@@ -1,66 +1,97 @@
 ﻿<UserControl x:Class="Hurricane.WindowSkinNormal.WindowSkinNormal"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:viewModels="clr-namespace:Hurricane.ViewModel;assembly=Hurricane.ViewModel"
-             xmlns:myControls="clr-namespace:Hurricane.Controls"
-             xmlns:viewData="clr-namespace:Hurricane.ViewModel.MainView;assembly=Hurricane.ViewModel"
-             xmlns:behavior="clr-namespace:Hurricane.Behavior"
-             xmlns:views="clr-namespace:Hurricane.WindowSkinNormal.Views"
-             xmlns:notifications="clr-namespace:Hurricane.Model.Notifications;assembly=Hurricane.Model"
              xmlns:base="clr-namespace:Hurricane.ViewModel.MainView.Base;assembly=Hurricane.ViewModel"
-             mc:Ignorable="d" 
-             d:DesignHeight="500" d:DesignWidth="1000" d:DataContext="{d:DesignInstance viewModels:MainViewModel, d:IsDesignTimeCreatable=True}">
+             xmlns:behavior="clr-namespace:Hurricane.Behavior"
+             xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
+             xmlns:converter="clr-namespace:Hurricane.Converter"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:myControls="clr-namespace:Hurricane.Controls"
+             xmlns:notifications="clr-namespace:Hurricane.Model.Notifications;assembly=Hurricane.Model"
+             xmlns:playableData="clr-namespace:Hurricane.Model.Music.Playable;assembly=Hurricane.Model"
+             xmlns:viewData="clr-namespace:Hurricane.ViewModel.MainView;assembly=Hurricane.ViewModel"
+             xmlns:viewModels="clr-namespace:Hurricane.ViewModel;assembly=Hurricane.ViewModel"
+             xmlns:views="clr-namespace:Hurricane.WindowSkinNormal.Views"
+             d:DataContext="{d:DesignInstance viewModels:MainViewModel,
+                                              d:IsDesignTimeCreatable=True}"
+             d:DesignHeight="500"
+             d:DesignWidth="1000"
+             mc:Ignorable="d">
+    <UserControl.Resources>
+        <converter:ViewManager x:Key="ViewManager" />
+    </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="35"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="35" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="100" />
         </Grid.RowDefinitions>
-        <Grid MouseLeftButtonDown="Titlebar_OnMouseLeftButtonDown" MouseLeftButtonUp="Titlebar_OnMouseLeftButtonUp" MouseMove="Titlebar_OnMouseMove" Background="Transparent">
-            <TextBlock Text="HURRICANE" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="{DynamicResource WindowTitleFontSize}" FontFamily="{DynamicResource HeaderFontFamily}" Foreground="#FFAAAAAA"/>
+        <Grid Background="Transparent"
+              MouseLeftButtonDown="Titlebar_OnMouseLeftButtonDown"
+              MouseLeftButtonUp="Titlebar_OnMouseLeftButtonUp"
+              MouseMove="Titlebar_OnMouseMove">
+            <TextBlock HorizontalAlignment="Center"
+                       VerticalAlignment="Center"
+                       FontFamily="{DynamicResource HeaderFontFamily}"
+                       FontSize="{DynamicResource WindowTitleFontSize}"
+                       Foreground="#FFAAAAAA"
+                       Text="Hurricane" />
         </Grid>
         <Grid Grid.Row="1">
-            <myControls:AnimationUpDown SelectedIndex="{Binding CurrentMainView}" DistanceTop="150" DistanceBottom="150">
+            <myControls:AnimationUpDown DistanceBottom="150"
+                                        DistanceTop="0"
+                                        SelectedIndex="{Binding CurrentMainView}">
                 <views:SettingsView />
                 <Grid>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="250" MinWidth="150" MaxWidth="400"/>
-                        <ColumnDefinition Width="2"/>
+                        <ColumnDefinition Width="250"
+                                          MinWidth="150"
+                                          MaxWidth="400" />
+                        <ColumnDefinition Width="1" />
                         <ColumnDefinition />
                     </Grid.ColumnDefinitions>
                     <Grid Margin="5,0,0,0">
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="*"/>
-                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
                         <ListBox ItemsSource="{Binding ViewManager.ViewSource}" SelectedItem="{Binding SelectedViewItem}">
                             <ListBox.ItemContainerStyle>
                                 <Style TargetType="ListBoxItem" d:DataContext="{d:DesignInstance base:IViewItem}">
-                                    <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+                                    <Setter Property="FocusVisualStyle" Value="{x:Null}" />
                                     <Setter Property="Template">
                                         <Setter.Value>
                                             <ControlTemplate TargetType="ListBoxItem">
-                                                <Grid Background="Transparent" Margin="0,2,0,0">
+                                                <Grid Margin="0,2,0,0" Background="Transparent">
                                                     <Grid.ColumnDefinitions>
-                                                        <ColumnDefinition Width="*"/>
-                                                        <ColumnDefinition Width="Auto"/>
+                                                        <ColumnDefinition Width="*" />
+                                                        <ColumnDefinition Width="Auto" />
                                                     </Grid.ColumnDefinitions>
                                                     <StackPanel Orientation="Horizontal">
                                                         <Viewbox Width="12" VerticalAlignment="Center">
-                                                            <Path Data="{Binding Icon}" Fill="{StaticResource GrayBrush3}" x:Name="IconPath"/>
+                                                            <Path x:Name="IconPath"
+                                                                  Data="{Binding Icon}"
+                                                                  Fill="{StaticResource GrayBrush3}" />
                                                         </Viewbox>
-                                                        <TextBlock Text="{Binding Text}" Foreground="{StaticResource GrayBrush1}" VerticalAlignment="Center" Margin="8,0,0,0" x:Name="TextBlock" FontFamily="Segoe UI Emoji" FontSize="14"/>
+                                                        <TextBlock x:Name="TextBlock"
+                                                                   Margin="8,0,0,0"
+                                                                   VerticalAlignment="Center"
+                                                                   FontFamily="Segoe UI Emoji"
+                                                                   FontSize="14"
+                                                                   Foreground="{StaticResource GrayBrush1}"
+                                                                   Text="{Binding Text}" />
                                                     </StackPanel>
-                                                    <Viewbox Width="16" Grid.Column="1" Margin="0,0,10,0">
+                                                    <Viewbox Grid.Column="1"
+                                                             Width="16"
+                                                             Margin="0,0,10,0">
                                                         <Viewbox.Style>
                                                             <Style TargetType="Viewbox">
-                                                                <Setter Property="Opacity" Value="0"/>
-                                                                <Setter Property="RenderTransformOrigin" Value=".5,.5"/>
+                                                                <Setter Property="Opacity" Value="0" />
+                                                                <Setter Property="RenderTransformOrigin" Value=".5,.5" />
                                                                 <Setter Property="RenderTransform">
                                                                     <Setter.Value>
-                                                                        <RotateTransform x:Name="RotateTransform"/>
+                                                                        <RotateTransform x:Name="RotateTransform" />
                                                                     </Setter.Value>
                                                                 </Setter>
                                                                 <Style.Triggers>
@@ -68,15 +99,22 @@
                                                                         <DataTrigger.EnterActions>
                                                                             <BeginStoryboard>
                                                                                 <Storyboard>
-                                                                                    <DoubleAnimation To="1" Duration="0:0:0.2" Storyboard.TargetProperty="Opacity"/>
-                                                                                    <DoubleAnimation To="0" From="-90" Duration="0:0:0.4" Storyboard.TargetProperty="(ContentControl.RenderTransform).(RotateTransform.Angle)"/>
+                                                                                    <DoubleAnimation Duration="0:0:0.2"
+                                                                                                     Storyboard.TargetProperty="Opacity"
+                                                                                                     To="1" />
+                                                                                    <DoubleAnimation Duration="0:0:0.4"
+                                                                                                     From="-90"
+                                                                                                     Storyboard.TargetProperty="(ContentControl.RenderTransform).(RotateTransform.Angle)"
+                                                                                                     To="0" />
                                                                                 </Storyboard>
                                                                             </BeginStoryboard>
                                                                         </DataTrigger.EnterActions>
                                                                         <DataTrigger.ExitActions>
                                                                             <BeginStoryboard>
                                                                                 <Storyboard>
-                                                                                    <DoubleAnimation To="0" Duration="0:0:0.2" Storyboard.TargetProperty="Opacity"/>
+                                                                                    <DoubleAnimation Duration="0:0:0.2"
+                                                                                                     Storyboard.TargetProperty="Opacity"
+                                                                                                     To="0" />
                                                                                 </Storyboard>
                                                                             </BeginStoryboard>
                                                                         </DataTrigger.ExitActions>
@@ -84,24 +122,22 @@
                                                                 </Style.Triggers>
                                                             </Style>
                                                         </Viewbox.Style>
-                                                        <Path StrokeThickness="2.0" Stroke="#ff000000" StrokeStartLineCap="Round" StrokeEndLineCap="Round" StrokeLineJoin="Round">
-                                                            <Path.Data>
-                                                                <GeometryGroup>
-                                                                    <Geometry>F1 M 23.000,1.000 C 35.150,1.000 45.000,10.850 45.000,23.000 C 45.000,35.150 35.150,45.000 23.000,45.000 C 10.850,45.000 1.000,35.150 1.000,23.000 C 1.000,10.850 10.850,1.000 23.000,1.000 Z</Geometry>
-                                                                    <Geometry>F1 M 19.000,31.000 L 19.000,15.000 L 31.000,23.000 L 19.000,31.000 Z</Geometry>
-                                                                </GeometryGroup>
-                                                            </Path.Data>
-                                                        </Path>
+                                                        <Path Data="{StaticResource VectorPlay}"
+                                                              Stroke="{DynamicResource BlackBrush}"
+                                                              StrokeEndLineCap="Round"
+                                                              StrokeLineJoin="Round"
+                                                              StrokeStartLineCap="Round"
+                                                              StrokeThickness="2.0" />
                                                     </Viewbox>
                                                 </Grid>
                                                 <ControlTemplate.Triggers>
                                                     <Trigger Property="IsMouseOver" Value="True">
-                                                        <Setter TargetName="IconPath" Property="Fill" Value="{StaticResource GrayBrush2}"/>
-                                                        <Setter TargetName="TextBlock" Property="Foreground" Value="{StaticResource BlackBrush}"/>
+                                                        <Setter TargetName="IconPath" Property="Fill" Value="{StaticResource GrayBrush2}" />
+                                                        <Setter TargetName="TextBlock" Property="Foreground" Value="{StaticResource BlackBrush}" />
                                                     </Trigger>
                                                     <Trigger Property="IsSelected" Value="True">
-                                                        <Setter TargetName="IconPath" Property="Fill" Value="{StaticResource AccentColorBrush}"/>
-                                                        <Setter TargetName="TextBlock" Property="Foreground" Value="{StaticResource AccentColorBrush}"/>
+                                                        <Setter TargetName="IconPath" Property="Fill" Value="{StaticResource AccentColorBrush}" />
+                                                        <Setter TargetName="TextBlock" Property="Foreground" Value="{StaticResource AccentColorBrush}" />
                                                     </Trigger>
                                                 </ControlTemplate.Triggers>
                                             </ControlTemplate>
@@ -116,27 +152,51 @@
                                             <Setter Property="Template">
                                                 <Setter.Value>
                                                     <ControlTemplate TargetType="GroupItem">
-                                                        <StackPanel Orientation="Vertical" Margin="5,0,0,0">
-                                                            <TextBlock Margin="0,30,0,5">
-                                                                <TextBlock.Style>
-                                                                    <Style TargetType="TextBlock">
-                                                                        <Setter Property="FontFamily" Value="Segoe UI Emoji"/>
-                                                                        <Setter Property="FontSize" Value="11"/>
-                                                                        <Style.Triggers>
-                                                                            <DataTrigger Binding="{Binding Name}" Value="Discover">
-                                                                                <Setter Property="behavior:TextBlockBehavior.UpperText" Value="{StaticResource Discover}"/>
-                                                                            </DataTrigger>
-                                                                            <DataTrigger Binding="{Binding Name}" Value="MyMusic">
-                                                                                <Setter Property="behavior:TextBlockBehavior.UpperText" Value="{StaticResource MyMusic}"/>
-                                                                            </DataTrigger>
-                                                                            <DataTrigger Binding="{Binding Name}" Value="Playlist">
-                                                                                <Setter Property="behavior:TextBlockBehavior.UpperText" Value="{StaticResource Playlists}"/>
-                                                                            </DataTrigger>
-                                                                        </Style.Triggers>
-                                                                    </Style>
-                                                                </TextBlock.Style>
-                                                            </TextBlock>
-                                                            <ItemsPresenter Margin="1,0,0,0"/>
+                                                        <StackPanel Margin="5,0,0,0" Orientation="Vertical">
+                                                            <DockPanel>
+                                                                <TextBlock Margin="0,30,0,5">
+                                                                    <TextBlock.Style>
+                                                                        <Style TargetType="TextBlock">
+                                                                            <Setter Property="FontFamily" Value="Segoe UI Emoji" />
+                                                                            <Setter Property="FontSize" Value="11" />
+                                                                            <Style.Triggers>
+                                                                                <DataTrigger Binding="{Binding Name}" Value="Discover">
+                                                                                    <Setter Property="behavior:TextBlockBehavior.UpperText" Value="{StaticResource Discover}" />
+                                                                                </DataTrigger>
+                                                                                <DataTrigger Binding="{Binding Name}" Value="MyMusic">
+                                                                                    <Setter Property="behavior:TextBlockBehavior.UpperText" Value="{StaticResource MyMusic}" />
+                                                                                </DataTrigger>
+                                                                                <DataTrigger Binding="{Binding Name}" Value="Playlist">
+                                                                                    <Setter Property="behavior:TextBlockBehavior.UpperText" Value="{StaticResource Playlists}" />
+                                                                                </DataTrigger>
+                                                                            </Style.Triggers>
+                                                                        </Style>
+                                                                    </TextBlock.Style>
+                                                                </TextBlock>
+                                                                <Button Width="15"
+                                                                        Height="15"
+                                                                        Margin="0,0,0,5"
+                                                                        HorizontalAlignment="Right"
+                                                                        VerticalAlignment="Bottom"
+                                                                        HorizontalContentAlignment="Right"
+                                                                        DockPanel.Dock="Right">
+                                                                    <Button.Style>
+                                                                        <Style TargetType="Button">
+                                                                            <Setter Property="OverridesDefaultStyle" Value="True" />
+                                                                            <Setter Property="Template">
+                                                                                <Setter.Value>
+                                                                                    <ControlTemplate TargetType="Button">
+                                                                                        <Viewbox>
+                                                                                            <Path Data="{StaticResource VectorAdd}" Fill="{StaticResource BlackBrush}" />
+                                                                                        </Viewbox>
+                                                                                    </ControlTemplate>
+                                                                                </Setter.Value>
+                                                                            </Setter>
+                                                                        </Style>
+                                                                    </Button.Style>
+                                                                </Button>
+                                                            </DockPanel>
+                                                            <ItemsPresenter Margin="1,0,0,0" />
                                                         </StackPanel>
                                                     </ControlTemplate>
                                                 </Setter.Value>
@@ -146,60 +206,87 @@
                                 </GroupStyle>
                             </ListBox.GroupStyle>
                         </ListBox>
-                        <StackPanel Grid.Row="1" Visibility="{Binding NotificationManager.IsVisible,Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <StackPanel Grid.Row="1" Visibility="{Binding NotificationManager.IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
                             <Separator />
-                            <ItemsControl ItemsSource="{Binding NotificationManager.Notifications}" Margin="2">
+                            <ItemsControl Margin="2" ItemsSource="{Binding NotificationManager.Notifications}">
                                 <ItemsControl.Resources>
                                     <DataTemplate DataType="{x:Type notifications:ProgressNotification}">
-                                        <Border BorderThickness="1" BorderBrush="{StaticResource GrayBrush6}" CornerRadius="2" Height="40">
+                                        <Border Height="40"
+                                                BorderBrush="{StaticResource GrayBrush6}"
+                                                BorderThickness="1"
+                                                CornerRadius="2">
                                             <Border.Effect>
-                                                <DropShadowEffect ShadowDepth="0" BlurRadius="1" Color="{StaticResource BlackColor}" Opacity=".8"/>
+                                                <DropShadowEffect BlurRadius="1"
+                                                                  Opacity=".8"
+                                                                  ShadowDepth="0"
+                                                                  Color="{StaticResource BlackColor}" />
                                             </Border.Effect>
                                             <Grid Background="{StaticResource WhiteBrush}">
                                                 <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="40"/>
-                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="40" />
+                                                    <ColumnDefinition Width="*" />
                                                 </Grid.ColumnDefinitions>
-                                                <myControls:PieProgress Width="30" Height="30" VerticalAlignment="Center" HorizontalAlignment="Center" Value="{Binding CurrentProgress}"
-                                                                PieBrush="{StaticResource AccentColorBrush2}" Background="{StaticResource WhiteBrush}"
-                                                                Foreground="{StaticResource BlackBrush}" CanCancel="True" CommandParameter="{Binding}"
-                                                                Command="{Binding RelativeSource={RelativeSource AncestorType=ItemsControl},Path=DataContext.CancelProgressNotificationCommand}"/>
-                                                <StackPanel Orientation="Vertical" Grid.Column="1" VerticalAlignment="Center">
-                                                    <TextBlock Text="{Binding Title}" FontSize="12"/>
-                                                    <TextBlock Text="{Binding Message}" TextTrimming="CharacterEllipsis"/>
+                                                <myControls:PieProgress Width="30"
+                                                                        Height="30"
+                                                                        HorizontalAlignment="Center"
+                                                                        VerticalAlignment="Center"
+                                                                        Background="{StaticResource WhiteBrush}"
+                                                                        CanCancel="True"
+                                                                        Command="{Binding RelativeSource={RelativeSource AncestorType=ItemsControl},
+                                                                                          Path=DataContext.CancelProgressNotificationCommand}"
+                                                                        CommandParameter="{Binding}"
+                                                                        Foreground="{StaticResource BlackBrush}"
+                                                                        PieBrush="{StaticResource AccentColorBrush2}"
+                                                                        Value="{Binding CurrentProgress}" />
+                                                <StackPanel Grid.Column="1"
+                                                            VerticalAlignment="Center"
+                                                            Orientation="Vertical">
+                                                    <TextBlock FontSize="12" Text="{Binding Title}" />
+                                                    <TextBlock Text="{Binding Message}" TextTrimming="CharacterEllipsis" />
                                                 </StackPanel>
                                             </Grid>
                                         </Border>
                                     </DataTemplate>
                                     <DataTemplate DataType="{x:Type notifications:MessageNotification}">
-                                        <Border BorderThickness="1" BorderBrush="{StaticResource GrayBrush6}" CornerRadius="2" Height="40">
+                                        <Border Height="40"
+                                                BorderBrush="{StaticResource GrayBrush6}"
+                                                BorderThickness="1"
+                                                CornerRadius="2">
                                             <Border.Effect>
-                                                <DropShadowEffect ShadowDepth="0" BlurRadius="1" Color="{StaticResource BlackColor}" Opacity=".8"/>
+                                                <DropShadowEffect BlurRadius="1"
+                                                                  Opacity=".8"
+                                                                  ShadowDepth="0"
+                                                                  Color="{StaticResource BlackColor}" />
                                             </Border.Effect>
                                             <Grid Background="{StaticResource WhiteBrush}">
                                                 <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="40"/>
-                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="40" />
+                                                    <ColumnDefinition Width="*" />
                                                 </Grid.ColumnDefinitions>
-                                                <Viewbox Width="25" Height="25" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                                <Viewbox Width="25"
+                                                         Height="25"
+                                                         HorizontalAlignment="Center"
+                                                         VerticalAlignment="Center">
                                                     <Path Fill="{StaticResource GrayBrush1}">
                                                         <Path.Style>
                                                             <Style TargetType="Path">
                                                                 <Style.Triggers>
                                                                     <DataTrigger Binding="{Binding Icon}" Value="Information">
-                                                                        <Setter Property="Data" Value="{StaticResource VectorInformation}"/>
+                                                                        <Setter Property="Data" Value="{StaticResource VectorInformation}" />
                                                                     </DataTrigger>
                                                                     <DataTrigger Binding="{Binding Icon}" Value="Error">
-                                                                        <Setter Property="Data" Value="{StaticResource VectorError}"/>
+                                                                        <Setter Property="Data" Value="{StaticResource VectorError}" />
                                                                     </DataTrigger>
                                                                 </Style.Triggers>
                                                             </Style>
                                                         </Path.Style>
                                                     </Path>
                                                 </Viewbox>
-                                                <StackPanel Orientation="Vertical" Grid.Column="1" VerticalAlignment="Center">
-                                                    <TextBlock Text="{Binding Title}" FontSize="12"/>
-                                                    <TextBlock Text="{Binding Message}" TextTrimming="CharacterEllipsis"/>
+                                                <StackPanel Grid.Column="1"
+                                                            VerticalAlignment="Center"
+                                                            Orientation="Vertical">
+                                                    <TextBlock FontSize="12" Text="{Binding Title}" />
+                                                    <TextBlock Text="{Binding Message}" TextTrimming="CharacterEllipsis" />
                                                 </StackPanel>
                                             </Grid>
                                         </Border>
@@ -207,53 +294,15 @@
                                 </ItemsControl.Resources>
                                 <ItemsControl.ItemContainerStyle>
                                     <Style TargetType="ContentPresenter">
-                                        <Setter Property="Margin" Value="0,2,0,2"/>
+                                        <Setter Property="Margin" Value="0,2,0,2" />
                                     </Style>
                                 </ItemsControl.ItemContainerStyle>
                             </ItemsControl>
                         </StackPanel>
                     </Grid>
-                    <GridSplitter HorizontalAlignment="Stretch" Grid.Column="1">
-                        <GridSplitter.Style>
-                            <Style TargetType="GridSplitter">
-                                <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
-                            </Style>
-                        </GridSplitter.Style>
-                    </GridSplitter>
-                    <ContentControl Content="{Binding SelectedViewItem}" Grid.Column="2">
-                        <behavior:ContentControlBehavior.ContentChangedAnimation>
-                            <Storyboard>
-                                <ThicknessAnimation To="0" From="30,0,-30,0" Duration="0:0:0.5" Storyboard.TargetProperty="Margin">
-                                    <ThicknessAnimation.EasingFunction>
-                                        <CubicEase EasingMode="EaseOut" />
-                                    </ThicknessAnimation.EasingFunction>
-                                </ThicknessAnimation>
-                            </Storyboard>
-                        </behavior:ContentControlBehavior.ContentChangedAnimation>
-                        <ContentControl.Resources>
-                            <DataTemplate DataType="{x:Type viewData:HomeView}">
-                                <Grid Background="#FFF3F3F3">
-                                    <TextBlock Text="Startseite" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="16"/>
-                                </Grid>
-                            </DataTemplate>
-                            <DataTemplate DataType="{x:Type viewData:CollectionView}">
-                                <views:CollectionView DataContext="{Binding}"/>
-                            </DataTemplate>
-                            <DataTemplate DataType="{x:Type viewData:ChartsView}">
-                                <views:ChartsView DataContext="{Binding}"/>
-                            </DataTemplate>
-                            <DataTemplate DataType="{x:Type viewData:PlaylistView}">
-                                <views:PlaylistView DataContext="{Binding}"/>
-                            </DataTemplate>
-                            <DataTemplate DataType="{x:Type viewData:QueueView}">
-                                <views:QueueView DataContext="{Binding}"/>
-                            </DataTemplate>
-                            <DataTemplate DataType="{x:Type viewData:HistoryView}">
-                                <views:HistoryView DataContext="{Binding}"/>
-                            </DataTemplate>
-                        </ContentControl.Resources>
-                    </ContentControl>
-                    <ContentControl Content="{Binding SpecialView}" Grid.ColumnSpan="3" Grid.Column="0">
+                    <ContentControl Grid.Column="0"
+                                    Grid.ColumnSpan="3"
+                                    Content="{Binding SpecialView}">
                         <ContentControl.Style>
                             <Style TargetType="ContentControl">
                                 <Style.Triggers>
@@ -261,7 +310,10 @@
                                         <DataTrigger.ExitActions>
                                             <BeginStoryboard>
                                                 <Storyboard>
-                                                    <DoubleAnimation From="0" To="1" Duration="0:0:0.2" Storyboard.TargetProperty="Opacity"/>
+                                                    <DoubleAnimation Duration="0:0:0.2"
+                                                                     From="0"
+                                                                     Storyboard.TargetProperty="Opacity"
+                                                                     To="1" />
                                                 </Storyboard>
                                             </BeginStoryboard>
                                         </DataTrigger.ExitActions>
@@ -271,42 +323,181 @@
                         </ContentControl.Style>
                         <ContentControl.Resources>
                             <DataTemplate DataType="{x:Type viewData:ArtistView}">
-                                <views:ArtistView DataContext="{Binding}"/>
+                                <views:ArtistView DataContext="{Binding}" />
                             </DataTemplate>
                         </ContentControl.Resources>
+                    </ContentControl>
+                    <GridSplitter Grid.Column="1" HorizontalAlignment="Stretch">
+                        <GridSplitter.Style>
+                            <Style TargetType="GridSplitter">
+                                <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+                            </Style>
+                        </GridSplitter.Style>
+                    </GridSplitter>
+                    <ContentControl Grid.Column="2" Content="{Binding SelectedViewItem}">
+                        <behavior:ContentControlBehavior.ContentChangedAnimation>
+                            <Storyboard>
+                                <DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetProperty="Opacity">
+                                    <SplineDoubleKeyFrame KeyTime="00:00:00" Value="0" />
+                                    <SplineDoubleKeyFrame KeyTime="00:00:00.400" Value="1" />
+                                </DoubleAnimationUsingKeyFrames>
+                                <DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.X)">
+                                    <SplineDoubleKeyFrame KeyTime="00:00:00" Value="30" />
+                                    <EasingDoubleKeyFrame KeyTime="00:00:00.700" Value="0">
+                                        <EasingDoubleKeyFrame.EasingFunction>
+                                            <CubicEase EasingMode="EaseOut" />
+                                        </EasingDoubleKeyFrame.EasingFunction>
+                                    </EasingDoubleKeyFrame>
+                                </DoubleAnimationUsingKeyFrames>
+                            </Storyboard>
+                        </behavior:ContentControlBehavior.ContentChangedAnimation>
+                        <ContentControl.RenderTransform>
+                            <TranslateTransform />
+                        </ContentControl.RenderTransform>
+                        <ContentControl.ContentTemplate>
+                            <DataTemplate>
+                                <ContentPresenter HorizontalAlignment="Stretch"
+                                                  VerticalAlignment="Stretch"
+                                                  Content="{Binding Converter={StaticResource ViewManager}}" />
+                            </DataTemplate>
+                        </ContentControl.ContentTemplate>
                     </ContentControl>
                 </Grid>
             </myControls:AnimationUpDown>
         </Grid>
         <Grid Grid.Row="2">
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
             </Grid.RowDefinitions>
-            <myControls:AnimatedSlider Value="{Binding MusicDataManager.MusicManager.AudioEngine.TrackPosition}" Maximum="{Binding MusicDataManager.MusicManager.AudioEngine.TrackLength}" Minimum="0" IsMoveToPointEnabled="True" Height="30" Background="Transparent"/>
-            <Grid Grid.Row="1">
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,5,0,10">
-                    <myControls:RoundButton Width="35" Height="35" Padding="0" Command="{Binding BackCommand}">
-                        <Viewbox Width="8" Margin="0,0,1.6,0" RenderOptions.BitmapScalingMode="HighQuality" VerticalAlignment="Center" HorizontalAlignment="Center">
-                            <Path Data="{StaticResource VectorBackward}" Fill="{Binding RelativeSource={RelativeSource AncestorType=myControls:RoundButton},Path=ContentBrush}"/>
+            <myControls:AnimatedSlider Height="30"
+                                       Background="Transparent"
+                                       IsMoveToPointEnabled="True"
+                                       Maximum="{Binding MusicDataManager.MusicManager.AudioEngine.TrackLength}"
+                                       Minimum="0"
+                                       Value="{Binding MusicDataManager.MusicManager.AudioEngine.TrackPosition}" />
+            <Grid Grid.Row="1" Background="{StaticResource WhiteBrush}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <controls:TransitioningContentControl Margin="10,-12,50,0"
+                                                      Content="{Binding MusicDataManager.MusicManager.CurrentTrack}"
+                                                      Transition="RightReplace">
+                    <controls:TransitioningContentControl.ContentTemplate>
+                        <DataTemplate DataType="{x:Type playableData:IPlayable}">
+                            <Grid VerticalAlignment="Center">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="60" />
+                                    <ColumnDefinition Width="10" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Grid>
+                                    <myControls:ImageProviderViewer Width="60"
+                                                                    Height="60"
+                                                                    HidePlaceholderAtBeginning="True"
+                                                                    HighPriorityImage="True"
+                                                                    ImageProvider="{Binding Cover}">
+                                        <myControls:ImageProviderViewer.Placeholder>
+                                            <Viewbox Width="50" Height="50">
+                                                <Path Data="{StaticResource VectorMicrophone}" Fill="{StaticResource GrayBrush3}" />
+                                            </Viewbox>
+                                        </myControls:ImageProviderViewer.Placeholder>
+                                    </myControls:ImageProviderViewer>
+                                </Grid>
+                                <StackPanel Grid.Column="2" Orientation="Vertical">
+                                    <TextBlock FontFamily="Segoe UI"
+                                               FontSize="18"
+                                               Text="{Binding Title}"
+                                               TextTrimming="CharacterEllipsis" />
+                                    <Button Margin="0,0,0,2"
+                                            HorizontalAlignment="Left"
+                                            Content="{Binding Artist}">
+                                        <Button.Style>
+                                            <Style TargetType="Button">
+                                                <Setter Property="Cursor" Value="Hand" />
+                                                <Setter Property="OverridesDefaultStyle" Value="True" />
+                                                <Setter Property="Foreground" Value="{StaticResource AccentColorBrush}" />
+                                                <Setter Property="Content" Value="{Binding Artist}" />
+                                                <Setter Property="Template">
+                                                    <Setter.Value>
+                                                        <ControlTemplate TargetType="Button">
+                                                            <TextBlock>
+                                                                <ContentPresenter />
+                                                            </TextBlock>
+                                                        </ControlTemplate>
+                                                    </Setter.Value>
+                                                </Setter>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding Artist, Converter={StaticResource IsEmptyStringConverter}}" Value="true">
+                                                        <Setter Property="Visibility" Value="Collapsed" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Button.Style>
+                                    </Button>
+                                    <StackPanel Margin="0,2,0,0" Orientation="Horizontal">
+                                        <TextBlock FontFamily="Segoe UI Light" FontSize="12">
+                                            <Run Text="{Binding RelativeSource={RelativeSource AncestorType=controls:TransitioningContentControl}, Path=DataContext.MusicDataManager.MusicManager.AudioEngine.TrackPositionTime, Mode=OneWay, Converter={StaticResource TimespanToStringConverter}}" />
+                                            <Run Text=" / " />
+                                            <Run Text="{Binding RelativeSource={RelativeSource AncestorType=controls:TransitioningContentControl}, Path=DataContext.MusicDataManager.MusicManager.AudioEngine.TrackLengthTime, Mode=OneWay, Converter={StaticResource TimespanToStringConverter}}" />
+                                        </TextBlock>
+                                    </StackPanel>
+                                </StackPanel>
+                            </Grid>
+                        </DataTemplate>
+                    </controls:TransitioningContentControl.ContentTemplate>
+                    <controls:TransitioningContentControl.Style>
+                        <Style TargetType="controls:TransitioningContentControl">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding MusicDataManager.MusicManager.CurrentTrack}" Value="{x:Null}">
+                                    <Setter Property="Visibility" Value="Hidden" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </controls:TransitioningContentControl.Style>
+                </controls:TransitioningContentControl>
+                <StackPanel Grid.Column="1"
+                            Margin="0,5,0,10"
+                            HorizontalAlignment="Center"
+                            Orientation="Horizontal">
+                    <myControls:RoundButton Width="35"
+                                            Height="35"
+                                            Command="{Binding BackCommand}"
+                                            Padding="0">
+                        <Viewbox Width="8"
+                                 Margin="0,0,1.6,0"
+                                 HorizontalAlignment="Center"
+                                 VerticalAlignment="Center"
+                                 RenderOptions.BitmapScalingMode="HighQuality">
+                            <Path Data="{StaticResource VectorBackward}" Fill="{Binding RelativeSource={RelativeSource AncestorType=myControls:RoundButton}, Path=ContentBrush}" />
                         </Viewbox>
                     </myControls:RoundButton>
-                    <myControls:PlayPauseButton Width="50" Height="50" Margin="10,0,10,0" Command="{Binding PlayPauseCommand}" IsPlaying="{Binding MusicDataManager.MusicManager.AudioEngine.IsPlaying}"/>
-                    <myControls:RoundButton Width="35" Height="35" Command="{Binding ForwardCommand}">
-                        <Viewbox Width="8" RenderOptions.BitmapScalingMode="HighQuality" VerticalAlignment="Center" HorizontalAlignment="Center">
-                            <Path Data="{StaticResource VectorForward}" Fill="{Binding RelativeSource={RelativeSource AncestorType=myControls:RoundButton},Path=ContentBrush}"/>
+                    <myControls:PlayPauseButton Width="50"
+                                                Height="50"
+                                                Margin="10,0,10,0"
+                                                Command="{Binding PlayPauseCommand}"
+                                                IsPlaying="{Binding MusicDataManager.MusicManager.AudioEngine.IsPlaying}" />
+                    <myControls:RoundButton Width="35"
+                                            Height="35"
+                                            Command="{Binding ForwardCommand}">
+                        <Viewbox Width="8"
+                                 HorizontalAlignment="Center"
+                                 VerticalAlignment="Center"
+                                 RenderOptions.BitmapScalingMode="HighQuality">
+                            <Path Data="{StaticResource VectorForward}" Fill="{Binding RelativeSource={RelativeSource AncestorType=myControls:RoundButton}, Path=ContentBrush}" />
                         </Viewbox>
                     </myControls:RoundButton>
                 </StackPanel>
-                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="10">
-                    <Slider Width="200" Value="{Binding MusicDataManager.MusicManager.AudioEngine.Volume}" Maximum="1"/>
-                </StackPanel>
-                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="10" HorizontalAlignment="Left">
-                    <TextBlock>
-                        <Run Text="{Binding MusicDataManager.MusicManager.AudioEngine.TrackPositionTime,Mode=OneWay,Converter={StaticResource TimespanToStringConverter}}"/>
-                        <Run Text=" / "/>
-                        <Run Text="{Binding MusicDataManager.MusicManager.AudioEngine.TrackLengthTime,Mode=OneWay,Converter={StaticResource TimespanToStringConverter}}"/>
-                    </TextBlock>
+                <StackPanel Grid.Column="2"
+                            Margin="10"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center"
+                            Orientation="Horizontal">
+                    <Slider Width="200"
+                            Maximum="1"
+                            Value="{Binding MusicDataManager.MusicManager.AudioEngine.Volume}" />
                 </StackPanel>
             </Grid>
         </Grid>

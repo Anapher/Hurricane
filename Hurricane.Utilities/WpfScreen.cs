@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Interop;
+using Point = System.Windows.Point;
 
 namespace Hurricane.Utilities
 {
@@ -90,7 +92,7 @@ namespace Hurricane.Utilities
 
         public Rect WorkingArea => GetRect(_screen.WorkingArea);
 
-        private Rect GetRect(System.Drawing.Rectangle value)
+        private Rect GetRect(Rectangle value)
         {
             return new Rect
             {
