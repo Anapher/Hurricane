@@ -13,6 +13,5 @@ namespace Hurricane.Model.Music.Playable
         bool IsPlaying { get; set; }
 
         Task<IPlaySource> GetSoundSource();
-        Task LoadImage();
     }
 }

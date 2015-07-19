@@ -113,6 +113,10 @@
       <Project>{24baf95b-136d-41e0-97ad-5c85d76014c9}</Project>
       <Name>Hurricane.Model</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Hurricane.Services.YouTube\Hurricane.Services.YouTube.csproj">
+      <Project>{4a547acc-5191-4f2d-b282-82741d27eb09}</Project>
+      <Name>Hurricane.Services.YouTube</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Hurricane.Utilities\Hurricane.Utilities.csproj">
       <Project>{a3109e52-8e1d-4c07-ba81-8925b6e7d217}</Project>
       <Name>Hurricane.Utilities</Name>

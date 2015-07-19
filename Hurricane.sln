@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hurricane.Test", "Hurricane
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hurricane.Utilities", "Hurricane.Utilities\Hurricane.Utilities.csproj", "{A3109E52-8E1D-4C07-BA81-8925B6E7D217}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hurricane.Services.YouTube", "Hurricane.Services.YouTube\Hurricane.Services.YouTube.csproj", "{4A547ACC-5191-4F2D-B282-82741D27EB09}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{A3109E52-8E1D-4C07-BA81-8925B6E7D217}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A3109E52-8E1D-4C07-BA81-8925B6E7D217}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A3109E52-8E1D-4C07-BA81-8925B6E7D217}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4A547ACC-5191-4F2D-B282-82741D27EB09}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4A547ACC-5191-4F2D-B282-82741D27EB09}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4A547ACC-5191-4F2D-B282-82741D27EB09}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4A547ACC-5191-4F2D-B282-82741D27EB09}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

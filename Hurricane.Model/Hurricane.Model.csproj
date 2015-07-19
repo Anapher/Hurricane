@@ -150,6 +150,14 @@
     <Compile Include="PlaylistExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PropertyChangedBase.cs" />
+    <Compile Include="Services\DownloadProgressChangedEventArgs.cs" />
+    <Compile Include="Services\IDownloadable.cs" />
+    <Compile Include="Services\IDownloadMethod.cs" />
+    <Compile Include="Services\IMusicStreamingService.cs" />
+    <Compile Include="Services\ISearchResult.cs" />
+    <Compile Include="Services\SearchResultBase.cs" />
+    <Compile Include="Services\Streamable.cs" />
+    <Compile Include="Services\WebClientDownloadMethod.cs" />
     <Compile Include="Settings\SettingsData.cs" />
     <Compile Include="Settings\SettingsManager.cs" />
     <Compile Include="Skin\IWindowSkin.cs" />
@@ -165,6 +173,7 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

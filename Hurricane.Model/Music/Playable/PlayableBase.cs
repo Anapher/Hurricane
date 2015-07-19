@@ -119,7 +119,6 @@ namespace Hurricane.Model.Music.Playable
         public abstract bool IsAvailable { get; }
 
         public abstract Task<IPlaySource> GetSoundSource();
-        public abstract Task LoadImage();
 
         public override string ToString()
         {

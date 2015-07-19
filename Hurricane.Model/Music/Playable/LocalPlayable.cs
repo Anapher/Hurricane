@@ -24,10 +24,5 @@ namespace Hurricane.Model.Music.Playable
         {
             return Task.Run(() => (IPlaySource) (new LocalFilePlaySource(TrackPath)));
         }
-
-        public async override Task LoadImage()
-        {
-            
-        }
     }
 }
