@@ -5,12 +5,16 @@ using System.Windows.Media;
 
 namespace Hurricane.Model.Services
 {
-    public interface IMusicStreamingService<T> where T : Streamable
+    public interface IMusicStreamingService
     {
         string Name { get; }
         string Url { get; }
         Geometry Icon { get; }
         Type StreamableType { get; }
+
+        string PluginAuthor { get; }
+        string PluginAuthorWebsite { get; }
+        string PluginDescription { get; }
 
         /// <summary>
         /// Fast search. Fast is all that counts

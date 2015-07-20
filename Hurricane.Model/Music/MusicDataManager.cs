@@ -7,6 +7,7 @@ using Hurricane.Model.Data;
 using Hurricane.Model.DataApi;
 using Hurricane.Model.Music.Args;
 using Hurricane.Model.Music.Playlist;
+using Hurricane.Model.Plugins.MusicStreaming;
 using Hurricane.Model.Settings;
 
 namespace Hurricane.Model.Music
@@ -29,6 +30,7 @@ namespace Hurricane.Model.Music
             UserData = new UserDataProvider();
             MusicManager = new MusicManager();
             MusicManager.TrackChanged += MusicManager_TrackChanged;
+            MusicStreamingPluginManager = new MusicStreamingPluginManager();
         }
 
         public void Dispose()
@@ -43,6 +45,7 @@ namespace Hurricane.Model.Music
         public ArtistProvider Artists { get; }
         public AlbumsProvider Albums { get; }
         public UserDataProvider UserData { get; }
+        public MusicStreamingPluginManager MusicStreamingPluginManager { get; }
 
         public async Task Load(string rootFolder)
         {

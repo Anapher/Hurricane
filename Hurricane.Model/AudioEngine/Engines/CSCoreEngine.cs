@@ -37,7 +37,7 @@ namespace Hurricane.Model.AudioEngine.Engines
         private readonly CSCoreSoundOutProvider _soundOutProvider;
         private LoopStream _loopStream;
         private bool _isLooping;
-        private Stopwatch _playTimeStopwatch;
+        private readonly Stopwatch _playTimeStopwatch;
 
         public CSCoreEngine()
         {

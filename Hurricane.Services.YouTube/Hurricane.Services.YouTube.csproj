@@ -9,8 +9,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Hurricane.Services.YouTube</RootNamespace>
     <AssemblyName>Hurricane.Services.YouTube</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -37,6 +38,7 @@
     <Reference Include="PresentationCore" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -58,6 +60,16 @@
     <Compile Include="Data\SearchRequest\SearchResult.cs" />
     <Compile Include="Data\SearchRequest\Snippet.cs" />
     <Compile Include="Data\Thumbnails.cs" />
+    <Compile Include="Extractor\AdaptiveType.cs" />
+    <Compile Include="Extractor\AudioType.cs" />
+    <Compile Include="Extractor\Decipherer.cs" />
+    <Compile Include="Extractor\DownloadUrlResolver.cs" />
+    <Compile Include="Extractor\HttpHelper.cs" />
+    <Compile Include="Extractor\VideoInfo.cs" />
+    <Compile Include="Extractor\VideoNotAvailableException.cs" />
+    <Compile Include="Extractor\VideoType.cs" />
+    <Compile Include="Extractor\YoutubeParseException.cs" />
+    <Compile Include="YouTubeExtractor.cs" />
     <Compile Include="YouTubeSearchResult.cs" />
     <Compile Include="YouTubeService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -72,6 +84,7 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

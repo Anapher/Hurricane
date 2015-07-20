@@ -173,28 +173,6 @@
                                                                         </Style>
                                                                     </TextBlock.Style>
                                                                 </TextBlock>
-                                                                <Button Width="15"
-                                                                        Height="15"
-                                                                        Margin="0,0,0,5"
-                                                                        HorizontalAlignment="Right"
-                                                                        VerticalAlignment="Bottom"
-                                                                        HorizontalContentAlignment="Right"
-                                                                        DockPanel.Dock="Right">
-                                                                    <Button.Style>
-                                                                        <Style TargetType="Button">
-                                                                            <Setter Property="OverridesDefaultStyle" Value="True" />
-                                                                            <Setter Property="Template">
-                                                                                <Setter.Value>
-                                                                                    <ControlTemplate TargetType="Button">
-                                                                                        <Viewbox>
-                                                                                            <Path Data="{StaticResource VectorAdd}" Fill="{StaticResource BlackBrush}" />
-                                                                                        </Viewbox>
-                                                                                    </ControlTemplate>
-                                                                                </Setter.Value>
-                                                                            </Setter>
-                                                                        </Style>
-                                                                    </Button.Style>
-                                                                </Button>
                                                             </DockPanel>
                                                             <ItemsPresenter Margin="1,0,0,0" />
                                                         </StackPanel>

@@ -22,7 +22,7 @@
                       behavior:ScrollAnimationBehavior.TimeDuration="0:0:0.2"
                       behavior:ScrollAnimationBehavior.VerticalOffset="50">
             <Grid>
-                <ItemsControl ItemsSource="{Binding ChartList}">
+                <ItemsControl x:Name="ChartItemsControl" ItemsSource="{Binding ChartList}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
                             <UniformGrid Columns="{Binding ElementName=Root, Path=ActualWidth, Converter={StaticResource SizeToColumnsConverter}}" />
@@ -35,6 +35,7 @@
                                     <RowDefinition Height="Auto" />
                                     <RowDefinition Height="Auto" />
                                 </Grid.RowDefinitions>
+                                <myControls:PlayableImage Grid.Row="0" Image="{Binding Image.Image}"  Command="{Binding ElementName=ChartItemsControl,Path=DataContext.PlayChartTrackCommand}" CommandParameter="{Binding}"/>
                                 <DockPanel Grid.Row="1">
                                     <TextBlock VerticalAlignment="Center"
                                                FontSize="32"
@@ -48,7 +49,6 @@
                                         <TextBlock Margin="0,3,0,0" Text="{Binding Artist}" />
                                     </StackPanel>
                                 </DockPanel>
-                                <myControls:PlayableImage Image="{Binding Image.Image}" Grid.Row="0"/>
                             </Grid>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>

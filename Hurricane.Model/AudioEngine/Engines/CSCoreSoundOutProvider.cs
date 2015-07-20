@@ -152,7 +152,7 @@ namespace Hurricane.Model.AudioEngine.Engines
 
                 var directSoundMode = new SoundOutMode("DirectSound", SoundOutType.DirectSound, GetDirectSoundOutDeviceById, GetDirectSoundOut, new SoundOutDevice("Windows Default", WindowsDefaultId, SoundOutType.DirectSound));
                 foreach (var device in DirectSoundDeviceEnumerator.EnumerateDevices().Select(x => new SoundOutDevice(x.Description, x.Module, SoundOutType.DirectSound, defaultDevice != null && x.Description == defaultDevice.FriendlyName)))
-                    directSoundMode.Devices.Add(device);
+                   directSoundMode.Devices.Add(device);
 
                 UpdateWindowsDefault(directSoundMode);
                 SoundOutModes.Add(directSoundMode);

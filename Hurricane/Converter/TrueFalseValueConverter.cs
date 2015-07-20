@@ -5,16 +5,17 @@ using System.Windows.Data;
 
 namespace Hurricane.Converter
 {
-    class TrueFalseValueConverter : DependencyObject, IValueConverter
+    [ValueConversion(typeof(bool), typeof(object))]
+    internal class TrueFalseValueConverter : DependencyObject, IValueConverter
     {
         public static readonly DependencyProperty KeyProperty = DependencyProperty.Register(
-            "Key", typeof (object), typeof (TrueFalseValueConverter), new PropertyMetadata(default(object)));
+            "Key", typeof(object), typeof(TrueFalseValueConverter), new PropertyMetadata(default(object)));
 
         public static readonly DependencyProperty TrueValueProperty = DependencyProperty.Register(
-            "TrueValue", typeof (object), typeof (TrueFalseValueConverter), new PropertyMetadata(default(object)));
+            "TrueValue", typeof(object), typeof(TrueFalseValueConverter), new PropertyMetadata(default(object)));
 
         public static readonly DependencyProperty FalseValueProperty = DependencyProperty.Register(
-            "FalseValue", typeof (object), typeof (TrueFalseValueConverter), new PropertyMetadata(default(object)));
+            "FalseValue", typeof(object), typeof(TrueFalseValueConverter), new PropertyMetadata(default(object)));
 
         public object FalseValue
         {

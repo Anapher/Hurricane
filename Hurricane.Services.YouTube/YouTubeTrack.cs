@@ -16,7 +16,7 @@ namespace Hurricane.Services.YouTube
 
         public override Task<IPlaySource> GetSoundSource()
         {
-            throw new NotImplementedException();
+            return YouTubeExtractor.GetPlaySource(YouTubeVideoId);
         }
     }
 }

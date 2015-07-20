@@ -9,7 +9,8 @@ using System.Windows.Navigation;
 
 namespace Hurricane.Converter
 {
-    class HtmlToInlinesConverter : IValueConverter
+    [ValueConversion(typeof(string), typeof(List<Inline>))]
+    internal class HtmlToInlinesConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
@@ -47,7 +48,7 @@ namespace Hurricane.Converter
 
         private static IEnumerable<Inline> FormatText(string text)
         {
-            var split = text.Split(new []{ "&quot;" }, StringSplitOptions.None);
+            var split = text.Split(new[] { "&quot;" }, StringSplitOptions.None);
             bool foo = false;
             foreach (var s in split)
             {

@@ -13,32 +13,35 @@ namespace Hurricane.Model.Services
 {
     public abstract class SearchResultBase : ISearchResult, INotifyPropertyChanged
     {
-        private bool _isLoadingImage;
-
         public event PropertyChangedEventHandler PropertyChanged;
 
         public string Title { get; protected set; }
+        string ISearchResult.Artist
+        {
+            get { return Artist; }
+            set { Artist = value; }
+        }
+
+        ImageProvider ISearchResult.Cover
+        {
+            get { return Cover; }
+            set { Cover = value; }
+        }
+
+        string ISearchResult.Title
+        {
+            get { return Title; }
+            set { Title = value; }
+        }
+
         public string Artist { get; protected set; }
-        public abstract ImageProvider Cover { get; }
+        public abstract ImageProvider Cover { get; protected set; }
         public bool IsAvailable { get; } = true;
         public bool IsPlaying { get; set; }
         public TimeSpan Duration { get; protected set; }
         public abstract Geometry ProviderIcon { get; }
         public abstract string ProviderName { get; }
         public abstract string Url { get; }
-
-        public bool IsLoadingImage
-        {
-            get { return _isLoadingImage; }
-            protected set
-            {
-                if (_isLoadingImage != value)
-                {
-                    _isLoadingImage = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
 
         public abstract ConversionInformation ConvertToStreamable();
         public abstract Task<IPlaySource> GetSoundSource();

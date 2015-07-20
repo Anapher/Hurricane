@@ -10,7 +10,6 @@ using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media;
 using Hurricane.Model.Data;
-using Hurricane.Model.Music;
 using Hurricane.Model.Music.Playable;
 using Hurricane.Model.Music.TrackProperties;
 using Hurricane.Model.Notifications;
@@ -25,7 +24,6 @@ namespace Hurricane.ViewModel.MainView
     {
         private string _searchText;
         private NotificationManager _notificationManager;
-        private MusicDataManager _musicDataManager;
 
         private RelayCommand _addFilesCommand;
         private RelayCommand _addDirectoryCommand;
@@ -59,7 +57,7 @@ namespace Hurricane.ViewModel.MainView
                 {
                     var stringBuilder = new StringBuilder();
                     stringBuilder.Append($"{Application.Current.Resources["AudioFiles"]}|");
-                    stringBuilder.Append(string.Concat(_musicDataManager.MusicManager.AudioEngine.SupportedExtensions.Select(x => "*." + x + ";").ToArray()));
+                    stringBuilder.Append(string.Concat(MusicDataManager.MusicManager.AudioEngine.SupportedExtensions.Select(x => "*." + x + ";").ToArray()));
                     stringBuilder.Remove(stringBuilder.Length - 1, 1);
                     stringBuilder.Append($"|{Application.Current.Resources["AllFiles"]}|*.*");
 
@@ -75,7 +73,7 @@ namespace Hurricane.ViewModel.MainView
 
                     if (ofd.ShowDialog(Application.Current.MainWindow) == true)
                     {
-                        var importer = new TrackImporter(_musicDataManager);
+                        var importer = new TrackImporter(MusicDataManager);
                         _notificationManager.ShowProgress(Application.Current.Resources["ImportingTracks"].ToString(), importer);
                         await importer.ImportTracks(ofd.FileNames.Select(x => new FileInfo(x)));
                     }
@@ -96,7 +94,7 @@ namespace Hurricane.ViewModel.MainView
                     };
                     if (fbd.ShowDialog(Application.Current.MainWindow) == true)
                     {
-                        var importer = new TrackImporter(_musicDataManager);
+                        var importer = new TrackImporter(MusicDataManager);
                         _notificationManager.ShowProgress(Application.Current.Resources["ImportingTracks"].ToString(), importer);
                         await importer.ImportDirectory(new DirectoryInfo(fbd.SelectedPath), true);
                     }
@@ -114,7 +112,7 @@ namespace Hurricane.ViewModel.MainView
                     if (playable == null)
                         return;
 
-                    _musicDataManager.MusicManager.OpenPlayable(playable, _musicDataManager.Tracks).Forget();
+                    MusicDataManager.MusicManager.OpenPlayable(playable, MusicDataManager.Tracks).Forget();
                     ViewController.SetIsPlaying(this);
                 }));
             }
@@ -161,7 +159,6 @@ namespace Hurricane.ViewModel.MainView
             AlbumViewSource.SortDescriptions.Add(new SortDescription("Album.Name", ListSortDirection.Ascending));
 
             _notificationManager = NotificationManager;
-            _musicDataManager = MusicDataManager;
             return TaskExtensions.CompletedTask;
         }
 

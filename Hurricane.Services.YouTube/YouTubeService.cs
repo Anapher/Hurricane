@@ -13,7 +13,7 @@ using Newtonsoft.Json;
 
 namespace Hurricane.Services.YouTube
 {
-    public class YouTubeService : IMusicStreamingService<YouTubeTrack>
+    public class YouTubeService : IMusicStreamingService
     {
         private const string YouTubeApiKey = "AIzaSyAc9QR-wezOFwqV-tggNS7XUpTlMvEZekk";
         private static Geometry _youtubeVector;
@@ -22,6 +22,10 @@ namespace Hurricane.Services.YouTube
         public string Url { get; } = "https://www.youtube.com/";
         public Geometry Icon => GetYouTubeVector();
         public Type StreamableType { get; } = typeof (YouTubeTrack);
+
+        public string PluginAuthor { get; } = "Alkalinee";
+        public string PluginAuthorWebsite { get; } = "https://github.com/Alkalinee";
+        public string PluginDescription { get; } = "YouTube is a free video sharing website that makes it easy to watch online videos. You can even create and upload your own videos to share with others. Originally created in 2005, YouTube is now one of the most popular sites on the Web, with visitors watching around 6 billion hours of video every month.";
 
         public Task<IEnumerable<ISearchResult>> FastSearch(string query)
         {
@@ -35,7 +39,7 @@ namespace Hurricane.Services.YouTube
 
         public async Task<ISearchResult> GetTrack(string trackName)
         {
-            return (await EasySearch(trackName, 3)).OrderBy(x => x.Duration).First();
+            return (await EasySearch(trackName, 1)).First();
         }
 
         private async Task<IEnumerable<ISearchResult>> EasySearch(string query, uint maxResults)

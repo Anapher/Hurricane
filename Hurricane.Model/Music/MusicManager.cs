@@ -32,11 +32,18 @@ namespace Hurricane.Model.Music
             IsCrossfadeEnabled = true;
         }
 
-        private void AudioEngine_TrackPositionChanged(object sender, EventArgs e)
+        private async void AudioEngine_TrackPositionChanged(object sender, EventArgs e)
         {
             if (AudioEngine.TrackPositionTime.TotalSeconds >
                 (AudioEngine.TrackLengthTime.TotalSeconds - AudioEngine.CrossfadeDuration.TotalSeconds))
-                GoForward(true);
+            {
+                AudioEngine.TrackPositionChanged -= AudioEngine_TrackPositionChanged;
+                await GoForward(true);
+
+                await Task.Delay(100);
+                if (IsCrossfadeEnabled)
+                    AudioEngine.TrackPositionChanged += AudioEngine_TrackPositionChanged;
+            }
         }
 
         public void Dispose()
@@ -128,7 +135,7 @@ namespace Hurricane.Model.Music
             return OpenPlayable(playable, playlist, openPlaying, false, true);
         }
 
-        public void GoForward(bool crossfade)
+        public async Task GoForward(bool crossfade)
         {
             IPlayable track;
 
@@ -139,32 +146,30 @@ namespace Hurricane.Model.Music
             }
             else
             {
-                if (CurrentPlaylist == null || CurrentPlaylist.Tracks.Count == 0 ||
-                    CurrentPlaylist.Tracks.All(x => !x.IsAvailable))
+                if (CurrentPlaylist == null || !CurrentPlaylist.ContainsPlayableTracks())
                     return;
 
-                track = CurrentPlayMode == PlayMode.Default
+                track = await (CurrentPlayMode == PlayMode.Default
                     ? CurrentPlaylist.GetNextTrack(CurrentTrack)
-                    : CurrentPlaylist.GetRandomTrack();
+                    : CurrentPlaylist.GetShuffleTrack());
             }
 
-            OpenPlayable(track, CurrentPlaylist, true, crossfade, true).Forget();
+            await OpenPlayable(track, CurrentPlaylist, true, crossfade, true);
         }
 
-        public void GoForward()
+        public Task GoForward()
         {
-            GoForward(false);
+            return GoForward(false);
         }
 
-        public void GoBack()
+        public async Task GoBack()
         {
-            if (CurrentPlaylist == null || CurrentPlaylist.Tracks.Count == 0 ||
-                CurrentPlaylist.Tracks.All(x => !x.IsAvailable))
+            if (CurrentPlaylist == null || !CurrentPlaylist.ContainsPlayableTracks())
                 return;
 
             if (CurrentTrack == null)
             {
-                OpenPlayable(CurrentPlaylist.Tracks.Last(), CurrentPlaylist).Forget();
+                OpenPlayable(await CurrentPlaylist.GetLastTrack(), CurrentPlaylist).Forget();
                 return;
             }
 
@@ -176,7 +181,7 @@ namespace Hurricane.Model.Music
             }
             else
             {
-                OpenPlayable(CurrentPlaylist.GetPreviousTrack(CurrentTrack), CurrentPlaylist, true, false, false)
+                OpenPlayable(await CurrentPlaylist.GetPreviousTrack(CurrentTrack), CurrentPlaylist, true, false, false)
                     .Forget();
             }
         }

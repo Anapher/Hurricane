@@ -5,7 +5,7 @@ using System.Windows.Data;
 namespace Hurricane.Converter
 {
     [ValueConversion(typeof(string), typeof(bool))]
-    class IsEmptyStringConverter : IValueConverter
+    internal class IsEmptyStringConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {

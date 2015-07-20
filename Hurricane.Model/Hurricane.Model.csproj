@@ -34,8 +34,8 @@
       <HintPath>..\packages\CSCore.1.1-alpa\lib\net35-client\CSCore.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.6.0.8\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.7.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="policy.2.0.taglib-sharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=db62eba44689b5b0, processorArchitecture=MSIL">
@@ -148,6 +148,8 @@
     <Compile Include="Notifications\NotificationManager.cs" />
     <Compile Include="Notifications\ProgressNotification.cs" />
     <Compile Include="PlaylistExtensions.cs" />
+    <Compile Include="Plugins\MusicStreaming\MusicStreamingPlugin.cs" />
+    <Compile Include="Plugins\MusicStreaming\MusicStreamingPluginManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PropertyChangedBase.cs" />
     <Compile Include="Services\DownloadProgressChangedEventArgs.cs" />

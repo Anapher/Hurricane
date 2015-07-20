@@ -10,6 +10,7 @@ using Hurricane.Model.AudioEngine;
 using Hurricane.Model.Music;
 using Hurricane.Model.Music.TrackProperties;
 using Hurricane.Model.Notifications;
+using Hurricane.Model.Services;
 using Hurricane.Model.Settings;
 using Hurricane.Utilities;
 using Hurricane.ViewModel.MainView;
@@ -142,6 +143,7 @@ namespace Hurricane.ViewModel
                 Settings = SettingsManager.Current;
                 
                 await MusicDataManager.Load(AppDomain.CurrentDomain.BaseDirectory);
+                MusicDataManager.MusicStreamingPluginManager.LoadPlugins("", new IMusicStreamingService[] {new Hurricane.Services.YouTube.YouTubeService()});
                 Debug.Print($"Dataloading time: {sw.ElapsedMilliseconds}");
                 SettingsViewModel = new SettingsViewModel(MusicDataManager, () => RefreshView?.Invoke(this, EventArgs.Empty));
             }

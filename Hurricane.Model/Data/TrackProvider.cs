@@ -23,7 +23,6 @@ namespace Hurricane.Model.Data
 
         public Dictionary<Guid, PlayableBase> Collection { get; set; }
         public ObservableCollection<PlayableBase> Tracks { get; set; }
-        IList<IPlayable> IPlaylist.Tracks => Tracks.Cast<IPlayable>().ToList();
 
         public async Task LoadFromFile(string path)
         {
@@ -78,6 +77,31 @@ namespace Hurricane.Model.Data
         {
             Collection.Remove(Collection.First(x => x.Value == track).Key);
             Tracks.Remove(track);
+        }
+
+        Task<IPlayable> IPlaylist.GetNextTrack(IPlayable currentTrack)
+        {
+            return Task.FromResult(Tracks.GetNextTrack(currentTrack));
+        }
+
+        Task<IPlayable> IPlaylist.GetShuffleTrack()
+        {
+            return Task.FromResult(Tracks.GetRandomTrack());
+        }
+
+        Task<IPlayable> IPlaylist.GetPreviousTrack(IPlayable currentTrack)
+        {
+            return Task.FromResult(Tracks.GetPreviousTrack(currentTrack));
+        }
+
+        Task<IPlayable> IPlaylist.GetLastTrack()
+        {
+            return Task.FromResult((IPlayable) Tracks.Last());
+        }
+
+        bool IPlaylist.ContainsPlayableTracks()
+        {
+            return Tracks.Count > 0 && Tracks.Any(x => x.IsAvailable);
         }
 
         [Serializable, XmlType(TypeName = "Playable")]

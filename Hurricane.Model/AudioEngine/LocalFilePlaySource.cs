@@ -1,6 +1,6 @@
 ﻿namespace Hurricane.Model.AudioEngine
 {
-    class LocalFilePlaySource : IPlaySource
+    public class LocalFilePlaySource : IPlaySource
     {
         public PlaySourceType Type => PlaySourceType.LocalFile;
 

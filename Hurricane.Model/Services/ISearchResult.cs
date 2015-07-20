@@ -1,12 +1,16 @@
 ﻿using System;
 using System.Windows.Media;
+using Hurricane.Model.Music.Imagment;
 using Hurricane.Model.Music.Playable;
 
 namespace Hurricane.Model.Services
 {
     public interface ISearchResult : IPlayable
     {
-        bool IsLoadingImage { get; }
+        new string Title { get; set; }
+        new string Artist { get; set; }
+        new ImageProvider Cover { get; set; }
+
         TimeSpan Duration { get; }
         Geometry ProviderIcon { get; }
         string ProviderName { get; }

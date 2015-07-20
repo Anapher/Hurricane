@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading.Tasks;
 using Hurricane.Model.Music.Playable;
 
 namespace Hurricane.Model.Music.Playlist
@@ -19,8 +20,6 @@ namespace Hurricane.Model.Music.Playlist
         public string Name { get; set; }
         public Guid Id { get; set; }
 
-        IList<IPlayable> IPlaylist.Tracks => Tracks.Cast<IPlayable>().ToList();
-
         public void AddTrack(PlayableBase playable)
         {
             Tracks.Add(playable);
@@ -30,6 +29,31 @@ namespace Hurricane.Model.Music.Playlist
         {
             Tracks.Remove(playable);
             History.Remove(playable);
+        }
+
+        Task<IPlayable> IPlaylist.GetNextTrack(IPlayable currentTrack)
+        {
+            return Task.FromResult(Tracks.GetNextTrack(currentTrack));
+        }
+
+        Task<IPlayable> IPlaylist.GetShuffleTrack()
+        {
+            return Task.FromResult(Tracks.GetRandomTrack());
+        }
+
+        Task<IPlayable> IPlaylist.GetPreviousTrack(IPlayable currentTrack)
+        {
+            return Task.FromResult(Tracks.GetPreviousTrack(currentTrack));
+        }
+
+        public Task<IPlayable> GetLastTrack()
+        {
+            return Task.FromResult((IPlayable) Tracks.Last());
+        }
+
+        bool IPlaylist.ContainsPlayableTracks()
+        {
+            return Tracks.Count > 0 && Tracks.Any(x => x.IsAvailable);
         }
     }
 }

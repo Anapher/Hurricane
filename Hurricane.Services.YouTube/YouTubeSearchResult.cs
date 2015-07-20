@@ -22,7 +22,7 @@ namespace Hurricane.Services.YouTube
             _videoId = videoId;
         }
 
-        public override ImageProvider Cover { get; }
+        public override sealed ImageProvider Cover { get; protected set; }
 
         public override Geometry ProviderIcon => YouTubeService.GetYouTubeVector();
         public override string ProviderName { get; } = "YouTube";
@@ -43,7 +43,7 @@ namespace Hurricane.Services.YouTube
 
         public override Task<IPlaySource> GetSoundSource()
         {
-            throw new NotImplementedException();
+            return YouTubeExtractor.GetPlaySource(_videoId);
         }
     }
 }
