@@ -18,6 +18,9 @@ namespace Hurricane.Controls
         public static readonly DependencyProperty CommandProperty = DependencyProperty.Register(
             "Command", typeof (ICommand), typeof (PlayableImage), new PropertyMetadata(default(ICommand)));
 
+        public static readonly DependencyProperty PlaceholderProperty = DependencyProperty.Register(
+            "Placeholder", typeof (FrameworkElement), typeof (PlayableImage), new PropertyMetadata(default(FrameworkElement)));
+
         public PlayableImage()
         {
             InitializeComponent();
@@ -39,6 +42,12 @@ namespace Hurricane.Controls
         {
             get { return (BitmapImage) GetValue(ImageProperty); }
             set { SetValue(ImageProperty, value); }
+        }
+
+        public FrameworkElement Placeholder
+        {
+            get { return (FrameworkElement)GetValue(PlaceholderProperty); }
+            set { SetValue(PlaceholderProperty, value); }
         }
     }
 }

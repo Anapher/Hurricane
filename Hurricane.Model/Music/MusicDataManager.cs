@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -6,9 +7,12 @@ using System.Windows;
 using Hurricane.Model.Data;
 using Hurricane.Model.DataApi;
 using Hurricane.Model.Music.Args;
+using Hurricane.Model.Music.Playable;
 using Hurricane.Model.Music.Playlist;
+using Hurricane.Model.Music.TrackProperties;
 using Hurricane.Model.Plugins.MusicStreaming;
 using Hurricane.Model.Settings;
+using Hurricane.Utilities;
 
 namespace Hurricane.Model.Music
 {
@@ -89,6 +93,70 @@ namespace Hurricane.Model.Music
             UserData.SaveToFile(Path.Combine(rootFolder, UserDataFilename));
 
             CopyToSettings();
+        }
+
+        public async Task<IPlayable> SearchTrack(string artist, string title)
+        {
+            PlayableBase result = null;
+            var sw = Stopwatch.StartNew();
+            foreach (var track in Tracks.Tracks)
+            {
+                if (track.Title.IndexOf(title, StringComparison.OrdinalIgnoreCase) > -1 &&
+                    track.Artist != null && !string.IsNullOrEmpty(track.Artist.Name) &&
+                    LevenshteinDistance.Compute(artist.ToLower(), track.Artist.Name.ToLower()) <=
+                    Math.Abs(artist.Length - track.Artist.Name.Length))
+                {
+                    result = track;
+                    break;
+                }
+            }
+
+            Debug.Print($"Search track in local collection: {sw.ElapsedMilliseconds} ms");
+
+            if (result != null)
+                return result;
+
+            return
+                await
+                    MusicStreamingPluginManager.DefaultMusicStreaming.MusicStreamingService.GetTrack(
+                        $"{artist} - {title}");
+        }
+
+        public async Task<IPlayable> SearchTrack(Artist artist, string title)
+        {
+            PlayableBase result = null;
+            var sw = Stopwatch.StartNew();
+            foreach (var track in Tracks.Tracks.Where(x => x.Artist == artist))
+            {
+                if (track.Title.IndexOf(title, StringComparison.OrdinalIgnoreCase) > -1)
+                {
+                    result = track;
+                    break;
+                }
+            }
+
+            Debug.Print($"Search track in local collection: {sw.ElapsedMilliseconds} ms");
+
+            if (result != null)
+                return result;
+
+            return
+                await
+                    MusicStreamingPluginManager.DefaultMusicStreaming.MusicStreamingService.GetTrack(
+                        $"{artist} - {title}");
+        }
+
+        public Artist SearchArtist(string name)
+        {
+            foreach (var artist in Artists.ArtistDictionary)
+            {
+                if (artist.Value.Name?.Equals(name, StringComparison.OrdinalIgnoreCase) == true)
+                {
+                    return artist.Value;
+                }
+            }
+
+            return null;
         }
 
         private void LoadSettings()

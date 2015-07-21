@@ -35,7 +35,21 @@
                                     <RowDefinition Height="Auto" />
                                     <RowDefinition Height="Auto" />
                                 </Grid.RowDefinitions>
-                                <myControls:PlayableImage Grid.Row="0" Image="{Binding Image.Image}"  Command="{Binding ElementName=ChartItemsControl,Path=DataContext.PlayChartTrackCommand}" CommandParameter="{Binding}"/>
+                                <Grid>
+                                    <myControls:PlayableImage Command="{Binding ElementName=ChartItemsControl,
+                                                                                Path=DataContext.PlayChartTrackCommand}"
+                                                              CommandParameter="{Binding}"
+                                                              Image="{Binding Image.Image}">
+                                        <myControls:PlayableImage.Placeholder>
+                                            <Viewbox Width="50"
+                                                     Height="50"
+                                                     HorizontalAlignment="Center"
+                                                     VerticalAlignment="Center">
+                                                <Path Data="{StaticResource VectorMicrophone}" Fill="{StaticResource GrayBrush3}" />
+                                            </Viewbox>
+                                        </myControls:PlayableImage.Placeholder>
+                                    </myControls:PlayableImage>
+                                </Grid>
                                 <DockPanel Grid.Row="1">
                                     <TextBlock VerticalAlignment="Center"
                                                FontSize="32"

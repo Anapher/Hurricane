@@ -69,6 +69,8 @@ namespace Hurricane.Model.Music.Playable
             set { SetProperty(value, ref _isPlaying); }
         }
 
+        public object Tag { get; set; }
+
         /// <summary>
         /// The last time this track was played
         /// </summary>

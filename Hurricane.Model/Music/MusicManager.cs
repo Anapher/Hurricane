@@ -19,6 +19,7 @@ namespace Hurricane.Model.Music
         private PlayMode _currentPlayMode;
         private bool _isCrossfadeEnabled;
         private readonly List<Tuple<IPlaylist, IPlayable>> _tempHistory;
+        private bool _isCrossfading;
 
         public MusicManager()
         {
@@ -35,14 +36,11 @@ namespace Hurricane.Model.Music
         private async void AudioEngine_TrackPositionChanged(object sender, EventArgs e)
         {
             if (AudioEngine.TrackPositionTime.TotalSeconds >
-                (AudioEngine.TrackLengthTime.TotalSeconds - AudioEngine.CrossfadeDuration.TotalSeconds))
+                (AudioEngine.TrackLengthTime.TotalSeconds - AudioEngine.CrossfadeDuration.TotalSeconds) && !_isCrossfading)
             {
-                AudioEngine.TrackPositionChanged -= AudioEngine_TrackPositionChanged;
+                _isCrossfading = true;
                 await GoForward(true);
-
-                await Task.Delay(100);
-                if (IsCrossfadeEnabled)
-                    AudioEngine.TrackPositionChanged += AudioEngine_TrackPositionChanged;
+                _isCrossfading = false;
             }
         }
 

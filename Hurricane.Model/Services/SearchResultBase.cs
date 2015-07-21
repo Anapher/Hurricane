@@ -38,7 +38,9 @@ namespace Hurricane.Model.Services
         public abstract ImageProvider Cover { get; protected set; }
         public bool IsAvailable { get; } = true;
         public bool IsPlaying { get; set; }
+        public object Tag { get; set; }
         public TimeSpan Duration { get; protected set; }
+
         public abstract Geometry ProviderIcon { get; }
         public abstract string ProviderName { get; }
         public abstract string Url { get; }

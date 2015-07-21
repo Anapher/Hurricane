@@ -48,6 +48,7 @@
     <Compile Include="Cursor.cs" />
     <Compile Include="Hooks\ActiveWindowHook.cs" />
     <Compile Include="Hooks\MouseHook.cs" />
+    <Compile Include="LevenshteinDistance.cs" />
     <Compile Include="Native\Enums.cs" />
     <Compile Include="Native\MouseLLHookStruct.cs" />
     <Compile Include="Native\NativeDelegates.cs" />

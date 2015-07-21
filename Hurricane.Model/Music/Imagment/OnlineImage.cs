@@ -53,9 +53,9 @@ namespace Hurricane.Model.Music.Imagment
                 else
                 {
                     image.StreamSource = new MemoryStream(await wc.DownloadDataTaskAsync(Url));
+
                 }
             }
-
             image.EndInit();
             image.Freeze();
             return image;

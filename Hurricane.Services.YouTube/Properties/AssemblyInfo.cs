@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // Attribute gesteuert. Ändern Sie diese Attributwerte, um die Informationen zu ändern,
 // die mit einer Assembly verknüpft sind.
 [assembly: AssemblyTitle("Hurricane.Services.YouTube")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("YouTube plugin for Hurricane")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("Hurricane.Services.YouTube")]
-[assembly: AssemblyCopyright("Copyright ©  2015")]
+[assembly: AssemblyCopyright("Copyright © 2015 Alkaline")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

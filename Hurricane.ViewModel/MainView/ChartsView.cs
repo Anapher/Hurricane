@@ -2,13 +2,16 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
+using Hurricane.Model;
 using Hurricane.Model.DataApi;
 using Hurricane.Model.Music.Playable;
 using Hurricane.Model.Music.Playlist;
 using Hurricane.Model.Music.TrackProperties;
+using Hurricane.Model.Services;
 using Hurricane.ViewModel.MainView.Base;
 
 namespace Hurricane.ViewModel.MainView
@@ -47,20 +50,26 @@ namespace Hurricane.ViewModel.MainView
                     if (chartItem == null)
                         return;
 
-                    await MusicDataManager.MusicManager.OpenPlayable(await GetPlayable(chartItem), this);
                     ViewController.SetIsPlaying(this);
+                    await MusicDataManager.MusicManager.OpenPlayable(await GetPlayable(chartItem), this);
                 }));
             }
         }
 
         private async Task<IPlayable> GetPlayable(PreviewTrack track)
         {
-            var result = await
-                MusicDataManager.MusicStreamingPluginManager.DefaultMusicStreaming.MusicStreamingService
-                    .GetTrack($"{track.Artist} - {track.Name}");
-            result.Title = track.Name;
-            result.Artist = track.Artist;
-            result.Cover = track.Image;
+            var name = Regex.Match(track.Name, @"^(?<name>(.[^\(\[]+))").Groups["name"].Value;
+            var result = await MusicDataManager.SearchTrack(track.Artist, name);
+            result.Tag = track;
+
+            var searchResult = result as ISearchResult;
+            if (searchResult != null)
+            {
+                searchResult.Title = track.Name;
+                searchResult.Artist = track.Artist;
+                searchResult.Cover = track.Image;
+            }
+
             return result;
         }
 
@@ -76,29 +85,17 @@ namespace Hurricane.ViewModel.MainView
 
         public Task<IPlayable> GetNextTrack(IPlayable currentTrack)
         {
-            var newIndex =
-                ChartList.IndexOf(ChartList.First(x => x.Name == currentTrack.Title && x.Artist == currentTrack.Artist)) +
-                1;
-            if (newIndex >= ChartList.Count)
-                newIndex = 0;
-            return GetPlayable(ChartList[newIndex]);
+            return GetPlayable(ChartList.GetNextObject(currentTrack.Tag));
         }
 
         public Task<IPlayable> GetShuffleTrack()
         {
-            var newIndex = Random.Next(0, ChartList.Count);
-            return GetPlayable(ChartList[newIndex]);
+            return GetPlayable(ChartList.GetRandomObject());
         }
 
         public Task<IPlayable> GetPreviousTrack(IPlayable currentTrack)
         {
-            var newIndex =
-                ChartList.IndexOf(ChartList.First(x => x.Name == currentTrack.Title && x.Artist == currentTrack.Artist)) -
-                1;
-            if (newIndex < 0)
-                newIndex = ChartList.Count - 1;
-
-            return GetPlayable(ChartList[newIndex]);
+            return GetPlayable(ChartList.GetPreviousObject(currentTrack.Tag));
         }
 
         public Task<IPlayable> GetLastTrack()

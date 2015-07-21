@@ -6,11 +6,11 @@ using System.Windows;
 // Attribute gesteuert. Ändern Sie diese Attributwerte, um die Informationen zu ändern,
 // die mit einer Assembly verknüpft sind.
 [assembly: AssemblyTitle("Hurricane.ViewModel")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("The connection between the logic (Hurricane.Model) and the view (Hurricane)")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("Hurricane.ViewModel")]
-[assembly: AssemblyCopyright("Copyright ©  2015")]
+[assembly: AssemblyCopyright("Copyright © 2015 Alkaline")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

@@ -25,7 +25,10 @@ namespace Hurricane.ViewModel.MainView.Base
 
             if (_currentlyPlayingView != null)
                 _currentlyPlayingView.IsPlaying = false;
-            viewItem.IsPlaying = true;
+
+            if (viewItem != null)
+                viewItem.IsPlaying = true;
+
             _currentlyPlayingView = viewItem;
         }
     }

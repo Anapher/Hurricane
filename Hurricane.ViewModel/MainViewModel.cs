@@ -31,6 +31,7 @@ namespace Hurricane.ViewModel
         private RelayCommand _cancelProgressNotificationCommand;
         private RelayCommand _forwardCommand;
         private RelayCommand _backCommand;
+        private RelayCommand _openArtistCommand;
 
         public MainViewModel()
         {
@@ -114,14 +115,37 @@ namespace Hurricane.ViewModel
             }
         }
 
+        public RelayCommand OpenArtistCommand
+        {
+            get
+            {
+                return _openArtistCommand ?? (_openArtistCommand = new RelayCommand(parameter =>
+                {
+                    var artist = parameter as Artist ?? MusicDataManager.SearchArtist(parameter.ToString());
+
+                    if (artist != null)
+                        OpenArtist(artist);
+                }));
+            }
+        }
+
         public RelayCommand ForwardCommand
         {
-            get { return _forwardCommand ?? (_forwardCommand = new RelayCommand(parameter => { MusicDataManager.MusicManager.GoForward(); })); }
+            get
+            {
+                return _forwardCommand ??
+                       (_forwardCommand = new RelayCommand(parameter => { MusicDataManager.MusicManager.GoForward(); }));
+            }
         }
 
         public RelayCommand BackCommand
         {
-            get { return _backCommand ?? (_backCommand = new RelayCommand(parameter => { MusicDataManager.MusicManager.GoBack(); })); }
+            get
+            {
+                return _backCommand ??
+                       (_backCommand =
+                           new RelayCommand(parameter => { MusicDataManager.MusicManager.GoBack().Forget(); }));
+            }
         }
 
         private void MainWindow_Closing(object sender, CancelEventArgs e)

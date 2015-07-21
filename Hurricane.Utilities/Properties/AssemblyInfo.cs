@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // Attribute gesteuert. Ändern Sie diese Attributwerte, um die Informationen zu ändern,
 // die mit einer Assembly verknüpft sind.
 [assembly: AssemblyTitle("Hurricane.Utilities")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Some utilities for Hurricane")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("Hurricane.Utilities")]
-[assembly: AssemblyCopyright("Copyright ©  2015")]
+[assembly: AssemblyCopyright("Copyright © 2015 Alkaline")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

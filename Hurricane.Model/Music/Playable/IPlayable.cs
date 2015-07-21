@@ -11,6 +11,7 @@ namespace Hurricane.Model.Music.Playable
         ImageProvider Cover { get; }
         bool IsAvailable { get; }
         bool IsPlaying { get; set; }
+        object Tag { get; set; }
 
         Task<IPlaySource> GetSoundSource();
     }

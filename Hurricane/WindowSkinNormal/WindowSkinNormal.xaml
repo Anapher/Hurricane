@@ -44,254 +44,307 @@
                                         SelectedIndex="{Binding CurrentMainView}">
                 <views:SettingsView />
                 <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="250"
-                                          MinWidth="150"
-                                          MaxWidth="400" />
-                        <ColumnDefinition Width="1" />
-                        <ColumnDefinition />
-                    </Grid.ColumnDefinitions>
-                    <Grid Margin="5,0,0,0">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="*" />
-                            <RowDefinition Height="Auto" />
-                        </Grid.RowDefinitions>
-                        <ListBox ItemsSource="{Binding ViewManager.ViewSource}" SelectedItem="{Binding SelectedViewItem}">
-                            <ListBox.ItemContainerStyle>
-                                <Style TargetType="ListBoxItem" d:DataContext="{d:DesignInstance base:IViewItem}">
-                                    <Setter Property="FocusVisualStyle" Value="{x:Null}" />
-                                    <Setter Property="Template">
-                                        <Setter.Value>
-                                            <ControlTemplate TargetType="ListBoxItem">
-                                                <Grid Margin="0,2,0,0" Background="Transparent">
-                                                    <Grid.ColumnDefinitions>
-                                                        <ColumnDefinition Width="*" />
-                                                        <ColumnDefinition Width="Auto" />
-                                                    </Grid.ColumnDefinitions>
-                                                    <StackPanel Orientation="Horizontal">
-                                                        <Viewbox Width="12" VerticalAlignment="Center">
-                                                            <Path x:Name="IconPath"
-                                                                  Data="{Binding Icon}"
-                                                                  Fill="{StaticResource GrayBrush3}" />
-                                                        </Viewbox>
-                                                        <TextBlock x:Name="TextBlock"
-                                                                   Margin="8,0,0,0"
-                                                                   VerticalAlignment="Center"
-                                                                   FontFamily="Segoe UI Emoji"
-                                                                   FontSize="14"
-                                                                   Foreground="{StaticResource GrayBrush1}"
-                                                                   Text="{Binding Text}" />
-                                                    </StackPanel>
-                                                    <Viewbox Grid.Column="1"
-                                                             Width="16"
-                                                             Margin="0,0,10,0">
-                                                        <Viewbox.Style>
-                                                            <Style TargetType="Viewbox">
-                                                                <Setter Property="Opacity" Value="0" />
-                                                                <Setter Property="RenderTransformOrigin" Value=".5,.5" />
-                                                                <Setter Property="RenderTransform">
-                                                                    <Setter.Value>
-                                                                        <RotateTransform x:Name="RotateTransform" />
-                                                                    </Setter.Value>
-                                                                </Setter>
-                                                                <Style.Triggers>
-                                                                    <DataTrigger Binding="{Binding IsPlaying}" Value="true">
-                                                                        <DataTrigger.EnterActions>
-                                                                            <BeginStoryboard>
-                                                                                <Storyboard>
-                                                                                    <DoubleAnimation Duration="0:0:0.2"
-                                                                                                     Storyboard.TargetProperty="Opacity"
-                                                                                                     To="1" />
-                                                                                    <DoubleAnimation Duration="0:0:0.4"
-                                                                                                     From="-90"
-                                                                                                     Storyboard.TargetProperty="(ContentControl.RenderTransform).(RotateTransform.Angle)"
-                                                                                                     To="0" />
-                                                                                </Storyboard>
-                                                                            </BeginStoryboard>
-                                                                        </DataTrigger.EnterActions>
-                                                                        <DataTrigger.ExitActions>
-                                                                            <BeginStoryboard>
-                                                                                <Storyboard>
-                                                                                    <DoubleAnimation Duration="0:0:0.2"
-                                                                                                     Storyboard.TargetProperty="Opacity"
-                                                                                                     To="0" />
-                                                                                </Storyboard>
-                                                                            </BeginStoryboard>
-                                                                        </DataTrigger.ExitActions>
-                                                                    </DataTrigger>
-                                                                </Style.Triggers>
-                                                            </Style>
-                                                        </Viewbox.Style>
-                                                        <Path Data="{StaticResource VectorPlay}"
-                                                              Stroke="{DynamicResource BlackBrush}"
-                                                              StrokeEndLineCap="Round"
-                                                              StrokeLineJoin="Round"
-                                                              StrokeStartLineCap="Round"
-                                                              StrokeThickness="2.0" />
-                                                    </Viewbox>
-                                                </Grid>
-                                                <ControlTemplate.Triggers>
-                                                    <Trigger Property="IsMouseOver" Value="True">
-                                                        <Setter TargetName="IconPath" Property="Fill" Value="{StaticResource GrayBrush2}" />
-                                                        <Setter TargetName="TextBlock" Property="Foreground" Value="{StaticResource BlackBrush}" />
-                                                    </Trigger>
-                                                    <Trigger Property="IsSelected" Value="True">
-                                                        <Setter TargetName="IconPath" Property="Fill" Value="{StaticResource AccentColorBrush}" />
-                                                        <Setter TargetName="TextBlock" Property="Foreground" Value="{StaticResource AccentColorBrush}" />
-                                                    </Trigger>
-                                                </ControlTemplate.Triggers>
-                                            </ControlTemplate>
-                                        </Setter.Value>
-                                    </Setter>
-                                </Style>
-                            </ListBox.ItemContainerStyle>
-                            <ListBox.GroupStyle>
-                                <GroupStyle>
-                                    <GroupStyle.ContainerStyle>
-                                        <Style TargetType="GroupItem">
-                                            <Setter Property="Template">
-                                                <Setter.Value>
-                                                    <ControlTemplate TargetType="GroupItem">
-                                                        <StackPanel Margin="5,0,0,0" Orientation="Vertical">
-                                                            <DockPanel>
-                                                                <TextBlock Margin="0,30,0,5">
-                                                                    <TextBlock.Style>
-                                                                        <Style TargetType="TextBlock">
-                                                                            <Setter Property="FontFamily" Value="Segoe UI Emoji" />
-                                                                            <Setter Property="FontSize" Value="11" />
-                                                                            <Style.Triggers>
-                                                                                <DataTrigger Binding="{Binding Name}" Value="Discover">
-                                                                                    <Setter Property="behavior:TextBlockBehavior.UpperText" Value="{StaticResource Discover}" />
-                                                                                </DataTrigger>
-                                                                                <DataTrigger Binding="{Binding Name}" Value="MyMusic">
-                                                                                    <Setter Property="behavior:TextBlockBehavior.UpperText" Value="{StaticResource MyMusic}" />
-                                                                                </DataTrigger>
-                                                                                <DataTrigger Binding="{Binding Name}" Value="Playlist">
-                                                                                    <Setter Property="behavior:TextBlockBehavior.UpperText" Value="{StaticResource Playlists}" />
-                                                                                </DataTrigger>
-                                                                            </Style.Triggers>
-                                                                        </Style>
-                                                                    </TextBlock.Style>
-                                                                </TextBlock>
-                                                            </DockPanel>
-                                                            <ItemsPresenter Margin="1,0,0,0" />
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="250"
+                                              MinWidth="150"
+                                              MaxWidth="400" />
+                            <ColumnDefinition Width="1" />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <Grid Margin="5,0,0,0">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <ListBox ItemsSource="{Binding ViewManager.ViewSource}" SelectedItem="{Binding SelectedViewItem}">
+                                <ListBox.ItemContainerStyle>
+                                    <Style TargetType="ListBoxItem" d:DataContext="{d:DesignInstance base:IViewItem}">
+                                        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="ListBoxItem">
+                                                    <Grid Margin="0,2,0,0" Background="Transparent">
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="*" />
+                                                            <ColumnDefinition Width="Auto" />
+                                                        </Grid.ColumnDefinitions>
+                                                        <StackPanel Orientation="Horizontal">
+                                                            <Viewbox Width="12" VerticalAlignment="Center">
+                                                                <Path x:Name="IconPath"
+                                                                      Data="{Binding Icon}"
+                                                                      Fill="{StaticResource GrayBrush3}" />
+                                                            </Viewbox>
+                                                            <TextBlock x:Name="TextBlock"
+                                                                       Margin="8,0,0,0"
+                                                                       VerticalAlignment="Center"
+                                                                       FontFamily="Segoe UI Emoji"
+                                                                       FontSize="14"
+                                                                       Foreground="{StaticResource GrayBrush1}"
+                                                                       Text="{Binding Text}" />
                                                         </StackPanel>
-                                                    </ControlTemplate>
-                                                </Setter.Value>
-                                            </Setter>
-                                        </Style>
-                                    </GroupStyle.ContainerStyle>
-                                </GroupStyle>
-                            </ListBox.GroupStyle>
-                        </ListBox>
-                        <StackPanel Grid.Row="1" Visibility="{Binding NotificationManager.IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
-                            <Separator />
-                            <ItemsControl Margin="2" ItemsSource="{Binding NotificationManager.Notifications}">
-                                <ItemsControl.Resources>
-                                    <DataTemplate DataType="{x:Type notifications:ProgressNotification}">
-                                        <Border Height="40"
-                                                BorderBrush="{StaticResource GrayBrush6}"
-                                                BorderThickness="1"
-                                                CornerRadius="2">
-                                            <Border.Effect>
-                                                <DropShadowEffect BlurRadius="1"
-                                                                  Opacity=".8"
-                                                                  ShadowDepth="0"
-                                                                  Color="{StaticResource BlackColor}" />
-                                            </Border.Effect>
-                                            <Grid Background="{StaticResource WhiteBrush}">
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="40" />
-                                                    <ColumnDefinition Width="*" />
-                                                </Grid.ColumnDefinitions>
-                                                <myControls:PieProgress Width="30"
-                                                                        Height="30"
-                                                                        HorizontalAlignment="Center"
-                                                                        VerticalAlignment="Center"
-                                                                        Background="{StaticResource WhiteBrush}"
-                                                                        CanCancel="True"
-                                                                        Command="{Binding RelativeSource={RelativeSource AncestorType=ItemsControl},
-                                                                                          Path=DataContext.CancelProgressNotificationCommand}"
-                                                                        CommandParameter="{Binding}"
-                                                                        Foreground="{StaticResource BlackBrush}"
-                                                                        PieBrush="{StaticResource AccentColorBrush2}"
-                                                                        Value="{Binding CurrentProgress}" />
-                                                <StackPanel Grid.Column="1"
-                                                            VerticalAlignment="Center"
-                                                            Orientation="Vertical">
-                                                    <TextBlock FontSize="12" Text="{Binding Title}" />
-                                                    <TextBlock Text="{Binding Message}" TextTrimming="CharacterEllipsis" />
-                                                </StackPanel>
-                                            </Grid>
-                                        </Border>
-                                    </DataTemplate>
-                                    <DataTemplate DataType="{x:Type notifications:MessageNotification}">
-                                        <Border Height="40"
-                                                BorderBrush="{StaticResource GrayBrush6}"
-                                                BorderThickness="1"
-                                                CornerRadius="2">
-                                            <Border.Effect>
-                                                <DropShadowEffect BlurRadius="1"
-                                                                  Opacity=".8"
-                                                                  ShadowDepth="0"
-                                                                  Color="{StaticResource BlackColor}" />
-                                            </Border.Effect>
-                                            <Grid Background="{StaticResource WhiteBrush}">
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="40" />
-                                                    <ColumnDefinition Width="*" />
-                                                </Grid.ColumnDefinitions>
-                                                <Viewbox Width="25"
-                                                         Height="25"
-                                                         HorizontalAlignment="Center"
-                                                         VerticalAlignment="Center">
-                                                    <Path Fill="{StaticResource GrayBrush1}">
-                                                        <Path.Style>
-                                                            <Style TargetType="Path">
-                                                                <Style.Triggers>
-                                                                    <DataTrigger Binding="{Binding Icon}" Value="Information">
-                                                                        <Setter Property="Data" Value="{StaticResource VectorInformation}" />
-                                                                    </DataTrigger>
-                                                                    <DataTrigger Binding="{Binding Icon}" Value="Error">
-                                                                        <Setter Property="Data" Value="{StaticResource VectorError}" />
-                                                                    </DataTrigger>
-                                                                </Style.Triggers>
-                                                            </Style>
-                                                        </Path.Style>
-                                                    </Path>
-                                                </Viewbox>
-                                                <StackPanel Grid.Column="1"
-                                                            VerticalAlignment="Center"
-                                                            Orientation="Vertical">
-                                                    <TextBlock FontSize="12" Text="{Binding Title}" />
-                                                    <TextBlock Text="{Binding Message}" TextTrimming="CharacterEllipsis" />
-                                                </StackPanel>
-                                            </Grid>
-                                        </Border>
-                                    </DataTemplate>
-                                </ItemsControl.Resources>
-                                <ItemsControl.ItemContainerStyle>
-                                    <Style TargetType="ContentPresenter">
-                                        <Setter Property="Margin" Value="0,2,0,2" />
+                                                        <Viewbox Grid.Column="1"
+                                                                 Width="16"
+                                                                 Margin="0,0,10,0">
+                                                            <Viewbox.Style>
+                                                                <Style TargetType="Viewbox">
+                                                                    <Setter Property="Opacity" Value="0" />
+                                                                    <Setter Property="RenderTransformOrigin" Value=".5,.5" />
+                                                                    <Setter Property="RenderTransform">
+                                                                        <Setter.Value>
+                                                                            <RotateTransform x:Name="RotateTransform" />
+                                                                        </Setter.Value>
+                                                                    </Setter>
+                                                                    <Style.Triggers>
+                                                                        <DataTrigger Binding="{Binding IsPlaying}" Value="true">
+                                                                            <DataTrigger.EnterActions>
+                                                                                <BeginStoryboard>
+                                                                                    <Storyboard>
+                                                                                        <DoubleAnimation Duration="0:0:0.2"
+                                                                                                         Storyboard.TargetProperty="Opacity"
+                                                                                                         To="1" />
+                                                                                        <DoubleAnimation Duration="0:0:0.4"
+                                                                                                         From="-90"
+                                                                                                         Storyboard.TargetProperty="(ContentControl.RenderTransform).(RotateTransform.Angle)"
+                                                                                                         To="0" />
+                                                                                    </Storyboard>
+                                                                                </BeginStoryboard>
+                                                                            </DataTrigger.EnterActions>
+                                                                            <DataTrigger.ExitActions>
+                                                                                <BeginStoryboard>
+                                                                                    <Storyboard>
+                                                                                        <DoubleAnimation Duration="0:0:0.2"
+                                                                                                         Storyboard.TargetProperty="Opacity"
+                                                                                                         To="0" />
+                                                                                    </Storyboard>
+                                                                                </BeginStoryboard>
+                                                                            </DataTrigger.ExitActions>
+                                                                        </DataTrigger>
+                                                                    </Style.Triggers>
+                                                                </Style>
+                                                            </Viewbox.Style>
+                                                            <Path Data="{StaticResource VectorPlay}"
+                                                                  Stroke="{DynamicResource BlackBrush}"
+                                                                  StrokeEndLineCap="Round"
+                                                                  StrokeLineJoin="Round"
+                                                                  StrokeStartLineCap="Round"
+                                                                  StrokeThickness="2.0" />
+                                                        </Viewbox>
+                                                    </Grid>
+                                                    <ControlTemplate.Triggers>
+                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                            <Setter TargetName="IconPath" Property="Fill" Value="{StaticResource GrayBrush2}" />
+                                                            <Setter TargetName="TextBlock" Property="Foreground" Value="{StaticResource BlackBrush}" />
+                                                        </Trigger>
+                                                        <Trigger Property="IsSelected" Value="True">
+                                                            <Setter TargetName="IconPath" Property="Fill" Value="{StaticResource AccentColorBrush}" />
+                                                            <Setter TargetName="TextBlock" Property="Foreground" Value="{StaticResource AccentColorBrush}" />
+                                                        </Trigger>
+                                                    </ControlTemplate.Triggers>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
                                     </Style>
-                                </ItemsControl.ItemContainerStyle>
-                            </ItemsControl>
-                        </StackPanel>
+                                </ListBox.ItemContainerStyle>
+                                <ListBox.GroupStyle>
+                                    <GroupStyle>
+                                        <GroupStyle.ContainerStyle>
+                                            <Style TargetType="GroupItem">
+                                                <Setter Property="Template">
+                                                    <Setter.Value>
+                                                        <ControlTemplate TargetType="GroupItem">
+                                                            <StackPanel Margin="5,0,0,0" Orientation="Vertical">
+                                                                <DockPanel>
+                                                                    <TextBlock Margin="0,30,0,5">
+                                                                        <TextBlock.Style>
+                                                                            <Style TargetType="TextBlock">
+                                                                                <Setter Property="FontFamily" Value="Segoe UI Emoji" />
+                                                                                <Setter Property="FontSize" Value="11" />
+                                                                                <Style.Triggers>
+                                                                                    <DataTrigger Binding="{Binding Name}" Value="Discover">
+                                                                                        <Setter Property="behavior:TextBlockBehavior.UpperText" Value="{StaticResource Discover}" />
+                                                                                    </DataTrigger>
+                                                                                    <DataTrigger Binding="{Binding Name}" Value="MyMusic">
+                                                                                        <Setter Property="behavior:TextBlockBehavior.UpperText" Value="{StaticResource MyMusic}" />
+                                                                                    </DataTrigger>
+                                                                                    <DataTrigger Binding="{Binding Name}" Value="Playlist">
+                                                                                        <Setter Property="behavior:TextBlockBehavior.UpperText" Value="{StaticResource Playlists}" />
+                                                                                    </DataTrigger>
+                                                                                </Style.Triggers>
+                                                                            </Style>
+                                                                        </TextBlock.Style>
+                                                                    </TextBlock>
+                                                                </DockPanel>
+                                                                <ItemsPresenter Margin="1,0,0,0" />
+                                                            </StackPanel>
+                                                        </ControlTemplate>
+                                                    </Setter.Value>
+                                                </Setter>
+                                            </Style>
+                                        </GroupStyle.ContainerStyle>
+                                    </GroupStyle>
+                                </ListBox.GroupStyle>
+                            </ListBox>
+                            <StackPanel Grid.Row="1" Visibility="{Binding NotificationManager.IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                <Separator />
+                                <ItemsControl Margin="2" ItemsSource="{Binding NotificationManager.Notifications}">
+                                    <ItemsControl.Resources>
+                                        <DataTemplate DataType="{x:Type notifications:ProgressNotification}">
+                                            <Border Height="40"
+                                                    BorderBrush="{StaticResource GrayBrush6}"
+                                                    BorderThickness="1"
+                                                    CornerRadius="2">
+                                                <Border.Effect>
+                                                    <DropShadowEffect BlurRadius="1"
+                                                                      Opacity=".8"
+                                                                      ShadowDepth="0"
+                                                                      Color="{StaticResource BlackColor}" />
+                                                </Border.Effect>
+                                                <Grid Background="{StaticResource WhiteBrush}">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="40" />
+                                                        <ColumnDefinition Width="*" />
+                                                    </Grid.ColumnDefinitions>
+                                                    <myControls:PieProgress Width="30"
+                                                                            Height="30"
+                                                                            HorizontalAlignment="Center"
+                                                                            VerticalAlignment="Center"
+                                                                            Background="{StaticResource WhiteBrush}"
+                                                                            CanCancel="True"
+                                                                            Command="{Binding RelativeSource={RelativeSource AncestorType=ItemsControl},
+                                                                                              Path=DataContext.CancelProgressNotificationCommand}"
+                                                                            CommandParameter="{Binding}"
+                                                                            Foreground="{StaticResource BlackBrush}"
+                                                                            PieBrush="{StaticResource AccentColorBrush2}"
+                                                                            Value="{Binding CurrentProgress}" />
+                                                    <StackPanel Grid.Column="1"
+                                                                VerticalAlignment="Center"
+                                                                Orientation="Vertical">
+                                                        <TextBlock FontSize="12" Text="{Binding Title}" />
+                                                        <TextBlock Text="{Binding Message}" TextTrimming="CharacterEllipsis" />
+                                                    </StackPanel>
+                                                </Grid>
+                                            </Border>
+                                        </DataTemplate>
+                                        <DataTemplate DataType="{x:Type notifications:MessageNotification}">
+                                            <Border Height="40"
+                                                    BorderBrush="{StaticResource GrayBrush6}"
+                                                    BorderThickness="1"
+                                                    CornerRadius="2">
+                                                <Border.Effect>
+                                                    <DropShadowEffect BlurRadius="1"
+                                                                      Opacity=".8"
+                                                                      ShadowDepth="0"
+                                                                      Color="{StaticResource BlackColor}" />
+                                                </Border.Effect>
+                                                <Grid Background="{StaticResource WhiteBrush}">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="40" />
+                                                        <ColumnDefinition Width="*" />
+                                                    </Grid.ColumnDefinitions>
+                                                    <Viewbox Width="25"
+                                                             Height="25"
+                                                             HorizontalAlignment="Center"
+                                                             VerticalAlignment="Center">
+                                                        <Path Fill="{StaticResource GrayBrush1}">
+                                                            <Path.Style>
+                                                                <Style TargetType="Path">
+                                                                    <Style.Triggers>
+                                                                        <DataTrigger Binding="{Binding Icon}" Value="Information">
+                                                                            <Setter Property="Data" Value="{StaticResource VectorInformation}" />
+                                                                        </DataTrigger>
+                                                                        <DataTrigger Binding="{Binding Icon}" Value="Error">
+                                                                            <Setter Property="Data" Value="{StaticResource VectorError}" />
+                                                                        </DataTrigger>
+                                                                    </Style.Triggers>
+                                                                </Style>
+                                                            </Path.Style>
+                                                        </Path>
+                                                    </Viewbox>
+                                                    <StackPanel Grid.Column="1"
+                                                                VerticalAlignment="Center"
+                                                                Orientation="Vertical">
+                                                        <TextBlock FontSize="12" Text="{Binding Title}" />
+                                                        <TextBlock Text="{Binding Message}" TextTrimming="CharacterEllipsis" />
+                                                    </StackPanel>
+                                                </Grid>
+                                            </Border>
+                                        </DataTemplate>
+                                    </ItemsControl.Resources>
+                                    <ItemsControl.ItemContainerStyle>
+                                        <Style TargetType="ContentPresenter">
+                                            <Setter Property="Margin" Value="0,2,0,2" />
+                                        </Style>
+                                    </ItemsControl.ItemContainerStyle>
+                                </ItemsControl>
+                            </StackPanel>
+                        </Grid>
+                        <GridSplitter Grid.Column="1" HorizontalAlignment="Stretch">
+                            <GridSplitter.Style>
+                                <Style TargetType="GridSplitter">
+                                    <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+                                </Style>
+                            </GridSplitter.Style>
+                        </GridSplitter>
+                        <ContentControl Grid.Column="2" Content="{Binding SelectedViewItem}">
+                            <behavior:ContentControlBehavior.ContentChangedAnimation>
+                                <Storyboard>
+                                    <DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetProperty="Opacity">
+                                        <SplineDoubleKeyFrame KeyTime="00:00:00" Value="0" />
+                                        <SplineDoubleKeyFrame KeyTime="00:00:00.400" Value="1" />
+                                    </DoubleAnimationUsingKeyFrames>
+                                    <DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.X)">
+                                        <SplineDoubleKeyFrame KeyTime="00:00:00" Value="30" />
+                                        <EasingDoubleKeyFrame KeyTime="00:00:00.700" Value="0">
+                                            <EasingDoubleKeyFrame.EasingFunction>
+                                                <CubicEase EasingMode="EaseOut" />
+                                            </EasingDoubleKeyFrame.EasingFunction>
+                                        </EasingDoubleKeyFrame>
+                                    </DoubleAnimationUsingKeyFrames>
+                                </Storyboard>
+                            </behavior:ContentControlBehavior.ContentChangedAnimation>
+                            <ContentControl.RenderTransform>
+                                <TranslateTransform />
+                            </ContentControl.RenderTransform>
+                            <ContentControl.ContentTemplate>
+                                <DataTemplate>
+                                    <ContentPresenter HorizontalAlignment="Stretch"
+                                                      VerticalAlignment="Stretch"
+                                                      Content="{Binding Converter={StaticResource ViewManager}}" />
+                                </DataTemplate>
+                            </ContentControl.ContentTemplate>
+                        </ContentControl>
                     </Grid>
-                    <ContentControl Grid.Column="0"
-                                    Grid.ColumnSpan="3"
-                                    Content="{Binding SpecialView}">
+                    <ContentControl Content="{Binding SpecialView}">
                         <ContentControl.Style>
                             <Style TargetType="ContentControl">
                                 <Style.Triggers>
                                     <DataTrigger Binding="{Binding SpecialView}" Value="{x:Null}">
-                                        <DataTrigger.ExitActions>
+                                        <DataTrigger.EnterActions>
                                             <BeginStoryboard>
                                                 <Storyboard>
                                                     <DoubleAnimation Duration="0:0:0.2"
+                                                                     From="1"
+                                                                     Storyboard.TargetProperty="Opacity"
+                                                                     To="0" />
+                                                </Storyboard>
+                                            </BeginStoryboard>
+                                        </DataTrigger.EnterActions>
+                                        <DataTrigger.ExitActions>
+                                            <BeginStoryboard>
+                                                <Storyboard>
+                                                    <DoubleAnimation Duration="0:0:0.3"
                                                                      From="0"
                                                                      Storyboard.TargetProperty="Opacity"
                                                                      To="1" />
+                                                    <DoubleAnimation Duration="0:0:0.4"
+                                                                     From="30"
+                                                                     Storyboard.TargetProperty="(ContentControl.RenderTransform).(TranslateTransform.Y)"
+                                                                     To="0">
+                                                        <DoubleAnimation.EasingFunction>
+                                                            <CubicEase EasingMode="EaseOut" />
+                                                        </DoubleAnimation.EasingFunction>
+                                                    </DoubleAnimation>
                                                 </Storyboard>
                                             </BeginStoryboard>
                                         </DataTrigger.ExitActions>
@@ -300,45 +353,14 @@
                             </Style>
                         </ContentControl.Style>
                         <ContentControl.Resources>
+                            <views:ArtistView x:Key="ArtistView"/>
                             <DataTemplate DataType="{x:Type viewData:ArtistView}">
-                                <views:ArtistView DataContext="{Binding}" />
+                                <ContentPresenter DataContext="{Binding}" Content="{StaticResource ArtistView}"/>
                             </DataTemplate>
                         </ContentControl.Resources>
-                    </ContentControl>
-                    <GridSplitter Grid.Column="1" HorizontalAlignment="Stretch">
-                        <GridSplitter.Style>
-                            <Style TargetType="GridSplitter">
-                                <Setter Property="FocusVisualStyle" Value="{x:Null}" />
-                            </Style>
-                        </GridSplitter.Style>
-                    </GridSplitter>
-                    <ContentControl Grid.Column="2" Content="{Binding SelectedViewItem}">
-                        <behavior:ContentControlBehavior.ContentChangedAnimation>
-                            <Storyboard>
-                                <DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetProperty="Opacity">
-                                    <SplineDoubleKeyFrame KeyTime="00:00:00" Value="0" />
-                                    <SplineDoubleKeyFrame KeyTime="00:00:00.400" Value="1" />
-                                </DoubleAnimationUsingKeyFrames>
-                                <DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.X)">
-                                    <SplineDoubleKeyFrame KeyTime="00:00:00" Value="30" />
-                                    <EasingDoubleKeyFrame KeyTime="00:00:00.700" Value="0">
-                                        <EasingDoubleKeyFrame.EasingFunction>
-                                            <CubicEase EasingMode="EaseOut" />
-                                        </EasingDoubleKeyFrame.EasingFunction>
-                                    </EasingDoubleKeyFrame>
-                                </DoubleAnimationUsingKeyFrames>
-                            </Storyboard>
-                        </behavior:ContentControlBehavior.ContentChangedAnimation>
                         <ContentControl.RenderTransform>
                             <TranslateTransform />
                         </ContentControl.RenderTransform>
-                        <ContentControl.ContentTemplate>
-                            <DataTemplate>
-                                <ContentPresenter HorizontalAlignment="Stretch"
-                                                  VerticalAlignment="Stretch"
-                                                  Content="{Binding Converter={StaticResource ViewManager}}" />
-                            </DataTemplate>
-                        </ContentControl.ContentTemplate>
                     </ContentControl>
                 </Grid>
             </myControls:AnimationUpDown>
@@ -366,6 +388,15 @@
                     <controls:TransitioningContentControl.ContentTemplate>
                         <DataTemplate DataType="{x:Type playableData:IPlayable}">
                             <Grid VerticalAlignment="Center">
+                                <Grid.Style>
+                                    <Style TargetType="Grid">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding}" Value="{x:Null}">
+                                                <Setter Property="Visibility" Value="Collapsed" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Grid.Style>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="60" />
                                     <ColumnDefinition Width="10" />
@@ -391,6 +422,9 @@
                                                TextTrimming="CharacterEllipsis" />
                                     <Button Margin="0,0,0,2"
                                             HorizontalAlignment="Left"
+                                            Command="{Binding RelativeSource={RelativeSource AncestorType=controls:TransitioningContentControl},
+                                                              Path=DataContext.OpenArtistCommand}"
+                                            CommandParameter="{Binding Artist}"
                                             Content="{Binding Artist}">
                                         <Button.Style>
                                             <Style TargetType="Button">
@@ -474,7 +508,9 @@
                             VerticalAlignment="Center"
                             Orientation="Horizontal">
                     <Slider Width="200"
+                            LargeChange="0.1"
                             Maximum="1"
+                            TickFrequency="0.1"
                             Value="{Binding MusicDataManager.MusicManager.AudioEngine.Volume}" />
                 </StackPanel>
             </Grid>
