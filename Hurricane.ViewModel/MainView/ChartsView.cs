@@ -1,25 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using Hurricane.Model;
 using Hurricane.Model.DataApi;
+using Hurricane.Model.Music.Imagment;
 using Hurricane.Model.Music.Playable;
 using Hurricane.Model.Music.Playlist;
 using Hurricane.Model.Music.TrackProperties;
 using Hurricane.Model.Services;
+using Hurricane.Utilities;
 using Hurricane.ViewModel.MainView.Base;
 
 namespace Hurricane.ViewModel.MainView
 {
     public class ChartsView : SideListItem, IPlaylist
     {
-        private readonly static Random Random = new Random();
-
         private List<PreviewTrack> _chartList;
         private bool _isLoading;
         private RelayCommand _playChartTrackCommand;
@@ -67,7 +70,7 @@ namespace Hurricane.ViewModel.MainView
             {
                 searchResult.Title = track.Name;
                 searchResult.Artist = track.Artist;
-                searchResult.Cover = track.Image;
+                searchResult.Cover = new BitmapImageProvider(track.Image);
             }
 
             return result;
@@ -79,8 +82,36 @@ namespace Hurricane.ViewModel.MainView
             ChartList = await iTunesApi.GetTop100(CultureInfo.CurrentCulture);
             IsLoading = false;
 
-            foreach (var previewTrack in ChartList)
-                await previewTrack.Image.LoadImageAsync();
+            var imageFolder =
+                new DirectoryInfo(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+                    "Hurricane", "Images", "Charts"));
+            if (!imageFolder.Exists)
+                imageFolder.Create();
+
+            var images = imageFolder.GetFiles("*.jpg").ToList();
+            var usedImages = new List<FileInfo>();
+
+            using (var webClient = new WebClient { Proxy = null })
+            {
+                foreach (var chart in ChartList)
+                {
+                    var imageFile = new FileInfo(Path.Combine(imageFolder.FullName, chart.ImageUrl.ToMd5Hash() + ".jpg"));
+                    if (!imageFile.Exists)
+                        await webClient.DownloadFileTaskAsync(chart.ImageUrl, imageFile.FullName);
+
+                    chart.Image = await Task.Run(() =>
+                    {
+                        var image = new BitmapImage(new Uri(imageFile.FullName));
+                        image.Freeze();
+                        return image;
+                    });
+
+                    usedImages.Add(imageFile);
+                }
+
+                foreach (var image in images.Where(x => usedImages.All(y => y.FullName != x.FullName)))
+                    image.Delete();
+            }
         }
 
         public Task<IPlayable> GetNextTrack(IPlayable currentTrack)

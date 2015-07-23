@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using System.Windows.Media;
 using Hurricane.Model;
-using Hurricane.Model.Music;
+using Hurricane.Model.Data;
 using Hurricane.Model.Notifications;
 using TaskExtensions = Hurricane.Utilities.TaskExtensions;
 

@@ -1,7 +1,5 @@
 ﻿using System;
-using System.ComponentModel;
 using System.Threading.Tasks;
-using System.Xml;
 using System.Xml.Serialization;
 using Hurricane.Model.AudioEngine;
 using Hurricane.Model.Music.Imagment;
@@ -16,15 +14,15 @@ namespace Hurricane.Model.Music.Playable
     public abstract class PlayableBase : PropertyChangedBase, IPlayable
     {
         private string _title;
-        private Album _album;
         private bool _isPlaying;
         private DateTime _lastTimePlayed;
         private Artist _artist;
+        private Album _album;
 
         /// <summary>
         /// The title of the track
         /// </summary>
-        [XmlAttribute]
+        [XmlIgnore]
         public string Title
         {
             get { return _title; }
@@ -38,25 +36,17 @@ namespace Hurricane.Model.Music.Playable
         public Artist Artist
         {
             get { return _artist; }
-            set
-            {
-                if (SetProperty(value, ref _artist) && value != null)
-                    ArtistGuid = value.Guid;
-            }
+            set { SetProperty(value, ref _artist); }
         }
 
         /// <summary>
-        /// The album of the track. Null if unkown
+        /// The album of the track. Null if unknown
         /// </summary>
         [XmlIgnore]
         public Album Album
         {
             get { return _album; }
-            set
-            {
-                if (SetProperty(value, ref _album) && value != null)
-                    AlbumGuid = value.Guid;
-            }
+            set { SetProperty(value, ref _album); }
         }
 
         /// <summary>
@@ -69,27 +59,29 @@ namespace Hurricane.Model.Music.Playable
             set { SetProperty(value, ref _isPlaying); }
         }
 
+        /// <summary>
+        /// A custom object for some operations
+        /// </summary>
+        [XmlIgnore]
         public object Tag { get; set; }
+
+        /// <summary>
+        /// The id of the track
+        /// </summary>
+        [XmlIgnore]
+        public Guid Guid { get; set; }
 
         /// <summary>
         /// The last time this track was played
         /// </summary>
-        [XmlAttribute]
+        [XmlIgnore]
         public DateTime LastTimePlayed
         {
             get { return _lastTimePlayed; }
             set { SetProperty(value, ref _lastTimePlayed); }
         }
 
-        [Browsable(false)]
-        [XmlAttribute]
-        public Guid ArtistGuid { get; set; }
-
-        [Browsable(false)]
-        [XmlAttribute]
-        public Guid AlbumGuid { get; set; }
-
-        [XmlAttribute]
+        [XmlIgnore]
         public string MusicBrainzId { get; set; }
 
         string IPlayable.Artist => _artist?.Name;
@@ -100,23 +92,7 @@ namespace Hurricane.Model.Music.Playable
         [XmlIgnore]
         public TimeSpan Duration { get; set; }
 
-        // XmlSerializer does not support TimeSpan, so use this property for serialization instead.
-        [Browsable(false)]
-        [XmlElement(DataType = "duration", ElementName = "Duration")]
-        public string DurationString
-        {
-            get
-            {
-                return XmlConvert.ToString(Duration);   
-            }
-            set
-            {
-                Duration = string.IsNullOrEmpty(value)
-                    ? TimeSpan.Zero
-                    : XmlConvert.ToTimeSpan(value);
-            }
-        }
-
+        [XmlIgnore]
         public ImageProvider Cover { get; set; }
         public abstract bool IsAvailable { get; }
 

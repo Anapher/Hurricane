@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Threading.Tasks;
-using Hurricane.Model.Music;
+using Hurricane.Model.Data;
 using Hurricane.Model.Notifications;
 
 namespace Hurricane.ViewModel.MainView.Base

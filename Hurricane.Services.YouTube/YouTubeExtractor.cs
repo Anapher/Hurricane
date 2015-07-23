@@ -14,7 +14,7 @@ namespace Hurricane.Services.YouTube
                (await
                    Task.Run(
                        () => DownloadUrlResolver.GetDownloadUrls($"https://www.youtube.com/watch?v={videoId}", false)))
-                   .OrderByDescending(info => info.AudioBitrate);//.ThenBy(x => x.Resolution);
+                   .Where(x => x.AudioType == AudioType.Aac || x.AudioType == AudioType.Mp3).OrderByDescending(info => info.AudioBitrate).ThenBy(x => x.Resolution);
 
            var video = videoInfos.First();
 

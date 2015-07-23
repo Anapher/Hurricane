@@ -74,14 +74,19 @@
             </ListBox.ItemContainerStyle>
             <ListBox.ItemTemplate>
                 <DataTemplate DataType="{x:Type musicData:PlayableBase}">
-                    <Border BorderBrush="{StaticResource AccentColorBrush}">
+                    <Border>
                         <Border.Style>
                             <Style TargetType="Border">
-                                <Setter Property="BorderThickness" Value="0" />
+                                <Setter Property="BorderThickness" Value="1" />
+                                <Setter Property="BorderBrush" Value="{x:Null}"></Setter>
                                 <Style.Triggers>
-                                    <DataTrigger Binding="{Binding IsPlaying}" Value="true">
-                                        <Setter Property="BorderThickness" Value="1" />
-                                    </DataTrigger>
+                                    <MultiDataTrigger>
+                                        <MultiDataTrigger.Conditions>
+                                            <Condition Binding="{Binding IsPlaying}" Value="true" />
+                                            <Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=ListBoxItem}, Path=IsSelected}" Value="false" />
+                                        </MultiDataTrigger.Conditions>
+                                        <Setter Property="BorderBrush" Value="{StaticResource AccentColorBrush}" />
+                                    </MultiDataTrigger>
                                 </Style.Triggers>
                             </Style>
                         </Border.Style>

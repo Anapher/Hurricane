@@ -1,20 +1,17 @@
 ﻿using System;
-using System.Windows.Media;
 using Hurricane.Model.Music.Imagment;
 using Hurricane.Model.Music.Playable;
 
 namespace Hurricane.Model.Services
 {
-    public interface ISearchResult : IPlayable
+    public interface ISearchResult : IStreamable
     {
         new string Title { get; set; }
         new string Artist { get; set; }
         new ImageProvider Cover { get; set; }
 
         TimeSpan Duration { get; }
-        Geometry ProviderIcon { get; }
-        string ProviderName { get; }
-        string Url { get; }
+        string Uploader { get; }
 
         ConversionInformation ConvertToStreamable();
     }

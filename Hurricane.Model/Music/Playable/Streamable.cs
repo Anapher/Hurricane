@@ -1,11 +1,10 @@
 ﻿using System.Threading.Tasks;
 using System.Windows.Media;
 using Hurricane.Model.AudioEngine;
-using Hurricane.Model.Music.Playable;
 
-namespace Hurricane.Model.Services
+namespace Hurricane.Model.Music.Playable
 {
-    public abstract class Streamable : PlayableBase
+    public abstract class Streamable : PlayableBase, IStreamable
     {
         public override bool IsAvailable { get; } = true;
         public string Uploader { get; set; }
@@ -13,6 +12,7 @@ namespace Hurricane.Model.Services
 
         public abstract string Url { get;}
         public abstract string ProviderUrl { get; }
+        public abstract string ProviderName { get; }
         public abstract Geometry ProviderIcon { get;}
     }
 }

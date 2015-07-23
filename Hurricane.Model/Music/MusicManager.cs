@@ -19,7 +19,7 @@ namespace Hurricane.Model.Music
         private PlayMode _currentPlayMode;
         private bool _isCrossfadeEnabled;
         private readonly List<Tuple<IPlaylist, IPlayable>> _tempHistory;
-        private bool _isCrossfading;
+        private bool _isOpeningTrack;
 
         public MusicManager()
         {
@@ -36,11 +36,9 @@ namespace Hurricane.Model.Music
         private async void AudioEngine_TrackPositionChanged(object sender, EventArgs e)
         {
             if (AudioEngine.TrackPositionTime.TotalSeconds >
-                (AudioEngine.TrackLengthTime.TotalSeconds - AudioEngine.CrossfadeDuration.TotalSeconds) && !_isCrossfading)
+                (AudioEngine.TrackLengthTime.TotalSeconds - AudioEngine.CrossfadeDuration.TotalSeconds) && !_isOpeningTrack)
             {
-                _isCrossfading = true;
                 await GoForward(true);
-                _isCrossfading = false;
             }
         }
 
@@ -51,6 +49,7 @@ namespace Hurricane.Model.Music
 
         public event EventHandler QueuePlaying;
         public event EventHandler<TrackChangedEventArgs> TrackChanged;
+        public event EventHandler<NewTrackOpenedEventArgs> NewTrackOpened; 
 
         public IPlayable CurrentTrack
         {
@@ -103,6 +102,7 @@ namespace Hurricane.Model.Music
 
         private async Task OpenPlayable(IPlayable playable, IPlaylist playlist, bool openPlaying, bool openCrossfading, bool addToTempHistory)
         {
+            _isOpeningTrack = true;
             if (CurrentTrack != null)
                 TrackChanged?.Invoke(this, new TrackChangedEventArgs(CurrentTrack, AudioEngine.TimePlaySourcePlayed));
             CurrentTrack = playable;
@@ -112,15 +112,17 @@ namespace Hurricane.Model.Music
             {
                 var track = playable as PlayableBase;
                 if (track != null)
-                    track.LastTimePlayed = DateTime.Now;
-                
-                playlist?.GetBackHistory().Add(track);
+                    playlist?.GetBackHistory().Add(track);
+
+                NewTrackOpened?.Invoke(this, new NewTrackOpenedEventArgs(playable));
+
                 if (addToTempHistory && (_tempHistory.Count == 0 || _tempHistory.Last().Item1 != playlist || _tempHistory.Last().Item2 != playable))
                     _tempHistory.Add(Tuple.Create(playlist, playable));
 
                 if (openPlaying && !(IsCrossfadeEnabled && openCrossfading))
                     await AudioEngine.TogglePlayPause();
             }
+            _isOpeningTrack = false;
         }
 
         public Task OpenPlayable(IPlayable playable, IPlaylist playlist)
@@ -136,7 +138,7 @@ namespace Hurricane.Model.Music
         public async Task GoForward(bool crossfade)
         {
             IPlayable track;
-
+            _isOpeningTrack = true;
             if (Queue.QueueItems.Any())
             {
                 track = Queue.GetNextPlayable();
@@ -162,6 +164,8 @@ namespace Hurricane.Model.Music
 
         public async Task GoBack()
         {
+            _isOpeningTrack = true;
+
             if (CurrentPlaylist == null || !CurrentPlaylist.ContainsPlayableTracks())
                 return;
 

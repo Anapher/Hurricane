@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Hurricane.Model.Data.SqlTables;
 using Hurricane.Model.DataApi.SerializeClasses.Lastfm;
 using Hurricane.Model.DataApi.SerializeClasses.Lastfm.GetArtistInfo;
 using Hurricane.Model.DataApi.SerializeClasses.Lastfm.GetTopTracks;
@@ -15,25 +16,28 @@ using Hurricane.Model.Music.TrackProperties;
 using Hurricane.Utilities;
 using Newtonsoft.Json;
 using Artist = Hurricane.Model.Music.TrackProperties.Artist;
+using ImageProvider = Hurricane.Model.Music.Imagment.ImageProvider;
 
 namespace Hurricane.Model.DataApi
 {
     public class LastfmApi
     {
-        public LastfmApi()
+        private static readonly Dictionary<string, OnlineImage> ImageCache = new Dictionary<string, OnlineImage>();
+
+        public LastfmApi(ArtistProvider artists)
         {
-            Artists = new List<Artist>();
-            ArtistKeywords = new Dictionary<List<string>, Artist>();
+            Artists = artists;
+            ArtistKeywords = new Dictionary<Artist, List<string>>();
         }
 
-        private List<Artist> Artists { get; }
-        private Dictionary<List<string>, Artist> ArtistKeywords { get; }
+        public ArtistProvider Artists { get; }
+        private Dictionary<Artist, List<string>> ArtistKeywords { get; }
 
         public async Task<Artist> SearchArtist(string name)
         {
-            var foundArtist =
-                Artists.FirstOrDefault(x => string.Equals(x.Name, name, StringComparison.OrdinalIgnoreCase));
-            if (foundArtist != null) return foundArtist;
+            Artist foundArtist;
+            if (SearchArtist(name, out foundArtist))
+                return foundArtist;
 
             using (var wc = new WebClient { Proxy = null })
             {
@@ -56,11 +60,14 @@ namespace Hurricane.Model.DataApi
                 if (match == null)
                     return null;
 
-                var alreadyExistingArtist = Artists.FirstOrDefault(x => x.Name == match.name);
-                if (alreadyExistingArtist != null)
+                if (SearchArtist(match.name, out foundArtist))
                 {
-                    ArtistKeywords.First(x => x.Value == alreadyExistingArtist).Key.Add(name);
-                    return alreadyExistingArtist;
+                    if (ArtistKeywords.ContainsKey(foundArtist))
+                        ArtistKeywords[foundArtist].Add(name);
+                    else
+                        ArtistKeywords.Add(foundArtist, new List<string> {name});
+                    
+                    return foundArtist;
                 }
 
                 var artist = new Artist
@@ -72,8 +79,8 @@ namespace Hurricane.Model.DataApi
                 };
                 SetImages(artist, match.image);
 
-                Artists.Add(artist);
-                ArtistKeywords.Add(new List<string> { name, artist.Name }, artist);
+                await Artists.AddArtist(artist);
+                ArtistKeywords.Add(artist, new List<string> { name });
                 return artist;
             }
         }
@@ -117,8 +124,8 @@ namespace Hurricane.Model.DataApi
                     var similarArtists = new List<Artist>();
                     foreach (var similarArtist in artistInfo.artist.similar.artist)
                     {
-                        var existingArtist = Artists.FirstOrDefault(x => string.Equals(x.Name, similarArtist.name, StringComparison.OrdinalIgnoreCase));
-                        if (existingArtist != null)
+                        Artist existingArtist;
+                        if (SearchArtist(similarArtist.name, out existingArtist))
                         {
                             similarArtists.Add(existingArtist);
                             break;
@@ -132,7 +139,7 @@ namespace Hurricane.Model.DataApi
                         };
 
                         SetImages(newArtist, similarArtist.image);
-                        Artists.Add(newArtist);
+                        await Artists.AddArtist(newArtist);
                         similarArtists.Add(newArtist);
                     }
                     artist.SimilarArtists = similarArtists;
@@ -141,7 +148,8 @@ namespace Hurricane.Model.DataApi
                 GetTopTracksResult topTrackResult;
                 try
                 {
-                    topTrackResult = JsonConvert.DeserializeObject<GetTopTracksResult>(await topTracksTask);
+                    topTrackResult =
+                        JsonConvert.DeserializeObject<GetTopTracksResult>((await topTracksTask).FixJsonString());
                 }
                 catch (JsonException)
                 {
@@ -169,9 +177,10 @@ namespace Hurricane.Model.DataApi
             {
                 var artistInfo =
                     JsonConvert.DeserializeObject<GetArtistInfoResult>(
-                        await
+                        (await
                             wc.DownloadStringTaskAsync(
-                                $"http://ws.audioscrobbler.com/2.0/?method=artist.getinfo&mbid={musicbrainzId}&api_key={SensitiveInformation.LastfmKey}&format=json&lang={culture.TwoLetterISOLanguageName}"));
+                                $"http://ws.audioscrobbler.com/2.0/?method=artist.getinfo&mbid={musicbrainzId}&api_key={SensitiveInformation.LastfmKey}&format=json&lang={culture.TwoLetterISOLanguageName}"))
+                            .FixJsonString());
                 var artist = new Artist
                 {
                     Name = artistInfo.artist.name,
@@ -207,17 +216,53 @@ namespace Hurricane.Model.DataApi
                 var trackResult = result?.results?.Trackmatches?.track;
                 if (trackResult != null)
                 {
+                    OnlineImage image = null;
+                    if (trackResult.image?.Count > 0)
+                    {
+                        var imageUrl = trackResult.image.Last().text;
+
+                        if (ImageCache.ContainsKey(imageUrl))
+                            image = ImageCache[imageUrl];
+                        else
+                        {
+                            image = new OnlineImage(imageUrl);
+                            ImageCache.Add(imageUrl, image);
+                        }
+                    }
+
                     return new TrackInformation
                     {
                         Artist = trackResult.artist,
                         Name = trackResult.name,
                         Url = trackResult.url,
                         MusicBrainzId = trackResult.mbid,
-                        CoverImage = trackResult.image?.Count > 0 ? new OnlineImage(trackResult.image.Last().text) : null
+                        CoverImage = image
                     };
                 }
                 return null;
             }
+        }
+
+        public bool SearchArtist(string name, out Artist artist)
+        {
+            var foundArtists =
+                Artists.ArtistDictionary.Where(
+                    x => string.Equals(x.Value.Name, name, StringComparison.OrdinalIgnoreCase)).ToList();
+            if (foundArtists.Count > 0)
+            {
+                artist = foundArtists[0].Value;
+                return true;
+            }
+
+            var alreadyExistingArtist = ArtistKeywords.FirstOrDefault(x => x.Value.Contains(name)).Key;
+            if (alreadyExistingArtist != null)
+            {
+                artist = alreadyExistingArtist;
+                return true;
+            }
+
+            artist = null;
+            return false;
         }
 
         private static void SetImages(Artist artist, List<Image> images)
@@ -234,20 +279,39 @@ namespace Hurricane.Model.DataApi
 
         private static OnlineImage GetBestImage(IEnumerable<Image> images)
         {
-            return new OnlineImage(images.OrderBy(x => x.size).Last().text);
+            var imageUrl = images.OrderBy(x => x.size).Last().text;
+            if (ImageCache.ContainsKey(imageUrl))
+                return ImageCache[imageUrl];
+
+            var onlineImage = new OnlineImage(imageUrl);
+            ImageCache.Add(imageUrl, onlineImage);
+            return onlineImage;
         }
 
         private static OnlineImage GetMediumImage(IEnumerable<Image> images)
         {
             var source = images.OrderBy(x => x.size);
-            return new OnlineImage((source.FirstOrDefault(x => x.size == ImageSize.large) ??
-                                   source.FirstOrDefault(x => x.size == ImageSize.medium) ??
-                                   source.First()).text);
+            var imageUrl = (source.FirstOrDefault(x => x.size == ImageSize.large) ??
+                            source.FirstOrDefault(x => x.size == ImageSize.medium) ??
+                            source.First()).text;
+
+            if (ImageCache.ContainsKey(imageUrl))
+                return ImageCache[imageUrl];
+
+            var onlineImage = new OnlineImage(imageUrl);
+            ImageCache.Add(imageUrl, onlineImage);
+            return onlineImage;
         }
 
         private static OnlineImage GetSmallImage(IEnumerable<Image> images)
         {
-            return new OnlineImage(images.OrderBy(x => x.size).First().text);
+            var imageUrl = images.OrderBy(x => x.size).First().text;
+            if (ImageCache.ContainsKey(imageUrl))
+                return ImageCache[imageUrl];
+
+            var onlineImage = new OnlineImage(imageUrl);
+            ImageCache.Add(imageUrl, onlineImage);
+            return onlineImage;
         }
     }
 

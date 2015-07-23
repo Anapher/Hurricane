@@ -6,6 +6,7 @@
              xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
              xmlns:converter="clr-namespace:Hurricane.Converter"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:extensions="clr-namespace:Hurricane.Extensions"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:myControls="clr-namespace:Hurricane.Controls"
              xmlns:notifications="clr-namespace:Hurricane.Model.Notifications;assembly=Hurricane.Model"
@@ -318,21 +319,15 @@
                     <ContentControl Content="{Binding SpecialView}">
                         <ContentControl.Style>
                             <Style TargetType="ContentControl">
+                                <Setter Property="Visibility" Value="Collapsed" />
                                 <Style.Triggers>
-                                    <DataTrigger Binding="{Binding SpecialView}" Value="{x:Null}">
+                                    <DataTrigger Binding="{Binding IsSpecialViewOpen}" Value="true">
                                         <DataTrigger.EnterActions>
                                             <BeginStoryboard>
                                                 <Storyboard>
-                                                    <DoubleAnimation Duration="0:0:0.2"
-                                                                     From="1"
-                                                                     Storyboard.TargetProperty="Opacity"
-                                                                     To="0" />
-                                                </Storyboard>
-                                            </BeginStoryboard>
-                                        </DataTrigger.EnterActions>
-                                        <DataTrigger.ExitActions>
-                                            <BeginStoryboard>
-                                                <Storyboard>
+                                                    <ObjectAnimationUsingKeyFrames BeginTime="0" Storyboard.TargetProperty="Visibility">
+                                                        <DiscreteObjectKeyFrame KeyTime="00:00:00" Value="{x:Static Visibility.Visible}" />
+                                                    </ObjectAnimationUsingKeyFrames>
                                                     <DoubleAnimation Duration="0:0:0.3"
                                                                      From="0"
                                                                      Storyboard.TargetProperty="Opacity"
@@ -347,15 +342,40 @@
                                                     </DoubleAnimation>
                                                 </Storyboard>
                                             </BeginStoryboard>
+                                        </DataTrigger.EnterActions>
+                                        <DataTrigger.ExitActions>
+                                            <BeginStoryboard>
+                                                <Storyboard>
+                                                    <DoubleAnimation BeginTime="0:0:0.0"
+                                                                     Duration="0:0:0.2"
+                                                                     From="1"
+                                                                     Storyboard.TargetProperty="Opacity"
+                                                                     To="0" />
+                                                    <DoubleAnimation Duration="0:0:0.2"
+                                                                     From="0"
+                                                                     Storyboard.TargetProperty="(ContentControl.RenderTransform).(TranslateTransform.Y)"
+                                                                     To="30">
+                                                        <DoubleAnimation.EasingFunction>
+                                                            <CubicEase EasingMode="EaseIn" />
+                                                        </DoubleAnimation.EasingFunction>
+                                                    </DoubleAnimation>
+                                                    <ObjectAnimationUsingKeyFrames BeginTime="0:0:0.4" Storyboard.TargetProperty="Visibility">
+                                                        <DiscreteObjectKeyFrame KeyTime="00:00:00" Value="{x:Static Visibility.Collapsed}" />
+                                                    </ObjectAnimationUsingKeyFrames>
+                                                </Storyboard>
+                                            </BeginStoryboard>
                                         </DataTrigger.ExitActions>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding IsSpecialViewOpen}" Value="false">
+                                        <Setter Property="IsHitTestVisible" Value="False" />
                                     </DataTrigger>
                                 </Style.Triggers>
                             </Style>
                         </ContentControl.Style>
                         <ContentControl.Resources>
-                            <views:ArtistView x:Key="ArtistView"/>
+                            <views:ArtistView x:Key="ArtistView" />
                             <DataTemplate DataType="{x:Type viewData:ArtistView}">
-                                <ContentPresenter DataContext="{Binding}" Content="{StaticResource ArtistView}"/>
+                                <ContentPresenter Content="{StaticResource ArtistView}" DataContext="{Binding}" />
                             </DataTemplate>
                         </ContentControl.Resources>
                         <ContentControl.RenderTransform>
@@ -385,8 +405,8 @@
                 <controls:TransitioningContentControl Margin="10,-12,50,0"
                                                       Content="{Binding MusicDataManager.MusicManager.CurrentTrack}"
                                                       Transition="RightReplace">
-                    <controls:TransitioningContentControl.ContentTemplate>
-                        <DataTemplate DataType="{x:Type playableData:IPlayable}">
+                    <controls:TransitioningContentControl.Resources>
+                        <DataTemplate x:Key="PlayableTemplate" DataType="{x:Type playableData:IPlayable}">
                             <Grid VerticalAlignment="Center">
                                 <Grid.Style>
                                     <Style TargetType="Grid">
@@ -459,7 +479,142 @@
                                 </StackPanel>
                             </Grid>
                         </DataTemplate>
-                    </controls:TransitioningContentControl.ContentTemplate>
+                        <DataTemplate x:Key="StreamableTemplate" DataType="{x:Type playableData:Streamable}">
+                            <Grid VerticalAlignment="Center">
+                                <Grid.Style>
+                                    <Style TargetType="Grid">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding}" Value="{x:Null}">
+                                                <Setter Property="Visibility" Value="Collapsed" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Grid.Style>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="10" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Grid>
+                                    <Button Command="{Binding RelativeSource={RelativeSource AncestorType=controls:TransitioningContentControl}, Path=DataContext.OpenUrlCommand}" CommandParameter="{Binding Url}">
+                                        <Button.Style>
+                                            <Style TargetType="Button">
+                                                <Setter Property="OverridesDefaultStyle" Value="True" />
+                                                <Setter Property="BorderThickness" Value="0" />
+                                                <Setter Property="Template">
+                                                    <Setter.Value>
+                                                        <ControlTemplate TargetType="Button">
+                                                            <Grid Background="Transparent">
+                                                                <Viewbox x:Name="Viewbox"
+                                                                         Margin="10"
+                                                                         VerticalAlignment="Center"
+                                                                         RenderTransformOrigin=".5,.5">
+                                                                    <Path Data="{Binding ProviderIcon}">
+                                                                        <Path.Fill>
+                                                                            <ImageBrush ImageSource="{Binding Cover.Image}" Stretch="UniformToFill" />
+                                                                        </Path.Fill>
+                                                                    </Path>
+                                                                    <Viewbox.Effect>
+                                                                        <DropShadowEffect BlurRadius="5"
+                                                                                          Opacity=".8"
+                                                                                          ShadowDepth="0" />
+                                                                    </Viewbox.Effect>
+                                                                    <Viewbox.RenderTransform>
+                                                                        <ScaleTransform />
+                                                                    </Viewbox.RenderTransform>
+                                                                </Viewbox>
+                                                            </Grid>
+                                                            <ControlTemplate.Triggers>
+                                                                <Trigger Property="IsMouseOver" Value="True">
+                                                                    <Trigger.EnterActions>
+                                                                        <BeginStoryboard>
+                                                                            <Storyboard>
+                                                                                <DoubleAnimation Duration="0:0:0.2"
+                                                                                                 Storyboard.TargetName="Viewbox"
+                                                                                                 Storyboard.TargetProperty="(Viewbox.RenderTransform).(ScaleTransform.ScaleX)"
+                                                                                                 To="1.05" />
+                                                                                <DoubleAnimation Duration="0:0:0.2"
+                                                                                                 Storyboard.TargetName="Viewbox"
+                                                                                                 Storyboard.TargetProperty="(Viewbox.RenderTransform).(ScaleTransform.ScaleY)"
+                                                                                                 To="1.05" />
+                                                                            </Storyboard>
+                                                                        </BeginStoryboard>
+                                                                    </Trigger.EnterActions>
+                                                                    <Trigger.ExitActions>
+                                                                        <BeginStoryboard>
+                                                                            <Storyboard>
+                                                                                <DoubleAnimation Duration="0:0:0.2"
+                                                                                                 Storyboard.TargetName="Viewbox"
+                                                                                                 Storyboard.TargetProperty="(Viewbox.RenderTransform).(ScaleTransform.ScaleX)"
+                                                                                                 To="1" />
+                                                                                <DoubleAnimation Duration="0:0:0.2"
+                                                                                                 Storyboard.TargetName="Viewbox"
+                                                                                                 Storyboard.TargetProperty="(Viewbox.RenderTransform).(ScaleTransform.ScaleY)"
+                                                                                                 To="1" />
+                                                                            </Storyboard>
+                                                                        </BeginStoryboard>
+                                                                    </Trigger.ExitActions>
+                                                                </Trigger>
+                                                            </ControlTemplate.Triggers>
+                                                        </ControlTemplate>
+                                                    </Setter.Value>
+                                                </Setter>
+                                            </Style>
+                                        </Button.Style>
+                                    </Button>
+                                </Grid>
+                                <StackPanel Grid.Column="2"
+                                            VerticalAlignment="Center"
+                                            Orientation="Vertical">
+                                    <DockPanel>
+                                        <TextBlock FontFamily="Segoe UI"
+                                                   FontSize="18"
+                                                   Text="{Binding Title}"
+                                                   TextTrimming="CharacterEllipsis" />
+                                    </DockPanel>
+                                    <Button Margin="0,0,0,2"
+                                            HorizontalAlignment="Left"
+                                            Command="{Binding RelativeSource={RelativeSource AncestorType=controls:TransitioningContentControl},
+                                                              Path=DataContext.OpenArtistCommand}"
+                                            CommandParameter="{Binding Artist}"
+                                            Content="{Binding Artist}">
+                                        <Button.Style>
+                                            <Style TargetType="Button">
+                                                <Setter Property="Cursor" Value="Hand" />
+                                                <Setter Property="OverridesDefaultStyle" Value="True" />
+                                                <Setter Property="Foreground" Value="{StaticResource AccentColorBrush}" />
+                                                <Setter Property="Content" Value="{Binding Artist}" />
+                                                <Setter Property="Template">
+                                                    <Setter.Value>
+                                                        <ControlTemplate TargetType="Button">
+                                                            <TextBlock>
+                                                                <ContentPresenter />
+                                                            </TextBlock>
+                                                        </ControlTemplate>
+                                                    </Setter.Value>
+                                                </Setter>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding Artist, Converter={StaticResource IsEmptyStringConverter}}" Value="true">
+                                                        <Setter Property="Visibility" Value="Collapsed" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Button.Style>
+                                    </Button>
+                                    <StackPanel Margin="0,2,0,0" Orientation="Horizontal">
+                                        <TextBlock FontFamily="Segoe UI Light" FontSize="12">
+                                            <Run Text="{Binding RelativeSource={RelativeSource AncestorType=controls:TransitioningContentControl}, Path=DataContext.MusicDataManager.MusicManager.AudioEngine.TrackPositionTime, Mode=OneWay, Converter={StaticResource TimespanToStringConverter}}" />
+                                            <Run Text=" / " />
+                                            <Run Text="{Binding RelativeSource={RelativeSource AncestorType=controls:TransitioningContentControl}, Path=DataContext.MusicDataManager.MusicManager.AudioEngine.TrackLengthTime, Mode=OneWay, Converter={StaticResource TimespanToStringConverter}}" />
+                                        </TextBlock>
+                                    </StackPanel>
+                                </StackPanel>
+                            </Grid>
+                        </DataTemplate>
+                    </controls:TransitioningContentControl.Resources>
+                    <controls:TransitioningContentControl.ContentTemplateSelector>
+                        <extensions:PlayingTrackTemplateSelector PlayableDataTemplate="{StaticResource PlayableTemplate}" StreamableDataTemplate="{StaticResource StreamableTemplate}" />
+                    </controls:TransitioningContentControl.ContentTemplateSelector>
                     <controls:TransitioningContentControl.Style>
                         <Style TargetType="controls:TransitioningContentControl">
                             <Style.Triggers>

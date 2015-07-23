@@ -5,7 +5,7 @@ using System.Windows;
 using System.Windows.Media;
 using Hurricane.Model;
 using Hurricane.Model.AudioEngine;
-using Hurricane.Model.Music;
+using Hurricane.Model.Data;
 using Hurricane.Model.Settings;
 using Hurricane.ViewModel.Settings;
 using MahApps.Metro;

@@ -53,6 +53,7 @@
     <system:String x:Key="Images">Grafiken</system:String>
     <system:String x:Key="Website">Website</system:String>
     <system:String x:Key="Unkown">Unbekannt</system:String>
+    <system:String x:Key="Plugins">Plugins</system:String>
 
     <system:String x:Key="Error">Fehler</system:String>
     <system:String x:Key="ErrorWhileLoadingData">Es ist ein Fehler bei dem Laden der Daten aufgetreten.</system:String>

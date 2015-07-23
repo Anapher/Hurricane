@@ -15,7 +15,6 @@ namespace Hurricane.Model
         /// <summary>
         /// Calculates the next, available track relative to <see cref="currentTrack"/>
         /// </summary>
-        /// <typeparam name="T"></typeparam>
         /// <param name="tracks">The list of the tracks</param>
         /// <param name="currentTrack">The current track</param>
         /// <returns>Returns the next track, relative to <see cref="currentTrack"/></returns>
@@ -43,7 +42,6 @@ namespace Hurricane.Model
         /// <summary>
         /// Calculates the previous, available track relative to <see cref="currentTrack"/>
         /// </summary>
-        /// <typeparam name="T"></typeparam>
         /// <param name="tracks">The list of the tracks</param>
         /// <param name="currentTrack">The current track</param>
         /// <returns>Returns the previous track, relative to <see cref="currentTrack"/></returns>
@@ -73,7 +71,6 @@ namespace Hurricane.Model
         /// <summary>
         /// Gets a random, available track. It uses a history to prevent repeating
         /// </summary>
-        /// <typeparam name="T"></typeparam>
         /// <param name="tracks">The list of the track</param>
         /// <returns>A random track</returns>
         public static IPlayable GetRandomTrack<T>(this IList<T> tracks) where T : IPlayable
@@ -104,7 +101,6 @@ namespace Hurricane.Model
         /// Returns the shuffle history of the list
         /// </summary>
         /// <param name="obj">The list</param>
-        /// <returns></returns>
         public static List<object> GetShuffleHistory(this object obj)
         {
             if (!ShuffleHistoryDictionary.ContainsKey(obj))
@@ -116,8 +112,6 @@ namespace Hurricane.Model
         /// <summary>
         /// Returns the history for going back of the list
         /// </summary>
-        /// <param name="playlist"></param>
-        /// <returns></returns>
         public static List<object> GetBackHistory(this IPlaylist playlist)
         {
             if (!BackHistoryDictionary.ContainsKey(playlist))
@@ -129,10 +123,6 @@ namespace Hurricane.Model
         /// <summary>
         /// Returns the index of the <see cref="obj"/>
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="source"></param>
-        /// <param name="obj"></param>
-        /// <returns></returns>
         public static int IndexOf<T>(this IList<T> source, object obj)
         {
             for (var i = 0; i < source.Count; i++)
@@ -146,9 +136,7 @@ namespace Hurricane.Model
         /// <summary>
         /// Returns a random object from the list. It uses a history to prevent repeating
         /// </summary>
-        /// <typeparam name="T"></typeparam>
         /// <param name="tracks">The list of the tracks</param>
-        /// <returns></returns>
         public static T GetRandomObject<T>(this IList<T> tracks)
         {
             if (tracks.Count == 1)
@@ -176,10 +164,8 @@ namespace Hurricane.Model
         /// <summary>
         /// Returns the previous object, relative to <see cref="currentObject"/>
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="tracks"></param>
-        /// <param name="currentObject"></param>
-        /// <returns></returns>
+        /// <param name="tracks">The list of the tracks</param>
+        /// <param name="currentObject">The current object</param>
         public static T GetPreviousObject<T>(this IList<T> tracks, object currentObject)
         {
             if (tracks.Count == 1 || currentObject == null || !tracks.Any(x => x.Equals(currentObject)))
@@ -194,10 +180,8 @@ namespace Hurricane.Model
         /// <summary>
         /// Returns the next object, relative to <see cref="currentObject"/>
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="tracks"></param>
-        /// <param name="currentObject"></param>
-        /// <returns></returns>
+        /// <param name="tracks">The list of the tracks</param>
+        /// <param name="currentObject">The current object</param>
         public static T GetNextObject<T>(this IList<T> tracks, object currentObject)
         {
             if (tracks.Count == 1 || currentObject == null || !tracks.Any(x => x.Equals(currentObject)))

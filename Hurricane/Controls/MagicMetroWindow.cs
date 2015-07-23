@@ -303,7 +303,7 @@ namespace Hurricane.Controls
 
         private void WindowSkin_ToggleWindowState(object sender, EventArgs e)
         {
-            WindowState = WindowState == WindowState.Normal ? WindowState.Maximized : WindowState.Normal;
+            //WindowState = WindowState == WindowState.Normal ? WindowState.Maximized : WindowState.Normal;
         }
 
         private void WindowSkin_CloseRequest(object sender, EventArgs e)

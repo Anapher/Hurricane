@@ -5,7 +5,6 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using Hurricane.Model.DataApi.SerializeClasses.iTunes;
-using Hurricane.Model.Music.Imagment;
 using Hurricane.Model.Music.TrackProperties;
 using Newtonsoft.Json;
 
@@ -27,7 +26,7 @@ namespace Hurricane.Model.DataApi
                             {
                                 Artist = x.Artist.label,
                                 Name = x.Name.label,
-                                Image = new OnlineImage(x.Image[2].label),
+                                ImageUrl = x.Image[2].label,
                                 Number = counter++
                             }).ToList();
             }

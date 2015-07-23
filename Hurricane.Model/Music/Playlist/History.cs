@@ -29,7 +29,7 @@ namespace Hurricane.Model.Music.Playlist
             var playableBase = playable as PlayableBase;
             if (playableBase != null)
             {
-                entry.ArtistId = playableBase.ArtistGuid;
+                entry.ArtistId = playableBase.Artist.Guid;
                 //entry.TrackId = _trackProvider.Collection.First(x => x.Value == playableBase).Key;
             }
 

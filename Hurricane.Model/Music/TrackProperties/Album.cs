@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.Xml.Serialization;
 
 namespace Hurricane.Model.Music.TrackProperties
@@ -9,6 +10,11 @@ namespace Hurricane.Model.Music.TrackProperties
     [Serializable]
     public class Album
     {
+        public Album()
+        {
+            Artists = new ObservableCollection<Artist>();
+        }
+
         /// <summary>
         /// The name of the album
         /// </summary>
@@ -20,5 +26,10 @@ namespace Hurricane.Model.Music.TrackProperties
         /// </summary>
         [XmlAttribute]
         public Guid Guid { get; set; }
+
+        /// <summary>
+        /// The artists of the album
+        /// </summary>
+        public ObservableCollection<Artist> Artists { get; set; }
     }
 }

@@ -1,11 +1,13 @@
 ﻿using System;
+using System.Data.SQLite;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
-using Hurricane.Model.Data;
+using Hurricane.Model.Data.SqlTables;
 using Hurricane.Model.DataApi;
+using Hurricane.Model.Music;
 using Hurricane.Model.Music.Args;
 using Hurricane.Model.Music.Playable;
 using Hurricane.Model.Music.Playlist;
@@ -14,26 +16,32 @@ using Hurricane.Model.Plugins.MusicStreaming;
 using Hurricane.Model.Settings;
 using Hurricane.Utilities;
 
-namespace Hurricane.Model.Music
+namespace Hurricane.Model.Data
 {
     public class MusicDataManager : IDisposable
     {
-        private const string ArtistFilename = "Artists.xml";
-        private const string TracksFilename = "Tracks.xml";
         private const string PlaylistsFilename = "Playlists.xml";
-        private const string AlbumsFilename = "Albums.xml";
         private const string UserDataFilename = "UserData.xml";
+        private readonly FileInfo _databaseFile;
+        private SQLiteConnection _connection;
 
         public MusicDataManager()
         {
+            _databaseFile =
+                new FileInfo(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+                    "Hurricane", "database.sqlite"));
+
             Playlists = new PlaylistProvider();
-            LastfmApi = new LastfmApi();
-            Artists = new ArtistProvider();
-            Tracks = new TrackProvider();
-            Albums = new AlbumsProvider();
+            Images = new ImagesProvider();
+            Artists = new ArtistProvider(Images);
+            Albums = new AlbumsProvider(Artists);
+            Tracks = new TrackProvider(Artists, Images, Albums);
             UserData = new UserDataProvider();
+
+            LastfmApi = new LastfmApi(Artists);
             MusicManager = new MusicManager();
             MusicManager.TrackChanged += MusicManager_TrackChanged;
+            MusicManager.NewTrackOpened += MusicManager_NewTrackOpened;
             MusicStreamingPluginManager = new MusicStreamingPluginManager();
         }
 
@@ -42,6 +50,7 @@ namespace Hurricane.Model.Music
             MusicManager.Dispose();
         }
 
+        public ImagesProvider Images { get; set; }
         public TrackProvider Tracks { get; }
         public PlaylistProvider Playlists { get; }
         public MusicManager MusicManager { get; }
@@ -53,23 +62,28 @@ namespace Hurricane.Model.Music
 
         public async Task Load(string rootFolder)
         {
-            var artistFileInfo = new FileInfo(Path.Combine(rootFolder, ArtistFilename));
-            var tracksFileInfo = new FileInfo(Path.Combine(rootFolder, TracksFilename));
-            var playlistsFileInfo = new FileInfo(Path.Combine(rootFolder, PlaylistsFilename));
-            var albumsFileInfo = new FileInfo(Path.Combine(rootFolder, AlbumsFilename));
-            var userDataFileInfo = new FileInfo(Path.Combine(rootFolder, UserDataFilename));
+            var createTables = false;
 
-            if (artistFileInfo.Exists)
-                await Artists.LoadFromFile(artistFileInfo.FullName);
-
-            if (albumsFileInfo.Exists)
-                await Albums.LoadFromFile(albumsFileInfo.FullName);
-
-            if (tracksFileInfo.Exists)
+            if (!_databaseFile.Exists)
             {
-                await Tracks.LoadFromFile(tracksFileInfo.FullName);
-                Tracks.LoadData(Artists, Albums);
+                SQLiteConnection.CreateFile(_databaseFile.FullName);
+                createTables = true;
             }
+
+            var dataProvider = new IDataProvider[] {Images, Artists, Albums, Tracks};
+
+            _connection = new SQLiteConnection($"Data Source={_databaseFile.FullName};Version=3;");
+            await _connection.OpenAsync();
+
+            if(createTables)
+                foreach (var provider in dataProvider)
+                    await provider.CreateTables(_connection);
+
+            foreach (var data in dataProvider)
+                await data.Load(_connection);
+           
+            var playlistsFileInfo = new FileInfo(Path.Combine(rootFolder, PlaylistsFilename));
+            var userDataFileInfo = new FileInfo(Path.Combine(rootFolder, UserDataFilename));
 
             if (playlistsFileInfo.Exists)
                 await Playlists.LoadFromFile(playlistsFileInfo.FullName, Tracks.Collection);
@@ -87,9 +101,6 @@ namespace Hurricane.Model.Music
                     MusicManager.AudioEngine.TimePlaySourcePlayed);
 
             Playlists.SaveToFile(Path.Combine(rootFolder, PlaylistsFilename), Tracks.Collection);
-            Artists.SaveToFile(Path.Combine(rootFolder, ArtistFilename));
-            Tracks.SaveToFile(Path.Combine(rootFolder, TracksFilename));
-            Albums.SaveToFile(Path.Combine(rootFolder, AlbumsFilename));
             UserData.SaveToFile(Path.Combine(rootFolder, UserDataFilename));
 
             CopyToSettings();
@@ -101,9 +112,7 @@ namespace Hurricane.Model.Music
             var sw = Stopwatch.StartNew();
             foreach (var track in Tracks.Tracks)
             {
-                if (track.Title.IndexOf(title, StringComparison.OrdinalIgnoreCase) > -1 &&
-                    track.Artist != null && !string.IsNullOrEmpty(track.Artist.Name) &&
-                    LevenshteinDistance.Compute(artist.ToLower(), track.Artist.Name.ToLower()) <=
+                if (track.Title.IndexOf(title, StringComparison.OrdinalIgnoreCase) > -1 && !string.IsNullOrEmpty(track.Artist?.Name) && LevenshteinDistance.Compute(artist.ToLower(), track.Artist.Name.ToLower()) <=
                     Math.Abs(artist.Length - track.Artist.Name.Length))
                 {
                     result = track;
@@ -118,7 +127,7 @@ namespace Hurricane.Model.Music
 
             return
                 await
-                    MusicStreamingPluginManager.DefaultMusicStreaming.MusicStreamingService.GetTrack(
+                    MusicStreamingPluginManager.DefaultMusicStreaming.GetTrack(
                         $"{artist} - {title}");
         }
 
@@ -142,7 +151,7 @@ namespace Hurricane.Model.Music
 
             return
                 await
-                    MusicStreamingPluginManager.DefaultMusicStreaming.MusicStreamingService.GetTrack(
+                    MusicStreamingPluginManager.DefaultMusicStreaming.GetTrack(
                         $"{artist} - {title}");
         }
 
@@ -206,6 +215,13 @@ namespace Hurricane.Model.Music
         {
             Application.Current.Dispatcher.BeginInvoke(
                 new Action(() => UserData.UserData.History.AddEntry(e.Track, e.TimePlayed)));
+        }
+
+        private void MusicManager_NewTrackOpened(object sender, NewTrackOpenedEventArgs e)
+        {
+            var track = e.NewTrack as PlayableBase;
+            if (track != null)
+                Tracks.UpdateLastTimePlayed(track, DateTime.Now);
         }
     }
 }

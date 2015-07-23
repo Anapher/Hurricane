@@ -50,7 +50,7 @@ namespace Hurricane.Services.YouTube
                     JsonConvert.DeserializeObject<SearchResult>(
                         await
                             webClient.DownloadStringTaskAsync(
-                                $"https://www.googleapis.com/youtube/v3/search?order=relevance&type=video&regionCode={CultureInfo.CurrentCulture.TwoLetterISOLanguageName}&part=snippet&videoDuration=any&maxResults={maxResults}&key={YouTubeApiKey}&q={Uri.EscapeUriString(query)}"));
+                                $"https://www.googleapis.com/youtube/v3/search?order=relevance&type=video&regionCode={CultureInfo.CurrentCulture.TwoLetterISOLanguageName}&part=snippet&videoDuration=any&maxResults={maxResults}&key={YouTubeApiKey}&q={Uri.EscapeDataString(query)}"));
 
                 var result2 =
                     JsonConvert.DeserializeObject<ContentDetailsResult>(

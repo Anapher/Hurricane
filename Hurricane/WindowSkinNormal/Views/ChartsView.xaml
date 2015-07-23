@@ -39,7 +39,7 @@
                                     <myControls:PlayableImage Command="{Binding ElementName=ChartItemsControl,
                                                                                 Path=DataContext.PlayChartTrackCommand}"
                                                               CommandParameter="{Binding}"
-                                                              Image="{Binding Image.Image}">
+                                                              Image="{Binding Image}">
                                         <myControls:PlayableImage.Placeholder>
                                             <Viewbox Width="50"
                                                      Height="50"

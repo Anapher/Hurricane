@@ -191,6 +191,7 @@ namespace Hurricane.Model.AudioEngine.Engines
             OnPropertyChanged(nameof(TrackPositionTime));
         }
 
+        [DebuggerHidden]
         public bool TestAudioFile(string path, out AudioInformation audioInformation)
         {
             audioInformation = null;

@@ -7,7 +7,6 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Hurricane.Model.AudioEngine;
 using Hurricane.Model.DataApi;
-using Hurricane.Model.Music;
 using Hurricane.Model.Music.Imagment;
 using Hurricane.Model.Music.Playable;
 using Hurricane.Model.Music.Playlist;
@@ -68,7 +67,7 @@ namespace Hurricane.Model.Data
 
                 string artistName;
                 string title;
-                Artist artist = null;
+                string albumName = null;
                 ImageProvider cover = null;
 
                 try
@@ -77,7 +76,7 @@ namespace Hurricane.Model.Data
                     {
                         title = tagLibInfo.Tag.Title;
                         if (!string.IsNullOrEmpty(tagLibInfo.Tag.MusicBrainzArtistId))
-                            artist = await GetArtistByMusicBrainzId(tagLibInfo.Tag.MusicBrainzArtistId); //Ui, that's awesome
+                            track.Artist = await GetArtistByMusicBrainzId(tagLibInfo.Tag.MusicBrainzArtistId); //Ui, that's awesome
                         artistName = tagLibInfo.Tag.FirstPerformer ?? tagLibInfo.Tag.FirstAlbumArtist; //Both is okay
                         if (tagLibInfo.Tag.Pictures.Any())
                         {
@@ -85,21 +84,7 @@ namespace Hurricane.Model.Data
                             cover = new TagImage(fileInfo.FullName);
                         }
                         track.Bitrate = tagLibInfo.Properties.AudioBitrate;
-                        if (!string.IsNullOrEmpty(tagLibInfo.Tag.Album))
-                        {
-                            track.Album =
-                                _musicDataManager.Albums.AlbumDicitionary.FirstOrDefault(
-                                    x =>
-                                        string.Equals(x.Value.Name, tagLibInfo.Tag.Album,
-                                            StringComparison.OrdinalIgnoreCase)).Value;
-
-                            if (track.Album == null)
-                            {
-                                var album = new Album {Name = tagLibInfo.Tag.Album, Guid = Guid.NewGuid()};
-                                track.Album = album;
-                                _musicDataManager.Albums.AlbumDicitionary.Add(album.Guid, album);
-                            }
-                        }
+                        albumName = tagLibInfo.Tag.Album;
                     }
                 }
                 catch (Exception)
@@ -109,7 +94,7 @@ namespace Hurricane.Model.Data
                     title = null;
                 }
 
-                if (title == null || (artistName == null && artist == null))
+                if (title == null || (artistName == null && track.Artist == null))
                 {
                     var match = filenameRegex.Match(Path.GetFileNameWithoutExtension(fileInfo.FullName));
                     if (match.Success)
@@ -121,8 +106,10 @@ namespace Hurricane.Model.Data
                     }
                     else
                     {
-                        title = Path.GetFileNameWithoutExtension(fileInfo.FullName);
-                        artistName = string.Empty;
+                        if (title == null)
+                            title = Path.GetFileNameWithoutExtension(fileInfo.FullName);
+                        if (artistName == null)
+                            artistName = string.Empty;
                     }
                 }
 
@@ -132,17 +119,34 @@ namespace Hurricane.Model.Data
                     track.Title = trackInfo.Name;
                     track.MusicBrainzId = trackInfo.MusicBrainzId;
                     track.Cover = cover ?? trackInfo.CoverImage;
-                    if (!string.IsNullOrEmpty(trackInfo.MusicBrainzId))
+
+                    if (track.Artist == null)
                     {
-                        var artistId = await MusicBrainzApi.GetArtistIdByTrackId(trackInfo.MusicBrainzId);
-                        if (!string.IsNullOrEmpty(artistId))
+                        Artist tempArtist = null;
+
+                        if (!string.IsNullOrEmpty(artistName) &&
+                            !_musicDataManager.LastfmApi.SearchArtist(artistName, out tempArtist))
                         {
-                            artist =
-                                await
-                                    _musicDataManager.LastfmApi.GetArtistByMusicbrainzId(artistId,
-                                        CultureInfo.CurrentCulture);
+                            if (!_musicDataManager.LastfmApi.SearchArtist(trackInfo.Artist, out tempArtist))
+                            {
+                                if (!string.IsNullOrEmpty(trackInfo.MusicBrainzId))
+                                {
+                                    var artistId = await MusicBrainzApi.GetArtistIdByTrackId(trackInfo.MusicBrainzId);
+                                    if (!string.IsNullOrEmpty(artistId))
+                                    {
+                                        track.Artist =
+                                            await
+                                                _musicDataManager.LastfmApi.GetArtistByMusicbrainzId(artistId,
+                                                    CultureInfo.CurrentCulture);
+                                    }
+                                }
+                            }
                         }
+
+                        if (tempArtist != null)
+                            track.Artist = tempArtist;
                     }
+
                     artistName = trackInfo.Artist;
                 }
                 else
@@ -150,27 +154,49 @@ namespace Hurricane.Model.Data
                     track.Title = title;
                 }
 
-                if (artist == null)
+                if (track.Artist == null)
                 {
                     track.Artist =
                         _musicDataManager.Artists.ArtistDictionary.FirstOrDefault(
                             x => string.Equals(x.Value.Name, artistName, StringComparison.OrdinalIgnoreCase)).Value ??
                         await _musicDataManager.LastfmApi.SearchArtist(artistName);
                 }
-                else
-                {
-                    track.Artist = _musicDataManager.Artists.ArtistDictionary.FirstOrDefault(
-                        x => string.Equals(x.Value.Name, artist.Name, StringComparison.OrdinalIgnoreCase)).Value ??
-                                   artist;
-                }
 
                 if (track.Artist == null)
                     track.Artist = _musicDataManager.Artists.UnkownArtist;
 
                 if (!_musicDataManager.Artists.ArtistDictionary.ContainsKey(track.Artist.Guid))
-                    _musicDataManager.Artists.ArtistDictionary.Add(track.Artist.Guid, track.Artist);
+                    await _musicDataManager.Artists.AddArtist(track.Artist);
 
-                _musicDataManager.Tracks.AddTrack(track);
+                if (!string.IsNullOrWhiteSpace(albumName))
+                {
+                    track.Album =
+                        _musicDataManager.Albums.Collection.FirstOrDefault(
+                            x =>
+                                string.Equals(x.Value.Name, albumName,
+                                    StringComparison.OrdinalIgnoreCase)).Value;
+
+                    if (track.Album == null)
+                    {
+                        var album = new Album
+                        {
+                            Name = albumName,
+                            Guid = Guid.NewGuid()
+                        };
+
+                        await _musicDataManager.Albums.AddAlbum(album);
+                        track.Album = album;
+                    }
+
+                    if (track.Artist != _musicDataManager.Artists.UnkownArtist &&
+                        !track.Album.Artists.Contains(track.Artist))
+                    {
+                        track.Album.Artists.Add(track.Artist);
+                        await _musicDataManager.Albums.UpdateAlbumArtists(track.Album);
+                    }
+                }
+
+                await _musicDataManager.Tracks.AddTrack(track);
                 playlist?.AddTrack(track);
 
                 if (_cancel)
@@ -214,7 +240,13 @@ namespace Hurricane.Model.Data
             if (temp.Count > 0)
                 return temp[0].Value;
 
-            return await _musicDataManager.LastfmApi.GetArtistByMusicbrainzId(musicBrainzId, CultureInfo.CurrentCulture);
+            var newArtist = await _musicDataManager.LastfmApi.GetArtistByMusicbrainzId(musicBrainzId, CultureInfo.CurrentCulture);
+            Artist existingArtist;
+
+            if (_musicDataManager.LastfmApi.SearchArtist(newArtist.Name, out existingArtist))
+                return existingArtist;
+
+            return newArtist;
         }
 
         public void Cancel()

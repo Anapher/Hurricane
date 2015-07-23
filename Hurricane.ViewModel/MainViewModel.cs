@@ -7,11 +7,12 @@ using System.Threading.Tasks;
 using System.Windows;
 using Hurricane.Model;
 using Hurricane.Model.AudioEngine;
-using Hurricane.Model.Music;
+using Hurricane.Model.Data;
 using Hurricane.Model.Music.TrackProperties;
 using Hurricane.Model.Notifications;
 using Hurricane.Model.Services;
 using Hurricane.Model.Settings;
+using Hurricane.Services.YouTube;
 using Hurricane.Utilities;
 using Hurricane.ViewModel.MainView;
 using Hurricane.ViewModel.MainView.Base;
@@ -25,6 +26,7 @@ namespace Hurricane.ViewModel
         private int _currentMainView = 1;
         private readonly ViewController _viewController;
         private IViewItem _specialView;
+        private bool _isSpecialViewOpen;
 
         private RelayCommand _openSettingsCommand;
         private RelayCommand _playPauseCommand;
@@ -32,6 +34,7 @@ namespace Hurricane.ViewModel
         private RelayCommand _forwardCommand;
         private RelayCommand _backCommand;
         private RelayCommand _openArtistCommand;
+        private RelayCommand _openUrlCommand;
 
         public MainViewModel()
         {
@@ -79,6 +82,12 @@ namespace Hurricane.ViewModel
                 if (SetProperty(value, ref _specialView))
                     value?.Load(MusicDataManager, _viewController, NotificationManager).Forget();
             }
+        }
+
+        public bool IsSpecialViewOpen
+        {
+            get { return _isSpecialViewOpen; }
+            set { SetProperty(value, ref _isSpecialViewOpen); }
         }
 
         public RelayCommand OpenSettingsCommand
@@ -148,6 +157,19 @@ namespace Hurricane.ViewModel
             }
         }
 
+        public RelayCommand OpenUrlCommand
+        {
+            get
+            {
+                return _openUrlCommand ?? (_openUrlCommand = new RelayCommand(parameter =>
+                {
+                    var url = parameter.ToString();
+                    if (!string.IsNullOrEmpty(url))
+                        Process.Start(url);
+                }));
+            }
+        }
+
         private void MainWindow_Closing(object sender, CancelEventArgs e)
         {
             MusicDataManager.Save(AppDomain.CurrentDomain.BaseDirectory);
@@ -167,7 +189,7 @@ namespace Hurricane.ViewModel
                 Settings = SettingsManager.Current;
                 
                 await MusicDataManager.Load(AppDomain.CurrentDomain.BaseDirectory);
-                MusicDataManager.MusicStreamingPluginManager.LoadPlugins("", new IMusicStreamingService[] {new Hurricane.Services.YouTube.YouTubeService()});
+                MusicDataManager.MusicStreamingPluginManager.LoadPlugins("", new IMusicStreamingService[] {new YouTubeService()});
                 Debug.Print($"Dataloading time: {sw.ElapsedMilliseconds}");
                 SettingsViewModel = new SettingsViewModel(MusicDataManager, () => RefreshView?.Invoke(this, EventArgs.Empty));
             }
@@ -194,7 +216,8 @@ namespace Hurricane.ViewModel
 
         private void OpenArtist(Artist artist)
         {
-            SpecialView = new ArtistView(artist, () => SpecialView = null);
+            SpecialView = new ArtistView(artist, () => IsSpecialViewOpen = false);
+            IsSpecialViewOpen = true;
         }
     }
 }

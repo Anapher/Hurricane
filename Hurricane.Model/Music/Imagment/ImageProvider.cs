@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
@@ -20,6 +21,11 @@ namespace Hurricane.Model.Music.Imagment
         private BitmapImage _image;
         private bool _isLoadingImage;
         private double _loadProgress;
+
+        protected ImageProvider()
+        {
+            Guid = Guid.NewGuid();
+        }
 
         public void Dispose()
         {
@@ -120,6 +126,11 @@ namespace Hurricane.Model.Music.Imagment
 
             Image = image;
             IsLoadingImage = false;
+        }
+
+        public bool ShouldSerializeGuid()
+        {
+            return Guid != Guid.Empty;
         }
 
         protected abstract Task<BitmapImage> LoadImage();

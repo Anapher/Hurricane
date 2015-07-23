@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Threading.Tasks;
@@ -17,7 +18,6 @@ namespace Hurricane.Model.Music.Imagment
         public OnlineImage(string url)
         {
             Url = url;
-            Guid = Guid.NewGuid();
         }
 
         /// <summary>
@@ -41,6 +41,7 @@ namespace Hurricane.Model.Music.Imagment
             var imageFile = new FileInfo(Path.Combine(ImageDirectory, $"{Guid.ToString("D")}.png"));
             using (var wc = new WebClient { Proxy = null })
             {
+                Debug.Print($"Downloading image {Url}");
                 wc.DownloadProgressChanged += (sender, args) => LoadProgress = args.ProgressPercentage / 100d;
                 if (DownloadImage)
                 {
@@ -53,10 +54,18 @@ namespace Hurricane.Model.Music.Imagment
                 else
                 {
                     image.StreamSource = new MemoryStream(await wc.DownloadDataTaskAsync(Url));
-
                 }
             }
-            image.EndInit();
+            try
+            {
+                image.EndInit();
+            }
+            catch (NotSupportedException)
+            {
+                image.StreamSource?.Dispose();
+                return null;
+            }
+            
             image.Freeze();
             return image;
         }
@@ -67,9 +76,10 @@ namespace Hurricane.Model.Music.Imagment
             if (!imageFile.Exists)
                 return null;
 
-            var bitmapImage = new BitmapImage();
+            BitmapImage bitmapImage = null;
             await Task.Run(() =>
             {
+                bitmapImage = new BitmapImage();
                 bitmapImage.BeginInit();
                 bitmapImage.UriSource = new Uri(imageFile.FullName);
                 bitmapImage.EndInit();

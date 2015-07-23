@@ -1,25 +1,29 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using Hurricane.Model.Music.Imagment;
+using System.Windows.Media.Imaging;
 
 namespace Hurricane.Model.Music.TrackProperties
 {
     public class PreviewTrack : INotifyPropertyChanged
     {
-        private ImageProvider _image;
+        private BitmapImage _image;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
         public string Name { get; set; }
         public string Artist { get; set; }
         public int Number { get; set; }
+        public string ImageUrl { get; set; }
 
-        public ImageProvider Image
+        public BitmapImage Image
         {
-            get { return _image; }
+            get
+            {
+                return _image;
+            }
             set
             {
-                if (_image != value)
+                if (!Equals(_image, value))
                 {
                     _image = value;
                     OnPropertyChanged();

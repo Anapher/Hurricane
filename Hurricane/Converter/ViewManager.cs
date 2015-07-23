@@ -4,7 +4,8 @@ using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
-using Hurricane.WindowSkinNormal.Views;
+using Hurricane.ViewModel.MainView;
+using CollectionView = Hurricane.ViewModel.MainView.CollectionView;
 
 namespace Hurricane.Converter
 {
@@ -20,14 +21,14 @@ namespace Hurricane.Converter
             if (_viewsViewModels == null)
                 _viewsViewModels = new ReadOnlyDictionary<Type, Type>(new Dictionary<Type, Type>
                 {
-                    {typeof (ViewModel.MainView.ChartsView), typeof (ChartsView)},
+                    {typeof (ChartsView), typeof (WindowSkinNormal.Views.ChartsView)},
                     {
-                        typeof (ViewModel.MainView.CollectionView),
+                        typeof (CollectionView),
                         typeof (WindowSkinNormal.Views.CollectionView)
                     },
-                    {typeof (ViewModel.MainView.PlaylistView), typeof (PlaylistView)},
-                    {typeof (ViewModel.MainView.QueueView), typeof (QueueView)},
-                    {typeof (ViewModel.MainView.HistoryView), typeof (HistoryView)}
+                    {typeof (PlaylistView), typeof (WindowSkinNormal.Views.PlaylistView)},
+                    {typeof (QueueView), typeof (WindowSkinNormal.Views.QueueView)},
+                    {typeof (HistoryView), typeof (WindowSkinNormal.Views.HistoryView)}
                 });
         }
 

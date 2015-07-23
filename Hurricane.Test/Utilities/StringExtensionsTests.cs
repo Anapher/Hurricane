@@ -13,8 +13,8 @@ namespace Hurricane.Test.Utilities
             var testString = "{\r\n\t\"Name\" : \"Garcon\",\r\n\t\"ShowNotChange\" : \"\",\r\n\t\"Similar\" : \"\\n\\t  \",\r\n\t\"Tags\" : \"\\n      \"\r\n}";
             var workingString = "{\r\n\t\"Name\" : \"Garcon\",\r\n\t\"ShowNotChange\" : \"\",\r\n\t\"Similar\" : {\r\n\t\tProperty1 : \"asdasd\",\r\n\t\tProperty2 : \"adasd\"\r\n\t},\r\n\t\"Tags\" : {\r\n\t\tTag1 : \"hello\",\r\n\t\tTag2 : \"wtf\"\r\n\t}\r\n}";
 
-            var object1 = JsonConvert.DeserializeObject<RootObject>(StringExtensions.FixJsonString(testString));
-            var object2 = JsonConvert.DeserializeObject<RootObject>(StringExtensions.FixJsonString(workingString));
+            var object1 = JsonConvert.DeserializeObject<RootObject>(testString.FixJsonString());
+            var object2 = JsonConvert.DeserializeObject<RootObject>(workingString.FixJsonString());
 
             Assert.AreEqual(object2.Tags.Tag1, "hello");
             Assert.AreEqual(object2.Similar.Property1, "asdasd");

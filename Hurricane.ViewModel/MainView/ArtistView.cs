@@ -3,7 +3,7 @@ using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using Hurricane.Model;
-using Hurricane.Model.Music;
+using Hurricane.Model.Data;
 using Hurricane.Model.Music.Playable;
 using Hurricane.Model.Music.Playlist;
 using Hurricane.Model.Music.TrackProperties;
@@ -95,7 +95,7 @@ namespace Hurricane.ViewModel.MainView
 
         Task<IPlayable> IPlaylist.GetNextTrack(IPlayable currentTrack)
         {
-            return GetPlayable(Artist.TopTracks.GetNextObject(currentTrack));
+            return GetPlayable(Artist.TopTracks.GetNextObject(currentTrack.Tag));
         }
 
         Task<IPlayable> IPlaylist.GetShuffleTrack()
@@ -105,7 +105,7 @@ namespace Hurricane.ViewModel.MainView
 
         Task<IPlayable> IPlaylist.GetPreviousTrack(IPlayable currentTrack)
         {
-            return GetPlayable(Artist.TopTracks.GetPreviousObject(currentTrack));
+            return GetPlayable(Artist.TopTracks.GetPreviousObject(currentTrack.Tag));
         }
 
         Task<IPlayable> IPlaylist.GetLastTrack()

@@ -40,8 +40,10 @@ namespace Hurricane.Model.Services
         public bool IsPlaying { get; set; }
         public object Tag { get; set; }
         public TimeSpan Duration { get; protected set; }
+        public abstract string Uploader { get; }
 
         public abstract Geometry ProviderIcon { get; }
+        public abstract string ProviderUrl { get; }
         public abstract string ProviderName { get; }
         public abstract string Url { get; }
 

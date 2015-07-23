@@ -92,6 +92,9 @@
         <TabItem Header="{StaticResource Behavior}">
             
         </TabItem>
+        <TabItem Header="{StaticResource Plugins}">
+            
+        </TabItem>
         <TabItem Header="{StaticResource About}">
             <views:AboutView />
         </TabItem>

@@ -121,6 +121,7 @@
     <Compile Include="Extensions\ListViewLayoutManager\ListViewLayoutManager.cs" />
     <Compile Include="Extensions\ListViewLayoutManager\ProportionalColumn.cs" />
     <Compile Include="Extensions\ListViewLayoutManager\RangeColumn.cs" />
+    <Compile Include="Extensions\PlayingTrackTemplateSelector.cs" />
     <Compile Include="Helpers\FindVisualChildHelper.cs" />
     <Compile Include="MagicArrow\DockedEventArgs.cs" />
     <Compile Include="Views\Docking\DockPlaceholderWindow.xaml.cs">
@@ -333,6 +334,14 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Images\ArrowDown.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="x64\SQLite.Interop.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="x86\SQLite.Interop.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
