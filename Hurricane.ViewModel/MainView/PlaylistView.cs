@@ -161,6 +161,9 @@ namespace Hurricane.ViewModel.MainView
         private bool FilterViewSource(object o)
         {
             var track = (IPlayable)o;
+            if (o == null)
+                return false;
+
             return string.IsNullOrWhiteSpace(_searchText) ||
                    track.Title.IndexOf(_searchText, StringComparison.OrdinalIgnoreCase) > -1 ||
                    track.Artist?.IndexOf(_searchText, StringComparison.OrdinalIgnoreCase) > -1;

@@ -112,7 +112,7 @@
     <Compile Include="Data\SqlTables\ArtistProvider.cs" />
     <Compile Include="Data\IDataProvider.cs" />
     <Compile Include="Data\SqlTables\ImagesProvider.cs" />
-    <Compile Include="Data\PlaylistProvider.cs" />
+    <Compile Include="Data\SqlTables\PlaylistProvider.cs" />
     <Compile Include="Data\SqlTables\SqlExtensions.cs" />
     <Compile Include="Data\TrackImporter.cs" />
     <Compile Include="Data\UserData.cs" />

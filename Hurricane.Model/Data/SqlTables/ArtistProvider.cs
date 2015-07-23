@@ -15,11 +15,11 @@ namespace Hurricane.Model.Data.SqlTables
         public ArtistProvider(ImagesProvider imageProvider)
         {
             ArtistDictionary = new Dictionary<Guid, Artist>();
-            UnkownArtist = new Artist {Guid = UnkownArtistGuid};
+            UnknownArtist = new Artist {Guid = UnkownArtistGuid};
             _imageProvider = imageProvider;
         }
 
-        public Artist UnkownArtist { get; private set; }
+        public Artist UnknownArtist { get; private set; }
         public Dictionary<Guid, Artist> ArtistDictionary { get; }
 
         public Task CreateTables(SQLiteConnection connection)
@@ -42,7 +42,7 @@ namespace Hurricane.Model.Data.SqlTables
                     var id = reader.ReadGuid(3);
                     Artist artist;
                     if (id == UnkownArtistGuid)
-                        artist = UnkownArtist;
+                        artist = UnknownArtist;
                     else
                     {
                         artist = new Artist
@@ -66,7 +66,7 @@ namespace Hurricane.Model.Data.SqlTables
 
                     ArtistDictionary.Add(artist.Guid, artist);
                     if (artist.Guid == UnkownArtistGuid)
-                        UnkownArtist = artist;
+                        UnknownArtist = artist;
                 }
             }
 

@@ -20,7 +20,6 @@ namespace Hurricane.Model.Data
 {
     public class MusicDataManager : IDisposable
     {
-        private const string PlaylistsFilename = "Playlists.xml";
         private const string UserDataFilename = "UserData.xml";
         private readonly FileInfo _databaseFile;
         private SQLiteConnection _connection;
@@ -31,11 +30,11 @@ namespace Hurricane.Model.Data
                 new FileInfo(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
                     "Hurricane", "database.sqlite"));
 
-            Playlists = new PlaylistProvider();
             Images = new ImagesProvider();
             Artists = new ArtistProvider(Images);
             Albums = new AlbumsProvider(Artists);
             Tracks = new TrackProvider(Artists, Images, Albums);
+            Playlists = new PlaylistProvider(Tracks);
             UserData = new UserDataProvider();
 
             LastfmApi = new LastfmApi(Artists);
@@ -47,6 +46,8 @@ namespace Hurricane.Model.Data
 
         public void Dispose()
         {
+            _connection.Close();
+            _connection.Dispose();
             MusicManager.Dispose();
         }
 
@@ -70,7 +71,7 @@ namespace Hurricane.Model.Data
                 createTables = true;
             }
 
-            var dataProvider = new IDataProvider[] {Images, Artists, Albums, Tracks};
+            var dataProvider = new IDataProvider[] {Images, Artists, Albums, Tracks, Playlists};
 
             _connection = new SQLiteConnection($"Data Source={_databaseFile.FullName};Version=3;");
             await _connection.OpenAsync();
@@ -82,11 +83,7 @@ namespace Hurricane.Model.Data
             foreach (var data in dataProvider)
                 await data.Load(_connection);
            
-            var playlistsFileInfo = new FileInfo(Path.Combine(rootFolder, PlaylistsFilename));
             var userDataFileInfo = new FileInfo(Path.Combine(rootFolder, UserDataFilename));
-
-            if (playlistsFileInfo.Exists)
-                await Playlists.LoadFromFile(playlistsFileInfo.FullName, Tracks.Collection);
 
             if (userDataFileInfo.Exists)
                 await UserData.LoadFromFile(userDataFileInfo.FullName);
@@ -100,7 +97,6 @@ namespace Hurricane.Model.Data
                 UserData.UserData.History.AddEntry(MusicManager.CurrentTrack,
                     MusicManager.AudioEngine.TimePlaySourcePlayed);
 
-            Playlists.SaveToFile(Path.Combine(rootFolder, PlaylistsFilename), Tracks.Collection);
             UserData.SaveToFile(Path.Combine(rootFolder, UserDataFilename));
 
             CopyToSettings();

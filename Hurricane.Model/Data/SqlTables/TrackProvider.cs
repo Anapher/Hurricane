@@ -40,7 +40,7 @@ namespace Hurricane.Model.Data.SqlTables
             using (
                 var command =
                     new SQLiteCommand(
-                        "CREATE TABLE `Tracks` (Title VARCHAR(255), ArtistGuid VARCHAR(36), AlbumGuid VARCHAR(36), Guid VARCHAR(36) NOT NULL, LastTimePlayed DATETIME, MusicBrainzId VARCHAR(36), Duration VARCHAR(25), Cover VARCHAR(36), XmlData VARCHAR(1024), PRIMARY KEY (Guid))",
+                        "CREATE TABLE `Tracks` (Title VARCHAR(255) NOT NULL, ArtistGuid VARCHAR(36), AlbumGuid VARCHAR(36), Guid VARCHAR(36) NOT NULL, LastTimePlayed DATETIME, MusicBrainzId VARCHAR(36), Duration VARCHAR(25), Cover VARCHAR(36), XmlData VARCHAR(1024), PRIMARY KEY (Guid))",
                         connection))
                 return command.ExecuteNonQueryAsync();
         }

@@ -4,7 +4,6 @@
              xmlns:behavior="clr-namespace:Hurricane.Behavior"
              xmlns:converter="clr-namespace:Hurricane.Converter"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:data="clr-namespace:Hurricane.Model.Music.TrackProperties;assembly=Hurricane.Model"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:myControls="clr-namespace:Hurricane.Controls"
              xmlns:viewData="clr-namespace:Hurricane.ViewModel.MainView;assembly=Hurricane.ViewModel"
@@ -44,6 +43,9 @@
             </Style.Triggers>
         </Style>
     </UserControl.Resources>
+    <UserControl.InputBindings>
+        <KeyBinding Key="Escape" Command="{Binding CloseCommand}" />
+    </UserControl.InputBindings>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -56,6 +58,7 @@
             <TextBlock Margin="10,0,0,0"
                        HorizontalAlignment="Left"
                        VerticalAlignment="Center"
+                       Focusable="False"
                        FontSize="19"
                        Foreground="White"
                        Text="{Binding Artist.Name}" />

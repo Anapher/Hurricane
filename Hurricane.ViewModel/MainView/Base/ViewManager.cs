@@ -1,7 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows.Data;
-using Hurricane.Model.Data;
+using Hurricane.Model.Data.SqlTables;
 using Hurricane.Model.Music.Playlist;
 
 namespace Hurricane.ViewModel.MainView.Base

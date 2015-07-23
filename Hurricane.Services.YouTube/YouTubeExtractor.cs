@@ -21,7 +21,6 @@ namespace Hurricane.Services.YouTube
            if (video.RequiresDecryption)
                DownloadUrlResolver.DecryptDownloadUrl(video);
 
-           //return new LocalFilePlaySource(@"D:\Musik\Lana Del Rey - Sirens\02 Next to Me.mp3");
            return new HttpPlaySource(new Uri(video.DownloadUrl));
        }
     }

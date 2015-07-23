@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using CSCore;
 using CSCore.Codecs;
 using CSCore.Codecs.MP3;
+using CSCore.MediaFoundation;
 using CSCore.SoundOut;
 using CSCore.Streams;
 using Hurricane.Model.MusicEqualizer;
@@ -207,7 +208,7 @@ namespace Hurricane.Model.AudioEngine.Engines
                     return true;
                 }
             }
-            catch (NotSupportedException)
+            catch (Exception)
             {
                 return false;
             }

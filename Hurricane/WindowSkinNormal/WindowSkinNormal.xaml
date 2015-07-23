@@ -496,7 +496,10 @@
                                     <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
                                 <Grid>
-                                    <Button Command="{Binding RelativeSource={RelativeSource AncestorType=controls:TransitioningContentControl}, Path=DataContext.OpenUrlCommand}" CommandParameter="{Binding Url}">
+                                    <Button Command="{Binding RelativeSource={RelativeSource AncestorType=controls:TransitioningContentControl},
+                                                              Path=DataContext.OpenUrlCommand}"
+                                            CommandParameter="{Binding Url}"
+                                            Cursor="Hand">
                                         <Button.Style>
                                             <Style TargetType="Button">
                                                 <Setter Property="OverridesDefaultStyle" Value="True" />
@@ -511,7 +514,16 @@
                                                                          RenderTransformOrigin=".5,.5">
                                                                     <Path Data="{Binding ProviderIcon}">
                                                                         <Path.Fill>
-                                                                            <ImageBrush ImageSource="{Binding Cover.Image}" Stretch="UniformToFill" />
+                                                                            <VisualBrush Stretch="UniformToFill">
+                                                                                <VisualBrush.Visual>
+                                                                                    <Grid>
+                                                                                        <Image Source="{Binding Cover.Image}" Stretch="UniformToFill" />
+                                                                                        <Grid x:Name="Overlay"
+                                                                                              Background="{StaticResource BlackBrush}"
+                                                                                              Opacity="0" />
+                                                                                    </Grid>
+                                                                                </VisualBrush.Visual>
+                                                                            </VisualBrush>
                                                                         </Path.Fill>
                                                                     </Path>
                                                                     <Viewbox.Effect>
@@ -537,6 +549,10 @@
                                                                                                  Storyboard.TargetName="Viewbox"
                                                                                                  Storyboard.TargetProperty="(Viewbox.RenderTransform).(ScaleTransform.ScaleY)"
                                                                                                  To="1.05" />
+                                                                                <DoubleAnimation Duration="0:0:0.2"
+                                                                                                 Storyboard.TargetName="Overlay"
+                                                                                                 Storyboard.TargetProperty="Opacity"
+                                                                                                 To="1" />
                                                                             </Storyboard>
                                                                         </BeginStoryboard>
                                                                     </Trigger.EnterActions>
@@ -551,6 +567,10 @@
                                                                                                  Storyboard.TargetName="Viewbox"
                                                                                                  Storyboard.TargetProperty="(Viewbox.RenderTransform).(ScaleTransform.ScaleY)"
                                                                                                  To="1" />
+                                                                                <DoubleAnimation Duration="0:0:0.2"
+                                                                                                 Storyboard.TargetName="Overlay"
+                                                                                                 Storyboard.TargetProperty="Opacity"
+                                                                                                 To="0" />
                                                                             </Storyboard>
                                                                         </BeginStoryboard>
                                                                     </Trigger.ExitActions>

@@ -13,7 +13,11 @@ namespace Hurricane.Model.Music.Playlist
         {
             Tracks = new ObservableCollection<PlayableBase>();
             History = new List<IPlayable>();
+            Id = Guid.NewGuid();
         }
+
+        public event EventHandler<PlayableBase> TrackAdded;
+        public event EventHandler<PlayableBase> TrackRemoved;
 
         public ObservableCollection<PlayableBase> Tracks { get; }
         public List<IPlayable> History { get; }
@@ -23,12 +27,14 @@ namespace Hurricane.Model.Music.Playlist
         public void AddTrack(PlayableBase playable)
         {
             Tracks.Add(playable);
+            TrackAdded?.Invoke(this, playable);
         }
-
+        
         public void RemoveTrack(PlayableBase playable)
         {
             Tracks.Remove(playable);
             History.Remove(playable);
+            TrackRemoved?.Invoke(this, playable);
         }
 
         Task<IPlayable> IPlaylist.GetNextTrack(IPlayable currentTrack)
