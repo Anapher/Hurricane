@@ -108,8 +108,9 @@ namespace Hurricane.Model.Data
             var sw = Stopwatch.StartNew();
             foreach (var track in Tracks.Tracks)
             {
-                if (track.Title.IndexOf(title, StringComparison.OrdinalIgnoreCase) > -1 && !string.IsNullOrEmpty(track.Artist?.Name) && LevenshteinDistance.Compute(artist.ToLower(), track.Artist.Name.ToLower()) <=
-                    Math.Abs(artist.Length - track.Artist.Name.Length))
+                if (track.Title.IndexOf(title.Trim(), StringComparison.OrdinalIgnoreCase) > -1 && !string.IsNullOrEmpty(track.Artist?.Name) &&
+                                    LevenshteinDistance.Compute(artist.ToLower(), track.Artist.Name.ToLower()) <=
+                                    Math.Abs(artist.Length - track.Artist.Name.Length))
                 {
                     result = track;
                     break;

@@ -183,7 +183,7 @@ namespace Hurricane.Model.Data
             }
 
             //Now we search the track in the internet. If we have find something, we set all information which has to be set
-            var trackInfo = await _musicDataManager.LastfmApi.GetTrackInformation(track.Title ?? title, filenameArtistName);
+            var trackInfo = await _musicDataManager.LastfmApi.GetTrackInformation(track.Title ?? title, track.Artist?.Name ?? tagArtistName ?? filenameArtistName);
             if (trackInfo != null)
             {
                 if (track.Title == null)
@@ -210,7 +210,7 @@ namespace Hurricane.Model.Data
                         internetArtistName = trackInfo.Artist;
                 }
             }
-            else
+            else if(track.Title == null)
             {
                 track.Title = title;
             }

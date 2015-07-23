@@ -60,6 +60,16 @@ namespace Hurricane.Model.Music.Playable
         }
 
         /// <summary>
+        /// The last time this track was played
+        /// </summary>
+        [XmlIgnore]
+        public DateTime LastTimePlayed
+        {
+            get { return _lastTimePlayed; }
+            set { SetProperty(value, ref _lastTimePlayed); }
+        }
+
+        /// <summary>
         /// A custom object for some operations
         /// </summary>
         [XmlIgnore]
@@ -72,21 +82,6 @@ namespace Hurricane.Model.Music.Playable
         public Guid Guid { get; set; }
 
         /// <summary>
-        /// The last time this track was played
-        /// </summary>
-        [XmlIgnore]
-        public DateTime LastTimePlayed
-        {
-            get { return _lastTimePlayed; }
-            set { SetProperty(value, ref _lastTimePlayed); }
-        }
-
-        [XmlIgnore]
-        public string MusicBrainzId { get; set; }
-
-        string IPlayable.Artist => _artist?.Name;
-
-        /// <summary>
         /// The duration of the track
         /// </summary>
         [XmlIgnore]
@@ -94,6 +89,11 @@ namespace Hurricane.Model.Music.Playable
 
         [XmlIgnore]
         public ImageProvider Cover { get; set; }
+
+        [XmlIgnore]
+        public string MusicBrainzId { get; set; }
+
+        string IPlayable.Artist => _artist?.Name;
         public abstract bool IsAvailable { get; }
 
         public abstract Task<IPlaySource> GetSoundSource();

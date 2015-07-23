@@ -22,7 +22,7 @@ namespace Hurricane.Model.Music.Playable
 
         public override Task<IPlaySource> GetSoundSource()
         {
-            return Task.Run(() => (IPlaySource) (new LocalFilePlaySource(TrackPath)));
+            return Task.Run(() => (IPlaySource) (new LocalFilePlaySource(TrackPath) {Bitrate = Bitrate}));
         }
     }
 }

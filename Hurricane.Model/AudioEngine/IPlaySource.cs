@@ -9,6 +9,11 @@
         /// How the <see cref="Hurricane.Model.AudioEngine.IAudioEngine"/> should open the audio
         /// </summary>
         PlaySourceType Type { get; }
+
+        /// <summary>
+        /// The bitrate of this play source
+        /// </summary>
+        int Bitrate { get; set; }
     }
 
     /// <summary>

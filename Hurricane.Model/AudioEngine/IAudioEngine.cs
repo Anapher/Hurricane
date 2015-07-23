@@ -81,6 +81,11 @@ namespace Hurricane.Model.AudioEngine
         TimeSpan TrackLengthTime { get; }
 
         /// <summary>
+        /// The bitrate of the current track (can be taken from the <see cref="IPlaySource.Bitrate"/>)
+        /// </summary>
+        int TrackBitrate { get; }
+
+        /// <summary>
         /// Gets or sets the equalizer bands. <see cref="Hurricane.Model.MusicEqualizer.EqualizerBandCollection.EqualizerBandChanged"/> should be subscribed
         /// </summary>
         EqualizerBandCollection EqualizerBands { get; set; }

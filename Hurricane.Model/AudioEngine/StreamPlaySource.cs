@@ -7,6 +7,7 @@ namespace Hurricane.Model.AudioEngine
         public PlaySourceType Type => PlaySourceType.Stream;
 
         public Stream Stream { get; }
+        public int Bitrate { get; set; }
 
         public StreamPlaySource(Stream stream)
         {

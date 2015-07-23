@@ -8,14 +8,14 @@ namespace Hurricane.Model.Data.SqlTables
 {
     public class ArtistProvider : IDataProvider
     {
-        private static readonly Guid UnkownArtistGuid = Guid.Parse("E9F17A4B-B220-498A-A4D3-B0F712715555");
+        public static readonly Guid UnknownArtistGuid = Guid.Parse("E9F17A4B-B220-498A-A4D3-B0F712715555");
         private readonly ImagesProvider _imageProvider;
         private SQLiteConnection _connection;
 
         public ArtistProvider(ImagesProvider imageProvider)
         {
             ArtistDictionary = new Dictionary<Guid, Artist>();
-            UnknownArtist = new Artist {Guid = UnkownArtistGuid};
+            UnknownArtist = new Artist {Guid = UnknownArtistGuid};
             _imageProvider = imageProvider;
         }
 
@@ -41,7 +41,7 @@ namespace Hurricane.Model.Data.SqlTables
                 {
                     var id = reader.ReadGuid(3);
                     Artist artist;
-                    if (id == UnkownArtistGuid)
+                    if (id == UnknownArtistGuid)
                         artist = UnknownArtist;
                     else
                     {
@@ -65,7 +65,7 @@ namespace Hurricane.Model.Data.SqlTables
                         artist.LargeImage = _imageProvider.Collection[temp];
 
                     ArtistDictionary.Add(artist.Guid, artist);
-                    if (artist.Guid == UnkownArtistGuid)
+                    if (artist.Guid == UnknownArtistGuid)
                         UnknownArtist = artist;
                 }
             }

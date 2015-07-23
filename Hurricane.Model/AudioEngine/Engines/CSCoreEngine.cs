@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using CSCore;
 using CSCore.Codecs;
 using CSCore.Codecs.MP3;
-using CSCore.MediaFoundation;
 using CSCore.SoundOut;
 using CSCore.Streams;
 using Hurricane.Model.MusicEqualizer;
@@ -39,6 +38,7 @@ namespace Hurricane.Model.AudioEngine.Engines
         private LoopStream _loopStream;
         private bool _isLooping;
         private readonly Stopwatch _playTimeStopwatch;
+        private int _trackBitrate;
 
         public CSCoreEngine()
         {
@@ -140,6 +140,12 @@ namespace Hurricane.Model.AudioEngine.Engines
         }
 
         public TimeSpan TrackLengthTime => _soundSource?.GetLength() ?? TimeSpan.Zero;
+
+        public int TrackBitrate
+        {
+            get { return _trackBitrate; }
+            set { SetProperty(value, ref _trackBitrate); }
+        }
 
         public EqualizerBandCollection EqualizerBands
         {
@@ -347,6 +353,8 @@ namespace Hurricane.Model.AudioEngine.Engines
             _soundSourceLoadingToken = new CancellationTokenSource();
             var token = _soundSourceLoadingToken.Token;
             IWaveSource result = null;
+
+            TrackBitrate = track.Bitrate;
 
             try
             {
