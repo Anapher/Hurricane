@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -34,6 +34,7 @@ namespace Hurricane.ViewModel.MainView
         public ICollectionView ViewSource { get; private set; }
         public override ViewCategorie ViewCategorie { get; } = ViewCategorie.MyMusic;
         public ICollectionView AlbumViewSource { get; set; }
+        public ObservableCollection<PlayableBase> Tracks { get; set; }
 
         public override string Text => Application.Current.Resources["Collection"].ToString();
 
@@ -48,7 +49,7 @@ namespace Hurricane.ViewModel.MainView
                     ViewSource.Refresh();
             }
         }
-        
+
         public RelayCommand AddFilesCommand
         {
             get
@@ -158,6 +159,8 @@ namespace Hurricane.ViewModel.MainView
             AlbumViewSource.GroupDescriptions.Add(new PropertyGroupDescription("Album"));
             AlbumViewSource.SortDescriptions.Add(new SortDescription("Album.Name", ListSortDirection.Ascending));
 
+            Tracks = MusicDataManager.Tracks.Tracks;
+
             _notificationManager = NotificationManager;
             return TaskExtensions.CompletedTask;
         }
@@ -168,26 +171,6 @@ namespace Hurricane.ViewModel.MainView
             return string.IsNullOrWhiteSpace(_searchText) ||
                    track.Title.IndexOf(_searchText, StringComparison.OrdinalIgnoreCase) > -1 ||
                    track.Artist?.IndexOf(_searchText, StringComparison.OrdinalIgnoreCase) > -1;
-        }
-    }
-
-    public class AlbumImageConverter : IValueConverter
-    {
-        
-
-        public AlbumImageConverter()
-        {
-            
-        }
-
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            throw new NotImplementedException();
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            return value;
         }
     }
 }

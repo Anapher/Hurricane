@@ -17,6 +17,23 @@ namespace Hurricane.Model.Music.TrackProperties
         private List<TopTrack> _topTracks;
 
         /// <summary>
+        /// Initializes a new instance of <see cref="Artist"/>
+        /// </summary>
+        /// <param name="name">The name of the artist</param>
+        public Artist(string name)
+        {
+            Name = name;
+            Guid = Guid.NewGuid();
+        }
+
+        /// <summary>
+        /// Initializes a new instance of <see cref="Artist"/>
+        /// </summary>
+        public Artist()
+        {
+        }
+
+        /// <summary>
         /// The name of the artist
         /// </summary>
         [XmlAttribute]

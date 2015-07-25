@@ -205,7 +205,7 @@ namespace Hurricane.Model.Data
                 if (track.Artist == null)
                 {
                     track.Artist =
-                        await SearchArtistOnline(tagArtistName, trackInfo.Artist, filenameArtistName, track.MusicBrainzId);
+                        await SearchArtist(tagArtistName, trackInfo.Artist, filenameArtistName, track.MusicBrainzId);
                     if (track.Artist == null)
                         internetArtistName = trackInfo.Artist;
                 }
@@ -218,7 +218,15 @@ namespace Hurricane.Model.Data
             if (track.Artist == null)
             {
                 var name = tagArtistName ?? internetArtistName ?? filenameArtistName;
-                track.Artist = !string.IsNullOrEmpty(name) ? new Artist {Name = name} : _musicDataManager.Artists.UnknownArtist;
+                if (!string.IsNullOrEmpty(name))
+                {
+                    var artist = await _musicDataManager.LastfmApi.SearchArtistOnline(name);
+                    track.Artist = artist ?? new Artist(name);
+                }
+                else
+                {
+                    track.Artist = _musicDataManager.Artists.UnknownArtist;
+                }
             }
 
             if (!_musicDataManager.Artists.ArtistDictionary.ContainsKey(track.Artist.Guid))
@@ -311,7 +319,7 @@ namespace Hurricane.Model.Data
             return null;
         }
 
-        private async Task<Artist> SearchArtistOnline(string tagArtistName, string internetArtistName, string filenameArtistName, string trackMusicBrainzId)
+        private async Task<Artist> SearchArtist(string tagArtistName, string internetArtistName, string filenameArtistName, string trackMusicBrainzId)
         {
             Artist tempArtist;
 

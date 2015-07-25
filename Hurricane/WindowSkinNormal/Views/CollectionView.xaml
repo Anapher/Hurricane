@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:behavior="clr-namespace:Hurricane.Behavior"
              xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
+             xmlns:converter="clr-namespace:Hurricane.Converter"
              xmlns:ctrl="clr-namespace:Hurricane.Extensions.ListViewLayoutManager"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:data="clr-namespace:Hurricane.Model.Music.Playable;assembly=Hurricane.Model"
@@ -15,6 +16,69 @@
              d:DesignHeight="400"
              d:DesignWidth="800"
              mc:Ignorable="d">
+    <UserControl.Resources>
+        <DataTemplate x:Key="PlayableDataTemplate" DataType="{x:Type data:PlayableBase}">
+            <DockPanel Margin="0,0,5,0" HorizontalAlignment="Stretch">
+                <Viewbox Width="12" Height="12">
+                    <Path Data="{StaticResource VectorPlay}">
+                        <Path.Style>
+                            <Style TargetType="Path">
+                                <Setter Property="Fill" Value="{StaticResource AccentColorBrush}" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}}, Path=IsSelected}" Value="True">
+                                        <Setter Property="Fill" Value="White" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Path.Style>
+                    </Path>
+                    <Viewbox.Style>
+                        <Style TargetType="Viewbox">
+                            <Setter Property="Opacity" Value="0" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsPlaying}" Value="true">
+                                    <DataTrigger.EnterActions>
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <ThicknessAnimation Duration="0:0:0.4"
+                                                                    From="-5,0,5,0"
+                                                                    Storyboard.TargetProperty="Margin"
+                                                                    To="0" />
+                                                <DoubleAnimation Duration="0:0:0.2"
+                                                                 From="0.5"
+                                                                 Storyboard.TargetProperty="Opacity"
+                                                                 To="1" />
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </DataTrigger.EnterActions>
+                                    <DataTrigger.ExitActions>
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation Duration="0:0:0.2"
+                                                                 From="1"
+                                                                 Storyboard.TargetProperty="Opacity"
+                                                                 To="0" />
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </DataTrigger.ExitActions>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Viewbox.Style>
+                </Viewbox>
+                <TextBlock Margin="10,0,0,0"
+                           VerticalAlignment="Center"
+                           Text="{Binding Title}"
+                           TextTrimming="CharacterEllipsis" />
+                <TextBlock Margin="0,0,5,0"
+                           HorizontalAlignment="Right"
+                           VerticalAlignment="Center"
+                           DockPanel.Dock="Right"
+                           Text="{Binding Duration,
+                                          Converter={StaticResource TimespanToStringConverter}}" />
+            </DockPanel>
+        </DataTemplate>
+    </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="75" />
@@ -171,6 +235,7 @@
                     </GridSplitter>
                     <ListBox x:Name="ArtistTracksListBox"
                              Grid.Column="2"
+                             ItemTemplate="{StaticResource PlayableDataTemplate}"
                              ItemsSource="{Binding Source={StaticResource AlbumGrouping}}"
                              ScrollViewer.CanContentScroll="True"
                              SelectionMode="Extended">
@@ -205,91 +270,28 @@
                                 </GroupStyle.Panel>
                                 <GroupStyle.HeaderTemplate>
                                     <DataTemplate>
-                                        <StackPanel Orientation="Vertical">
+                                        <StackPanel DataContext="{Binding Name}"
+                                                    Orientation="Vertical"
+                                                    d:DataContext="{d:DesignInstance trackProperties:Artist}">
                                             <StackPanel.Style>
                                                 <Style TargetType="StackPanel">
                                                     <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding Name.Name, Converter={StaticResource IsEmptyStringConverter}}" Value="true">
+                                                        <DataTrigger Binding="{Binding Name, Converter={StaticResource IsEmptyStringConverter}}" Value="true">
                                                             <Setter Property="Visibility" Value="Collapsed" />
                                                         </DataTrigger>
                                                     </Style.Triggers>
                                                 </Style>
                                             </StackPanel.Style>
-                                            <StackPanel Margin="5,5,0,0" Orientation="Horizontal">
-                                                <TextBlock>
-                                                    <Run Text="{Binding Name.Name}" />
-                                                    <Run Text="(" /><Run Text="{Binding ItemCount, Mode=OneWay}" /><Run Text=")" />
-                                                </TextBlock>
+                                            <StackPanel Margin="8,5,0,10" Orientation="Horizontal">
+                                                <TextBlock FontFamily="Segoe UI Light"
+                                                           FontSize="18"
+                                                           Text="{Binding Name}" />
                                             </StackPanel>
-                                            <Separator />
                                         </StackPanel>
                                     </DataTemplate>
                                 </GroupStyle.HeaderTemplate>
                             </GroupStyle>
                         </ListBox.GroupStyle>
-                        <ListBox.ItemTemplate>
-                            <DataTemplate DataType="{x:Type data:PlayableBase}">
-                                <DockPanel Margin="0,0,5,0" HorizontalAlignment="Stretch">
-                                    <Viewbox Width="12" Height="12">
-                                        <Path Data="{StaticResource VectorPlay}">
-                                            <Path.Style>
-                                                <Style TargetType="Path">
-                                                    <Setter Property="Fill" Value="{StaticResource AccentColorBrush}" />
-                                                    <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}}, Path=IsSelected}" Value="True">
-                                                            <Setter Property="Fill" Value="White" />
-                                                        </DataTrigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </Path.Style>
-                                        </Path>
-                                        <Viewbox.Style>
-                                            <Style TargetType="Viewbox">
-                                                <Setter Property="Opacity" Value="0" />
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding IsPlaying}" Value="true">
-                                                        <DataTrigger.EnterActions>
-                                                            <BeginStoryboard>
-                                                                <Storyboard>
-                                                                    <ThicknessAnimation Duration="0:0:0.4"
-                                                                                        From="-5,0,5,0"
-                                                                                        Storyboard.TargetProperty="Margin"
-                                                                                        To="0" />
-                                                                    <DoubleAnimation Duration="0:0:0.2"
-                                                                                     From="0.5"
-                                                                                     Storyboard.TargetProperty="Opacity"
-                                                                                     To="1" />
-                                                                </Storyboard>
-                                                            </BeginStoryboard>
-                                                        </DataTrigger.EnterActions>
-                                                        <DataTrigger.ExitActions>
-                                                            <BeginStoryboard>
-                                                                <Storyboard>
-                                                                    <DoubleAnimation Duration="0:0:0.2"
-                                                                                     From="1"
-                                                                                     Storyboard.TargetProperty="Opacity"
-                                                                                     To="0" />
-                                                                </Storyboard>
-                                                            </BeginStoryboard>
-                                                        </DataTrigger.ExitActions>
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </Viewbox.Style>
-                                    </Viewbox>
-                                    <TextBlock Margin="10,0,0,0"
-                                               VerticalAlignment="Center"
-                                               Text="{Binding Title}"
-                                               TextTrimming="CharacterEllipsis" />
-                                    <TextBlock Margin="0,0,5,0"
-                                               HorizontalAlignment="Right"
-                                               VerticalAlignment="Center"
-                                               DockPanel.Dock="Right"
-                                               Text="{Binding Duration,
-                                                              Converter={StaticResource TimespanToStringConverter}}" />
-                                </DockPanel>
-                            </DataTemplate>
-                        </ListBox.ItemTemplate>
                         <ListBox.ItemContainerStyle>
                             <Style BasedOn="{StaticResource MetroListBoxItem}" TargetType="ListBoxItem">
                                 <Setter Property="behavior:ControlBehavior.DoubleClickCommand" Value="{Binding RelativeSource={RelativeSource AncestorType=ListBox}, Path=DataContext.PlayAudioCommand}" />
@@ -305,13 +307,81 @@
             <TabItem>
                 <Grid>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="1" />
+                        <ColumnDefinition Width="*"
+                                          MinWidth="400"
+                                          MaxWidth="600" />
+                        <ColumnDefinition Width="2" />
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
                     <ListBox x:Name="AlbumListBox"
-                             DisplayMemberPath="Name.Name"
-                             ItemsSource="{Binding AlbumViewSource.Groups}" />
+                             ItemsSource="{Binding AlbumViewSource.Groups}"
+                             ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                        <ListBox.Resources>
+                            <converter:GetAlbumCover x:Key="GetAlbumCover" />
+                        </ListBox.Resources>
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Margin="5"
+                                      DataContext="{Binding Name}"
+                                      d:DataContext="{d:DesignInstance trackProperties:Album}">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+                                    <Border BorderBrush="{StaticResource AccentColorBrush}">
+                                        <myControls:ImageProviderViewer Width="118" Height="118">
+                                            <myControls:ImageProviderViewer.Style>
+                                                <Style TargetType="myControls:ImageProviderViewer">
+                                                    <Setter Property="ImageProvider">
+                                                        <Setter.Value>
+                                                            <MultiBinding Converter="{StaticResource GetAlbumCover}">
+                                                                <Binding Path="." />
+                                                                <Binding Path="DataContext.Tracks" RelativeSource="{RelativeSource AncestorType=ListBox}" />
+                                                            </MultiBinding>
+                                                        </Setter.Value>
+                                                    </Setter>
+                                                </Style>
+                                            </myControls:ImageProviderViewer.Style>
+                                        </myControls:ImageProviderViewer>
+                                        <Border.Style>
+                                            <Style TargetType="Border">
+                                                <Setter Property="BorderThickness" Value="0" />
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=ListBoxItem}, Path=IsSelected}" Value="true">
+                                                        <Setter Property="BorderThickness" Value="2" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Border.Style>
+                                    </Border>
+                                    <StackPanel Grid.Row="1"
+                                                Width="114"
+                                                Margin="3,5,3,0"
+                                                Orientation="Vertical">
+                                        <TextBlock Text="{Binding Name}" TextTrimming="CharacterEllipsis" />
+                                    </StackPanel>
+                                </Grid>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                        <ListBox.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel />
+                            </ItemsPanelTemplate>
+                        </ListBox.ItemsPanel>
+                        <ListBox.ItemContainerStyle>
+                            <Style TargetType="ListBoxItem">
+                                <Setter Property="OverridesDefaultStyle" Value="True" />
+                                <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="ListBoxItem">
+                                            <ContentPresenter />
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </ListBox.ItemContainerStyle>
+                    </ListBox>
                     <GridSplitter Grid.Column="1" HorizontalAlignment="Stretch">
                         <GridSplitter.Style>
                             <Style TargetType="GridSplitter">
@@ -319,7 +389,56 @@
                             </Style>
                         </GridSplitter.Style>
                     </GridSplitter>
-                    <ListBox Grid.Column="2" ItemsSource="{Binding ElementName=AlbumListBox, Path=SelectedItem.Items}" />
+                    <ScrollViewer Grid.Column="2">
+                        <StackPanel Margin="5"
+                                    DataContext="{Binding ElementName=AlbumListBox,
+                                                          Path=SelectedItem.Name}"
+                                    Orientation="Vertical"
+                                    d:DataContext="{d:DesignInstance trackProperties:Album}">
+                            <TextBlock FontFamily="Segoe UI Light"
+                                       FontSize="20"
+                                       Text="{Binding Name}"
+                                       TextTrimming="CharacterEllipsis" />
+                            <ListBox Margin="0,10,0,0"
+                                     ItemTemplate="{StaticResource PlayableDataTemplate}"
+                                     ItemsSource="{Binding ElementName=AlbumListBox,
+                                                           Path=SelectedItem.Items}"
+                                     ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                                <behavior:ItemsControlBehavior.ItemsSourceChangedAnimation>
+                                    <Storyboard>
+                                        <DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetProperty="Opacity">
+                                            <SplineDoubleKeyFrame KeyTime="00:00:00" Value="0" />
+                                            <SplineDoubleKeyFrame KeyTime="00:00:00.400" Value="1" />
+                                        </DoubleAnimationUsingKeyFrames>
+                                        <DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.X)">
+                                            <SplineDoubleKeyFrame KeyTime="00:00:00" Value="30" />
+                                            <EasingDoubleKeyFrame KeyTime="00:00:00.700" Value="0">
+                                                <EasingDoubleKeyFrame.EasingFunction>
+                                                    <CubicEase EasingMode="EaseOut" />
+                                                </EasingDoubleKeyFrame.EasingFunction>
+                                            </EasingDoubleKeyFrame>
+                                        </DoubleAnimationUsingKeyFrames>
+                                    </Storyboard>
+                                </behavior:ItemsControlBehavior.ItemsSourceChangedAnimation>
+                                <ListBox.RenderTransform>
+                                    <TranslateTransform />
+                                </ListBox.RenderTransform>
+                                <ListBox.Template>
+                                    <ControlTemplate TargetType="ItemsControl">
+                                        <Border>
+                                            <ItemsPresenter />
+                                        </Border>
+                                    </ControlTemplate>
+                                </ListBox.Template>
+                                <ListBox.ItemContainerStyle>
+                                    <Style BasedOn="{StaticResource MetroListBoxItem}" TargetType="ListBoxItem">
+                                        <Setter Property="behavior:ControlBehavior.DoubleClickCommand" Value="{Binding RelativeSource={RelativeSource AncestorType=ScrollViewer}, Path=DataContext.PlayAudioCommand}" />
+                                        <Setter Property="behavior:ControlBehavior.DoubleClickCommandParameter" Value="{Binding}" />
+                                    </Style>
+                                </ListBox.ItemContainerStyle>
+                            </ListBox>
+                        </StackPanel>
+                    </ScrollViewer>
                 </Grid>
             </TabItem>
             <TabItem>

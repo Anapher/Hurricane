@@ -105,6 +105,7 @@
       <DependentUpon>RoundButton.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\VectorMenuItem.cs" />
+    <Compile Include="Converter\GetAlbumCover.cs" />
     <Compile Include="Converter\HtmlToInlinesConverter.cs" />
     <Compile Include="Converter\IsEmptyStringConverter.cs" />
     <Compile Include="Converter\IsNullConverter.cs" />

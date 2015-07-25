@@ -33,7 +33,7 @@ namespace Hurricane.Model.DataApi
         public ArtistProvider Artists { get; }
         private Dictionary<Artist, List<string>> ArtistKeywords { get; }
 
-        public async Task<Artist> SearchArtist(string name)
+        public async Task<Artist> SearchArtistOnline(string name)
         {
             Artist foundArtist;
             if (SearchArtist(name, out foundArtist))
@@ -70,12 +70,10 @@ namespace Hurricane.Model.DataApi
                     return foundArtist;
                 }
 
-                var artist = new Artist
+                var artist = new Artist(match.name)
                 {
-                    Name = match.name,
                     MusicBrainzId = match.mbid,
-                    Url = match.url,
-                    Guid = Guid.NewGuid()
+                    Url = match.url
                 };
                 SetImages(artist, match.image);
 
@@ -131,11 +129,9 @@ namespace Hurricane.Model.DataApi
                             break;
                         }
 
-                        var newArtist = new Artist
+                        var newArtist = new Artist(similarArtist.name)
                         {
-                            Name = similarArtist.name,
-                            Url = similarArtist.url,
-                            Guid = Guid.NewGuid()
+                            Url = similarArtist.url
                         };
 
                         SetImages(newArtist, similarArtist.image);
@@ -155,7 +151,7 @@ namespace Hurricane.Model.DataApi
                 {
                     return;
                 }
-                artist.TopTracks = topTrackResult.toptracks?.track.Where(x => !string.IsNullOrWhiteSpace(x.duration)).Select(x => new TopTrack
+                artist.TopTracks = topTrackResult.toptracks?.track?.Where(x => !string.IsNullOrWhiteSpace(x.duration)).Select(x => new TopTrack
                 {
                     Artist = artist,
                     Duration = TimeSpan.FromMilliseconds(int.Parse(x.duration)),
@@ -181,12 +177,10 @@ namespace Hurricane.Model.DataApi
                             wc.DownloadStringTaskAsync(
                                 $"http://ws.audioscrobbler.com/2.0/?method=artist.getinfo&mbid={musicbrainzId}&api_key={SensitiveInformation.LastfmKey}&format=json&lang={culture.TwoLetterISOLanguageName}"))
                             .FixJsonString());
-                var artist = new Artist
+                var artist = new Artist(artistInfo.artist.name)
                 {
-                    Name = artistInfo.artist.name,
                     MusicBrainzId = artistInfo.artist.mbid,
-                    Url = artistInfo.artist.url,
-                    Guid = Guid.NewGuid()
+                    Url = artistInfo.artist.url
                 };
                 SetImages(artist, artistInfo.artist.image);
                 return artist;
