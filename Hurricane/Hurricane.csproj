@@ -81,6 +81,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Behavior\AnimateBehavior.cs" />
     <Compile Include="Behavior\ContentControlBehavior.cs" />
     <Compile Include="Behavior\ControlBehavior.cs" />
     <Compile Include="Behavior\ItemsControlBehavior.cs" />
@@ -105,14 +106,14 @@
       <DependentUpon>RoundButton.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\VectorMenuItem.cs" />
-    <Compile Include="Converter\GetAlbumCover.cs" />
+    <Compile Include="Converter\GetTrackTypeConverter.cs" />
     <Compile Include="Converter\HtmlToInlinesConverter.cs" />
     <Compile Include="Converter\IsEmptyStringConverter.cs" />
     <Compile Include="Converter\IsNullConverter.cs" />
+    <Compile Include="Converter\PassThroughConverter.cs" />
     <Compile Include="Converter\SizeToColumnsConverter.cs" />
     <Compile Include="Converter\TimespanToStringConverter.cs" />
     <Compile Include="Converter\TrueFalseValueConverter.cs" />
-    <Compile Include="Converter\ViewManager.cs" />
     <Compile Include="Extensions\ComboBoxItemTemplateChooser.cs" />
     <Compile Include="Extensions\GridViewSort.cs" />
     <Compile Include="Extensions\ListViewLayoutManager\ConverterGridViewColumn.cs" />
@@ -125,6 +126,7 @@
     <Compile Include="Extensions\PlayingTrackTemplateSelector.cs" />
     <Compile Include="Helpers\FindVisualChildHelper.cs" />
     <Compile Include="MagicArrow\DockedEventArgs.cs" />
+    <Compile Include="WindowSkinNormal\Views\ViewManager.cs" />
     <Compile Include="Views\Docking\DockPlaceholderWindow.xaml.cs">
       <DependentUpon>DockPlaceholderWindow.xaml</DependentUpon>
     </Compile>

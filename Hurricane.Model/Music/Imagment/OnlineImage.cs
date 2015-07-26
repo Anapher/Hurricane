@@ -36,6 +36,9 @@ namespace Hurricane.Model.Music.Imagment
 
         protected async override Task<BitmapImage> LoadImage()
         {
+            if (string.IsNullOrWhiteSpace(Url))
+                return null;
+
             var image = new BitmapImage();
             image.BeginInit();
             var imageFile = new FileInfo(Path.Combine(ImageDirectory, $"{Guid.ToString("D")}.png"));

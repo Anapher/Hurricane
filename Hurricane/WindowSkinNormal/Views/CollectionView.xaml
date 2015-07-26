@@ -3,14 +3,15 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:behavior="clr-namespace:Hurricane.Behavior"
              xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
-             xmlns:converter="clr-namespace:Hurricane.Converter"
              xmlns:ctrl="clr-namespace:Hurricane.Extensions.ListViewLayoutManager"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:data="clr-namespace:Hurricane.Model.Music.Playable;assembly=Hurricane.Model"
              xmlns:extensions="clr-namespace:Hurricane.Extensions"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:myControls="clr-namespace:Hurricane.Controls"
              xmlns:trackProperties="clr-namespace:Hurricane.Model.Music.TrackProperties;assembly=Hurricane.Model"
+             xmlns:utilities="clr-namespace:Hurricane.ViewModel.MainView.Utilities;assembly=Hurricane.ViewModel"
              xmlns:viewData="clr-namespace:Hurricane.ViewModel.MainView;assembly=Hurricane.ViewModel"
              d:DataContext="{d:DesignInstance viewData:CollectionView}"
              d:DesignHeight="400"
@@ -179,6 +180,7 @@
                     </Grid.Resources>
                     <ListBox x:Name="ArtistListBox"
                              ItemsSource="{Binding ViewSource.Groups}"
+                             ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                              Style="{StaticResource VirtualisedMetroListBox}">
                         <ListBox.ItemTemplate>
                             <DataTemplate>
@@ -205,7 +207,8 @@
                                     </Border>
                                     <TextBlock Grid.Column="1"
                                                Margin="5,0,0,0"
-                                               VerticalAlignment="Center">
+                                               VerticalAlignment="Center"
+                                               TextTrimming="CharacterEllipsis">
                                         <TextBlock.Style>
                                             <Style TargetType="TextBlock">
                                                 <Setter Property="Text" Value="{Binding Name}" />
@@ -309,7 +312,7 @@
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"
                                           MinWidth="400"
-                                          MaxWidth="600" />
+                                          MaxWidth="550" />
                         <ColumnDefinition Width="2" />
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
@@ -317,7 +320,7 @@
                              ItemsSource="{Binding AlbumViewSource.Groups}"
                              ScrollViewer.HorizontalScrollBarVisibility="Disabled">
                         <ListBox.Resources>
-                            <converter:GetAlbumCover x:Key="GetAlbumCover" />
+                            <utilities:GetAlbumCover x:Key="GetAlbumCover" />
                         </ListBox.Resources>
                         <ListBox.ItemTemplate>
                             <DataTemplate>
@@ -332,6 +335,18 @@
                                         <myControls:ImageProviderViewer Width="118" Height="118">
                                             <myControls:ImageProviderViewer.Style>
                                                 <Style TargetType="myControls:ImageProviderViewer">
+                                                    <Setter Property="Placeholder">
+                                                        <Setter.Value>
+                                                            <Grid Background="{StaticResource GrayBrush10}">
+                                                                <Viewbox Width="25"
+                                                         Height="25"
+                                                         HorizontalAlignment="Center"
+                                                         VerticalAlignment="Center">
+                                                                    <Path Data="{StaticResource VectorMicrophone}" Fill="{StaticResource WhiteBrush}" />
+                                                                </Viewbox>
+                                                            </Grid>
+                                                        </Setter.Value>
+                                                    </Setter>
                                                     <Setter Property="ImageProvider">
                                                         <Setter.Value>
                                                             <MultiBinding Converter="{StaticResource GetAlbumCover}">
@@ -395,15 +410,42 @@
                                                           Path=SelectedItem.Name}"
                                     Orientation="Vertical"
                                     d:DataContext="{d:DesignInstance trackProperties:Album}">
-                            <TextBlock FontFamily="Segoe UI Light"
+                            <TextBlock x:Name="AlbumTitleTextBlock"
+                                       Margin="5,0,0,0"
+                                       FontFamily="Segoe UI Light"
                                        FontSize="20"
                                        Text="{Binding Name}"
-                                       TextTrimming="CharacterEllipsis" />
+                                       TextTrimming="CharacterEllipsis">
+                                <TextBlock.RenderTransform>
+                                    <TranslateTransform />
+                                </TextBlock.RenderTransform>
+                                <i:Interaction.Behaviors>
+                                    <behavior:AnimateBehavior Value="{Binding Name}">
+                                        <behavior:AnimateBehavior.Animation>
+                                            <Storyboard>
+                                                <DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetProperty="Opacity">
+                                                    <SplineDoubleKeyFrame KeyTime="00:00:00" Value="0" />
+                                                    <SplineDoubleKeyFrame KeyTime="00:00:00.400" Value="1" />
+                                                </DoubleAnimationUsingKeyFrames>
+                                                <DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)">
+                                                    <SplineDoubleKeyFrame KeyTime="00:00:00" Value="-30" />
+                                                    <EasingDoubleKeyFrame KeyTime="00:00:00.700" Value="0">
+                                                        <EasingDoubleKeyFrame.EasingFunction>
+                                                            <CubicEase EasingMode="EaseOut" />
+                                                        </EasingDoubleKeyFrame.EasingFunction>
+                                                    </EasingDoubleKeyFrame>
+                                                </DoubleAnimationUsingKeyFrames>
+                                            </Storyboard>
+                                        </behavior:AnimateBehavior.Animation>
+                                    </behavior:AnimateBehavior>
+                                </i:Interaction.Behaviors>
+                            </TextBlock>
                             <ListBox Margin="0,10,0,0"
                                      ItemTemplate="{StaticResource PlayableDataTemplate}"
                                      ItemsSource="{Binding ElementName=AlbumListBox,
                                                            Path=SelectedItem.Items}"
-                                     ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                                     ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                     Style="{StaticResource VirtualisedMetroListBox}">
                                 <behavior:ItemsControlBehavior.ItemsSourceChangedAnimation>
                                     <Storyboard>
                                         <DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetProperty="Opacity">
@@ -492,7 +534,7 @@
                                                         </DataTrigger>
                                                         <DataTrigger Binding="{Binding Artist.Guid}" Value="E9F17A4B-B220-498A-A4D3-B0F712715555">
                                                             <Setter Property="IsEnabled" Value="False" />
-                                                            <Setter Property="Content" Value="{StaticResource Unkown}" />
+                                                            <Setter Property="Content" Value="{StaticResource Unknown}" />
                                                         </DataTrigger>
                                                     </Style.Triggers>
                                                 </Style>
@@ -516,8 +558,98 @@
                                             extensions:GridViewSort.PropertyName="Duration" />
                         </GridView>
                     </ListView.View>
+                    <ListView.Resources>
+                        <ContextMenu x:Key="LocalPlayableContextMenu" d:DataContext="{d:DesignInstance data:LocalPlayable}">
+                            <MenuItem Command="{Binding RelativeSource={RelativeSource AncestorType=ListView},
+                                                        Path=DataContext.PlayAudioCommand}"
+                                      CommandParameter="{Binding}"
+                                      Header="{DynamicResource Play}" />
+                            <Separator />
+                            <MenuItem CommandParameter="{Binding}" Header="{DynamicResource TrackInformation}" />
+                            <MenuItem Command="{Binding RelativeSource={RelativeSource AncestorType=ListView},
+                                                        Path=DataContext.OpenArtistCommand}"
+                                      CommandParameter="{Binding Artist}"
+                                      Header="{DynamicResource ArtistInformation}">
+                                <MenuItem.Style>
+                                    <Style BasedOn="{StaticResource MetroMenuItem}" TargetType="MenuItem">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Artist.Guid}" Value="E9F17A4B-B220-498A-A4D3-B0F712715555">
+                                                <Setter Property="IsEnabled" Value="False" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </MenuItem.Style>
+                            </MenuItem>
+                            <MenuItem Command="{Binding RelativeSource={RelativeSource AncestorType=ListView},
+                                                        Path=DataContext.OpenLocalTrackLocationCommand}"
+                                      CommandParameter="{Binding}"
+                                      Header="{DynamicResource FileLocation}" />
+                            <Separator />
+                            <MenuItem Command="{Binding RelativeSource={RelativeSource AncestorType=ListView}, Path=DataContext.AddToQueueCommand}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=ListView}, Path=SelectedItems}">
+                                <MenuItem.Style>
+                                    <Style BasedOn="{StaticResource MetroMenuItem}" TargetType="MenuItem">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsQueued}" Value="true">
+                                                <Setter Property="Header" Value="{DynamicResource RemoveFromQueue}" />
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding IsQueued}" Value="false">
+                                                <Setter Property="Header" Value="{DynamicResource AddToQueue}" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </MenuItem.Style>
+                            </MenuItem>
+                            <Separator />
+                            <MenuItem Header="{DynamicResource Remove}" />
+                        </ContextMenu>
+                        <ContextMenu x:Key="StreamableContextMenu" d:DataContext="{d:DesignInstance data:Streamable}">
+                            <MenuItem Command="{Binding RelativeSource={RelativeSource AncestorType=ListView},
+                                                        Path=DataContext.PlayAudioCommand}"
+                                      CommandParameter="{Binding}"
+                                      Header="{DynamicResource Play}" />
+                            <Separator />
+                            <MenuItem CommandParameter="{Binding}" Header="{DynamicResource TrackInformation}" />
+                            <MenuItem Command="{Binding RelativeSource={RelativeSource AncestorType=ListView},
+                                                        Path=DataContext.OpenArtistCommand}"
+                                      CommandParameter="{Binding Artist}"
+                                      Header="{DynamicResource ArtistInformation}">
+                                <MenuItem.Style>
+                                    <Style BasedOn="{StaticResource MetroMenuItem}" TargetType="MenuItem">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Artist.Guid}" Value="E9F17A4B-B220-498A-A4D3-B0F712715555">
+                                                <Setter Property="IsEnabled" Value="False" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </MenuItem.Style>
+                            </MenuItem>
+                            <MenuItem Command="{Binding RelativeSource={RelativeSource AncestorType=ListView},
+                                                        Path=DataContext.OpenLocalTrackLocationCommand}"
+                                      CommandParameter="{Binding}"
+                                      Header="{DynamicResource OpenUrl}" />
+                            <Separator />
+                            <MenuItem Command="{Binding RelativeSource={RelativeSource AncestorType=ListView}, Path=DataContext.AddToQueueCommand}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=ListView}, Path=SelectedItems}">
+                                <MenuItem.Style>
+                                    <Style BasedOn="{StaticResource MetroMenuItem}" TargetType="MenuItem">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsQueued}" Value="true">
+                                                <Setter Property="Header" Value="{DynamicResource RemoveFromQueue}" />
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding IsQueued}" Value="false">
+                                                <Setter Property="Header" Value="{DynamicResource AddToQueue}" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </MenuItem.Style>
+                            </MenuItem>
+                            <Separator />
+                            <MenuItem Header="{DynamicResource Remove}" />
+                        </ContextMenu>
+                    </ListView.Resources>
                     <ListView.ItemContainerStyle>
-                        <Style BasedOn="{StaticResource MetroListViewItem}" TargetType="ListViewItem">
+                        <Style BasedOn="{StaticResource MetroListViewItem}"
+                               TargetType="ListViewItem"
+                               d:DataContext="{d:DesignInstance data:PlayableBase}">
                             <Setter Property="behavior:ControlBehavior.DoubleClickCommand" Value="{Binding RelativeSource={RelativeSource AncestorType=ListView}, Path=DataContext.PlayAudioCommand}" />
                             <Setter Property="behavior:ControlBehavior.DoubleClickCommandParameter" Value="{Binding}" />
                             <Setter Property="Margin" Value="0,0,1,0" />
@@ -594,6 +726,14 @@
                                     </ControlTemplate>
                                 </Setter.Value>
                             </Setter>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Converter={StaticResource GetTrackTypeConverter}}" Value="Local">
+                                    <Setter Property="ContextMenu" Value="{StaticResource LocalPlayableContextMenu}" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Converter={StaticResource GetTrackTypeConverter}}" Value="Stream">
+                                    <Setter Property="ContextMenu" Value="{StaticResource StreamableContextMenu}" />
+                                </DataTrigger>
+                            </Style.Triggers>
                         </Style>
                     </ListView.ItemContainerStyle>
                 </ListView>

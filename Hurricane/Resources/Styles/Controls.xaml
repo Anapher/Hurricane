@@ -1,33 +1,48 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:controls="clr-namespace:Hurricane.Controls">
-    <Style TargetType="controls:VectorMenuItem" x:Key="VectorMenuStyle">
-        <Setter Property="OverridesDefaultStyle" Value="True"/>
-        <Setter Property="Padding" Value="0"/>
+    <Style x:Key="VectorMenuStyle"
+           TargetType="controls:VectorMenuItem"
+           x:Shared="False">
+        <Setter Property="OverridesDefaultStyle" Value="True" />
+        <Setter Property="Padding" Value="0" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="controls:VectorMenuItem">
                     <Grid Background="{TemplateBinding Background}">
-                        <Viewbox x:Name="Image" Margin="2" HorizontalAlignment="Center" VerticalAlignment="Center">
-                            <Path Data="{TemplateBinding VectorGraphic}" Fill="{StaticResource BlackBrush}" x:Name="VectorGraphic"/>
+                        <Viewbox x:Name="Image"
+                                 Margin="2"
+                                 HorizontalAlignment="Center"
+                                 VerticalAlignment="Center">
+                            <Path x:Name="VectorGraphic"
+                                  Data="{TemplateBinding VectorGraphic}"
+                                  Fill="{StaticResource BlackBrush}" />
                         </Viewbox>
                         <Popup x:Name="PART_Popup"
-                   AllowsTransparency="True"
-                   Focusable="False"
-                   HorizontalOffset="1"
-                   IsOpen="{Binding IsSubmenuOpen, RelativeSource={RelativeSource TemplatedParent}}"
-                   PopupAnimation="{DynamicResource {x:Static SystemParameters.MenuPopupAnimationKey}}"
-                   Placement="Bottom"
-                   VerticalOffset="-1">
+                               AllowsTransparency="True"
+                               Focusable="False"
+                               HorizontalOffset="1"
+                               IsOpen="{Binding IsSubmenuOpen,
+                                                RelativeSource={RelativeSource TemplatedParent}}"
+                               Placement="Bottom"
+                               PopupAnimation="{DynamicResource {x:Static SystemParameters.MenuPopupAnimationKey}}"
+                               VerticalOffset="-1">
                             <Grid>
                                 <Rectangle x:Name="LayoutRoot" Fill="{TemplateBinding Background}" />
-                                <ContentControl x:Name="SubMenuBorder" IsTabStop="False" Template="{DynamicResource {ComponentResourceKey ResourceId=SubmenuContent, TypeInTargetAssembly={x:Type FrameworkElement}}}">
-                                    <ScrollViewer x:Name="SubMenuScrollViewer" CanContentScroll="True" Style="{DynamicResource {ComponentResourceKey ResourceId=MenuScrollViewer, TypeInTargetAssembly={x:Type FrameworkElement}}}">
-                                        <ItemsPresenter x:Name="ItemsPresenter" KeyboardNavigation.DirectionalNavigation="Cycle"
-                                            Grid.IsSharedSizeScope="True"
-                                            Margin="0"
-                                            SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
-                                            KeyboardNavigation.TabNavigation="Cycle" />
+                                <ContentControl x:Name="SubMenuBorder"
+                                                IsTabStop="False"
+                                                Template="{DynamicResource {ComponentResourceKey ResourceId=SubmenuContent,
+                                                                                                 TypeInTargetAssembly={x:Type FrameworkElement}}}">
+                                    <ScrollViewer x:Name="SubMenuScrollViewer"
+                                                  CanContentScroll="True"
+                                                  Style="{DynamicResource {ComponentResourceKey ResourceId=MenuScrollViewer,
+                                                                                                TypeInTargetAssembly={x:Type FrameworkElement}}}">
+                                        <ItemsPresenter x:Name="ItemsPresenter"
+                                                        Margin="0"
+                                                        Grid.IsSharedSizeScope="True"
+                                                        KeyboardNavigation.DirectionalNavigation="Cycle"
+                                                        KeyboardNavigation.TabNavigation="Cycle"
+                                                        SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
                                     </ScrollViewer>
                                 </ContentControl>
                             </Grid>
@@ -38,14 +53,20 @@
                             <Trigger.EnterActions>
                                 <BeginStoryboard>
                                     <Storyboard>
-                                        <ColorAnimation Duration="0:0:0.2" To="{StaticResource Gray3}" Storyboard.TargetName="VectorGraphic" Storyboard.TargetProperty="(Path.Fill).(SolidColorBrush.Color)"/>
+                                        <ColorAnimation Duration="0:0:0.2"
+                                                        Storyboard.TargetName="VectorGraphic"
+                                                        Storyboard.TargetProperty="(Path.Fill).(SolidColorBrush.Color)"
+                                                        To="{StaticResource Gray3}" />
                                     </Storyboard>
                                 </BeginStoryboard>
                             </Trigger.EnterActions>
                             <Trigger.ExitActions>
                                 <BeginStoryboard>
                                     <Storyboard>
-                                        <ColorAnimation Duration="0:0:0.2" To="{StaticResource BlackColor}" Storyboard.TargetName="VectorGraphic" Storyboard.TargetProperty="(Path.Fill).(SolidColorBrush.Color)"/>
+                                        <ColorAnimation Duration="0:0:0.2"
+                                                        Storyboard.TargetName="VectorGraphic"
+                                                        Storyboard.TargetProperty="(Path.Fill).(SolidColorBrush.Color)"
+                                                        To="{StaticResource BlackColor}" />
                                     </Storyboard>
                                 </BeginStoryboard>
                             </Trigger.ExitActions>
@@ -54,14 +75,22 @@
                             <Trigger.EnterActions>
                                 <BeginStoryboard>
                                     <Storyboard>
-                                        <ColorAnimation Duration="0:0:0.2" FillBehavior="HoldEnd" To="{StaticResource Gray3}" Storyboard.TargetName="VectorGraphic" Storyboard.TargetProperty="(Path.Fill).(SolidColorBrush.Color)"/>
+                                        <ColorAnimation Duration="0:0:0.2"
+                                                        FillBehavior="HoldEnd"
+                                                        Storyboard.TargetName="VectorGraphic"
+                                                        Storyboard.TargetProperty="(Path.Fill).(SolidColorBrush.Color)"
+                                                        To="{StaticResource Gray3}" />
                                     </Storyboard>
                                 </BeginStoryboard>
                             </Trigger.EnterActions>
                             <Trigger.ExitActions>
                                 <BeginStoryboard>
                                     <Storyboard>
-                                        <ColorAnimation Duration="0:0:0.2" FillBehavior="Stop" To="{StaticResource BlackColor}" Storyboard.TargetName="VectorGraphic" Storyboard.TargetProperty="(Path.Fill).(SolidColorBrush.Color)"/>
+                                        <ColorAnimation Duration="0:0:0.2"
+                                                        FillBehavior="Stop"
+                                                        Storyboard.TargetName="VectorGraphic"
+                                                        Storyboard.TargetProperty="(Path.Fill).(SolidColorBrush.Color)"
+                                                        To="{StaticResource BlackColor}" />
                                     </Storyboard>
                                 </BeginStoryboard>
                             </Trigger.ExitActions>
@@ -77,24 +106,34 @@
             <Setter.Value>
                 <ControlTemplate TargetType="controls:AnimationUpDown">
                     <Grid>
-                        <ContentPresenter x:Name="PART_MainContent" Content="{TemplateBinding CurrentContent}"/>
-                        <Rectangle x:Name="PART_PaintArea" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+                        <ContentPresenter x:Name="PART_MainContent" Content="{TemplateBinding CurrentContent}" />
+                        <Rectangle x:Name="PART_PaintArea"
+                                   HorizontalAlignment="Stretch"
+                                   VerticalAlignment="Stretch" />
                     </Grid>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
     </Style>
-    
-    <Style TargetType="Button" x:Key="CloseButton" x:Shared="False">
-        <Setter Property="OverridesDefaultStyle" Value="True"/>
-        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+
+    <Style x:Key="CloseButton"
+           TargetType="Button"
+           x:Shared="False">
+        <Setter Property="OverridesDefaultStyle" Value="True" />
+        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
-                    <Border x:Name="CircularBorder" CornerRadius="{Binding ElementName=CircularBorder,Path=ActualHeight}" Width="{Binding ElementName=CircularBorder,Path=ActualHeight}"
-                            Background="{StaticResource WhiteBrush}" BorderThickness="1" BorderBrush="{StaticResource GrayBrush7}">
+                    <Border x:Name="CircularBorder"
+                            Width="{Binding ElementName=CircularBorder,
+                                            Path=ActualHeight}"
+                            Background="{StaticResource WhiteBrush}"
+                            BorderBrush="{StaticResource GrayBrush7}"
+                            BorderThickness="1"
+                            CornerRadius="{Binding ElementName=CircularBorder,
+                                                   Path=ActualHeight}">
                         <Viewbox Margin="6">
-                            <Path Data="{StaticResource VectorCancel}" Fill="{StaticResource BlackBrush}"/>
+                            <Path Data="{StaticResource VectorCancel}" Fill="{StaticResource BlackBrush}" />
                         </Viewbox>
                     </Border>
                     <ControlTemplate.Triggers>
@@ -102,14 +141,20 @@
                             <Trigger.EnterActions>
                                 <BeginStoryboard>
                                     <Storyboard>
-                                        <ColorAnimation To="{StaticResource Gray10}" Duration="0:0:0.2" Storyboard.TargetName="CircularBorder" Storyboard.TargetProperty="(Border.BorderBrush).(SolidColorBrush.Color)"/>
+                                        <ColorAnimation Duration="0:0:0.2"
+                                                        Storyboard.TargetName="CircularBorder"
+                                                        Storyboard.TargetProperty="(Border.BorderBrush).(SolidColorBrush.Color)"
+                                                        To="{StaticResource Gray10}" />
                                     </Storyboard>
                                 </BeginStoryboard>
                             </Trigger.EnterActions>
                             <Trigger.ExitActions>
                                 <BeginStoryboard>
                                     <Storyboard>
-                                        <ColorAnimation To="{StaticResource Gray7}" Duration="0:0:0.2" Storyboard.TargetName="CircularBorder" Storyboard.TargetProperty="(Border.BorderBrush).(SolidColorBrush.Color)"/>
+                                        <ColorAnimation Duration="0:0:0.2"
+                                                        Storyboard.TargetName="CircularBorder"
+                                                        Storyboard.TargetProperty="(Border.BorderBrush).(SolidColorBrush.Color)"
+                                                        To="{StaticResource Gray7}" />
                                     </Storyboard>
                                 </BeginStoryboard>
                             </Trigger.ExitActions>
@@ -118,14 +163,20 @@
                             <Trigger.EnterActions>
                                 <BeginStoryboard>
                                     <Storyboard>
-                                        <ColorAnimation To="{StaticResource Gray9}" Duration="0:0:0.2" Storyboard.TargetName="CircularBorder" Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)"/>
+                                        <ColorAnimation Duration="0:0:0.2"
+                                                        Storyboard.TargetName="CircularBorder"
+                                                        Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)"
+                                                        To="{StaticResource Gray9}" />
                                     </Storyboard>
                                 </BeginStoryboard>
                             </Trigger.EnterActions>
                             <Trigger.ExitActions>
                                 <BeginStoryboard>
                                     <Storyboard>
-                                        <ColorAnimation To="{StaticResource WhiteColor}" Duration="0:0:0.2" Storyboard.TargetName="CircularBorder" Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)"/>
+                                        <ColorAnimation Duration="0:0:0.2"
+                                                        Storyboard.TargetName="CircularBorder"
+                                                        Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)"
+                                                        To="{StaticResource WhiteColor}" />
                                     </Storyboard>
                                 </BeginStoryboard>
                             </Trigger.ExitActions>

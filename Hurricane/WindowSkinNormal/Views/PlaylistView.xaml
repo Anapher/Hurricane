@@ -111,7 +111,7 @@
                                             <Setter Property="Template">
                                                 <Setter.Value>
                                                     <ControlTemplate TargetType="Button">
-                                                        <TextBlock>
+                                                        <TextBlock FontSize="11">
                                                             <ContentPresenter />
                                                         </TextBlock>
                                                     </ControlTemplate>

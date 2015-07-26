@@ -18,6 +18,12 @@
     <system:String x:Key="Album">Album</system:String>
     <system:String x:Key="Charts">Charts</system:String>
     <system:String x:Key="Queue">Warteschlange</system:String>
+    <system:String x:Key="Play">Abspielen</system:String>
+    <system:String x:Key="TrackInformation">Trackinformationen</system:String>
+    <system:String x:Key="ArtistInformation">Künstlerinformationen</system:String>
+    <system:String x:Key="FileLocation">Dateiort</system:String>
+    <system:String x:Key="Remove">Entfernen</system:String>
+    <system:String x:Key="OpenUrl">Url öffnen</system:String>
 
     <system:String x:Key="AddFiles">Dateien hinzufügen</system:String>
     <system:String x:Key="AddDirectory">Ordner hinzufügen</system:String>
@@ -41,6 +47,7 @@
     <system:String x:Key="ClearQueue">Warteschlange leeren</system:String>
     <system:String x:Key="PlayAudio">Abspielen</system:String>
     <system:String x:Key="RemoveFromQueue">Von Warteschlange entfernen</system:String>
+    <system:String x:Key="AddToQueue">Zu Warteschlange hinzufügen</system:String>
     <system:String x:Key="QueueIsEmpty">Die Warteschlange ist leer</system:String>
     <system:String x:Key="History">Chronik</system:String>
     <system:String x:Key="Date">Datum</system:String>
@@ -52,7 +59,7 @@
     <system:String x:Key="Licence">Lizenz</system:String>
     <system:String x:Key="Images">Grafiken</system:String>
     <system:String x:Key="Website">Website</system:String>
-    <system:String x:Key="Unkown">Unbekannt</system:String>
+    <system:String x:Key="Unknown">Unbekannt</system:String>
     <system:String x:Key="Plugins">Plugins</system:String>
 
     <system:String x:Key="Error">Fehler</system:String>

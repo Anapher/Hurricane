@@ -214,9 +214,11 @@ namespace Hurricane.ViewModel
                             e.ErrorMessage, MessageNotificationIcon.Error)));
         }
 
-        private void OpenArtist(Artist artist)
+        private async void OpenArtist(Artist artist)
         {
-            SpecialView = new ArtistView(artist, () => IsSpecialViewOpen = false);
+            var artistView = new ArtistView(artist, () => IsSpecialViewOpen = false);
+            await artistView.Load(MusicDataManager, _viewController, NotificationManager);
+            SpecialView = artistView;
             IsSpecialViewOpen = true;
         }
     }

@@ -15,6 +15,7 @@ namespace Hurricane.Model.Music.Playable
     {
         private string _title;
         private bool _isPlaying;
+        private bool _isQueued;
         private DateTime _lastTimePlayed;
         private Artist _artist;
         private Album _album;
@@ -57,6 +58,16 @@ namespace Hurricane.Model.Music.Playable
         {
             get { return _isPlaying; }
             set { SetProperty(value, ref _isPlaying); }
+        }
+
+        /// <summary>
+        /// Returns if the track is queued
+        /// </summary>
+        [XmlIgnore]
+        public bool IsQueued
+        {
+            get { return _isQueued; }
+            set { SetProperty(value, ref _isQueued); }
         }
 
         /// <summary>

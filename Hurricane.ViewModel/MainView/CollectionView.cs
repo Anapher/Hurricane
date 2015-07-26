@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -30,6 +31,7 @@ namespace Hurricane.ViewModel.MainView
         private RelayCommand _playAudioCommand;
         private RelayCommand _addToQueueCommand;
         private RelayCommand _openArtistCommand;
+        private RelayCommand _openLocalTrackLocationCommand;
 
         public ICollectionView ViewSource { get; private set; }
         public override ViewCategorie ViewCategorie { get; } = ViewCategorie.MyMusic;
@@ -125,13 +127,29 @@ namespace Hurricane.ViewModel.MainView
             {
                 return _addToQueueCommand ?? (_addToQueueCommand = new RelayCommand(parameter =>
                 {
-                    var items = parameter as IList;
-                    if (items == null)
-                        return;
-
-                    foreach (var track in items.Cast<PlayableBase>())
+                    var list = parameter as IList;
+                    if (list != null)
                     {
-                        MusicDataManager.MusicManager.Queue.AddTrackToQueue(track);
+                        var items = list;
+
+                        foreach (var track in items.Cast<PlayableBase>())
+                        {
+                            if (track.IsQueued)
+                                MusicDataManager.MusicManager.Queue.RemoveTrackFromQueue(track);
+                            else
+                                MusicDataManager.MusicManager.Queue.AddTrackToQueue(track);
+                        }
+
+                        return;
+                    }
+
+                    var playable = parameter as PlayableBase;
+                    if (playable != null)
+                    {
+                        if (playable.IsQueued)
+                            MusicDataManager.MusicManager.Queue.RemoveTrackFromQueue(playable);
+                        else
+                            MusicDataManager.MusicManager.Queue.AddTrackToQueue(playable);
                     }
                 }));
             }
@@ -144,6 +162,26 @@ namespace Hurricane.ViewModel.MainView
                 return _openArtistCommand ?? (_openArtistCommand = new RelayCommand(parameter =>
                 {
                     ViewController.OpenArtist((Artist)parameter);
+                }));
+            }
+        }
+
+        public RelayCommand OpenLocalTrackLocationCommand
+        {
+            get
+            {
+                return _openLocalTrackLocationCommand ?? (_openLocalTrackLocationCommand = new RelayCommand(parameter =>
+                {
+                    var localTrack = parameter as LocalPlayable;
+                    if (localTrack != null)
+                    {
+                        Process.Start("explorer.exe", $"/select,\"{localTrack.TrackPath}\"");
+                        return;
+                    }
+
+                    var streamable = parameter as Streamable;
+                    if (streamable != null)
+                        Process.Start(streamable.Url);
                 }));
             }
         }

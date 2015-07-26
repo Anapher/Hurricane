@@ -41,7 +41,7 @@ namespace Hurricane.Model.Music.Playlist
                 throw new InvalidOperationException();
 
             var nextPlayable = QueueItems[0];
-            QueueItems.RemoveAt(0);
+            RemoveQueueItem(nextPlayable);
             RefreshIDs();
             return nextPlayable.Playable;
         }
@@ -54,6 +54,7 @@ namespace Hurricane.Model.Music.Playlist
         public void AddTrackToQueue(IPlayable playable, TimeSpan duration)
         {
             QueueItems.Add(new QueueItem { Playable = playable, Duration = duration });
+            playable.IsQueued = true;
         }
 
         public void AddTrackToQueue(PlayableBase playableBase)
@@ -63,7 +64,13 @@ namespace Hurricane.Model.Music.Playlist
 
         public void RemoveTrackFromQueue(IPlayable playable)
         {
-            QueueItems.Remove(QueueItems.First(x => x.Playable == playable));
+            RemoveQueueItem(QueueItems.First(x => x.Playable == playable));
+        }
+
+        public void RemoveQueueItem(QueueItem queueItem)
+        {
+            QueueItems.Remove(queueItem);
+            queueItem.Playable.IsQueued = false;
         }
 
         private void RefreshIDs()

@@ -10,17 +10,18 @@
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Colors.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/Blue.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/BaseLight.xaml" />
-                <ResourceDictionary Source="/Resources/MagicWindow.xaml"/>
-                <ResourceDictionary Source="/Resources/MagicControls.xaml"/>
-                <ResourceDictionary Source="/Resources/VectorGraphics.xaml"/>
-                <ResourceDictionary Source="/Resources/Styles/Controls.xaml"/>
-                <ResourceDictionary Source="/Resources/Styles/AnimatedSlider.xaml"/>
-                <ResourceDictionary Source="/Resources/Languages/Hurricane.de-de.xaml"/>
+                <ResourceDictionary Source="/Resources/MagicWindow.xaml" />
+                <ResourceDictionary Source="/Resources/MagicControls.xaml" />
+                <ResourceDictionary Source="/Resources/VectorGraphics.xaml" />
+                <ResourceDictionary Source="/Resources/Styles/Controls.xaml" />
+                <ResourceDictionary Source="/Resources/Styles/AnimatedSlider.xaml" />
+                <ResourceDictionary Source="/Resources/Languages/Hurricane.de-de.xaml" />
             </ResourceDictionary.MergedDictionaries>
-            <converter:TimespanToStringConverter x:Key="TimespanToStringConverter"/>
-            <converter:IsEmptyStringConverter x:Key="IsEmptyStringConverter"/>
-            <converter:IsNullConverter x:Key="IsNullConverter"/>
-            <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+            <converter:TimespanToStringConverter x:Key="TimespanToStringConverter" />
+            <converter:IsEmptyStringConverter x:Key="IsEmptyStringConverter" />
+            <converter:IsNullConverter x:Key="IsNullConverter" />
+            <converter:GetTrackTypeConverter x:Key="GetTrackTypeConverter" />
+            <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
         </ResourceDictionary>
     </Application.Resources>
 </Application>

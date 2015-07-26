@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Net;
@@ -108,7 +109,7 @@ namespace Hurricane.Model.DataApi
                 if (string.IsNullOrEmpty(artist.MusicBrainzId))
                     artist.MusicBrainzId = artistInfo.artist.mbid;
 
-                var topTracksTask =
+                var topTracks = await 
                     wc.DownloadStringTaskAsync(string.IsNullOrEmpty(artist.MusicBrainzId)
                         ? $"http://ws.audioscrobbler.com/2.0/?method=artist.gettoptracks&artist={artist.Name}&api_key={SensitiveInformation.LastfmKey}&limit=10&format=json"
                         : $"http://ws.audioscrobbler.com/2.0/?method=artist.gettoptracks&mbid={artist.MusicBrainzId}&api_key={SensitiveInformation.LastfmKey}&limit=10&format=json");
@@ -145,7 +146,7 @@ namespace Hurricane.Model.DataApi
                 try
                 {
                     topTrackResult =
-                        JsonConvert.DeserializeObject<GetTopTracksResult>((await topTracksTask).FixJsonString());
+                        JsonConvert.DeserializeObject<GetTopTracksResult>(topTracks.FixJsonString());
                 }
                 catch (JsonException)
                 {
