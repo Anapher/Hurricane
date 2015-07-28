@@ -24,6 +24,10 @@
     <system:String x:Key="FileLocation">Dateiort</system:String>
     <system:String x:Key="Remove">Entfernen</system:String>
     <system:String x:Key="OpenUrl">Url öffnen</system:String>
+    <system:String x:Key="RemoveTracks">Tracks entfernen</system:String>
+    <system:String x:Key="RemoveTracksMessage">Sind Sie sicher, dass Sie {0} Tracks entfernen möchten? Lokale Dateien werden nicht verändert. Die Tracks werden auch aus den Wiedergabelisten entfernt.</system:String>
+    <system:String x:Key="RemoveTrackMessage">Sind Sie sicher, dass Sie den Track &quot;{0}&quot; entfernen möchten? Lokale Dateien werden nicht verändert. Der Track wird auch aus Wiedergabelisten entfernt.</system:String>
+    <system:String x:Key="Cancel">Abbrechen</system:String>
 
     <system:String x:Key="AddFiles">Dateien hinzufügen</system:String>
     <system:String x:Key="AddDirectory">Ordner hinzufügen</system:String>
@@ -92,4 +96,6 @@
     <system:String x:Key="Yellow">Gelb</system:String>
     <system:String x:Key="BaseLight">Hell</system:String>
     <system:String x:Key="BaseDark">Dunkel</system:String>
+    
+    <system:String x:Key="Enter">Enter</system:String>
 </ResourceDictionary>

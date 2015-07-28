@@ -50,7 +50,7 @@ namespace Hurricane.Model.Data
 
                 var track = await GetTrack(fileInfo, extensions);
 
-                if (playlist != null && !playlist.Tracks.Contains(track))
+                if (track != null && playlist != null && !playlist.Tracks.Contains(track))
                     playlist.AddTrack(track);
 
                 if (_cancel)

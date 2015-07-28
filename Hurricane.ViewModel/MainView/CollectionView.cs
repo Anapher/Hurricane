@@ -16,6 +16,8 @@ using Hurricane.Model.Music.TrackProperties;
 using Hurricane.Model.Notifications;
 using Hurricane.Utilities;
 using Hurricane.ViewModel.MainView.Base;
+using MahApps.Metro.Controls;
+using MahApps.Metro.Controls.Dialogs;
 using Ookii.Dialogs.Wpf;
 using TaskExtensions = Hurricane.Utilities.TaskExtensions;
 
@@ -32,6 +34,7 @@ namespace Hurricane.ViewModel.MainView
         private RelayCommand _addToQueueCommand;
         private RelayCommand _openArtistCommand;
         private RelayCommand _openLocalTrackLocationCommand;
+        private RelayCommand _removePlayablesCommand;
 
         public ICollectionView ViewSource { get; private set; }
         public override ViewCategorie ViewCategorie { get; } = ViewCategorie.MyMusic;
@@ -182,6 +185,63 @@ namespace Hurricane.ViewModel.MainView
                     var streamable = parameter as Streamable;
                     if (streamable != null)
                         Process.Start(streamable.Url);
+                }));
+            }
+        }
+
+        public RelayCommand RemovePlayablesCommand
+        {
+            get
+            {
+                return _removePlayablesCommand ?? (_removePlayablesCommand = new RelayCommand(async parameter =>
+                {
+                    var playables = parameter as IList;
+                    if (playables == null)
+                        return;
+
+                    var list = playables.Cast<PlayableBase>().ToList();
+                    if (
+                        await
+                            ((MetroWindow) Application.Current.MainWindow).ShowMessageAsync(
+                                Application.Current.Resources["RemoveTracks"].ToString(),
+                                list.Count == 1
+                                    ? string.Format(Application.Current.Resources["RemoveTrackMessage"].ToString(),
+                                        list[0].Title)
+                                    : string.Format(Application.Current.Resources["RemoveTracksMessage"].ToString(),
+                                        list.Count),
+                                MessageDialogStyle.AffirmativeAndNegative,
+                                new MetroDialogSettings
+                                {
+                                    AffirmativeButtonText = Application.Current.Resources["Remove"].ToString(),
+                                    NegativeButtonText = Application.Current.Resources["Cancel"].ToString()
+                                }) !=
+                        MessageDialogResult.Affirmative)
+                        return;
+
+                    var goForward = false;
+                    foreach (var playableBase in list)
+                    {
+                        foreach (var playlist in MusicDataManager.Playlists.Playlists)
+                        {
+                            //Check for playlists
+                            if (playlist.Tracks.Contains(playableBase))
+                                playlist.RemoveTrack(playableBase);
+
+                            //Check queue
+                            if (MusicDataManager.MusicManager.Queue.QueueItems.Any(x => x.Playable == playableBase))
+                                MusicDataManager.MusicManager.Queue.RemoveTrackFromQueue(playableBase);
+
+                            //Check if track is playing
+                            if (MusicDataManager.MusicManager.CurrentTrack == playableBase)
+                                goForward = true;
+
+                            //Good bye
+                            await MusicDataManager.Tracks.RemoveTrack(playableBase);
+                        }
+                    }
+
+                    if (goForward)
+                        await MusicDataManager.MusicManager.GoForward();
                 }));
             }
         }

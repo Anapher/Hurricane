@@ -53,7 +53,7 @@ namespace Hurricane.WindowSkinNormal.Views
             if (_cachedViews.ContainsKey(viewModelType))
                 return _cachedViews[viewModelType];
 
-            var view = (FrameworkElement)Activator.CreateInstance(viewType);
+            var view = (FrameworkElement) Activator.CreateInstance(viewType);
             view.DataContext = viewModel;
 
             _cachedViews.Add(viewModelType, view);

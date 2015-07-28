@@ -339,9 +339,9 @@
                                                         <Setter.Value>
                                                             <Grid Background="{StaticResource GrayBrush10}">
                                                                 <Viewbox Width="25"
-                                                         Height="25"
-                                                         HorizontalAlignment="Center"
-                                                         VerticalAlignment="Center">
+                                                                         Height="25"
+                                                                         HorizontalAlignment="Center"
+                                                                         VerticalAlignment="Center">
                                                                     <Path Data="{StaticResource VectorMicrophone}" Fill="{StaticResource WhiteBrush}" />
                                                                 </Viewbox>
                                                             </Grid>
@@ -501,6 +501,14 @@
                                     Command="{Binding AddToQueueCommand}"
                                     CommandParameter="{Binding ElementName=TrackListView,
                                                                Path=SelectedItems}" />
+                        <KeyBinding Key="Enter"
+                                    Command="{Binding PlayAudioCommand}"
+                                    CommandParameter="{Binding ElementName=TrackListView,
+                                                               Path=SelectedItem}" />
+                        <KeyBinding Key="Delete"
+                                    Command="{Binding RemovePlayablesCommand}"
+                                    CommandParameter="{Binding ElementName=TrackListView,
+                                                               Path=SelectedItems}" />
                     </ListView.InputBindings>
                     <ListView.View>
                         <GridView d:DataContext="{d:DesignInstance data:IPlayable}">
@@ -563,7 +571,8 @@
                             <MenuItem Command="{Binding RelativeSource={RelativeSource AncestorType=ListView},
                                                         Path=DataContext.PlayAudioCommand}"
                                       CommandParameter="{Binding}"
-                                      Header="{DynamicResource Play}" />
+                                      Header="{DynamicResource Play}"
+                                      InputGestureText="{DynamicResource Enter}" />
                             <Separator />
                             <MenuItem CommandParameter="{Binding}" Header="{DynamicResource TrackInformation}" />
                             <MenuItem Command="{Binding RelativeSource={RelativeSource AncestorType=ListView},
@@ -600,7 +609,11 @@
                                 </MenuItem.Style>
                             </MenuItem>
                             <Separator />
-                            <MenuItem Header="{DynamicResource Remove}" />
+                            <MenuItem Command="{Binding RelativeSource={RelativeSource AncestorType=ListView},
+                                                        Path=DataContext.RemovePlayablesCommand}"
+                                      CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=ListView},
+                                                                 Path=SelectedItems}"
+                                      Header="{DynamicResource Remove}" />
                         </ContextMenu>
                         <ContextMenu x:Key="StreamableContextMenu" d:DataContext="{d:DesignInstance data:Streamable}">
                             <MenuItem Command="{Binding RelativeSource={RelativeSource AncestorType=ListView},
@@ -643,7 +656,11 @@
                                 </MenuItem.Style>
                             </MenuItem>
                             <Separator />
-                            <MenuItem Header="{DynamicResource Remove}" />
+                            <MenuItem Command="{Binding RelativeSource={RelativeSource AncestorType=ListView},
+                                                        Path=DataContext.RemovePlayablesCommand}"
+                                      CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=ListView},
+                                                                 Path=SelectedItems}"
+                                      Header="{DynamicResource Remove}" />
                         </ContextMenu>
                     </ListView.Resources>
                     <ListView.ItemContainerStyle>
