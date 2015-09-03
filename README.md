@@ -47,6 +47,7 @@ Smart view:
 [website](http://www.hurricaneproject.org/)
 <br/>[vb-paradise.de](https://www.vb-paradise.de/index.php/Thread/108601-Hurricane)
 <br/>[chip.de](http://www.chip.de/downloads/Hurricane_77588182.html)
+<br/>[computerbild.de](http://www.computerbild.de/download/Hurricane-11742809.html)
 
 
 ##License
