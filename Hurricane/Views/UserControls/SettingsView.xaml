@@ -618,7 +618,7 @@
                     </StackPanel>
                 </Grid>
             </TabItem>
-            <TabItem Header="Streaming Services">
+            <!-- <TabItem Header="Streaming Services">
                 <ItemsControl Margin="10" ItemsSource="{Binding MusicManager.TrackSearcher.MusicApis}">
                     <ItemsControl.ItemContainerStyle>
                         <Style TargetType="ContentPresenter">
@@ -649,7 +649,7 @@
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
-            </TabItem>
+            </TabItem>-->
             <TabItem Header="Reset">
                 <StackPanel Margin="10" Orientation="Vertical">
                     <TextBlock Style="{StaticResource TextBlockHeader}" behaviors:TextBlockBehavior.UpperText="{DynamicResource ImportTrack}" />

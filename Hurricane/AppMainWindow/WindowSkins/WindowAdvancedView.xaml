@@ -824,15 +824,10 @@
                                                             <DataTemplate DataType="{x:Type track:YouTubeTrack}">
                                                                 <Path Data="{Binding ProviderVector}" Fill="{StaticResource BlackBrush}" />
                                                             </DataTemplate>
-                                                            <DataTemplate DataType="{x:Type track:GroovesharkTrack}">
-                                                                <Path Data="{Binding ProviderVector}" Fill="{StaticResource BlackBrush}" />
-                                                            </DataTemplate>
                                                             <DataTemplate DataType="{x:Type track:CustomStream}">
                                                                 <Path Data="{Binding ProviderVector}" Fill="{StaticResource BlackBrush}" />
                                                             </DataTemplate>
-                                                            <DataTemplate DataType="{x:Type track:VkontakteTrack}">
-                                                                <Path Data="{Binding ProviderVector}" Fill="{StaticResource BlackBrush}" />
-                                                            </DataTemplate>
+ 
                                                         </ContentControl.Resources>
                                                     </ContentControl>
                                                 </Viewbox>

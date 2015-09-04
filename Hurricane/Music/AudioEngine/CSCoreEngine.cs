@@ -12,20 +12,83 @@ using Hurricane.Music.Visualization;
 using Hurricane.PluginAPI.AudioVisualisation;
 using Hurricane.Settings;
 using Hurricane.ViewModelBase;
+
 // ReSharper disable ExplicitCallerInfoArgument
 
 // ReSharper disable InconsistentNaming
+
 namespace Hurricane.Music.AudioEngine
 {
     public class CSCoreEngine : PropertyChangedBase, IDisposable, ISpectrumProvider
     {
-        #region Consts
-        const int FFTSize = 4096;
-        const double MaxDB = 20;
+        private const int FFTSize = 4096;
+        private const double MaxDB = 20;
+        private readonly Crossfade _crossfade;
+        private readonly VolumeFading _fader;
 
-        #endregion
+        private CancellationTokenSource _cts;
+        private PlayableBase _currenttrack;
+        private TimeSpan _currentTrackPosition;
+        private EqualizerSettings _equalizerSettings;
+        private bool _isdisposing;
 
-        #region Events
+        private bool _isEnabled;
+        private bool _isfadingout;
+
+        private bool _isLoading;
+
+        private bool _manualstop;
+        private bool _playAfterLoading;
+
+        private long _position;
+        private SimpleNotificationSource _simpleNotificationSource;
+        private SingleBlockNotificationStream _singleBlockNotificationStream;
+
+        private ISoundOut _soundOut;
+        private float _volume = 1.0f;
+
+        public CSCoreEngine()
+        {
+            _fader = new VolumeFading();
+            _crossfade = new Crossfade();
+            SoundOutManager = new SoundOutManager(this);
+            SoundOutManager.RefreshSoundOut += (sender, args) => Refresh();
+            SoundOutManager.Enable += (sender, args) => IsEnabled = true;
+            SoundOutManager.Disable += (sender, args) => IsEnabled = false;
+            SoundOutManager.Activate();
+
+            if (IsEnabled)
+                RefreshSoundOut();
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _fader.Dispose();
+                SoundOutManager.Dispose();
+
+                if (_soundOut != null)
+                {
+                    if (_fader.IsFading)
+                    {
+                        _fader.CancelFading();
+                        _fader.WaitForCancel();
+                    }
+                    _soundOut.Dispose();
+                    _crossfade.CancelFading();
+                }
+                if (SoundSource != null) SoundSource.Dispose();
+            }
+        }
+
+        public event EventHandler PlayStateChanged;
         public event EventHandler StartVisualization;
         public event EventHandler TrackFinished;
         public event EventHandler<TrackChangedEventArgs> TrackChanged;
@@ -33,31 +96,8 @@ namespace Hurricane.Music.AudioEngine
         public event EventHandler<PositionChangedEventArgs> PositionChanged;
         public event EventHandler VolumeChanged;
         public event EventHandler<Exception> ExceptionOccurred;
-        public event EventHandler PlayStateChanged;
         public event EventHandler<string> SoundOutErrorOccurred;
 
-        #endregion
-
-        #region Event handler
-        protected void OnTrackFinished()
-        {
-            if (TrackFinished != null) TrackFinished(this, EventArgs.Empty);
-        }
-
-        protected void OnTrackChanged()
-        {
-            if (TrackChanged != null) TrackChanged(this, new TrackChangedEventArgs(CurrentTrack));
-        }
-
-        protected void OnSoundOutErrorOccurred(string message)
-        {
-            if (SoundOutErrorOccurred != null) SoundOutErrorOccurred(this, message);
-        }
-
-        #endregion
-
-        #region Properties
-        private float _volume = 1.0f;
         public float Volume
         {
             get { return _volume; }
@@ -72,7 +112,6 @@ namespace Hurricane.Music.AudioEngine
             }
         }
 
-        private long _position;
         public long Position
         {
             get
@@ -90,22 +129,7 @@ namespace Hurricane.Music.AudioEngine
                 OnPositionChanged();
             }
         }
-        
-        async void SetSoundSourcePosition(long value)
-        {
-            try
-            {
-                await Task.Run(() => SoundSource.Position = value);
-            }
-            catch (Exception)
-            {
-                return;
-            }
 
-            if (PositionChanged != null) PositionChanged(this, new PositionChangedEventArgs((int)CurrentTrackPosition.TotalSeconds, (int)CurrentTrackLength.TotalSeconds));
-        }
-
-        private PlayableBase _currenttrack;
         public PlayableBase CurrentTrack
         {
             get { return _currenttrack; }
@@ -123,11 +147,6 @@ namespace Hurricane.Music.AudioEngine
             get { return SoundSource == null ? 0 : SoundSource.Length; }
         }
 
-        public bool IsPlaying
-        {
-            get { return (_soundOut != null && (!_isfadingout && _soundOut.PlaybackState == PlaybackState.Playing)); }
-        }
-
         public PlaybackState CurrentState
         {
             get
@@ -136,14 +155,10 @@ namespace Hurricane.Music.AudioEngine
                 {
                     return PlaybackState.Stopped;
                 }
-                else
-                {
-                    return _soundOut.PlaybackState;
-                }
+                return _soundOut.PlaybackState;
             }
         }
 
-        private TimeSpan _currentTrackPosition;
         public TimeSpan CurrentTrackPosition
         {
             get { return SoundSource != null ? _currentTrackPosition : TimeSpan.Zero; }
@@ -171,59 +186,71 @@ namespace Hurricane.Music.AudioEngine
 
         public IWaveSource SoundSource { get; protected set; }
 
-        public ConfigSettings Settings { get { return HurricaneSettings.Instance.Config; } }
+        public ConfigSettings Settings
+        {
+            get { return HurricaneSettings.Instance.Config; }
+        }
 
         public SoundOutManager SoundOutManager { get; set; }
 
-        private bool _isLoading;
         public bool IsLoading
         {
             get { return _isLoading; }
-            set
-            {
-                SetProperty(value, ref _isLoading);
-            }
+            set { SetProperty(value, ref _isLoading); }
         }
-        
-        private bool _isEnabled;
+
         public bool IsEnabled
         {
             get { return _isEnabled; }
-            set
-            {
-                SetProperty(value, ref _isEnabled);
-            }
+            set { SetProperty(value, ref _isEnabled); }
         }
-        #endregion
 
-        #region Members
-        private readonly Crossfade _crossfade;
-        private readonly VolumeFading _fader;
-
-        private ISoundOut _soundOut;
-        private SimpleNotificationSource _simpleNotificationSource;
-        private SingleBlockNotificationStream _singleBlockNotificationStream;
-
-        private bool _manualstop;
-        private bool _isfadingout;
-        private bool _playAfterLoading;
-        
-        #endregion
-
-        #region Equalizer
         public Equalizer MusicEqualizer { get; set; }
 
-        private EqualizerSettings _equalizerSettings;
         public EqualizerSettings EqualizerSettings
         {
             get { return _equalizerSettings; }
-            set
-            {
-                if (SetProperty(value, ref _equalizerSettings)) value.EqualizerChanged += value_EqualizerChanged;
-            }
+            set { if (SetProperty(value, ref _equalizerSettings)) value.EqualizerChanged += value_EqualizerChanged; }
         }
 
-        void value_EqualizerChanged(object sender, EqualizerChangedEventArgs e)
+        public bool IsPlaying
+        {
+            get { return (_soundOut != null && (!_isfadingout && _soundOut.PlaybackState == PlaybackState.Playing)); }
+        }
+
+        protected void OnTrackFinished()
+        {
+            if (TrackFinished != null) TrackFinished(this, EventArgs.Empty);
+        }
+
+        protected void OnTrackChanged()
+        {
+            if (TrackChanged != null) TrackChanged(this, new TrackChangedEventArgs(CurrentTrack));
+        }
+
+        protected void OnSoundOutErrorOccurred(string message)
+        {
+            if (SoundOutErrorOccurred != null) SoundOutErrorOccurred(this, message);
+        }
+
+        private async void SetSoundSourcePosition(long value)
+        {
+            try
+            {
+                await Task.Run(() => SoundSource.Position = value);
+            }
+            catch (Exception)
+            {
+                return;
+            }
+
+            if (PositionChanged != null)
+                PositionChanged(this,
+                    new PositionChangedEventArgs((int) CurrentTrackPosition.TotalSeconds,
+                        (int) CurrentTrackLength.TotalSeconds));
+        }
+
+        private void value_EqualizerChanged(object sender, EqualizerChangedEventArgs e)
         {
             SetEqualizerValue(e.EqualizerValue, e.EqualizerNumber);
         }
@@ -231,24 +258,21 @@ namespace Hurricane.Music.AudioEngine
         protected void SetEqualizerValue(double value, int number)
         {
             if (MusicEqualizer == null) return;
-            var perc = (value / 100);
-            var newvalue = (float)(perc * MaxDB);
+            var perc = (value/100);
+            var newvalue = (float) (perc*MaxDB);
             //the tag of the trackbar contains the index of the filter
-            EqualizerFilter filter = MusicEqualizer.SampleFilters[number];
+            var filter = MusicEqualizer.SampleFilters[number];
             filter.AverageGainDB = newvalue;
         }
 
         protected void SetAllEqualizerSettings()
         {
-            for (int i = 0; i < EqualizerSettings.Bands.Count; i++)
+            for (var i = 0; i < EqualizerSettings.Bands.Count; i++)
             {
                 SetEqualizerValue(EqualizerSettings.Bands[i].Value, i);
             }
         }
 
-        #endregion
-
-        #region Public Methods
         public async Task<bool> OpenTrack(PlayableBase track)
         {
             if (!IsEnabled)
@@ -260,8 +284,15 @@ namespace Hurricane.Music.AudioEngine
             _playAfterLoading = false;
             IsLoading = true;
             StopPlayback();
-            if (CurrentTrack != null) { CurrentTrack.IsOpened = false; CurrentTrack.Unload(); }
-            if (SoundSource != null && !_crossfade.IsCrossfading) { SoundSource.Dispose(); }
+            if (CurrentTrack != null)
+            {
+                CurrentTrack.IsOpened = false;
+                CurrentTrack.Unload();
+            }
+            if (SoundSource != null && !_crossfade.IsCrossfading)
+            {
+                SoundSource.Dispose();
+            }
             track.IsOpened = true;
             CurrentTrack = track;
             var t = Task.Run(() => track.Load());
@@ -277,7 +308,7 @@ namespace Hurricane.Music.AudioEngine
                     track.IsOpened = false;
                     IsLoading = false;
                     CurrentTrack = null;
-                    if (ExceptionOccurred != null) ExceptionOccurred(this, (Exception)result.CustomState);
+                    if (ExceptionOccurred != null) ExceptionOccurred(this, (Exception) result.CustomState);
                     StopPlayback();
                     return false;
             }
@@ -286,12 +317,15 @@ namespace Hurricane.Music.AudioEngine
             {
                 SoundSource = SoundSource.ChangeSampleRate(44100);
             }
-            else if (Settings.SampleRate > -1) { SoundSource = SoundSource.ChangeSampleRate(Settings.SampleRate); }
+            else if (Settings.SampleRate > -1)
+            {
+                SoundSource = SoundSource.ChangeSampleRate(Settings.SampleRate);
+            }
 
             SoundSource = SoundSource
-                .AppendSource(Equalizer.Create10BandEqualizer, out equalizer)
+                .AppendSource(x => Equalizer.Create10BandEqualizer(x.ToSampleSource()), out equalizer)
                 .AppendSource(x => new SingleBlockNotificationStream(x), out _singleBlockNotificationStream)
-                .AppendSource(x => new SimpleNotificationSource(x) { Interval = 100 }, out _simpleNotificationSource)
+                .AppendSource(x => new SimpleNotificationSource(x) {Interval = 100}, out _simpleNotificationSource)
                 .ToWaveSource(Settings.WaveSourceBits);
 
             MusicEqualizer = equalizer;
@@ -329,7 +363,6 @@ namespace Hurricane.Music.AudioEngine
             return true;
         }
 
-        private CancellationTokenSource _cts;
         private async Task<Result> SetSoundSource(PlayableBase track)
         {
             if (_cts != null)
@@ -378,7 +411,7 @@ namespace Hurricane.Music.AudioEngine
                 CurrentTrack = null;
                 SoundSource = null;
             }
-            
+
             OnPropertyChanged("TrackLength");
             OnPropertyChanged("CurrentTrackLength");
             OnPositionChanged();
@@ -396,10 +429,17 @@ namespace Hurricane.Music.AudioEngine
                 }
 
                 if (CurrentTrack == null) return;
-                if (_fader != null && _fader.IsFading) { _fader.CancelFading(); _fader.WaitForCancel(); }
+                if (_fader != null && _fader.IsFading)
+                {
+                    _fader.CancelFading();
+                    _fader.WaitForCancel();
+                }
                 if (_soundOut.PlaybackState == PlaybackState.Playing)
                 {
-                    if (_crossfade != null && _crossfade.IsCrossfading) { _crossfade.CancelFading(); }
+                    if (_crossfade != null && _crossfade.IsCrossfading)
+                    {
+                        _crossfade.CancelFading();
+                    }
                     _isfadingout = true;
                     CurrentStateChanged();
                     await _fader.FadeOut(_soundOut, Volume);
@@ -419,9 +459,7 @@ namespace Hurricane.Music.AudioEngine
                 //Nearly everywhere in this code block can an ObjectDisposedException get thrown. We can safely ignore that
             }
         }
-        #endregion
 
-        #region Protected Methods
         protected void OnPositionChanged()
         {
             CurrentTrackPosition = TimeSpan.FromMilliseconds(SoundSource.WaveFormat.BytesToMilliseconds(Position));
@@ -436,23 +474,25 @@ namespace Hurricane.Music.AudioEngine
             if (PlaybackStateChanged != null) PlaybackStateChanged(this, new PlayStateChangedEventArgs(CurrentState));
         }
 
-        void notificationSource_SingleBlockRead(object sender, SingleBlockReadEventArgs e)
+        private void notificationSource_SingleBlockRead(object sender, SingleBlockReadEventArgs e)
         {
             if (_analyser != null)
                 _analyser.Add(e.Left, e.Right);
         }
 
-        void notifysource_BlockRead(object sender, EventArgs e)
+        private void notifysource_BlockRead(object sender, EventArgs e)
         {
             _position = SoundSource.Position;
             OnPositionChanged();
-            
-            var seconds = (int)CurrentTrackPosition.TotalSeconds;
-            var totalseconds = (int)CurrentTrackLength.TotalSeconds;
-            if (PositionChanged != null)
-                Application.Current.Dispatcher.Invoke(() => PositionChanged(this, new PositionChangedEventArgs(seconds, totalseconds)));
 
-            if (Settings.IsCrossfadeEnabled && totalseconds - Settings.CrossfadeDuration > 6 && !_crossfade.IsCrossfading && totalseconds - seconds < Settings.CrossfadeDuration)
+            var seconds = (int) CurrentTrackPosition.TotalSeconds;
+            var totalseconds = (int) CurrentTrackLength.TotalSeconds;
+            if (PositionChanged != null)
+                Application.Current.Dispatcher.Invoke(
+                    () => PositionChanged(this, new PositionChangedEventArgs(seconds, totalseconds)));
+
+            if (Settings.IsCrossfadeEnabled && totalseconds - Settings.CrossfadeDuration > 6 &&
+                !_crossfade.IsCrossfading && totalseconds - seconds < Settings.CrossfadeDuration)
             {
                 _fader.OutDuration = totalseconds - seconds;
                 _crossfade.FadeOut(Settings.CrossfadeDuration, _soundOut);
@@ -467,25 +507,6 @@ namespace Hurricane.Music.AudioEngine
             }
         }
 
-        #endregion
-
-        #region Constructor
-        public CSCoreEngine()
-        {
-            _fader = new VolumeFading();
-            _crossfade = new Crossfade();
-            SoundOutManager = new SoundOutManager(this);
-            SoundOutManager.RefreshSoundOut += (sender, args) => Refresh();
-            SoundOutManager.Enable += (sender, args) => IsEnabled = true;
-            SoundOutManager.Disable += (sender, args) => IsEnabled = false;
-            SoundOutManager.Activate();
-            if (IsEnabled) RefreshSoundOut();
-        }
-
-        #endregion
-
-        #region SoundOut
-
         public void RefreshSoundOut()
         {
             _soundOut = SoundOutManager.GetNewSoundSource();
@@ -496,7 +517,11 @@ namespace Hurricane.Music.AudioEngine
         {
             var position = Position;
             var isplaying = IsPlaying;
-            if (_soundOut != null) { StopPlayback(); _soundOut.Dispose(); }
+            if (_soundOut != null)
+            {
+                StopPlayback();
+                _soundOut.Dispose();
+            }
             if (SoundSource != null) SoundSource.Dispose();
             RefreshSoundOut();
             if (CurrentTrack != null)
@@ -509,17 +534,20 @@ namespace Hurricane.Music.AudioEngine
             }
         }
 
-        void soundOut_Stopped(object sender, PlaybackStoppedEventArgs e)
+        private void soundOut_Stopped(object sender, PlaybackStoppedEventArgs e)
         {
             if (_isdisposing) return;
-            if (_manualstop) { _manualstop = false; return; }
+            if (_manualstop)
+            {
+                _manualstop = false;
+                return;
+            }
             if (!e.HasError) OnTrackFinished();
             CurrentStateChanged();
         }
-        #endregion
 
-        #region Visualization Support
-        SampleAnalyser _analyser;
+        private SampleAnalyser _analyser;
+
         public bool GetFFTData(float[] fftDataBuffer)
         {
             _analyser.CalculateFFT(fftDataBuffer);
@@ -531,34 +559,13 @@ namespace Hurricane.Music.AudioEngine
             double f;
             if (SoundSource != null)
             {
-                f = SoundSource.WaveFormat.SampleRate / 2.0;
+                f = SoundSource.WaveFormat.SampleRate/2.0;
             }
             else
             {
                 f = 22050; //44100 / 2
             }
-            return Convert.ToInt32((frequency / f) * (FFTSize / 2));
+            return Convert.ToInt32((frequency/f)*(FFTSize/2));
         }
-        #endregion
-
-        #region IDisposable Support
-
-        private bool _isdisposing;
-        public void Dispose()
-        {
-            _isdisposing = true;
-            _fader.Dispose();
-             SoundOutManager.Dispose();
-
-            if (_soundOut != null)
-            {
-                if (_fader.IsFading) { _fader.CancelFading(); _fader.WaitForCancel(); }
-                _soundOut.Dispose();
-                _crossfade.CancelFading();
-            }
-            if (SoundSource != null) SoundSource.Dispose();
-        }
-
-        #endregion
     }
 }

@@ -30,14 +30,14 @@ namespace Hurricane.Music.AudioEngine
 
         public override long Length
         {
-            get { return this.GetBytes(TrackLength); }
+            get { return this.GetRawElements(TrackLength); }
         }
 
         public override long Position
         {
-            get { return base.Position - this.GetBytes(StartPosition); }
+            get { return base.Position - this.GetRawElements(StartPosition); ; }
             set {
-                var position = value + this.GetBytes(StartPosition);
+                var position = value + this.GetRawElements(StartPosition); ;
                 if (value < 0 || position < 0)
                     throw new ArgumentOutOfRangeException("Invalid Position");
                 base.Position = position;

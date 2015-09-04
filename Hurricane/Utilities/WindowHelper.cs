@@ -9,6 +9,13 @@ namespace Hurricane.Utilities
 {
     static class WindowHelper
     {
+        private const int GWL_STYLE = -16,
+                  WS_MAXIMIZEBOX = 0x10000,
+                  WS_MINIMIZEBOX = 0x20000;
+
+        private const int WS_EX_TOOLWINDOW = 0x00000080;
+        private const int GWL_EXSTYLE = (-20);
+
         public static string GetActiveWindowTitle(IntPtr handle)
         {
             const int nChars = 256;
@@ -50,9 +57,15 @@ namespace Hurricane.Utilities
             return string.Empty;
         }
 
-        private const int GWL_STYLE = -16,
-                          WS_MAXIMIZEBOX = 0x10000,
-                          WS_MINIMIZEBOX = 0x20000;
+        public static void HideFromAltTab(Window window)
+        {
+            var wndHelper = new WindowInteropHelper(window);
+            int exStyle =
+                UnsafeNativeMethods.GetWindowLong(wndHelper.Handle,
+                    GWL_EXSTYLE);
+            exStyle |= WS_EX_TOOLWINDOW;
+            UnsafeNativeMethods.SetWindowLong(wndHelper.Handle, GWL_EXSTYLE, exStyle);
+        }
 
 
         internal static void HideMinimizeAndMaximizeButtons(Window window)

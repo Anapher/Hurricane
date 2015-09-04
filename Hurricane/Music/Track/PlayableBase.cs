@@ -11,26 +11,50 @@ using Hurricane.Music.AudioEngine;
 using Hurricane.Music.Data;
 using Hurricane.Music.MusicCover;
 using Hurricane.Settings;
-using Hurricane.ViewModelBase;
 using Hurricane.Utilities;
+using Hurricane.ViewModelBase;
+using Hurricane.ViewModels;
+
 // ReSharper disable ExplicitCallerInfoArgument
 
 namespace Hurricane.Music.Track
 {
     [Serializable, XmlType(TypeName = "Playable"),
-    XmlInclude(typeof(LocalTrack)),
-    XmlInclude(typeof(LocalTrackFragment)),
-    XmlInclude(typeof(SoundCloudTrack)),
-    XmlInclude(typeof(YouTubeTrack)),
-    XmlInclude(typeof(GroovesharkTrack)),
-    XmlInclude(typeof(CustomStream)),
-    XmlInclude(typeof(VkontakteTrack))]
-    public abstract class PlayableBase : PropertyChangedBase, IEquatable<PlayableBase>, IRepresentable, IMusicInformation
+     XmlInclude(typeof (LocalTrack)),
+     XmlInclude(typeof (LocalTrackFragment)),
+     XmlInclude(typeof (SoundCloudTrack)),
+     XmlInclude(typeof (YouTubeTrack)),
+     XmlInclude(typeof (CustomStream))]
+    public abstract class PlayableBase : PropertyChangedBase, IEquatable<PlayableBase>, IRepresentable,
+        IMusicInformation
     {
-        #region Events
-        public event EventHandler ImageLoadedComplete;
+        private string _artist;
 
-        #endregion
+        private CancellationTokenSource _disposeImageCancellationToken;
+
+        private BitmapImage _image;
+
+        private bool _isAdded;
+
+        private bool _isChecked;
+
+        private bool _isFavorite;
+
+        private bool _isLoadingImage;
+
+        private bool _isOpened;
+
+        private bool _isRemoving;
+
+        private string _queueId;
+
+        private string _title;
+
+        protected PlayableBase()
+        {
+            AuthenticationCode = DateTime.Now.Ticks;
+            IsChecked = true;
+        }
 
         public long AuthenticationCode { get; set; }
 
@@ -38,13 +62,11 @@ namespace Hurricane.Music.Track
         // ReSharper disable once InconsistentNaming
         [DefaultValue(0)]
         public int kHz { get; set; }
+
         // ReSharper disable once InconsistentNaming
         public int kbps { get; set; }
         public DateTime TimeAdded { get; set; }
         public DateTime LastTimePlayed { get; set; }
-        public string Album { get; set; }
-        public uint Year { get; set; }
-        public List<Genre> Genres { get; set; }
 
         [DefaultValue(0)]
         public int TrackNumber { get; set; } // number of this track in album; useful for sorting
@@ -55,18 +77,13 @@ namespace Hurricane.Music.Track
         [DefaultValue(0.0)]
         public double EndTime { get; set; }
 
-        private bool _isChecked;
         [DefaultValue(true)]
         public bool IsChecked
         {
             get { return _isChecked; }
-            set
-            {
-                SetProperty(value, ref _isChecked);
-            }
+            set { SetProperty(value, ref _isChecked); }
         }
 
-        private bool _isFavorite;
         [DefaultValue(false)]
         public bool IsFavorite
         {
@@ -75,86 +92,34 @@ namespace Hurricane.Music.Track
             {
                 if (SetProperty(value, ref _isFavorite))
                 {
-                    if (ViewModels.MainViewModel.Instance.MusicManager == null) return;
-                    if (value) // I know that this is ugly as hell but it would be a pain to drop all events to the favorite list. If you got an idea to solve this problem, please tell me
+                    if (MainViewModel.Instance.MusicManager == null) return;
+                    if (value)
+                        // I know that this is ugly as hell but it would be a pain to drop all events to the favorite list. If you got an idea to solve this problem, please tell me
                     {
-                        ViewModels.MainViewModel.Instance.MusicManager.FavoritePlaylist.AddTrack(this);
+                        MainViewModel.Instance.MusicManager.FavoritePlaylist.AddTrack(this);
                     }
-                    else { ViewModels.MainViewModel.Instance.MusicManager.FavoritePlaylist.RemoveTrack(this); }
+                    else
+                    {
+                        MainViewModel.Instance.MusicManager.FavoritePlaylist.RemoveTrack(this);
+                    }
                 }
             }
         }
 
-        private string _title;
-        public string Title
-        {
-            get { return _title; }
-            set
-            {
-                _title = value;
-                OnPropertyChanged("DisplayText");
-                OnPropertyChanged();
-            }
-        }
-
-        private string _artist;
-        public string Artist
-        {
-            get { return _artist; }
-            set
-            {
-                _artist = value;
-                OnPropertyChanged("DisplayText");
-                OnPropertyChanged();
-            }
-        }
-
-        private bool _isOpened;
         [XmlIgnore]
         public bool IsOpened
         {
             get { return _isOpened; }
-            set
-            {
-                SetProperty(value, ref _isOpened);
-            }
+            set { SetProperty(value, ref _isOpened); }
         }
 
-        private BitmapImage _image;
         [XmlIgnore]
-        public BitmapImage Image
-        {
-            get { return _image; }
-            set
-            {
-                if (value != null && !value.IsFrozen) value.Freeze(); //The image has to be thread save
-                SetProperty(value, ref _image);
-            }
-        }
-
-        private bool _isLoadingImage;
-        [XmlIgnore]
-        public bool IsLoadingImage
-        {
-            get { return _isLoadingImage; }
-            set
-            {
-                SetProperty(value, ref _isLoadingImage);
-            }
-        }
-
-        private string _queueId;
-        [XmlIgnore]
-        public string QueueId //I know that the id should be an int, but it wouldn't make sense because what would be the id for non queued track? We would need a converter -> less performance -> string is wurf
+        public string QueueId
+            //I know that the id should be an int, but it wouldn't make sense because what would be the id for non queued track? We would need a converter -> less performance -> string is wurf
         {
             get { return _queueId; }
-            set
-            {
-                SetProperty(value, ref _queueId);
-            }
+            set { SetProperty(value, ref _queueId); }
         }
-
-        #region ReadOnly Properties
 
         public TimeSpan DurationTimespan
         {
@@ -166,24 +131,101 @@ namespace Hurricane.Music.Track
 
         public string DisplayText
         {
-            get { return !string.IsNullOrEmpty(Artist) && HurricaneSettings.Instance.Config.ShowArtistAndTitle ? string.Format("{0} - {1}", Artist, Title) : Title; }
+            get
+            {
+                return !string.IsNullOrEmpty(Artist) && HurricaneSettings.Instance.Config.ShowArtistAndTitle
+                    ? string.Format("{0} - {1}", Artist, Title)
+                    : Title;
+            }
         }
 
-        #endregion
-
-        #region Abstract members
-
         public abstract bool TrackExists { get; }
+        public abstract TrackType TrackType { get; }
+
+        [XmlIgnore]
+        public bool IsRemoving
+        {
+            get { return _isRemoving; }
+            set { SetProperty(value, ref _isRemoving); }
+        }
+
+        [XmlIgnore]
+        public bool IsAdded
+        {
+            get { return _isAdded; }
+            set { SetProperty(value, ref _isAdded); }
+        }
+
+        public abstract bool Equals(PlayableBase other);
+        public string Album { get; set; }
+        public uint Year { get; set; }
+        public List<Genre> Genres { get; set; }
+
+        public string Title
+        {
+            get { return _title; }
+            set
+            {
+                _title = value;
+                OnPropertyChanged("DisplayText");
+                OnPropertyChanged();
+            }
+        }
+
+        public string Artist
+        {
+            get { return _artist; }
+            set
+            {
+                _artist = value;
+                OnPropertyChanged("DisplayText");
+                OnPropertyChanged();
+            }
+        }
+
+        TimeSpan IMusicInformation.Duration
+        {
+            get { return DurationTimespan; }
+            set { throw new NotImplementedException(); }
+        }
+
+        public async Task<BitmapImage> GetImage()
+        {
+            if (Image == null)
+            {
+                var waiter = new AutoResetEvent(false);
+
+                ImageLoadedComplete += (s, e) => { waiter.Set(); };
+                Load();
+                await Task.Run(() => waiter.WaitOne(2000));
+            }
+            return Image;
+        }
+
+        public event EventHandler ImageLoadedComplete;
+
+        [XmlIgnore]
+        public BitmapImage Image
+        {
+            get { return _image; }
+            set
+            {
+                if (value != null && !value.IsFrozen) value.Freeze(); //The image has to be thread save
+                SetProperty(value, ref _image);
+            }
+        }
+
+        [XmlIgnore]
+        public bool IsLoadingImage
+        {
+            get { return _isLoadingImage; }
+            set { SetProperty(value, ref _isLoadingImage); }
+        }
+
         public abstract Task<bool> LoadInformation();
         public abstract void OpenTrackLocation();
-        public abstract TrackType TrackType { get; }
         public abstract Task<IWaveSource> GetSoundSource();
-        public abstract bool Equals(PlayableBase other);
         protected abstract Task LoadImage(DirectoryInfo albumCoverDirectory);
-
-        #endregion
-
-        #region Image
 
         public async void Load()
         {
@@ -200,8 +242,7 @@ namespace Hurricane.Music.Track
             OnImageLoadComplete();
         }
 
-        private CancellationTokenSource _disposeImageCancellationToken;
-        public async virtual void Unload()
+        public virtual async void Unload()
         {
             if (Image != null)
             {
@@ -225,40 +266,10 @@ namespace Hurricane.Music.Track
             OnPropertyChanged("TrackExists");
         }
 
-        #endregion
-
         public override string ToString()
         {
             return DisplayText;
         }
-
-        #region Animations
-
-        private bool _isRemoving;
-        [XmlIgnore]
-        public bool IsRemoving
-        {
-            get { return _isRemoving; }
-            set
-            {
-                SetProperty(value, ref _isRemoving);
-            }
-        }
-
-        private bool _isAdded;
-        [XmlIgnore]
-        public bool IsAdded
-        {
-            get { return _isAdded; }
-            set
-            {
-                SetProperty(value, ref _isAdded);
-            }
-        }
-
-        #endregion
-
-        #region Protected Methods
 
         protected virtual void OnImageLoadComplete()
         {
@@ -282,10 +293,6 @@ namespace Hurricane.Music.Track
             return source.AppendSource(x => new CutSource(x, startTime, endTime - startTime));
         }
 
-        #endregion
-
-        #region Public Methods
-
         public virtual async Task<bool> CheckTrack()
         {
             if (!TrackExists) return false;
@@ -294,7 +301,7 @@ namespace Hurricane.Music.Track
                 using (var soundSource = await GetSoundSource())
                 {
                     SetDuration(soundSource.GetLength());
-                    kHz = soundSource.WaveFormat.SampleRate / 1000;
+                    kHz = soundSource.WaveFormat.SampleRate/1000;
                 }
             }
             catch (Exception)
@@ -304,36 +311,6 @@ namespace Hurricane.Music.Track
 
             IsChecked = true;
             return true;
-        }
-
-        #endregion
-
-        protected PlayableBase()
-        {
-            AuthenticationCode = DateTime.Now.Ticks;
-            IsChecked = true;
-        }
-
-        TimeSpan IMusicInformation.Duration
-        {
-            get { return DurationTimespan; }
-            set
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        public async Task<BitmapImage> GetImage()
-        {
-            if (Image == null)
-            {
-                var waiter = new AutoResetEvent(false);
-
-                ImageLoadedComplete += (s, e) => { waiter.Set(); };
-                Load();
-                await Task.Run(() => waiter.WaitOne(2000));
-            }
-            return Image;
         }
 
         public static Genre StringToGenre(string genre)
@@ -465,5 +442,9 @@ namespace Hurricane.Music.Track
         }
     }
 
-    public enum TrackType { File, Stream }
+    public enum TrackType
+    {
+        File,
+        Stream
+    }
 }

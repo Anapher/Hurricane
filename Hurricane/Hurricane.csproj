@@ -56,9 +56,9 @@
     <StartupObject>Hurricane.App</StartupObject>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="CSCore, Version=1.0.0.2, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Libraries\CSCore.dll</HintPath>
+    <Reference Include="CSCore, Version=1.1.5697.25221, Culture=neutral, PublicKeyToken=5a08f2b6f4415dea, processorArchitecture=MSIL">
+      <HintPath>..\packages\CSCore.1.1-alpha1\lib\net35-client\CSCore.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="Exceptionless.Extras, Version=3.0.1319.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -82,9 +82,6 @@
     <Reference Include="Hardcodet.Wpf.TaskbarNotification">
       <HintPath>..\packages\Hardcodet.NotifyIcon.Wpf.1.0.5\lib\net45\Hardcodet.Wpf.TaskbarNotification.dll</HintPath>
     </Reference>
-    <Reference Include="HtmlAgilityPack">
-      <HintPath>..\packages\HtmlAgilityPack.1.4.9\lib\Net45\HtmlAgilityPack.dll</HintPath>
-    </Reference>
     <Reference Include="ICSharpCode.SharpZipLib">
       <HintPath>..\packages\SharpZipLib.0.86.0\lib\20\ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
@@ -92,9 +89,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Libraries\MahApps.Metro.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Newtonsoft.Json.6.0.8\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.7.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -213,6 +210,7 @@
     <Compile Include="GUI\Controls\VolumeIcon.xaml.cs">
       <DependentUpon>VolumeIcon.xaml</DependentUpon>
     </Compile>
+    <Compile Include="MagicArrow\WindowHider.cs" />
     <Compile Include="Music\Download\DownloadSettings.cs" />
     <Compile Include="Music\Download\ffmpeg.cs" />
     <Compile Include="Music\Download\GroovesharkApi.cs" />
@@ -223,23 +221,9 @@
     <Compile Include="Music\AudioEngine\SoundOutManager.cs" />
     <Compile Include="Music\Proxy\HttpProxy.cs" />
     <Compile Include="Music\Proxy\ProxyEntry.cs" />
-    <Compile Include="Music\Track\GroovesharkTrack.cs" />
     <Compile Include="Music\Track\LocalTrackFragment.cs" />
     <Compile Include="Music\AudioEngine\CutSource.cs" />
     <Compile Include="Music\Track\CustomStream.cs" />
-    <Compile Include="Music\Track\VkontakteTrack.cs" />
-    <Compile Include="Music\Track\WebApi\GroovesharkApi\GroovesharkApi.cs" />
-    <Compile Include="Music\Track\WebApi\GroovesharkApi\GroovesharkWebTrackResult.cs" />
-    <Compile Include="Music\Track\WebApi\GroovesharkApi\SearchResult.cs" />
-    <Compile Include="Music\Track\WebApi\VkontakteApi\Settings.xaml.cs">
-      <DependentUpon>Settings.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Music\Track\WebApi\VkontakteApi\Audio.cs" />
-    <Compile Include="Music\Track\WebApi\VkontakteApi\CaptchaNeededException.cs" />
-    <Compile Include="Music\Track\WebApi\VkontakteApi\SearchResult.cs" />
-    <Compile Include="Music\Track\WebApi\VkontakteApi\VkAuthorization.cs" />
-    <Compile Include="Music\Track\WebApi\VkontakteApi\VkontakteApi.cs" />
-    <Compile Include="Music\Track\WebApi\VkontakteApi\VkontakteWebTrackResult.cs" />
     <Compile Include="Music\Track\WebApi\YouTubeApi\DataClasses\ContentSearchResult.cs" />
     <Compile Include="Music\Track\WebApi\YouTubeApi\DataClasses\IVideoInfo.cs" />
     <Compile Include="Music\Track\WebApi\YouTubeApi\DataClasses\PlaylistInfo\PlaylistInfo.cs" />
@@ -402,10 +386,6 @@
     <Compile Include="Utilities\StringExtensions.cs" />
     <Compile Include="Utilities\TaskExtensions.cs" />
     <Compile Include="Utilities\UIHelper.cs" />
-    <Compile Include="Utilities\Web\Cookies.cs" />
-    <Compile Include="Utilities\Web\WebCall.cs" />
-    <Compile Include="Utilities\Web\WebCallResult.cs" />
-    <Compile Include="Utilities\Web\WebForm.cs" />
     <Compile Include="Utilities\WindowHelper.cs" />
     <Compile Include="Utilities\WpfScreen.cs" />
     <Compile Include="ViewModels\MainViewModelCommands.cs" />
@@ -534,10 +514,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="MagicArrow\StrokeWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Music\Track\WebApi\VkontakteApi\Settings.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

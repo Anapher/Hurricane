@@ -7,6 +7,10 @@ namespace Hurricane.Settings
 {
     public class HurricaneSettings
     {
+        private bool _isSaving;
+        private static PathProvider _paths;
+        private static HurricaneSettings _instance;
+
         public class PathProvider
         {
             public readonly string BaseDirectory;
@@ -42,13 +46,11 @@ namespace Hurricane.Settings
             }
         }
 
-        private static PathProvider _paths;
         public static PathProvider Paths
         {
             get { return _paths ?? (_paths = new PathProvider()); }
         }
 
-        private static HurricaneSettings _instance;
         public static HurricaneSettings Instance
         {
             get { return _instance ?? (_instance = new HurricaneSettings()); }
@@ -76,10 +78,10 @@ namespace Hurricane.Settings
             IsLoaded = true;
         }
 
-        private bool _isSaving;
         public void Save()
         {
-            if (_isSaving) return;
+            if (_isSaving)
+                return;
             _isSaving = true;
             //Important if the app gets closed
             var saveThread = new Thread(() =>

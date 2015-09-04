@@ -16,21 +16,68 @@ namespace Hurricane.MagicArrow
     /// </summary>
     public class MagicArrow : IDisposable
     {
-        public Window BaseWindow { get; set; }
-        public bool MovedOut { get; set; }
-        public MagicArrowWindow MagicWindow { get; set; }
+        private readonly WindowHider _windowHider;
+        private ActiveWindowHook _activewindowhook;
+        private Side _movedOutSide;
+        private StrokeWindow _strokeWindow;
+        private bool _magicArrowIsShown;
+        private bool _isInZone;
+        private bool _mouseWasOver;
+
+        public MagicArrow()
+        {
+            _windowHider = new WindowHider();
+        }
+
+        public void Dispose()
+        {
+            StopMagic();
+            DockManager.Dispose();
+            _activewindowhook.Dispose();
+            Unregister();
+        }
 
         public event EventHandler MoveOut; //When moving out
         public event EventHandler MoveIn;
         public event DragEventHandler FilesDropped;
 
-        private ActiveWindowHook _activewindowhook;
+        public Window BaseWindow { get; set; }
+        public bool MovedOut { get; set; }
+        public MagicArrowWindow MagicWindow { get; set; }
+        public DockManager.DockManager DockManager { get; set; }
 
-        #region Eventhandler
+        public void Register(Window window)
+        {
+            if (BaseWindow != null) throw new InvalidOperationException("Only one window can be registered");
+            BaseWindow = window;
+            Application.Current.Deactivated += Application_Deactivated;
+            DockManager = new DockManager.DockManager(BaseWindow);
+            _activewindowhook = new ActiveWindowHook();
+            _activewindowhook.ActiveWindowChanged += activewindowhook_ActiveWindowChanged;
+        }
+
+        public void Unregister()
+        {
+            Application.Current.Deactivated -= Application_Deactivated;
+            BaseWindow = null;
+        }
+
+        public void BringToFront()
+        {
+            if (MovedOut) { MoveWindowBackInScreen(); }
+
+            Window mainwindow = Application.Current.MainWindow;
+            mainwindow.Topmost = true; //else the application wouldnt get focused
+            mainwindow.Activate();
+
+            mainwindow.Focus();
+            mainwindow.Topmost = false;
+        }
+
         void Application_Deactivated(object sender, EventArgs e)
         {
             var first = DockManager.CurrentSide != DockingSide.None;
-            var secound = _movedoutside == Side.Left
+            var secound = _movedOutSide == Side.Left
                 ? BaseWindow.Left >= WpfScreen.MostLeftX
                 : BaseWindow.Left <= WpfScreen.MostRightX;
             if (first && secound) //(BaseWindow.ActualHeight == WpfScreen.GetScreenFrom(new Point(BaseWindow.Left, 0)).WorkingArea.Height && (BaseWindow.Left == 0 || BaseWindow.Left == maxwidth - 300) && BaseWindow.Top == 0)
@@ -45,24 +92,21 @@ namespace Hurricane.MagicArrow
             if (!MovedOut) return;
             if (WindowHelper.WindowIsFullscreen(hwnd))
             {
-                if (!Strokewindow.IsInvisible) Strokewindow.MoveInvisible();
+                if (!_strokeWindow.IsInvisible) _strokeWindow.MoveInvisible();
                 Debug.Print("{0}: Its a fullscreen window",DateTime.Now.ToString());
             }
             else
             {
-                if (Strokewindow.IsInvisible) Strokewindow.MoveVisible();
+                if (_strokeWindow.IsInvisible) _strokeWindow.MoveVisible();
                 Debug.Print("{0}: It isnt a fullscreen window", DateTime.Now.ToString());
             }
-            if (!Strokewindow.IsInvisible)
+            if (!_strokeWindow.IsInvisible)
             {
-                Strokewindow.Topmost = false;
-                Strokewindow.Topmost = true;
+                _strokeWindow.Topmost = false;
+                _strokeWindow.Topmost = true;
             }
         }
-        #endregion
 
-        #region Animations
-        protected Side _movedoutside;
         protected async void MoveWindowOutOfScreen(Side side)
         {
             BaseWindow.Topmost = true;
@@ -86,17 +130,17 @@ namespace Hurricane.MagicArrow
 
             MovedOut = true;
             BaseWindow.ShowInTaskbar = false;
-            _movedoutside = side;
+            _windowHider.HideWindowFromAltTab(BaseWindow);
+            _movedOutSide = side;
             StartMagic();
-
         }
 
         protected void MoveWindowBackInScreen()
         {
             if (MoveIn != null) MoveIn(this, EventArgs.Empty);
             double newleft;
-            if (_movedoutside == Side.Left) { newleft = WpfScreen.MostLeftX; } else { newleft = WpfScreen.MostRightX - BaseWindow.Width; }
-            BaseWindow.Left = _movedoutside == Side.Left ? newleft + 10 : newleft - 10;
+            if (_movedOutSide == Side.Left) { newleft = WpfScreen.MostLeftX; } else { newleft = WpfScreen.MostRightX - BaseWindow.Width; }
+            BaseWindow.Left = _movedOutSide == Side.Left ? newleft + 10 : newleft - 10;
 
             Storyboard moveWindowBackInScreenStoryboard = new Storyboard();
             DoubleAnimation inanimation = new DoubleAnimation(BaseWindow.Left, newleft, TimeSpan.FromMilliseconds(150), FillBehavior.Stop);
@@ -109,76 +153,69 @@ namespace Hurricane.MagicArrow
 
             MovedOut = false;
             BaseWindow.Topmost = true;
+            _windowHider.ShowWindowInAltTab(BaseWindow);
             BaseWindow.Activate();
             BaseWindow.ShowInTaskbar = true;
             
             StopMagic();
         }
-        #endregion
-
-        #region Magic Arrow Showing
-        protected StrokeWindow Strokewindow;
         protected void StopMagic()
         {
-            if (Strokewindow != null)
+            if (_strokeWindow != null)
             {
-                Strokewindow.Close();
-                Strokewindow = null;
+                _strokeWindow.Close();
+                _strokeWindow = null;
             }
             _activewindowhook.Unhook();
         }
 
         protected void StartMagic()
         {
-            var screen = GetScreenFromSide(_movedoutside);
-            Strokewindow = new StrokeWindow(screen.WorkingArea.Height, _movedoutside == Side.Left ? WpfScreen.MostLeftX : WpfScreen.MostRightX, screen.WorkingArea.Top, _movedoutside);
-            Strokewindow.Show();
-            Strokewindow.MouseMove += strokewindow_MouseMove;
-            Strokewindow.MouseLeave += strokewindow_MouseLeave;
-            Strokewindow.MouseDown += strokewindow_MouseDown;
+            var screen = GetScreenFromSide(_movedOutSide);
+            _strokeWindow = new StrokeWindow(screen.WorkingArea.Height, _movedOutSide == Side.Left ? WpfScreen.MostLeftX : WpfScreen.MostRightX, screen.WorkingArea.Top, _movedOutSide);
+            _strokeWindow.Show();
+            _strokeWindow.MouseMove += StrokeWindowMouseMove;
+            _strokeWindow.MouseLeave += StrokeWindowMouseLeave;
+            _strokeWindow.MouseDown += StrokeWindowMouseDown;
             _activewindowhook.Hook();
             _activewindowhook.RaiseOne(); //If the current window is fullscreen, the event wouldn't be raised (because nothing changed)
-            MouseWasOver = false;
+            _mouseWasOver = false;
         }
 
-        void strokewindow_MouseDown(object sender, MouseButtonEventArgs e)
+        void StrokeWindowMouseDown(object sender, MouseButtonEventArgs e)
         {
             if (MagicWindow != null)
             {
                 var cursorposition = Cursor.Position;
-                if (cursorposition.Y > MagicWindow.Top && cursorposition.Y < MagicWindow.Top + MagicWindow.Height && (_movedoutside == Side.Left ? cursorposition.X < MagicWindow.Width + WpfScreen.MostLeftX : cursorposition.X > WpfScreen.MostRightX - MagicWindow.Width))
+                if (cursorposition.Y > MagicWindow.Top && cursorposition.Y < MagicWindow.Top + MagicWindow.Height && (_movedOutSide == Side.Left ? cursorposition.X < MagicWindow.Width + WpfScreen.MostLeftX : cursorposition.X > WpfScreen.MostRightX - MagicWindow.Width))
                 {
                     MoveWindowBackInScreen();
-                    IsInZone = false;
+                    _isInZone = false;
                     HideMagicArrow();
                 }
             }
         }
 
-        protected bool MagicArrowIsShown;
-        protected bool IsInZone;
-        protected bool MouseWasOver;
-
-        void strokewindow_MouseMove(object sender, MouseEventArgs e)
+        void StrokeWindowMouseMove(object sender, MouseEventArgs e)
         {
             Views.Test.TestWindow.AddMessage("Stroke: Mouse Move");
-            if (!MagicArrowIsShown && !IsInZone && StrokeWindow.PositionIsOk(_movedoutside, Cursor.Position.X, WpfScreen.MostLeftX - 2, WpfScreen.MostRightX))
+            if (!_magicArrowIsShown && !_isInZone && StrokeWindow.PositionIsOk(_movedOutSide, Cursor.Position.X, WpfScreen.MostLeftX - 2, WpfScreen.MostRightX))
             {
-                IsInZone = true;
-                Point p = e.GetPosition(Strokewindow);
+                _isInZone = true;
+                Point p = e.GetPosition(_strokeWindow);
                 var screen = WpfScreen.GetScreenFrom(p);
-                ShowMagicArrow(p.Y + screen.WorkingArea.Top, _movedoutside);
+                ShowMagicArrow(p.Y + screen.WorkingArea.Top, _movedOutSide);
             }
-            MouseWasOver = true;
+            _mouseWasOver = true;
         }
 
-        void strokewindow_MouseLeave(object sender, MouseEventArgs e)
+        void StrokeWindowMouseLeave(object sender, MouseEventArgs e)
         {
             Views.Test.TestWindow.AddMessage("Stroke: Mouse Leave");
-            if (!MagicArrowIsShown)
+            if (!_magicArrowIsShown)
             {
                 HideMagicArrow();
-                IsInZone = false;
+                _isInZone = false;
             }
             else
             {
@@ -187,17 +224,17 @@ namespace Hurricane.MagicArrow
                     HideMagicArrow();
                 }
                 //int cursorX = Cursor.Position.X;
-                //if (_movedoutside == Side.Left ? cursorX > 2 - WpfScreen.MostLeftX : cursorX < WpfScreen.MostRightX - 3 || WpfScreen.GetScreenFrom(new Point(cursorX, 0)).WorkingArea.Height > cursorX)
+                //if (_movedOutSide == Side.Left ? cursorX > 2 - WpfScreen.MostLeftX : cursorX < WpfScreen.MostRightX - 3 || WpfScreen.GetScreenFrom(new Point(cursorX, 0)).WorkingArea.Height > cursorX)
             }
         }
 
         protected void ShowMagicArrow(double top, Side side)
         {
             Views.Test.TestWindow.AddMessage("Show Magic Arrow");
-            MagicArrowIsShown = true;
+            _magicArrowIsShown = true;
             if (!HurricaneSettings.Instance.Config.ShowMagicArrowBelowCursor)
             {
-                if (top + 40 > GetScreenFromSide(_movedoutside).WorkingArea.Height - 10)
+                if (top + 40 > GetScreenFromSide(_movedOutSide).WorkingArea.Height - 10)
                 {
                     top -= 40;
                 }
@@ -207,7 +244,7 @@ namespace Hurricane.MagicArrow
             MagicWindow.MoveVisible += (s, e) =>
             {
                 MoveWindowBackInScreen();
-                IsInZone = false;
+                _isInZone = false;
                 HideMagicArrow();
             };
             MagicWindow.MouseLeave += MagicWindow_MouseLeave;
@@ -216,20 +253,20 @@ namespace Hurricane.MagicArrow
             MagicWindow.FilesDropped += (s, e) => { if (FilesDropped != null) FilesDropped(this, e); };
             Task.Run(async () =>
             {
-                while (MagicArrowIsShown)
+                while (_magicArrowIsShown)
                 {
                     await Task.Delay(1000);
                     Views.Test.TestWindow.AddMessage("Check Magic Arrow");
                     int cursorX = Cursor.Position.X;
-                    if (((_movedoutside == Side.Left && cursorX > 4 - WpfScreen.MostLeftX) ||
-                        (_movedoutside == Side.Right && cursorX < WpfScreen.MostRightX - 4)) && !MagicWindow.IsMouseOver)
+                    if (((_movedOutSide == Side.Left && cursorX > 4 - WpfScreen.MostLeftX) ||
+                        (_movedOutSide == Side.Right && cursorX < WpfScreen.MostRightX - 4)) && !MagicWindow.IsMouseOver)
                     {
                         Application.Current.Dispatcher.Invoke(HideMagicArrow);
                     }
                     else
                     {
 
-                        Views.Test.TestWindow.AddMessage(string.Format("-> MAP: {0}; _movedoutside: {1}; cursorX: {2}; MLX: {3}", "", _movedoutside, cursorX, WpfScreen.MostLeftX));
+                        Views.Test.TestWindow.AddMessage(string.Format("-> MAP: {0}; _movedOutSide: {1}; cursorX: {2}; MLX: {3}", "", _movedOutSide, cursorX, WpfScreen.MostLeftX));
                     }
                 }
             });
@@ -238,20 +275,20 @@ namespace Hurricane.MagicArrow
         void MagicWindow_MouseLeave(object sender, MouseEventArgs e)
         {
             Views.Test.TestWindow.AddMessage("Magic Arrow: Mouse Leave");
-            if (StrokeWindow.PositionIsOk(_movedoutside, Cursor.Position.X, 2 - WpfScreen.MostLeftX, WpfScreen.MostRightX))
+            if (StrokeWindow.PositionIsOk(_movedOutSide, Cursor.Position.X, 2 - WpfScreen.MostLeftX, WpfScreen.MostRightX))
             {
-                if (Strokewindow != null)
-                    Strokewindow.SetLeft(_movedoutside == Side.Left ? WpfScreen.MostLeftX : WpfScreen.MostRightX - 1, _movedoutside);
+                if (_strokeWindow != null)
+                    _strokeWindow.SetLeft(_movedOutSide == Side.Left ? WpfScreen.MostLeftX : WpfScreen.MostRightX - 1, _movedOutSide);
                 HideMagicArrow();
             }
-            else { Strokewindow.SetLeft(_movedoutside == Side.Left ? WpfScreen.MostLeftX : WpfScreen.MostRightX - 1, _movedoutside); }
+            else { _strokeWindow.SetLeft(_movedOutSide == Side.Left ? WpfScreen.MostLeftX : WpfScreen.MostRightX - 1, _movedOutSide); }
         }
 
         protected void HideMagicArrow()
         {
             Views.Test.TestWindow.AddMessage("Hide Magic Arrow");
-            MagicArrowIsShown = false;
-            IsInZone = false;
+            _magicArrowIsShown = false;
+            _isInZone = false;
             if (MagicWindow != null && MagicWindow.Visibility == Visibility.Visible)
             {
                 MagicWindow.MouseLeave -= MagicWindow_MouseLeave;
@@ -267,51 +304,6 @@ namespace Hurricane.MagicArrow
                     ? new Point(WpfScreen.MostLeftX, 0)
                     : new Point(WpfScreen.MostRightX, 0));
         }
-        #endregion
-
-        #region Construction and Deconstruction
-        public void Register(Window window)
-        {
-            if (BaseWindow != null) throw new InvalidOperationException("Only one window can be registered");
-            BaseWindow = window;
-            Application.Current.Deactivated += Application_Deactivated;
-            DockManager = new DockManager.DockManager(BaseWindow);
-            _activewindowhook = new ActiveWindowHook();
-            _activewindowhook.ActiveWindowChanged += activewindowhook_ActiveWindowChanged;
-        }
-
-        public void Unregister()
-        {
-            Application.Current.Deactivated -= Application_Deactivated;
-            BaseWindow = null;
-        }
-
-        public void Dispose()
-        {
-            StopMagic();
-            DockManager.Dispose();
-            _activewindowhook.Dispose();
-            Unregister();
-        }
-
-        public void BringToFront()
-        {
-            if (MovedOut) { MoveWindowBackInScreen(); }
-
-            Window mainwindow = Application.Current.MainWindow;
-            mainwindow.Topmost = true; //else the application wouldnt get focused
-            mainwindow.Activate();
-
-            mainwindow.Focus();
-            mainwindow.Topmost = false;
-        }
-        #endregion
-
-        #region DockSystem
-        public DockManager.DockManager DockManager { get; set; }
-
-        #endregion
-
     }
 
     public enum Side { Left, Right }

@@ -1,114 +1,51 @@
-﻿using System.Xml.Serialization;
+﻿using System.Collections.Generic;
+using Exceptionless.Json;
 
 namespace Hurricane.Music.MusicCover.APIs.Lastfm
 {
     // ReSharper disable InconsistentNaming
-    public partial class lfm
+    public class OpensearchQuery
     {
-        /// <remarks/>
-        public lfmResults results { get; set; }
-
-        /// <remarks/>
-        [XmlAttribute()]
-        public string status { get; set; }
-    }
-
-    /// <remarks/>
-    [XmlType(AnonymousType = true)]
-    public class lfmResults
-    {
-        /// <remarks/>
-        [XmlElement(Namespace = "http://a9.com/-/spec/opensearch/1.1/")]
-        public Query Query { get; set; }
-
-        /// <remarks/>
-        [XmlElement(Namespace = "http://a9.com/-/spec/opensearch/1.1/")]
-        public uint totalResults { get; set; }
-
-        /// <remarks/>
-        [XmlElement(Namespace = "http://a9.com/-/spec/opensearch/1.1/")]
-        public byte startIndex { get; set; }
-
-        /// <remarks/>
-        [XmlElement(Namespace = "http://a9.com/-/spec/opensearch/1.1/")]
-        public byte itemsPerPage { get; set; }
-
-        /// <remarks/>
-        [XmlArrayItem("track", IsNullable = false)]
-        public lfmResultsTrack[] trackmatches { get; set; }
-
-        /// <remarks/>
-        [XmlAttribute()]
-        public string @for { get; set; }
-    }
-
-    /// <remarks/>
-    [XmlType(AnonymousType = true, Namespace = "http://a9.com/-/spec/opensearch/1.1/")]
-    [XmlRoot(Namespace = "http://a9.com/-/spec/opensearch/1.1/", IsNullable = false)]
-    public class Query
-    {
-        /// <remarks/>
-        [XmlAttribute()]
+        [JsonProperty("#text")]
+        public string text { get; set; }
         public string role { get; set; }
-
-        /// <remarks/>
-        [XmlAttribute()]
-        public string searchTerms { get; set; }
-
-        /// <remarks/>
-        [XmlAttribute()]
-        public byte startPage { get; set; }
+        public string startPage { get; set; }
     }
 
-    /// <remarks/>
-    [XmlType(AnonymousType = true)]
-    public class lfmResultsTrack
+    public class Image
     {
-        /// <remarks/>
+        [JsonProperty("#text")]
+        public string text { get; set; }
+        public string size { get; set; }
+    }
+
+    public class Track
+    {
         public string name { get; set; }
-
-        /// <remarks/>
         public string artist { get; set; }
-
-        /// <remarks/>
         public string url { get; set; }
-
-        /// <remarks/>
-        public lfmResultsTrackStreamable streamable { get; set; }
-
-        /// <remarks/>
-        [XmlElement("image")]
-        public lfmResultsTrackImage[] image { get; set; }
-
-        /// <remarks/>
+        public string streamable { get; set; }
+        public string listeners { get; set; }
+        public List<Image> image { get; set; }
         public string mbid { get; set; }
     }
 
-    /// <remarks/>
-    [XmlType(AnonymousType = true)]
-    public class lfmResultsTrackStreamable
+    public class Trackmatches
     {
-        /// <remarks/>
-        [XmlAttribute()]
-        public byte fulltrack { get; set; }
-
-        /// <remarks/>
-        [XmlText()]
-        public byte Value { get; set; }
+        public List<Track> track { get; set; }
     }
 
-    /// <remarks/>
-    [XmlType(AnonymousType = true)]
-    public class lfmResultsTrackImage
+    public class Attr
     {
-        /// <remarks/>
-        [XmlAttribute()]
-        public string size { get; set; }
-
-        /// <remarks/>
-        [XmlText()]
-        public string Value { get; set; }
     }
 
+    public class Results
+    {
+        public Trackmatches trackmatches { get; set; }
+    }
 
+    public class LfmSearchResult
+    {
+        public Results results { get; set; }
+    }
 }

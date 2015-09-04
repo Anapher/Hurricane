@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Threading;
 using CSCore.CoreAudioAPI;
+using CSCore.DirectSound;
 using CSCore.SoundOut;
-using CSCore.SoundOut.DirectSound;
 using Hurricane.Music.Data;
 using Hurricane.Settings;
 using Microsoft.Win32;
@@ -15,32 +14,32 @@ namespace Hurricane.Music.AudioEngine
 {
     public class SoundOutManager : IDisposable
     {
-        #region consts
         public const string DefaultDevicePlaceholder = "-0";
-
-        #endregion
-
-        #region events
-        public event EventHandler RefreshSoundOut;
-        public event EventHandler Disable;
-        public event EventHandler Enable;
-
-        #endregion
-
-        #region public properties
-        public CSCoreEngine BaseEngine { get; set; }
-        public ObservableCollection<SoundOutRepresenter> SoundOutList { get; set; }
-
-        #endregion
 
         private readonly MMNotificationClient _mmNotificationClient;
         private string _currentDeviceId;
+
+        private bool? _enabled;
+
+        private string _lastDefaultDeviceChanged;
 
         public SoundOutManager(CSCoreEngine engine)
         {
             BaseEngine = engine;
             _mmNotificationClient = new MMNotificationClient();
         }
+
+        public void Dispose()
+        {
+            _mmNotificationClient.Dispose();
+        }
+
+        public CSCoreEngine BaseEngine { get; set; }
+        public ObservableCollection<SoundOutRepresenter> SoundOutList { get; set; }
+
+        public event EventHandler RefreshSoundOut;
+        public event EventHandler Disable;
+        public event EventHandler Enable;
 
         public void Activate()
         {
@@ -80,8 +79,8 @@ namespace Hurricane.Music.AudioEngine
 
             if (settings.SoundOutMode == SoundOutMode.DirectSound)
             {
-                var enumerator = new DirectSoundDeviceEnumerator();
-                if (enumerator.Devices.Count == 0)
+                var devices = DirectSoundDeviceEnumerator.EnumerateDevices();
+                if (devices.Count == 0)
                 {
                     settings.SoundOutMode = SoundOutMode.WASAPI;
                     return GetNewSoundSource();
@@ -91,13 +90,13 @@ namespace Hurricane.Music.AudioEngine
                 if (settings.SoundOutDeviceID == DefaultDevicePlaceholder)
                 {
                     device = defaultDevice != null
-                        ? enumerator.Devices.FirstOrDefault(x => x.Description == defaultDevice.FriendlyName) ??
-                          enumerator.Devices.First()
-                        : enumerator.Devices.First();
+                        ? devices.FirstOrDefault(x => x.Description == defaultDevice.FriendlyName) ??
+                          devices.First()
+                        : devices.First();
                 }
                 else
                 {
-                    device = enumerator.Devices.FirstOrDefault(x => x.Guid.ToString() == settings.SoundOutDeviceID);
+                    device = devices.FirstOrDefault(x => x.Guid.ToString() == settings.SoundOutDeviceID);
                     if (device == null)
                     {
                         settings.SoundOutDeviceID = DefaultDevicePlaceholder;
@@ -106,44 +105,40 @@ namespace Hurricane.Music.AudioEngine
                 }
 
                 _currentDeviceId = device.Guid.ToString();
-                return new DirectSoundOut { Device = device.Guid, Latency = settings.Latency };
+                return new DirectSoundOut {Device = device.Guid, Latency = settings.Latency};
             }
-            else
+            using (var enumerator = new MMDeviceEnumerator())
             {
-                using (var enumerator = new MMDeviceEnumerator())
+                using (var devices = enumerator.EnumAudioEndpoints(DataFlow.Render, DeviceState.Active))
                 {
-                    using (var devices = enumerator.EnumAudioEndpoints(DataFlow.Render, DeviceState.Active))
+                    if (defaultDevice == null || devices.Count == 0)
                     {
-                        if (defaultDevice == null || devices.Count == 0)
+                        settings.SoundOutMode = SoundOutMode.DirectSound;
+                        return GetNewSoundSource();
+                    }
+
+                    MMDevice device;
+                    if (settings.SoundOutDeviceID == DefaultDevicePlaceholder)
+                    {
+                        device = defaultDevice;
+                    }
+                    else
+                    {
+                        device = devices.FirstOrDefault(x => x.DeviceID == settings.SoundOutDeviceID);
+
+                        if (device == null)
                         {
-                            settings.SoundOutMode = SoundOutMode.DirectSound;
+                            settings.SoundOutDeviceID = DefaultDevicePlaceholder;
                             return GetNewSoundSource();
                         }
-
-                        MMDevice device;
-                        if (settings.SoundOutDeviceID == DefaultDevicePlaceholder)
-                        {
-                            device = defaultDevice;
-                        }
-                        else
-                        {
-                            device = devices.FirstOrDefault(x => x.DeviceID == settings.SoundOutDeviceID);
-
-                            if (device == null)
-                            {
-                                settings.SoundOutDeviceID = DefaultDevicePlaceholder;
-                                return GetNewSoundSource();
-                            }
-                        }
-                        _currentDeviceId = device.DeviceID;
-                        return new WasapiOut { Device = device, Latency = settings.Latency };
                     }
+                    _currentDeviceId = device.DeviceID;
+                    return new WasapiOut {Device = device, Latency = settings.Latency};
                 }
             }
         }
 
-        #region representer
-        void RefreshSoundOutRepresenter()
+        private void RefreshSoundOutRepresenter()
         {
             var result = new ObservableCollection<SoundOutRepresenter>();
             using (var enumerator = new MMDeviceEnumerator())
@@ -157,7 +152,7 @@ namespace Hurricane.Music.AudioEngine
                 {
                     standarddevice = null;
                 }
-                
+
                 if (WasapiOut.IsSupportedOnCurrentPlatform)
                 {
                     var wasApiItem = new SoundOutRepresenter(deviceId =>
@@ -169,11 +164,16 @@ namespace Hurricane.Music.AudioEngine
                                     .FirstOrDefault(x => x.DeviceID == deviceId);
                             return device == null ? null : new AudioDevice(device.DeviceID, device.FriendlyName);
                         }
-                    }) { Name = "WASAPI", SoundOutMode = SoundOutMode.WASAPI };
+                    }) {Name = "WASAPI", SoundOutMode = SoundOutMode.WASAPI};
 
                     using (var devices = enumerator.EnumAudioEndpoints(DataFlow.Render, DeviceState.Active))
                     {
-                        foreach (var device in devices.Select(device => new AudioDevice(device.DeviceID, device.FriendlyName, standarddevice != null && standarddevice.DeviceID == device.DeviceID)))
+                        foreach (
+                            var device in
+                                devices.Select(
+                                    device =>
+                                        new AudioDevice(device.DeviceID, device.FriendlyName,
+                                            standarddevice != null && standarddevice.DeviceID == device.DeviceID)))
                         {
                             wasApiItem.AudioDevices.Add(device);
                         }
@@ -184,15 +184,21 @@ namespace Hurricane.Music.AudioEngine
                     result.Add(wasApiItem);
                 }
 
+                var directSoundDevices = DirectSoundDeviceEnumerator.EnumerateDevices();
                 var directSoundItem = new SoundOutRepresenter(deviceId =>
                 {
                     var device =
-                        new DirectSoundDeviceEnumerator().Devices
+                        directSoundDevices
                             .FirstOrDefault(x => x.Guid.ToString() == deviceId);
                     return device == null ? null : new AudioDevice(device.Guid.ToString(), device.Description);
-                }) { Name = "DirectSound", SoundOutMode = SoundOutMode.DirectSound };
+                }) {Name = "DirectSound", SoundOutMode = SoundOutMode.DirectSound};
 
-                foreach (var device in new DirectSoundDeviceEnumerator().Devices.Select(x => new AudioDevice(x.Guid.ToString(), x.Description, standarddevice != null && x.Description == standarddevice.FriendlyName)))
+                foreach (
+                    var device in
+                        directSoundDevices.Select(
+                            x =>
+                                new AudioDevice(x.Guid.ToString(), x.Description,
+                                    standarddevice != null && x.Description == standarddevice.FriendlyName)))
                 {
                     directSoundItem.AudioDevices.Add(device);
                 }
@@ -205,19 +211,20 @@ namespace Hurricane.Music.AudioEngine
             SoundOutList = result;
         }
 
-        void CheckDefaultAudioDevice(SoundOutRepresenter representer)
+        private void CheckDefaultAudioDevice(SoundOutRepresenter representer)
         {
             if (representer.AudioDevices.All(x => x.ID == DefaultDevicePlaceholder))
             {
                 representer.AudioDevices.Clear(); //No default item if there are no other devices
             }
-            else if(representer.AudioDevices.Count > 0 && representer.AudioDevices.All(x => x.ID != DefaultDevicePlaceholder))
+            else if (representer.AudioDevices.Count > 0 &&
+                     representer.AudioDevices.All(x => x.ID != DefaultDevicePlaceholder))
             {
                 representer.AudioDevices.Insert(0, new AudioDevice("-0", "Windows Default"));
             }
         }
 
-        void UpdateDefaultAudioDevice()
+        private void UpdateDefaultAudioDevice()
         {
             MMDevice defaultAudioEndpoint;
             using (var enumerator = new MMDeviceEnumerator())
@@ -234,9 +241,12 @@ namespace Hurricane.Music.AudioEngine
             }
         }
 
-        void AddDevice(string deviceId)
+        private void AddDevice(string deviceId)
         {
-            foreach (var soundOutRepresenter in SoundOutList.Where(soundOutRepresenter => soundOutRepresenter.AudioDevices.All(x => x.ID != deviceId)))
+            foreach (
+                var soundOutRepresenter in
+                    SoundOutList.Where(
+                        soundOutRepresenter => soundOutRepresenter.AudioDevices.All(x => x.ID != deviceId)))
             {
                 soundOutRepresenter.AddDevice(deviceId);
                 CheckDefaultAudioDevice(soundOutRepresenter);
@@ -244,7 +254,7 @@ namespace Hurricane.Music.AudioEngine
             CheckCurrentState();
         }
 
-        void RemoveDevice(string deviceId)
+        private void RemoveDevice(string deviceId)
         {
             foreach (var soundOutRepresenter in SoundOutList)
             {
@@ -255,10 +265,11 @@ namespace Hurricane.Music.AudioEngine
             CheckCurrentState();
         }
 
-        private bool? _enabled;
-        void CheckCurrentState()
+        private void CheckCurrentState()
         {
-            if (SoundOutList.Any(soundOutRepresenter => soundOutRepresenter.AudioDevices.Any(x => x.ID != DefaultDevicePlaceholder)))
+            if (
+                SoundOutList.Any(
+                    soundOutRepresenter => soundOutRepresenter.AudioDevices.Any(x => x.ID != DefaultDevicePlaceholder)))
             {
                 if (_enabled == true) return;
                 _enabled = true;
@@ -273,16 +284,12 @@ namespace Hurricane.Music.AudioEngine
             }
         }
 
-        #endregion
-
-        #region events
-
-        private string _lastDefaultDeviceChanged;
-        void _mmNotificationClient_DefaultDeviceChanged(object sender, DefaultDeviceChangedEventArgs e)
+        private void _mmNotificationClient_DefaultDeviceChanged(object sender, DefaultDeviceChangedEventArgs e)
         {
-            if (e.DeviceID == _lastDefaultDeviceChanged) return;
-            _lastDefaultDeviceChanged = e.DeviceID;
-            if (HurricaneSettings.Instance.Config.SoundOutDeviceID == DefaultDevicePlaceholder && e.DeviceID != _currentDeviceId)
+            if (e.DeviceId == _lastDefaultDeviceChanged) return;
+            _lastDefaultDeviceChanged = e.DeviceId;
+            if (HurricaneSettings.Instance.Config.SoundOutDeviceID == DefaultDevicePlaceholder &&
+                e.DeviceId != _currentDeviceId)
             {
                 if (RefreshSoundOut != null)
                     Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Normal,
@@ -292,39 +299,36 @@ namespace Hurricane.Music.AudioEngine
             Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(UpdateDefaultAudioDevice));
         }
 
-        void _mmNotificationClient_DeviceStateChanged(object sender, DeviceStateChangedEventArgs e)
+        private void _mmNotificationClient_DeviceStateChanged(object sender, DeviceStateChangedEventArgs e)
         {
             if (e.DeviceState == DeviceState.Active)
             {
-                Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => AddDevice(e.DeviceID)));
+                Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Normal,
+                    new Action(() => AddDevice(e.DeviceId)));
             }
             else if (e.DeviceState != DeviceState.Active)
             {
-                Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => RemoveDevice(e.DeviceID)));
+                Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Normal,
+                    new Action(() => RemoveDevice(e.DeviceId)));
             }
         }
 
-        void _mmNotificationClient_DeviceRemoved(object sender, DeviceNotificationEventArgs e)
+        private void _mmNotificationClient_DeviceRemoved(object sender, DeviceNotificationEventArgs e)
         {
-            Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => RemoveDevice(e.DeviceID)));
+            Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Normal,
+                new Action(() => RemoveDevice(e.DeviceId)));
         }
 
-        void _mmNotificationClient_DeviceAdded(object sender, DeviceNotificationEventArgs e)
+        private void _mmNotificationClient_DeviceAdded(object sender, DeviceNotificationEventArgs e)
         {
-            Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => AddDevice(e.DeviceID)));
+            Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Normal,
+                new Action(() => AddDevice(e.DeviceId)));
         }
 
-        void SystemEvents_PowerModeChanged(object sender, PowerModeChangedEventArgs e)
+        private void SystemEvents_PowerModeChanged(object sender, PowerModeChangedEventArgs e)
         {
             if (e.Mode == PowerModes.Resume)
                 Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(OnRefreshSoundOut));
-        }
-
-        #endregion
-
-        public void Dispose()
-        {
-            _mmNotificationClient.Dispose();
         }
     }
 }
