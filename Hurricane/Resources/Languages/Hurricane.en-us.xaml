@@ -30,7 +30,7 @@
     <system:String x:Key="Presets">Presets</system:String>
     <system:String x:Key="Bass">Bass</system:String>
     <system:String x:Key="BassExtreme">Bass extreme</system:String>
-    <system:String x:Key="BassAndHeights">Bass und heights</system:String>
+    <system:String x:Key="BassAndHeights">Bass and heights</system:String>
     <system:String x:Key="Heights">Heights</system:String>
     <system:String x:Key="Classic">Classic</system:String>
     <system:String x:Key="Dance">Dance</system:String>
