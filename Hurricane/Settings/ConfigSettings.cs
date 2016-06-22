@@ -111,7 +111,7 @@ namespace Hurricane.Settings
                     new LanguageInfo("Suomi", "/Resources/Languages/Hurricane.fi-fi.xaml",
                         new Uri("/Resources/Languages/Icons/fi.png", UriKind.Relative), "Väinämö Vettenranta", "fi"),
                     new LanguageInfo("Russian", "/Resources/Languages/Hurricane.ru-ru.xaml",
-                        new Uri("/Resources/Languages/Icons/ru.png", UriKind.Relative), "My ", "ru")
+                        new Uri("/Resources/Languages/Icons/ru.png", UriKind.Relative), "Barmin Alexander", "ru")
                 });
             }
         }
