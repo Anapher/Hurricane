@@ -537,6 +537,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Resources\Languages\Hurricane.ru-ru.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Resources\Styles\AdvancedTimelineSlider.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -878,6 +882,7 @@
     <Resource Include="Resources\App\LanguageCreator.png" />
     <Resource Include="Resources\Languages\Icons\nl.png" />
     <Resource Include="Resources\App\bottom.png" />
+    <Resource Include="Resources\Languages\Icons\ru.png" />
     <Content Include="youtube-dl.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
