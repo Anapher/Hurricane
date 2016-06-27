@@ -300,9 +300,9 @@
     <system:String x:Key="Custom">Свой</system:String>
     <system:String x:Key="SupportedFiles">Поддерживаемые файлы</system:String>
     <system:String x:Key="VideoFiles">Видео файлы</system:String>
-    <system:String x:Key="TabControlTransition">Управление клавишей Tab</system:String>
-    <system:String x:Key="Left">Left</system:String>
-    <system:String x:Key="Right">Right</system:String>
+    <system:String x:Key="TabControlTransition">Плавная отрисовка</system:String>
+    <system:String x:Key="Left">Слева</system:String>
+    <system:String x:Key="Right">Справа</system:String>
     <system:String x:Key="Up">Вверх</system:String>
     <system:String x:Key="Down">Вниз</system:String>
     <system:String x:Key="Fade">Затухание</system:String>
