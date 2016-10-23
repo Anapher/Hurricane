@@ -16,7 +16,7 @@
     <system:String x:Key="Update">Update</system:String>
     <system:String x:Key="TrimTrackname">Verbeter zoektekst</system:String>
     <system:String x:Key="AddToSendTo">Voeg toe aan "Verzenden naar"</system:String>
-    <system:String x:Key="TotalReset">Totaal Reset</system:String>
+    <system:String x:Key="TotalReset">Totale reset</system:String>
     <system:String x:Key="SaveAlbumCoverLocal">Bewaar cover lokaal</system:String>
     <system:String x:Key="No2">Geen</system:String>
     <system:String x:Key="ExceptionAddOnlineTrack">Er is een fout opgetreden tijdens het toevoegen van de nummers.</system:String>
@@ -82,7 +82,7 @@
     <system:String x:Key="PreviousTrack">Vorig nummer</system:String>
     <system:String x:Key="ImportTrack">Importeer nummer</system:String>
     <system:String x:Key="Lime">Kalk</system:String>
-    <system:String x:Key="RemoveDuplicateTracks">Weet u zeker dat u alle dubbele nummers verwijderen?</system:String>
+    <system:String x:Key="RemoveDuplicateTracks">Weet u zeker dat u alle dubbele nummers wilt verwijderen?</system:String>
     <system:String x:Key="Uploader">Uploader</system:String>
     <system:String x:Key="EnglishTranslation">Engelse vertaling</system:String>
     <system:String x:Key="TrackInformation">Nummerinformatie</system:String>
@@ -139,7 +139,7 @@
     <system:String x:Key="Bitrate">Bitrate</system:String>
     <system:String x:Key="Path">Pad</system:String>
     <system:String x:Key="Playback">Speel af</system:String>
-    <system:String x:Key="TabControlTransition">Hoofdmenu overgang animatie</system:String>
+    <system:String x:Key="TabControlTransition">Tab overgang animatie</system:String>
     <system:String x:Key="ShowProgressInTaskbar">Toon voortgang in taakbalk</system:String>
     <system:String x:Key="Right">Rechts</system:String>
     <system:String x:Key="AccentColorString">Accentkleur</system:String>
@@ -164,9 +164,9 @@
     <system:String x:Key="AllFiles">Alle Bestanden</system:String>
     <system:String x:Key="RemovePlaylist">Verwijder afspeellijst</system:String>
     <system:String x:Key="BassExtreme">Bass extreem</system:String>
-    <system:String x:Key="Ins">Einfg</system:String>
+    <system:String x:Key="Ins">Ins</system:String>
     <system:String x:Key="Close">Afsluiten</system:String>
-    <system:String x:Key="Tray">Dienblad</system:String>
+    <system:String x:Key="Tray">System tray</system:String>
     <system:String x:Key="Down">Onder</system:String>
     <system:String x:Key="Track">Track</system:String>
     <system:String x:Key="SampleSourceBitrate">Bitrate</system:String>
@@ -190,7 +190,7 @@
     <system:String x:Key="Downloads">Downloads</system:String>
     <system:String x:Key="Activated">Ingeschakeld</system:String>
     <system:String x:Key="Emerald">Smaragd</system:String>
-    <system:String x:Key="NowPlaying">Nu te zien</system:String>
+    <system:String x:Key="NowPlaying">Nu aan het spelen</system:String>
     <system:String x:Key="ClearQueue">Lege wachtrij</system:String>
     <system:String x:Key="DownloadAllStreams">Download alle streams</system:String>
     <system:String x:Key="Techno">Techno</system:String>
@@ -208,7 +208,7 @@
     <system:String x:Key="Name">Naam</system:String>
     <system:String x:Key="Latency">Latency</system:String>
     <system:String x:Key="Reset">Reset</system:String>
-    <system:String x:Key="DeleteAllMissingTracks">Weet u zeker dat u alle ontbrekende nummers uit de afspeellijst te verwijderen?</system:String>
+    <system:String x:Key="DeleteAllMissingTracks">Weet u zeker dat u alle ontbrekende nummers uit de afspeellijst wilt verwijderen?</system:String>
     <system:String x:Key="Size">Grootte:</system:String>
     <system:String x:Key="Remember">Onthouden</system:String>
     <system:String x:Key="Small">Klein</system:String>
@@ -264,7 +264,7 @@
     <system:String x:Key="Yes">Ja</system:String>
     <system:String x:Key="Comment">Commentaar</system:String>
     <system:String x:Key="Playlists">Afspeellijst</system:String>
-    <system:String x:Key="ShowArtistAndTitle">Weergave naam en titel in lijst kunstenaars</system:String>
+    <system:String x:Key="ShowArtistAndTitle">Geef naam en titel weer in lijst artiesten</system:String>
     <system:String x:Key="ThemePack">Theme pack</system:String>
     <system:String x:Key="QueueManager">Queue manager</system:String>
     <system:String x:Key="ExceptionConvertTrack">Er is een fout opgetreden tijdens het downloaden van de nummers.</system:String>
@@ -281,7 +281,7 @@
     <system:String x:Key="AllowedInputs">Geldige inzendingen</system:String>
     <system:String x:Key="Key">Sleutel</system:String>
     <system:String x:Key="Crossfade">Crossfade</system:String>
-    <system:String x:Key="NothingToSeeHere">Hier krijg je iets te zien</system:String>
+    <system:String x:Key="NothingToSeeHere">Hier is niets te zien</system:String>
     <system:String x:Key="Genre">Genre</system:String>
     <system:String x:Key="Orange">Oranje</system:String>
     <system:String x:Key="Bass">Bas</system:String>
