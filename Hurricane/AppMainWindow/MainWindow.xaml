@@ -17,6 +17,9 @@
                       ShowIconOnTitleBar="False"
                       SizeToContent="Manual"
                       Style="{DynamicResource CleanWindowStyleKey}">
+    <controls:MetroWindow.WindowButtonCommands>
+        <controls:WindowButtonCommands Template="{DynamicResource MahApps.Metro.Templates.WindowButtonCommands.Win10}" />
+    </controls:MetroWindow.WindowButtonCommands>
     <controls:MetroWindow.Flyouts>
         <controls:FlyoutsControl x:Name="FlyoutControl" />
     </controls:MetroWindow.Flyouts>
