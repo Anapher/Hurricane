@@ -7,7 +7,7 @@
     <system:String x:Key="Custom">Aangepaste</system:String>
     <system:String x:Key="SelectedFiles">Kies een bestand</system:String>
     <system:String x:Key="CurrentVersion">Huidige versie:</system:String>
-    <system:String x:Key="AddTracksToPlaylist">Nummers aan de afspeellijsten '{0} toegevoegd</system:String>
+    <system:String x:Key="AddTracksToPlaylist">Nummers aan de afspeellijst '{0}' toegevoegen</system:String>
     <system:String x:Key="OK">Ok</system:String>
     <system:String x:Key="No">Geen</system:String>
     <system:String x:Key="Filename">Bestandsnaam</system:String>
@@ -28,7 +28,7 @@
     <system:String x:Key="CreateNewPlaylist">Nieuwe afspeellijst maken</system:String>
     <system:String x:Key="DateFormat">dd.MM.yyyy HH:mm</system:String>
     <system:String x:Key="Cyan">Cyaan</system:String>
-    <system:String x:Key="AboutThanks2">Aan een mooi meisje uit mijn klas die mij de inspiratie gaf voor de naam (zij weet dat niet).</system:String>
+    <system:String x:Key="AboutThanks2">Aan een mooi meisje uit mijn klas die mij zonder het te weten de inspiratie gaf voor de naam.</system:String>
     <system:String x:Key="Purple">Purper</system:String>
     <system:String x:Key="AddDirectories">Map toevoegen</system:String>
     <system:String x:Key="ReloadTrackInfo">Vernieuw nummerinformatie</system:String>
@@ -53,15 +53,15 @@
     <system:String x:Key="TextFiles">Tekstbestanden</system:String>
     <system:String x:Key="Rock">Rock</system:String>
     <system:String x:Key="DisableNotificationsInGame">Meldingen uitschakelen tijdens een full-screen applicatie.</system:String>
-    <system:String x:Key="FileInfo">Bestandinformatie</system:String>
-    <system:String x:Key="YouTubePlaylistLink">Youtube playlist koppeling</system:String>
-    <system:String x:Key="MinimizeToTray">Minimaliseren naar Lade</system:String>
+    <system:String x:Key="FileInfo">Bestandsinformatie</system:String>
+    <system:String x:Key="YouTubePlaylistLink">Youtube afspeellijst koppeling</system:String>
+    <system:String x:Key="MinimizeToTray">Minimaliseren naar Tray</system:String>
     <system:String x:Key="Open">Openen</system:String>
     <system:String x:Key="All">Alle</system:String>
     <system:String x:Key="Crimson">Purpur</system:String>
     <system:String x:Key="SoftHeights">Soepele Highs</system:String>
     <system:String x:Key="Apply">Pas toe</system:String>
-    <system:String x:Key="RemoveTrackMessage">Bent u zeker dat u het nummer uit de playlist '{0}' wilt verwijderen?</system:String>
+    <system:String x:Key="RemoveTrackMessage">Weet u zeker dat u het nummer uit de afspeellijst '{0}' wilt verwijderen?</system:String>
     <system:String x:Key="Disc">Schijf</system:String>
     <system:String x:Key="DefaultSamplerate">(Neem dan sampling rate van het spoor)</system:String>
     <system:String x:Key="Indigo">Indigo</system:String>
@@ -78,7 +78,7 @@
     <system:String x:Key="Images">Grafiek</system:String>
     <system:String x:Key="Sienna">Siena</system:String>
     <system:String x:Key="CtrlQ">Ctrl+Q</system:String>
-    <system:String x:Key="Notifications">Notificatie</system:String>
+    <system:String x:Key="Notifications">Notificaties</system:String>
     <system:String x:Key="PreviousTrack">Vorig nummer</system:String>
     <system:String x:Key="ImportTrack">Importeer nummer</system:String>
     <system:String x:Key="Lime">Kalk</system:String>
@@ -158,7 +158,7 @@
     <system:String x:Key="CtrlIns">Ctrl+Ins</system:String>
     <system:String x:Key="OpenUrl">Open url</system:String>
     <system:String x:Key="Mauve">Mauve</system:String>
-    <system:String x:Key="NotifyIfMinimizeToTray">Meldingen weergeven wanneer de lade geminimaliseert is</system:String>
+    <system:String x:Key="NotifyIfMinimizeToTray">Meldingen weergeven wanneer de Tray geminimaliseert is</system:String>
     <system:String x:Key="CanBeResetedInSettings">Kan worden gereset in de instellingen</system:String>
     <system:String x:Key="Violet">Paars</system:String>
     <system:String x:Key="AllFiles">Alle Bestanden</system:String>
@@ -166,7 +166,7 @@
     <system:String x:Key="BassExtreme">Extreme bass</system:String>
     <system:String x:Key="Ins">Ins</system:String>
     <system:String x:Key="Close">Afsluiten</system:String>
-    <system:String x:Key="Tray">System tray</system:String>
+    <system:String x:Key="Tray">System Tray</system:String>
     <system:String x:Key="Down">Onder</system:String>
     <system:String x:Key="Track">Track</system:String>
     <system:String x:Key="SampleSourceBitrate">Bitrate</system:String>
@@ -263,7 +263,7 @@
     <system:String x:Key="FromThemePack">[Door Theme Pack]</system:String>
     <system:String x:Key="Yes">Ja</system:String>
     <system:String x:Key="Comment">Commentaar</system:String>
-    <system:String x:Key="Playlists">Afspeellijst</system:String>
+    <system:String x:Key="Playlists">Afspeellijsten</system:String>
     <system:String x:Key="ShowArtistAndTitle">Geef naam en titel weer in lijst artiesten</system:String>
     <system:String x:Key="ThemePack">Theme pack</system:String>
     <system:String x:Key="QueueManager">Queue manager</system:String>
