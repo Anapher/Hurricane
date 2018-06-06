@@ -14,7 +14,7 @@ using Hurricane.Settings;
 using Hurricane.ViewModelBase;
 
 // ReSharper disable ExplicitCallerInfoArgument
-
+// 6/5/2018 bug fix for many files loaded into hurricane/playback crash midway playing
 // ReSharper disable InconsistentNaming
 
 namespace Hurricane.Music.AudioEngine
@@ -164,7 +164,7 @@ namespace Hurricane.Music.AudioEngine
             get { return SoundSource != null ? _currentTrackPosition : TimeSpan.Zero; }
             protected set
             {
-                if ((int) value.TotalSeconds != (int) _currentTrackPosition.TotalSeconds) //If the seconds changed
+                if ((int)value.TotalSeconds != (int)_currentTrackPosition.TotalSeconds) //If the seconds changed
                     SetProperty(value, ref _currentTrackPosition);
             }
         }
@@ -205,7 +205,7 @@ namespace Hurricane.Music.AudioEngine
             set { SetProperty(value, ref _isEnabled); }
         }
 
-        public Equalizer MusicEqualizer { get; set; }
+        public WPFSoundVisualizationLib.Equalizer MusicEqualizer { get; set; }
 
         public EqualizerSettings EqualizerSettings
         {
@@ -246,8 +246,8 @@ namespace Hurricane.Music.AudioEngine
 
             if (PositionChanged != null)
                 PositionChanged(this,
-                    new PositionChangedEventArgs((int) CurrentTrackPosition.TotalSeconds,
-                        (int) CurrentTrackLength.TotalSeconds));
+                    new PositionChangedEventArgs((int)CurrentTrackPosition.TotalSeconds,
+                        (int)CurrentTrackLength.TotalSeconds));
         }
 
         private void value_EqualizerChanged(object sender, EqualizerChangedEventArgs e)
@@ -258,11 +258,11 @@ namespace Hurricane.Music.AudioEngine
         protected void SetEqualizerValue(double value, int number)
         {
             if (MusicEqualizer == null) return;
-            var perc = (value/100);
-            var newvalue = (float) (perc*MaxDB);
+            var perc = (value / 100);
+            var newvalue = (float)(perc * MaxDB);
             //the tag of the trackbar contains the index of the filter
-            var filter = MusicEqualizer.SampleFilters[number];
-            filter.AverageGainDB = newvalue;
+            var filter = MusicEqualizer.EqualizerValues[number];
+            filter = newvalue;
         }
 
         protected void SetAllEqualizerSettings()
@@ -296,7 +296,7 @@ namespace Hurricane.Music.AudioEngine
             track.IsOpened = true;
             CurrentTrack = track;
             var t = Task.Run(() => track.Load());
-            Equalizer equalizer;
+            CSCore.Streams.Effects.Equalizer equalizer;
 
             var result = await SetSoundSource(track);
             switch (result.State)
@@ -308,7 +308,7 @@ namespace Hurricane.Music.AudioEngine
                     track.IsOpened = false;
                     IsLoading = false;
                     CurrentTrack = null;
-                    if (ExceptionOccurred != null) ExceptionOccurred(this, (Exception) result.CustomState);
+                    if (ExceptionOccurred != null) ExceptionOccurred(this, (Exception)result.CustomState);
                     StopPlayback();
                     return false;
             }
@@ -323,12 +323,12 @@ namespace Hurricane.Music.AudioEngine
             }
 
             SoundSource = SoundSource
-                .AppendSource(x => Equalizer.Create10BandEqualizer(x.ToSampleSource()), out equalizer)
+                .AppendSource(x => CSCore.Streams.Effects.Equalizer.Create10BandEqualizer(x.ToSampleSource()), out equalizer)
                 .AppendSource(x => new SingleBlockNotificationStream(x), out _singleBlockNotificationStream)
-                .AppendSource(x => new SimpleNotificationSource(x) {Interval = 100}, out _simpleNotificationSource)
+                .AppendSource(x => new SimpleNotificationSource(x) { Interval = 100 }, out _simpleNotificationSource)
                 .ToWaveSource(Settings.WaveSourceBits);
 
-            MusicEqualizer = equalizer;
+            MusicEqualizer = MusicEqualizer;
             SetAllEqualizerSettings();
             _simpleNotificationSource.BlockRead += notifysource_BlockRead;
             _singleBlockNotificationStream.SingleBlockRead += notificationSource_SingleBlockRead;
@@ -485,8 +485,8 @@ namespace Hurricane.Music.AudioEngine
             _position = SoundSource.Position;
             OnPositionChanged();
 
-            var seconds = (int) CurrentTrackPosition.TotalSeconds;
-            var totalseconds = (int) CurrentTrackLength.TotalSeconds;
+            var seconds = (int)CurrentTrackPosition.TotalSeconds;
+            var totalseconds = (int)CurrentTrackLength.TotalSeconds;
             if (PositionChanged != null)
                 Application.Current.Dispatcher.Invoke(
                     () => PositionChanged(this, new PositionChangedEventArgs(seconds, totalseconds)));
@@ -559,13 +559,13 @@ namespace Hurricane.Music.AudioEngine
             double f;
             if (SoundSource != null)
             {
-                f = SoundSource.WaveFormat.SampleRate/2.0;
+                f = SoundSource.WaveFormat.SampleRate / 2.0;
             }
             else
             {
                 f = 22050; //44100 / 2
             }
-            return Convert.ToInt32((frequency/f)*(FFTSize/2));
+            return Convert.ToInt32((frequency / f) * (FFTSize / 2));
         }
     }
 }
