@@ -2,6 +2,8 @@
 using Hurricane.AppCommunication.CommunicationEventArgs;
 using Hurricane.ViewModelBase;
 
+// App communication Manager that manges different App APIs
+// still requires future examination to see how it works
 namespace Hurricane.AppCommunication
 {
     public class AppCommunicationManager : PropertyChangedBase

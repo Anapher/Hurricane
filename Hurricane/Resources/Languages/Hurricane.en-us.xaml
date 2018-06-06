@@ -81,9 +81,9 @@
     <system:String x:Key="Played">Played</system:String>
     <system:String x:Key="Never">Never</system:String>
 
-    <system:String x:Key="AboutCopyright">Copyright © 2014-2015 Alkaline. All Rights Reserved.</system:String>
+    <system:String x:Key="AboutCopyright">Copyright © 2014-2018 Alkaline, C0dexLab, Specter FXX-K. All Rights Reserved.</system:String>
     <system:String x:Key="AboutThanks1">To all the talented creators of the images and libraries mentioned above.</system:String>
-    <system:String x:Key="AboutThanks2">To a really beautiful girl from my school class who gave me the inspiration for the name (she doesn't know that).</system:String>
+    <system:String x:Key="AboutThanks2">To a really beautiful boyfriend from citra florida who gives me inspiration to make things possible</system:String>
     <system:String x:Key="AboutThanks3">To {0}, {1} and {2} (who also developed CSCore) for supporting me.</system:String>
     <system:String x:Key="AboutThanks4">To the {0} community for their testing, bug reports and ideas.</system:String>
     <system:String x:Key="Website">Website</system:String>

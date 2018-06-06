@@ -1,6 +1,8 @@
 ﻿using System;
 using System.IO;
 
+//gets any Soundcloud or youtube links and prepares for streaming
+
 namespace Hurricane.AppCommunication
 {
     public class StreamProvider : IDisposable
