@@ -34,17 +34,17 @@ namespace Hurricane.Settings
                 autoCloseUpdateInstaller = true
             };
 
-            _updController.updateFound += updController_updateFound;
-            _updController.downloadUpdatesCompleted += updController_downloadUpdatesCompleted;
-            _updController.downloadUpdatesProgressChanged += updController_downloadUpdatesProgressChanged;
+            _updController.updateFound += UpdController_updateFound;
+            _updController.downloadUpdatesCompleted += UpdController_downloadUpdatesCompleted;
+            _updController.downloadUpdatesProgressChanged += UpdController_downloadUpdatesProgressChanged;
         }
 
-        void updController_downloadUpdatesProgressChanged(object sender, downloadUpdatesProgressChangedEventArgs e)
+        void UpdController_downloadUpdatesProgressChanged(object sender, downloadUpdatesProgressChangedEventArgs e)
         {
             ProgressState = e.ProgressPercentage;
         }
 
-        void updController_downloadUpdatesCompleted(object sender, AsyncCompletedEventArgs e)
+        void UpdController_downloadUpdatesCompleted(object sender, AsyncCompletedEventArgs e)
         {
             if (!e.Cancelled)
             {
@@ -100,7 +100,7 @@ namespace Hurricane.Settings
             }
         }
 
-        void updController_updateFound(object sender, updateFoundEventArgs e)
+        void UpdController_updateFound(object sender, updateFoundEventArgs e)
         {
             var version = e.Result.newUpdatePackages.Last().releaseInfo.Version;
             NewVersion = version.Substring(0, version.Length - 2); //remove two to get 0.0.0 instead of 0.0.0.0

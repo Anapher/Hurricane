@@ -5,6 +5,8 @@ using System.Threading;
 using System.Windows;
 using Hurricane.AppCommunication.CommunicationEventArgs;
 
+//TCP Server handler / App communications
+
 namespace Hurricane.AppCommunication
 {
     public class TCPServer

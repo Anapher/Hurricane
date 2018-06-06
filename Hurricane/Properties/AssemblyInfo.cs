@@ -10,9 +10,9 @@ using System.Resources;
 [assembly: AssemblyTitle("Hurricane")]
 [assembly: AssemblyDescription("The music player with style")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Alkaline")]
+[assembly: AssemblyCompany("C0dexLab")]
 [assembly: AssemblyProduct("Hurricane")]
-[assembly: AssemblyCopyright("Copyright © 2014-2015 Alkaline")]
+[assembly: AssemblyCopyright("Copyright © 2014-2018 Alkaline, C0dexLab, Specter FXX-K")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 [assembly: Exceptionless("3e5cdb4c97c2440884e4514a02821ddb")]
@@ -52,6 +52,6 @@ using System.Resources;
 // Sie können alle Werte angeben oder die standardmäßigen Build- und Revisionsnummern 
 // übernehmen, indem Sie "*" eingeben:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("0.3.10.*")]
-[assembly: AssemblyFileVersion("0.3.10")]
+[assembly: AssemblyVersion("1.1.6.73")]
+[assembly: AssemblyFileVersion("1.1.6")]
 [assembly: NeutralResourcesLanguageAttribute("")]

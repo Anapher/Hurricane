@@ -4,6 +4,8 @@ using System.Text.RegularExpressions;
 using Hurricane.AppCommunication.Commands;
 using Hurricane.ViewModels;
 
+// App commander part of the viewmodel, and app communications responsible for the view aka prob the GUI
+
 namespace Hurricane.AppCommunication
 {
     public class Commander

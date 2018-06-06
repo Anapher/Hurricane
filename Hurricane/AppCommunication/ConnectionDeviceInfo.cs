@@ -1,5 +1,5 @@
 ﻿using Newtonsoft.Json;
-
+//list connected devices in a labeld view
 namespace Hurricane.AppCommunication
 {
     public class ConnectionDeviceInfo
