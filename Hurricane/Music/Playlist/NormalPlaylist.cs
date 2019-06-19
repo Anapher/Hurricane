@@ -23,6 +23,8 @@ namespace Hurricane.Music.Playlist
             }
         }
 
+        public DateTime TimeShuffeld { get; set; }
+
         public async Task AddFiles(IEnumerable<PlayableBase> tracks)
         {
             foreach (var track in tracks)
