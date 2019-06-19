@@ -75,7 +75,12 @@ namespace Hurricane.Music.Playlist
                 };
                 ViewSource = CollectionViewSource.GetDefaultView(Tracks);
                 ViewSource.Filter = item => string.IsNullOrWhiteSpace(SearchText) || item.ToString().ToUpper().Contains(SearchText.ToUpper());
-                ShuffleList = new List<PlayableBase>(Tracks);
+                if (this is NormalPlaylist) {
+                    var timeShuffeld = ((NormalPlaylist)this).TimeShuffeld;
+                    ShuffleList = new List<PlayableBase>(Tracks.Where(track => track.LastTimePlayed<timeShuffeld));
+                } else {
+                    ShuffleList = new List<PlayableBase>(Tracks);
+                }
             }
         }
 
@@ -89,6 +94,9 @@ namespace Hurricane.Music.Playlist
         private bool _addedFavoriteTracksTwoTimes;
         protected void CreateShuffleList()
         {
+            if (this is NormalPlaylist) {
+                ((NormalPlaylist)this).TimeShuffeld = DateTime.Now;
+            }
             ShuffleList = new List<PlayableBase>(Tracks);
             if (HurricaneSettings.Instance.Config.ShufflePreferFavoriteTracks)
             {
